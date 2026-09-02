@@ -1,0 +1,538 @@
+{
+  "id": "regression-metrics",
+  "chapter": "ch5",
+  "title": "Metrics bij regressie: MSE, RMSE, MAE & R²",
+  "intro": "Hoe meet je of een regressiemodel goed voorspelt? De vier standaardmaten — MSE, RMSE, MAE en R&sup2; — met formules, interpretatie, een compleet uitgewerkt voorbeeld over autoprijzen en interactieve plots die laten zien wat outliers met je metric doen.",
+  "level": 2,
+  "sections": [
+    {
+      "title": "Waarom metrics nodig zijn",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Een model trainen is stap &eacute;&eacute;n; beoordelen of het iets waard is, is stap twee. Daarvoor gebruik je <strong>metrics</strong>: getallen die de kwaliteit van de voorspellingen samenvatten. Bij <em>regressie</em> is de target \\( y \\) kwantitatief (een getal, zoals een prijs of temperatuur), dus draait alles om &eacute;&eacute;n vraag: <em>hoe ver zitten de voorspellingen \\( \\hat{y} \\) van de echte waarden \\( y \\) af?</em> </p> <p> Er is een subtiel verschil met de <em>loss functie</em> uit het hoofdstuk <a href=\"#/topic/loss-functions\">Wiskunde &amp; loss</a>. De loss gebruik je <em>tijdens het trainen</em> — die moet wiskundig handig zijn om te minimaliseren (afleidbaar, glad). Een metric gebruik je <em>daarna</em> om te communiceren hoe goed het model is — die moet begrijpelijk zijn voor mensen. Soms vallen ze samen (MSE is beide), soms niet: een model train je met squared loss, maar je rapporteert de MAE omdat die makkelijker te interpreteren is. </p>"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "",
+            "Loss functie",
+            "Metric"
+          ],
+          "rows": [
+            [
+              "<strong>doel</strong>",
+              "model trainen (minimaliseren)",
+              "model beoordelen en vergelijken"
+            ],
+            [
+              "<strong>eis</strong>",
+              "wiskundig handig (afleidbaar, glad)",
+              "interpreteerbaar voor mensen"
+            ],
+            [
+              "<strong>moment</strong>",
+              "tijdens fit()",
+              "na fit(), op de testset"
+            ]
+          ]
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p> Elke metric hieronder evalueer je <strong>op de testset</strong>, niet op de trainset. Op de traindata kunnen de getallen mooi zijn terwijl het model gewoon de traindata uit het hoofd heeft geleerd (overfitting) — zie <a href=\"#/topic/ml-workflow-basics\">de ML-workflow</a>. </p>"
+        }
+      ]
+    },
+    {
+      "title": "De drie foutmaten: MSE, RMSE en MAE",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> De drie meest gebruikte maten bij regressie zijn de <strong>Mean Squared Error (MSE)</strong>, de <strong>Root Mean Squared Error (RMSE)</strong> en de <strong>Mean Absolute Error (MAE)</strong>. Alle drie meten ze de gemiddelde afwijking tussen voorspelling en werkelijkheid, maar elk op z'n eigen manier — en dat verschil voel je vooral wanneer er <em>outliers</em> in de data zitten. </p>"
+        },
+        {
+          "type": "formula",
+          "label": "Mean Squared Error",
+          "latex": "MSE \\;=\\; \\frac{1}{N} \\sum_{i=1}^{N} \\left( y_i - \\hat{y}_i \\right)^2",
+          "caption": "Kwadrateert elke fout en middelt: grote fouten tellen extra zwaar."
+        },
+        {
+          "type": "formula",
+          "label": "Root Mean Squared Error",
+          "latex": "RMSE \\;=\\; \\sqrt{\\frac{1}{N} \\sum_{i=1}^{N} \\left( y_i - \\hat{y}_i \\right)^2}",
+          "caption": "De wortel van de MSE — zit weer in dezelfde eenheid als de target, wat de interpretatie makkelijker maakt."
+        },
+        {
+          "type": "formula",
+          "label": "Mean Absolute Error",
+          "latex": "MAE \\;=\\; \\frac{1}{N} \\sum_{i=1}^{N} \\left| y_i - \\hat{y}_i \\right|",
+          "caption": "Neemt de absolute fout: robuuster tegen outliers, maar lastiger af te leiden."
+        },
+        {
+          "type": "text",
+          "html": "<p> De symbolen: \\( N \\) is het aantal datapunten, \\( i \\) is de loopteller over die punten, \\( y_i \\) is de <em>echte</em> targetwaarde van punt \\( i \\) en \\( \\hat{y}_i \\) (\"y-hat\") is de <em>voorspelde</em> targetwaarde van het model voor datzelfde punt. Het verschil \\( y_i - \\hat{y}_i \\) is dus de <em>fout</em> van &eacute;&eacute;n voorspelling, ook wel het <strong>residu</strong> genoemd. </p>"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Maat",
+            "Eenheid",
+            "Outlier-gevoeligheid",
+            "Kenmerk"
+          ],
+          "rows": [
+            [
+              "MSE",
+              "eenheid&sup2; (bijv. &euro;&sup2;)",
+              "hoog (kwadraat!)",
+              "wiskundig handig, standaard bij trainen"
+            ],
+            [
+              "RMSE",
+              "zelfde als target (bijv. &euro;)",
+              "hoog (wortel dempt iets)",
+              "interpreteerbaar &eacute;n nog steeds glad"
+            ],
+            [
+              "MAE",
+              "zelfde als target",
+              "laag (lineair)",
+              "robuust, makkelijk uit te leggen"
+            ]
+          ]
+        },
+        {
+          "type": "callout",
+          "kind": "tip",
+          "html": "<p> Waarom is de MSE gevoeliger voor outliers dan de MAE? Een fout van 10 wordt bij MSE \\( 10^2 = 100 \\) maar bij MAE gewoon 10. &Eacute;&eacute;n extreem verkeerde voorspelling domineert daarmee de hele MSE — terwijl de MAE er slechts lineair door groeit. Zit er veel ruis of een paar extreme punten in je data, dan geeft MAE een eerlijker beeld. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Voorbeeld: de prijs van een auto voorspellen",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Bekijk een lineaire regressie met drie featurevariabelen en &eacute;&eacute;n targetvariabele: </p> <ul> <li><strong>X1</strong> — leeftijd van de auto (in jaren): 1, 3, 4, 7, 9</li> <li><strong>X2</strong> — kilometerstand (in 10.000 km): 5, 12, 15, 23, 30</li> <li><strong>X3</strong> — aantal vorige eigenaren: 1, 2, 1, 3, 2</li> <li><strong>Y</strong> — prijs van de auto (in &euro; 1000): 18, 12, 10, 6, 4</li> </ul> <p> Na het trainen kom je tot de parameters \\( b_0 = 20 \\), \\( b_1 = -1 \\), \\( b_2 = -0.5 \\) en \\( b_3 = -2 \\). De voorspellingsvergelijking is dus: </p>"
+        },
+        {
+          "type": "formula",
+          "label": "voorspelling autoprijs",
+          "latex": "\\hat{y} \\;=\\; b_0 + b_1 x_1 + b_2 x_2 + b_3 x_3 \\;=\\; 20 - x_1 - 0.5\\,x_2 - 2\\,x_3",
+          "caption": "Vul per auto de featurewaarden in en je krijgt de voorspelde prijs."
+        },
+        {
+          "type": "text",
+          "html": "<p> Om dit model te beoordelen reken je in twee stappen alles door: eerst de vijf voorspellingen, daarna MSE, RMSE en MAE. De code hieronder doet precies dat en draait direct in je browser — druk op <em>Uitvoeren</em> en volg de uitkomsten. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "voorspellingen en metrics berekenen",
+          "runnable": true,
+          "source": "import numpy as np\n\nX = np.array([[1,  5, 1],\n              [3, 12, 2],\n              [4, 15, 1],\n              [7, 23, 3],\n              [9, 30, 2]], dtype=float)\ny = np.array([18, 12, 10, 6, 4], dtype=float)\nb0, b1, b2, b3 = 20.0, -1.0, -0.5, -2.0\n\n# 1) voorspellingen\ny_hat = b0 + b1*X[:, 0] + b2*X[:, 1] + b3*X[:, 2]\nprint('voorspellingen:', y_hat)\n\n# 2) metrics\nmse_waarde  = np.mean((y - y_hat)**2)\nrmse_waarde = np.sqrt(mse_waarde)\nmae_waarde  = np.mean(np.abs(y - y_hat))\nprint('MSE :', round(mse_waarde, 2))\nprint('RMSE:', round(rmse_waarde, 2))\nprint('MAE :', round(mae_waarde, 2))\n\n# 3) verklaarde variantie\nr2_waarde = 1 - np.sum((y - y_hat)**2) / np.sum((y - y.mean())**2)\nprint('R2  :', round(r2_waarde, 2), '(negatief = slechter dan het gemiddelde!)')"
+        },
+        {
+          "type": "callout",
+          "kind": "info",
+          "html": "<p> Lees de uitkomst zo: de gemiddelde fout is <strong>MAE = 6,9</strong> (&euro; 6.900), en de RMSE valt hoger uit (7,79). Dat verschil is een diagnostisch signaal: de vijf fouten (3,5 / 5 / 3,5 / 10,5 / 12) zijn ongelijk verdeeld — de laatste twee auto's wijken flink af en trekken de kwadratische maten extra omhoog. Zou de RMSE vrijwel gelijk zijn aan de MAE, dan liggen alle fouten dicht bij elkaar. En let op de R&sup2;: met &minus;1,53 presteert dit model <em>slechter</em> dan domweg het gemiddelde voorspellen. </p>"
+        }
+      ]
+    },
+    {
+      "title": "De functies vanaf nul",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Zo implementeer je de drie maten vanaf nul met NumPy. Elke functie krijgt twee parameters: de <em>werkelijke</em> targetwaarden en de <em>voorspelde</em> targetwaarden — die uit elk regressiemodel kunnen komen. In de praktijk gebruik je ze zelden zelf: scikit-learn levert <code>mean_squared_error</code>, <code>mean_absolute_error</code> en <code>r2_score</code> klaar af, maar weten wat erin gebeurt is precies wat deze site wil overbrengen. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "MSE, RMSE en MAE implementeren",
+          "runnable": true,
+          "source": "import numpy as np\n\ndef mse(y_true, y_pred):\n    # gemiddelde van de gekwadrateerde fouten\n    return np.mean((y_true - y_pred)**2)\n\ndef rmse(y_true, y_pred):\n    # wortel van de mse — zelfde eenheid als de target\n    return np.sqrt(mse(y_true, y_pred))\n\ndef mae(y_true, y_pred):\n    # gemiddelde van de absolute fouten\n    return np.mean(np.abs(y_true - y_pred))\n\n# voorbeeldwaarden\ny_true = np.array([3.0, -0.5, 2.0, 7.0])\ny_pred = np.array([2.5,  0.0, 2.0, 8.0])\n\nprint('mse :', mse(y_true, y_pred))   # 0.375\nprint('rmse:', rmse(y_true, y_pred))  # 0.6123724356957945\nprint('mae :', mae(y_true, y_pred))   # 0.5"
+        }
+      ]
+    },
+    {
+      "title": "R²: de verklaarde variantie",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> De metric die doorgaans als hoofdmaat voor regressie dient is de <strong>verklaarde variantie</strong>, \\( R^2 \\). Dit is een statistische maat die aangeeft welk deel van de variantie in de afhankelijke variabele (target) verklaard wordt door de onafhankelijke variabelen (features). Ook hier zie je het verschil tussen de voorspelde targetwaarde \\( \\hat{y} \\) en de gemiddelde daadwerkelijke targetwaarde \\( \\bar{y} \\): </p>"
+        },
+        {
+          "type": "formula",
+          "label": "verklaarde variantie",
+          "latex": "R^2 \\;=\\; 1 - \\frac{\\sum_{i=1}^{n}\\left( y_i - \\hat{y}_i \\right)^2}{\\sum_{i=1}^{n}\\left( y_i - \\bar{y} \\right)^2}",
+          "caption": "De noemer meet de spreiding rond het gemiddelde; de teller de spreiding rond jouw voorspellingen."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "R&sup2;-waarde",
+            "Betekenis"
+          ],
+          "rows": [
+            [
+              "1",
+              "het model past perfect bij elk datapunt"
+            ],
+            [
+              "tussen 0 en 1",
+              "deel van de variantie verklaard (× 100 = percentage)"
+            ],
+            [
+              "0",
+              "niet beter dan gewoon het gemiddelde voorspellen"
+            ],
+            [
+              "&lt; 0",
+              "slechter dan het gemiddelde voorspellen (!)"
+            ]
+          ]
+        },
+        {
+          "type": "text",
+          "html": "<p> Een waarde dicht bij 1 houdt in dat veel datapunten dichtbij de regressielijn zitten; een waarde dicht bij 0 betekent dat de lijn weinig verklaart. En zoals je in het autoprijs-voorbeeld zag: negatief kan ook — dan presteert je model <em>slechter</em> dan een model dat domweg altijd het gemiddelde voorspelt. Dat klinkt gek, maar gebeurt echt: een slecht getraind model, verkeerde features of een te kleine trainset kunnen de oorzaak zijn. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "R² implementeren en toepassen",
+          "runnable": true,
+          "source": "import numpy as np\n\ndef r2_score(y_true, y_pred):\n    # teller: spreiding rond de voorspellingen (fouten van het model)\n    ss_res = np.sum((y_true - y_pred)**2)\n    # noemer: spreiding rond het gemiddelde (naiefste voorspelling)\n    ss_tot = np.sum((y_true - y_true.mean())**2)\n    return 1 - ss_res / ss_tot\n\n# voorbeeldwaarden\ny_true = np.array([3.0, -0.5, 2.0, 7.0])\ny_pred = np.array([2.5,  0.0, 2.0, 8.0])\n\nprint('r2_score:', r2_score(y_true, y_pred))  # 0.9486081370449679"
+        },
+        {
+          "type": "callout",
+          "kind": "info",
+          "html": "<p> Vergelijk dit met de R&sup2;-uitkomst van het autoprijs-voorbeeld: <em>negatief</em> (−1,53). Zelfde metric, twee werelden: hier wordt 95% van de variantie verklaard, daar presteert het model slechter dan het gemiddelde. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Verkennen: past de lijn op de data?",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Hieronder zie je drie datasets met elk &eacute;&eacute;n featurevariabele en een lineair model \\( y_{pred} = b_0 + b_1 x \\), waarbij \\( b_0 \\) het y-snijpunt is en \\( b_1 \\) de richtingsco&euml;ffici&euml;nt. <strong>Schuif met de sliders</strong> en zie meteen wat een goede fit doet met de foutmaten: een lijn die door de punten loopt maakt MSE, RMSE en MAE klein en \\( R^2 \\) groot. </p>"
+        },
+        {
+          "type": "plot",
+          "title": "Dataset A — nette, lineaire data",
+          "subtitle": "Schuif b0 en b1 tot de lijn door de punten loopt. Best fit ongeveer: b1 ≈ 1.9, b0 ≈ 1.7.",
+          "xrange": [
+            0,
+            10
+          ],
+          "xlabel": "feature x",
+          "points": [
+            {
+              "x": 0.5,
+              "y": 3.08
+            },
+            {
+              "x": 1.19,
+              "y": 3.52
+            },
+            {
+              "x": 1.88,
+              "y": 5.83
+            },
+            {
+              "x": 2.58,
+              "y": 7.21
+            },
+            {
+              "x": 3.27,
+              "y": 6.72
+            },
+            {
+              "x": 3.96,
+              "y": 8.35
+            },
+            {
+              "x": 4.65,
+              "y": 10.45
+            },
+            {
+              "x": 5.35,
+              "y": 11.44
+            },
+            {
+              "x": 6.04,
+              "y": 12.86
+            },
+            {
+              "x": 6.73,
+              "y": 13.6
+            },
+            {
+              "x": 7.42,
+              "y": 15.88
+            },
+            {
+              "x": 8.12,
+              "y": 17.08
+            },
+            {
+              "x": 8.81,
+              "y": 17.9
+            },
+            {
+              "x": 9.5,
+              "y": 19.78
+            }
+          ],
+          "pointLegend": [
+            {
+              "label": "datapunten",
+              "color": "yellow"
+            }
+          ],
+          "curves": [
+            {
+              "expr": "b0 + b1*x",
+              "label": "regressielijn",
+              "color": "cyan"
+            }
+          ],
+          "sliders": [
+            {
+              "param": "b0",
+              "min": -5,
+              "max": 10,
+              "step": 0.1,
+              "value": 2,
+              "label": "b0 (snijpunt)"
+            },
+            {
+              "param": "b1",
+              "min": -1,
+              "max": 3,
+              "step": 0.05,
+              "value": 1,
+              "label": "b1 (richtingscoëf.)"
+            }
+          ]
+        },
+        {
+          "type": "plot",
+          "title": "Dataset B — met één grote outlier",
+          "subtitle": "Eén punt wijkt ver af (één keer 24 terwijl de rest rond de lijn zit). Merk hoe de MSE-gedachte de lijn naar het punt toe trekt.",
+          "xrange": [
+            0,
+            10
+          ],
+          "xlabel": "feature x",
+          "points": [
+            {
+              "x": 0.5,
+              "y": 3.18
+            },
+            {
+              "x": 1.19,
+              "y": 3.63
+            },
+            {
+              "x": 1.88,
+              "y": 5.61
+            },
+            {
+              "x": 2.58,
+              "y": 24.0,
+              "color": "magenta",
+              "label": "outlier"
+            },
+            {
+              "x": 3.27,
+              "y": 8.41
+            },
+            {
+              "x": 3.96,
+              "y": 9.1
+            },
+            {
+              "x": 4.65,
+              "y": 10.26
+            },
+            {
+              "x": 5.35,
+              "y": 11.22
+            },
+            {
+              "x": 6.04,
+              "y": 13.61
+            },
+            {
+              "x": 6.73,
+              "y": 14.02
+            },
+            {
+              "x": 7.42,
+              "y": 15.1
+            },
+            {
+              "x": 8.12,
+              "y": 16.4
+            },
+            {
+              "x": 8.81,
+              "y": 18.18
+            },
+            {
+              "x": 9.5,
+              "y": 19.32
+            }
+          ],
+          "pointLegend": [
+            {
+              "label": "datapunten",
+              "color": "yellow"
+            },
+            {
+              "label": "outlier",
+              "color": "magenta"
+            }
+          ],
+          "curves": [
+            {
+              "expr": "b0 + b1*x",
+              "label": "regressielijn",
+              "color": "cyan"
+            }
+          ],
+          "sliders": [
+            {
+              "param": "b0",
+              "min": -5,
+              "max": 10,
+              "step": 0.1,
+              "value": 2,
+              "label": "b0 (snijpunt)"
+            },
+            {
+              "param": "b1",
+              "min": -1,
+              "max": 3,
+              "step": 0.05,
+              "value": 1,
+              "label": "b1 (richtingscoëf.)"
+            }
+          ]
+        },
+        {
+          "type": "plot",
+          "title": "Dataset C — kromme (kwadratische) data",
+          "subtitle": "Hoe je de lijn ook neerzet: een rechte lijn past niet op een kromme. R² blijft laag — pas het model aan (bijv. met x² als extra feature), niet alleen de lijn.",
+          "xrange": [
+            0,
+            10
+          ],
+          "xlabel": "feature x",
+          "points": [
+            {
+              "x": 0.5,
+              "y": 3.54
+            },
+            {
+              "x": 1.19,
+              "y": 2.93
+            },
+            {
+              "x": 1.88,
+              "y": 3.49
+            },
+            {
+              "x": 2.58,
+              "y": 2.26
+            },
+            {
+              "x": 3.27,
+              "y": 2.58
+            },
+            {
+              "x": 3.96,
+              "y": 3.14
+            },
+            {
+              "x": 4.65,
+              "y": 4.9
+            },
+            {
+              "x": 5.35,
+              "y": 6.56
+            },
+            {
+              "x": 6.04,
+              "y": 7.65
+            },
+            {
+              "x": 6.73,
+              "y": 9.34
+            },
+            {
+              "x": 7.42,
+              "y": 11.73
+            },
+            {
+              "x": 8.12,
+              "y": 15.22
+            },
+            {
+              "x": 8.81,
+              "y": 18.32
+            },
+            {
+              "x": 9.5,
+              "y": 21.61
+            }
+          ],
+          "pointLegend": [
+            {
+              "label": "datapunten",
+              "color": "yellow"
+            }
+          ],
+          "curves": [
+            {
+              "expr": "b0 + b1*x",
+              "label": "regressielijn",
+              "color": "cyan"
+            }
+          ],
+          "sliders": [
+            {
+              "param": "b0",
+              "min": -5,
+              "max": 10,
+              "step": 0.1,
+              "value": 2,
+              "label": "b0 (snijpunt)"
+            },
+            {
+              "param": "b1",
+              "min": -1,
+              "max": 3,
+              "step": 0.05,
+              "value": 1,
+              "label": "b1 (richtingscoëf.)"
+            }
+          ]
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p> Wat deze drie datasets laten zien: dataset <strong>A</strong> is het ideaalplaatje — lineair, weinig ruis, een hoge \\( R^2 \\) haalbaar. Dataset <strong>B</strong> laat zien hoe &eacute;&eacute;n outlier de kwadratische maten (MSE/RMSE) opblaast en de beste lijn kan verschuiven; de MAE en een robuustere aanpak blijven daar gevoelig minder voor. Dataset <strong>C</strong> toont de grens van het <em>model</em>: geen enkele rechte lijn past, hoe je ook schuift — de oplossing is dan niet beter schuiven, maar een beter model (bijvoorbeeld \\( x^2 \\) als extra feature). </p>"
+        },
+        {
+          "type": "callout",
+          "kind": "tip",
+          "html": "<p> Met meerdere features wordt de vergelijking \\( y_{pred} = b_0 + b_1 x_1 + b_2 x_2 + \\cdots + b_n x_n \\) — een <em>vlak</em> in plaats van een lijn. Het autoprijs-voorbeeld hierboven is precies zo'n geval met drie features. </p>"
+        }
+      ]
+    }
+  ]
+}

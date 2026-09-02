@@ -1,0 +1,557 @@
+{
+  "id": "classification-metrics",
+  "chapter": "ch5",
+  "title": "Metrics bij classificatie: confusion matrix, precision & recall",
+  "intro": "Hoe beoordeel je een classifier? De confusion matrix als fundament, accuracy en waarom die kan misleiden, precision en recall met concrete scenario's, de F1-score — en de binaire cross-entropy als trainingsdoel, alles met code die in de browser draait.",
+  "level": 2,
+  "sections": [
+    {
+      "title": "De confusion matrix",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Bij classificatie is het doel om met de featurevariabelen een <strong>beslissingsgrens</strong> te cre&euml;ren die de datapunten scheidt op basis van hun categorie. Alle standaardmetrics bouwen voort op &eacute;&eacute;n tabel: de <em>confusion matrix</em>, die de voorspellingen (positief/negatief) kruist met de werkelijkheid (positief/negatief). Elke voorspelling valt in precies &eacute;&eacute;n van de vier vakken. </p>"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "",
+            "voorspeld positief",
+            "voorspeld negatief"
+          ],
+          "rows": [
+            [
+              "<strong>echt positief</strong>",
+              "TP (true positive)",
+              "FN (false negative — gemist!)"
+            ],
+            [
+              "<strong>echt negatief</strong>",
+              "FP (false positive — vals alarm)",
+              "TN (true negative)"
+            ]
+          ]
+        },
+        {
+          "type": "text",
+          "html": "<p> De vier vakken heb je snel door: <strong>TP</strong> is een terecht alarm (positief voorspeld, echt positief), <strong>TN</strong> een terechte geruststelling, <strong>FP</strong> een <em>vals alarm</em> (positief voorspeld, maar eigenlijk negatief) en <strong>FN</strong> een <em>gemist geval</em> (negatief voorspeld, maar eigenlijk positief). Let op de asymmetrie: in vrijwel elke toepassing zijn vals alarm en gemist geval <em>niet</em> even erg. Bij een medische screening is een gemist geval (FN) ernstiger dan een extra onnodig onderzoek (FP); bij een spamfilter is een vals alarm (FP — een belangrijke mail in de spam) vervelender dan een spam die doorslipt (FN). </p>"
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p> De confusion matrix zelf is al een diagnosticum: kijk welke hoek opvalt. Veel FP's? Je model is te gretig (of je threshold ligt te laag). Veel FN's? Je model is te voorzichtig — en bij logistische regressie kun je de <em>threshold</em> verhogen of verlagen om de balans te verschuiven. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Accuracy — en waarom die kan misleiden",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> De simpelste metric is <strong>accuracy</strong>: het aandeel voorspellingen dat klopt, alles bij elkaar genomen. </p>"
+        },
+        {
+          "type": "formula",
+          "label": "accuracy",
+          "latex": "\\text{accuracy} \\;=\\; \\frac{TP + TN}{TP + TN + FP + FN}",
+          "caption": "Het aandeel voorspellingen dat klopt — alles bij elkaar."
+        },
+        {
+          "type": "text",
+          "html": "<p> Het gevaar zit in <strong>scheve klassenverdelingen</strong>. Stel dat 99% van de mails geen spam is: een model dat domweg <em>altijd</em> \"geen spam\" voorspelt scoort 99% accuracy — en is volkomen nutteloos. Accuracy weegt alle vier de vakken mee en houdt geen rekening met welke fout nu pijn doet. Precies daarom bestaan precision en recall. </p>"
+        },
+        {
+          "type": "callout",
+          "kind": "warning",
+          "html": "<p><strong> Vuistregel:</strong> bij ongebalanceerde klassen (bijv. 1% fraude, 5% ziekte) zegt accuracy bijna niets. Kijk dan altijd naar precision en recall — of naar de confusion matrix zelf. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Precision & recall: de twee kanten van de fout",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> <strong>Precision</strong> kijkt naar alles wat je <em>positief noemde</em> en vraagt: hoeveel daarvan was écht positief? <strong>Recall</strong> kijkt naar alles wat <em>echt positief</em> is en vraagt: hoeveel daarvan heb ik gevonden? Twee kanten van dezelfde medaille — de één straft vals alarm (FP), de ander gemiste gevallen (FN). </p>"
+        },
+        {
+          "type": "formula",
+          "label": "precision",
+          "latex": "\\text{precision} \\;=\\; \\frac{TP}{TP + FP}",
+          "caption": "Van alles wat ik positief noemde: hoeveel was echt positief? Belangrijk als een vals alarm duur is."
+        },
+        {
+          "type": "formula",
+          "label": "recall",
+          "latex": "\\text{recall} \\;=\\; \\frac{TP}{TP + FN}",
+          "caption": "Van alles wat echt positief is: hoeveel heb ik gevonden? Belangrijk als je niets mag missen."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Scenario",
+            "Kernmetric",
+            "Reden"
+          ],
+          "rows": [
+            [
+              "spamfilter",
+              "precision",
+              "een vals alarm = belangrijke mail in de prullenbak"
+            ],
+            [
+              "medische screening",
+              "recall",
+              "een gemist geval = onbehandelde ziekte"
+            ],
+            [
+              "fraudedetectie",
+              "recall",
+              "schade loopt op bij elke gemiste fraude"
+            ],
+            [
+              "aanbevelingsysteem",
+              "precision",
+              "irrelevante tips kosten vertrouwen en aandacht"
+            ]
+          ]
+        },
+        {
+          "type": "text",
+          "html": "<p> Precision en recall staan op gespannen voet met elkaar: maak je de threshold strenger, dan daalt het aantal FP's (precision omhoog) maar stijgt het aantal FN's (recall omlaag). Maak je hem soepeler, dan draait het om. Er is geen \"juiste\" balans — die hangt af van de kosten van beide foutsoorten in jouw toepassing. </p>"
+        }
+      ]
+    },
+    {
+      "title": "F1-score: het evenwicht",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Als je precision &eacute;n recall wilt samenvatten in &eacute;&eacute;n getal, dan kies je niet voor het gewone gemiddelde (dat een extreme precision van 1.0 met een nutteloze recall van 0.0 nog steeds op 0.5 laat uitkomen), maar voor het <strong>harmonisch gemiddelde</strong>: </p>"
+        },
+        {
+          "type": "formula",
+          "label": "F1-score",
+          "latex": "F_1 \\;=\\; 2 \\cdot \\frac{\\text{precision} \\cdot \\text{recall}}{\\text{precision} + \\text{recall}}",
+          "caption": "Het harmonisch gemiddelde van precision en recall — evenwicht tussen beide."
+        },
+        {
+          "type": "text",
+          "html": "<p> Het harmonisch gemiddelde straft extremen: zit &eacute;&eacute;n van de twee laag, dan zakt de F1 mee naar beneden. Een hoge F1 is alleen haalbaar als precision &eacute;n recall <em>beide</em> hoog zijn — vandaar dat hij zo vaak als samenvattende metric dient. </p>"
+        }
+      ]
+    },
+    {
+      "title": "De vier metrics in code",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> De vier functies hieronder krijgen de <em>werkelijke klassen</em> en de <em>voorspelde klassen</em> (0/1, geen kansen — de threshold is al toegepast). Zoals in de confusion matrix: tel TP's, FP's, TN's en FN's met booleaanse masks. In scikit-learn bestaan <code>accuracy_score</code>, <code>precision_score</code>, <code>recall_score</code> en <code>f1_score</code> klaar voor gebruik — maar zien hoe ze zijn opgebouwd maakt ze concreet. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "accuracy, precision, recall & F1 implementeren",
+          "runnable": true,
+          "source": "import numpy as np\n\ndef accuracy(y_true, y_pred):\n    # het aandeel voorspellingen dat klopt\n    return np.mean(y_true == y_pred)\n\ndef precision(y_true, y_pred):\n    tp = np.sum((y_true == 1) & (y_pred == 1))\n    fp = np.sum((y_true == 0) & (y_pred == 1))\n    return tp / (tp + fp)\n\ndef recall(y_true, y_pred):\n    tp = np.sum((y_true == 1) & (y_pred == 1))\n    fn = np.sum((y_true == 1) & (y_pred == 0))\n    return tp / (tp + fn)\n\ndef f1(y_true, y_pred):\n    p = precision(y_true, y_pred)\n    r = recall(y_true, y_pred)\n    return 2 * p * r / (p + r)\n\n# voorbeeld: 10 voorspellingen\ny_true = np.array([1, 0, 1, 1, 0, 0, 1, 0, 1, 1])\ny_pred = np.array([1, 1, 0, 1, 0, 1, 1, 0, 1, 0])\n\n# TP=4, FP=2, TN=2, FN=2\nprint('accuracy :', accuracy(y_true, y_pred))   # 0.6\nprint('precision:', precision(y_true, y_pred))  # 0.6666666666666666\nprint('recall   :', recall(y_true, y_pred))     # 0.6666666666666666\nprint('f1       :', f1(y_true, y_pred))         # 0.6666666666666666"
+        },
+        {
+          "type": "callout",
+          "kind": "tip",
+          "html": "<p> Zo werkt het tellen: <code>tp = np.sum((y_true == 1) &amp; (y_pred == 1))</code> — een booleaans masker dat alleen waar is waar beide 1 zijn, en <code>np.sum</code> telt de True's. Let op deling door nul: is er geen enkele positieve voorspelling, dan is precision ongedefinieerd. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Binaire cross-entropy: de loss achter de classifier",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> De metrics hierboven beoordelen de <em>uiteindelijke beslissing</em> (na de threshold). Maar tijdens het trainen heeft logistische regressie een ander doel: de <strong>binaire cross-entropy loss (BCE)</strong>. Zijn er twee categorie&euml;n, dan gebruik je BCE; bij meer dan twee klassen het <em>categorische</em> cross-entropy. De waarden van \\( y \\) zijn de werkelijke klassen (1 of 0); de waarden van \\( \\hat{y} \\) zijn de voorspelde kansen (tussen 0 en 1): </p>"
+        },
+        {
+          "type": "formula",
+          "label": "binaire cross-entropy",
+          "latex": "BCE \\;=\\; -\\frac{1}{N} \\sum_{i=1}^{N} \\Bigl[\\, y_i \\log(\\hat{y}_i) + (1 - y_i)\\, \\log(1 - \\hat{y}_i) \\,\\Bigr]",
+          "caption": "Straft voorspelde kansen die ver van de echte klasse af liggen, logarithmisch hard."
+        },
+        {
+          "type": "text",
+          "html": "<p> Waarom precies deze vorm? Kijk naar de twee gevallen. Is \\( y_i = 1 \\), dan blijft alleen \\( -\\log(\\hat{y}_i) \\) over: voorspel je een kans dicht bij 1, dan is de straf bijna nul; voorspel je 0.1, dan is de straf groot. Is \\( y_i = 0 \\), dan draait de term om en straft \\( -\\log(1 - \\hat{y}_i) \\) kansen richting 1. &Eacute;&eacute;n functie, twee richtingen — en glad, dus goed te minimaliseren met gradient descent. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "BCE implementeren",
+          "runnable": true,
+          "source": "import numpy as np\n\ndef bce(y_true, y_pred):\n    # voorkom log(0) — deze twee regels staan vast\n    epsilon = 1e-15\n    y_pred = np.clip(y_pred, epsilon, 1 - epsilon)\n\n    # de formule uit de theorie, direct overgeschreven\n    return -np.mean(y_true * np.log(y_pred) + (1 - y_true) * np.log(1 - y_pred))\n\n# voorbeeld: goede kansen = lage loss\ny_true = np.array([1.0, 0.0, 1.0, 0.0])\ny_pred = np.array([0.9, 0.1, 0.8, 0.3])\n\nprint('bce:', bce(y_true, y_pred))  # 0.19763488164214868\n\n# dezelfde labels, zelfverzekerde fouten = hoge loss\ny_slecht = np.array([0.1, 0.9, 0.2, 0.8])\nprint('bce (fout):', bce(y_true, y_slecht))"
+        },
+        {
+          "type": "callout",
+          "kind": "info",
+          "html": "<p> Vergelijk de twee uitkomsten in de run hierboven: kansen dicht bij de juiste labels geven een lage BCE, zelfverzekerde fouten geven een hoge. Dit is het leer signaal: tijdens de training verschuiven de coefficients precies zolang tot deze loss zo klein mogelijk is. Zie ook <a href=\"#/topic/loss-diagrams\">loss-diagrammen</a>, waar de logistic loss dezelfde rol speelt ten opzichte van de hinge loss van SVM's. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Van kans tot beslissing: de threshold",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Hoe een classifier tot zijn beslissing komt, verloopt in vier stappen: <strong>(1)</strong> maak een lineaire score (de logit) \\( l = b_0 + b_1 x_1 + \\cdots + b_n x_n \\); <strong>(2)</strong> zet die met de sigmoid om in een kans \\( \\hat{y} = 1/(1 + e^{-l}) \\); <strong>(3)</strong> pas een threshold toe (meestal 0.5: kans &ge; 0.5 &rarr; positief); <strong>(4)</strong> minimaliseer de BCE tijdens de training. De threshold uit stap 3 is aanpasbaar — en verschuift precies de balans tussen precision en recall die je hierboven zag. </p>"
+        },
+        {
+          "type": "text",
+          "html": "<p> Hieronder: logistische regressie met twee featurevariabelen (x1 horizontaal, x2 verticaal). De target heeft twee klassen: <span style=\"color:var(--green)\">klasse 1 (positief)</span> en <span style=\"color:var(--magenta)\">klasse 0 (negatief)</span>. De beslissingsgrens is \\( b_0 + b_1 x_1 + x_2 = 0 \\) — schuif met <strong>b0</strong> en <strong>b1</strong> en zie hoe de grens de ene foutsoort inruilt voor de andere. </p>"
+        },
+        {
+          "type": "plot",
+          "title": "Dataset A — lineair scheidbaar",
+          "subtitle": "De twee klassen liggen uit elkaar: er bestaat een rechte lijn die ze perfect scheidt. Zoek hem!",
+          "xrange": [
+            0,
+            10
+          ],
+          "yrange": [
+            0,
+            10
+          ],
+          "xlabel": "feature x1",
+          "points": [
+            {
+              "x": 5.9,
+              "y": 6.08,
+              "color": "green"
+            },
+            {
+              "x": 6.71,
+              "y": 5.93,
+              "color": "green"
+            },
+            {
+              "x": 6.61,
+              "y": 6.25,
+              "color": "green"
+            },
+            {
+              "x": 6.7,
+              "y": 7.85,
+              "color": "green"
+            },
+            {
+              "x": 7.28,
+              "y": 5.72,
+              "color": "green"
+            },
+            {
+              "x": 6.7,
+              "y": 7.37,
+              "color": "green"
+            },
+            {
+              "x": 7.11,
+              "y": 4.99,
+              "color": "green"
+            },
+            {
+              "x": 6.56,
+              "y": 6.2,
+              "color": "green"
+            },
+            {
+              "x": 6.76,
+              "y": 6.65,
+              "color": "green"
+            },
+            {
+              "x": 7.07,
+              "y": 7.03,
+              "color": "green"
+            },
+            {
+              "x": 5.19,
+              "y": 7.14,
+              "color": "green"
+            },
+            {
+              "x": 6.21,
+              "y": 7.21,
+              "color": "green"
+            },
+            {
+              "x": 2.69,
+              "y": 3.56,
+              "color": "magenta"
+            },
+            {
+              "x": 2.58,
+              "y": 2.72,
+              "color": "magenta"
+            },
+            {
+              "x": 3.77,
+              "y": 3.41,
+              "color": "magenta"
+            },
+            {
+              "x": 2.83,
+              "y": 2.4,
+              "color": "magenta"
+            },
+            {
+              "x": 1.85,
+              "y": 2.67,
+              "color": "magenta"
+            },
+            {
+              "x": 1.98,
+              "y": 2.66,
+              "color": "magenta"
+            },
+            {
+              "x": 2.17,
+              "y": 1.92,
+              "color": "magenta"
+            },
+            {
+              "x": 3.45,
+              "y": 3.44,
+              "color": "magenta"
+            },
+            {
+              "x": 3.13,
+              "y": 2.58,
+              "color": "magenta"
+            },
+            {
+              "x": 3.62,
+              "y": 3.01,
+              "color": "magenta"
+            },
+            {
+              "x": 2.62,
+              "y": 3.43,
+              "color": "magenta"
+            },
+            {
+              "x": 3.14,
+              "y": 3.4,
+              "color": "magenta"
+            }
+          ],
+          "pointLegend": [
+            {
+              "label": "klasse 1 (positief)",
+              "color": "green"
+            },
+            {
+              "label": "klasse 0 (negatief)",
+              "color": "magenta"
+            }
+          ],
+          "curves": [
+            {
+              "expr": "-(b0 + b1*x)",
+              "label": "beslissingsgrens",
+              "color": "cyan"
+            }
+          ],
+          "sliders": [
+            {
+              "param": "b0",
+              "min": -15,
+              "max": 5,
+              "step": 0.1,
+              "value": -9.5,
+              "label": "b0"
+            },
+            {
+              "param": "b1",
+              "min": -3,
+              "max": 3,
+              "step": 0.05,
+              "value": 1,
+              "label": "b1"
+            }
+          ]
+        },
+        {
+          "type": "plot",
+          "title": "Dataset B — overlappende klassen",
+          "subtitle": "De wolken overlappen: geen enkele rechte lijn scheidt ze perfect. Elke grens is een afweging tussen fout-positieven en fout-negatieven.",
+          "xrange": [
+            0,
+            10
+          ],
+          "yrange": [
+            0,
+            10
+          ],
+          "xlabel": "feature x1",
+          "points": [
+            {
+              "x": 6.6,
+              "y": 5.07,
+              "color": "green"
+            },
+            {
+              "x": 5.45,
+              "y": 6.71,
+              "color": "green"
+            },
+            {
+              "x": 4.97,
+              "y": 4.2,
+              "color": "green"
+            },
+            {
+              "x": 5.48,
+              "y": 5.29,
+              "color": "green"
+            },
+            {
+              "x": 3.07,
+              "y": 4.17,
+              "color": "green"
+            },
+            {
+              "x": 3.43,
+              "y": 5.09,
+              "color": "green"
+            },
+            {
+              "x": 3.62,
+              "y": 6.86,
+              "color": "green"
+            },
+            {
+              "x": 4.1,
+              "y": 3.01,
+              "color": "green"
+            },
+            {
+              "x": 6.2,
+              "y": 6.25,
+              "color": "green"
+            },
+            {
+              "x": 4.24,
+              "y": 5.96,
+              "color": "green"
+            },
+            {
+              "x": 5.03,
+              "y": 4.71,
+              "color": "green"
+            },
+            {
+              "x": 7.55,
+              "y": 3.43,
+              "color": "green"
+            },
+            {
+              "x": 4.31,
+              "y": 6.39,
+              "color": "magenta"
+            },
+            {
+              "x": 3.41,
+              "y": 2.42,
+              "color": "magenta"
+            },
+            {
+              "x": 4.55,
+              "y": 3.24,
+              "color": "magenta"
+            },
+            {
+              "x": 4.23,
+              "y": 2.81,
+              "color": "magenta"
+            },
+            {
+              "x": 6.6,
+              "y": 3.62,
+              "color": "magenta"
+            },
+            {
+              "x": 3.84,
+              "y": 2.13,
+              "color": "magenta"
+            },
+            {
+              "x": 2.66,
+              "y": 5.15,
+              "color": "magenta"
+            },
+            {
+              "x": 4.47,
+              "y": 3.87,
+              "color": "magenta"
+            },
+            {
+              "x": 4.53,
+              "y": 1.99,
+              "color": "magenta"
+            },
+            {
+              "x": 6.24,
+              "y": 2.68,
+              "color": "magenta"
+            },
+            {
+              "x": 5.45,
+              "y": 4.67,
+              "color": "magenta"
+            },
+            {
+              "x": 4.74,
+              "y": 5.46,
+              "color": "magenta"
+            }
+          ],
+          "pointLegend": [
+            {
+              "label": "klasse 1 (positief)",
+              "color": "green"
+            },
+            {
+              "label": "klasse 0 (negatief)",
+              "color": "magenta"
+            }
+          ],
+          "curves": [
+            {
+              "expr": "-(b0 + b1*x)",
+              "label": "beslissingsgrens",
+              "color": "cyan"
+            }
+          ],
+          "sliders": [
+            {
+              "param": "b0",
+              "min": -15,
+              "max": 5,
+              "step": 0.1,
+              "value": -5,
+              "label": "b0"
+            },
+            {
+              "param": "b1",
+              "min": -3,
+              "max": 3,
+              "step": 0.05,
+              "value": 1,
+              "label": "b1"
+            }
+          ]
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p> Dataset B toont de kern van dit hoofdstuk: omdat de wolken overlappen is geen enkele grens perfect, en elke verschuiving van de lijn wisselt FP's voor FN's — precies de precision/recall-afweging in beeld. Voor niet-lineair gescheiden data (bijv. concentrische cirkels) helpt geen enkele rechte grens; de oplossing is <strong>features transformeren</strong> (bijvoorbeeld \\( x_1^2 \\) en \\( x_2^2 \\) toevoegen) of een kernel gebruiken — zie <a href=\"#/topic/kernel-svm\">Kernel SVM's</a>. </p>"
+        }
+      ]
+    }
+  ]
+}

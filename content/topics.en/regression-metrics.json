@@ -1,0 +1,538 @@
+{
+  "id": "regression-metrics",
+  "chapter": "ch5",
+  "title": "Regression metrics: MSE, RMSE, MAE & R²",
+  "intro": "How do you measure whether a regression model predicts well? The four standard measures — MSE, RMSE, MAE and R&sup2; — with formulas, interpretation, a fully worked car-price example and interactive plots that show what outliers do to your metric.",
+  "level": 2,
+  "sections": [
+    {
+      "title": "Why metrics are needed",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Training a model is step one; judging whether it is any good is step two. For that you use <strong>metrics</strong>: numbers that summarise the quality of the predictions. In <em>regression</em> the target \\( y \\) is quantitative (a number, such as a price or a temperature), so everything revolves around one question: <em>how far are the predictions \\( \\hat{y} \\) from the true values \\( y \\)?</em> </p> <p> There is a subtle difference with the <em>loss function</em> from the <a href=\"#/topic/loss-functions\">Maths &amp; loss</a> chapter. You use the loss <em>during training</em> — it must be mathematically convenient to minimise (differentiable, smooth). A metric is used <em>afterwards</em> to communicate how good the model is — it must be understandable to humans. Sometimes they coincide (MSE is both), sometimes not: a model trains with squared loss, but you report the MAE because it is easier to interpret. </p>"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "",
+            "Loss function",
+            "Metric"
+          ],
+          "rows": [
+            [
+              "<strong>purpose</strong>",
+              "training the model (minimising)",
+              "judging and comparing models"
+            ],
+            [
+              "<strong>requirement</strong>",
+              "mathematically convenient (differentiable, smooth)",
+              "interpretable for humans"
+            ],
+            [
+              "<strong>moment</strong>",
+              "during fit()",
+              "after fit(), on the test set"
+            ]
+          ]
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p> You evaluate every metric below <strong>on the test set</strong>, not on the training set. On training data the numbers can look great while the model has simply memorised the data (overfitting) — see <a href=\"#/topic/ml-workflow-basics\">the ML workflow</a>. </p>"
+        }
+      ]
+    },
+    {
+      "title": "The three error measures: MSE, RMSE and MAE",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> The three most widely used measures for regression are the <strong>Mean Squared Error (MSE)</strong>, the <strong>Root Mean Squared Error (RMSE)</strong> and the <strong>Mean Absolute Error (MAE)</strong>. All three measure the average deviation between prediction and reality, each in its own way — and you feel that difference most when the data contains <em>outliers</em>. </p>"
+        },
+        {
+          "type": "formula",
+          "label": "Mean Squared Error",
+          "latex": "MSE \\;=\\; \\frac{1}{N} \\sum_{i=1}^{N} \\left( y_i - \\hat{y}_i \\right)^2",
+          "caption": "Squares every error and averages: large errors count extra heavily."
+        },
+        {
+          "type": "formula",
+          "label": "Root Mean Squared Error",
+          "latex": "RMSE \\;=\\; \\sqrt{\\frac{1}{N} \\sum_{i=1}^{N} \\left( y_i - \\hat{y}_i \\right)^2}",
+          "caption": "The square root of the MSE — back in the same unit as the target, which makes interpretation easier."
+        },
+        {
+          "type": "formula",
+          "label": "Mean Absolute Error",
+          "latex": "MAE \\;=\\; \\frac{1}{N} \\sum_{i=1}^{N} \\left| y_i - \\hat{y}_i \\right|",
+          "caption": "Takes the absolute error: more robust against outliers, but harder to differentiate."
+        },
+        {
+          "type": "text",
+          "html": "<p> The symbols: \\( N \\) is the number of data points, \\( i \\) is the counter over those points, \\( y_i \\) is the <em>true</em> target value of point \\( i \\) and \\( \\hat{y}_i \\) (\"y-hat\") is the <em>predicted</em> target value of the model for that same point. The difference \\( y_i - \\hat{y}_i \\) is therefore the <em>error</em> of a single prediction, also called the <strong>residual</strong>. </p>"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Measure",
+            "Unit",
+            "Outlier sensitivity",
+            "Characteristic"
+          ],
+          "rows": [
+            [
+              "MSE",
+              "unit&sup2; (e.g. $&sup2;)",
+              "high (squared!)",
+              "mathematically convenient, standard for training"
+            ],
+            [
+              "RMSE",
+              "same as target (e.g. $)",
+              "high (root dampens slightly)",
+              "interpretable and still smooth"
+            ],
+            [
+              "MAE",
+              "same as target",
+              "low (linear)",
+              "robust, easy to explain"
+            ]
+          ]
+        },
+        {
+          "type": "callout",
+          "kind": "tip",
+          "html": "<p> Why is the MSE more sensitive to outliers than the MAE? An error of 10 becomes \\( 10^2 = 100 \\) in MSE but simply 10 in MAE. One extremely wrong prediction can dominate the entire MSE — while the MAE only grows linearly with it. If your data contains a lot of noise or a few extreme points, MAE gives a fairer picture. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Example: predicting the price of a car",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Consider a linear regression with three feature variables and one target variable: </p> <ul> <li><strong>X1</strong> — age of the car (in years): 1, 3, 4, 7, 9</li> <li><strong>X2</strong> — mileage (in 10,000 km): 5, 12, 15, 23, 30</li> <li><strong>X3</strong> — number of previous owners: 1, 2, 1, 3, 2</li> <li><strong>Y</strong> — price of the car (in $1000): 18, 12, 10, 6, 4</li> </ul> <p> After training you arrive at the parameters \\( b_0 = 20 \\), \\( b_1 = -1 \\), \\( b_2 = -0.5 \\) and \\( b_3 = -2 \\). The prediction equation is therefore: </p>"
+        },
+        {
+          "type": "formula",
+          "label": "car price prediction",
+          "latex": "\\hat{y} \\;=\\; b_0 + b_1 x_1 + b_2 x_2 + b_3 x_3 \\;=\\; 20 - x_1 - 0.5\\,x_2 - 2\\,x_3",
+          "caption": "Fill in the feature values per car and you get the predicted price."
+        },
+        {
+          "type": "text",
+          "html": "<p> To judge this model you work through two steps: first the five predictions, then MSE, RMSE and MAE. The code below does exactly that and runs directly in your browser — press <em>Run</em> and follow the results. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "computing predictions and metrics",
+          "runnable": true,
+          "source": "import numpy as np\n\nX = np.array([[1,  5, 1],\n              [3, 12, 2],\n              [4, 15, 1],\n              [7, 23, 3],\n              [9, 30, 2]], dtype=float)\ny = np.array([18, 12, 10, 6, 4], dtype=float)\nb0, b1, b2, b3 = 20.0, -1.0, -0.5, -2.0\n\n# 1) predictions\ny_hat = b0 + b1*X[:, 0] + b2*X[:, 1] + b3*X[:, 2]\nprint('predictions:', y_hat)\n\n# 2) metrics\nmse_value  = np.mean((y - y_hat)**2)\nrmse_value = np.sqrt(mse_value)\nmae_value  = np.mean(np.abs(y - y_hat))\nprint('MSE :', round(mse_value, 2))\nprint('RMSE:', round(rmse_value, 2))\nprint('MAE :', round(mae_value, 2))\n\n# 3) explained variance\nr2_value = 1 - np.sum((y - y_hat)**2) / np.sum((y - y.mean())**2)\nprint('R2  :', round(r2_value, 2), '(negative = worse than the mean!)')"
+        },
+        {
+          "type": "callout",
+          "kind": "info",
+          "html": "<p> Read the outcome like this: the average error is <strong>MAE = 6.9</strong> ($6,900), and the RMSE comes out higher (7.79). That difference is a diagnostic signal: the five errors (3.5 / 5 / 3.5 / 10.5 / 12) are unevenly distributed — the last two cars deviate substantially and pull the squared measures up extra. If the RMSE were nearly equal to the MAE, all errors would lie close together. And note the R&sup2;: at &minus;1.53 this model performs <em>worse</em> than simply predicting the mean. </p>"
+        }
+      ]
+    },
+    {
+      "title": "The functions from scratch",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> This is how you implement the three measures from scratch with NumPy. Each function takes two parameters: the <em>true</em> target values and the <em>predicted</em> target values — which can come from any regression model. In practice you rarely write them yourself: scikit-learn ships <code>mean_squared_error</code>, <code>mean_absolute_error</code> and <code>r2_score</code> ready-made, but knowing what happens inside is exactly what this site wants to convey. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "implementing MSE, RMSE and MAE",
+          "runnable": true,
+          "source": "import numpy as np\n\ndef mse(y_true, y_pred):\n    # mean of the squared errors\n    return np.mean((y_true - y_pred)**2)\n\ndef rmse(y_true, y_pred):\n    # root of the mse — same unit as the target\n    return np.sqrt(mse(y_true, y_pred))\n\ndef mae(y_true, y_pred):\n    # mean of the absolute errors\n    return np.mean(np.abs(y_true - y_pred))\n\n# example values\ny_true = np.array([3.0, -0.5, 2.0, 7.0])\ny_pred = np.array([2.5,  0.0, 2.0, 8.0])\n\nprint('mse :', mse(y_true, y_pred))   # 0.375\nprint('rmse:', rmse(y_true, y_pred))  # 0.6123724356957945\nprint('mae :', mae(y_true, y_pred))   # 0.5"
+        }
+      ]
+    },
+    {
+      "title": "R²: the explained variance",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> The measure that usually serves as the headline metric for regression is the <strong>explained variance</strong>, \\( R^2 \\). This is a statistical measure that indicates which part of the variance in the dependent variable (target) is explained by the independent variables (features). Here too you see the difference between the predicted target value \\( \\hat{y} \\) and the mean of the actual target values \\( \\bar{y} \\): </p>"
+        },
+        {
+          "type": "formula",
+          "label": "explained variance",
+          "latex": "R^2 \\;=\\; 1 - \\frac{\\sum_{i=1}^{n}\\left( y_i - \\hat{y}_i \\right)^2}{\\sum_{i=1}^{n}\\left( y_i - \\bar{y} \\right)^2}",
+          "caption": "The denominator measures the spread around the mean; the numerator the spread around your predictions."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "R&sup2; value",
+            "Meaning"
+          ],
+          "rows": [
+            [
+              "1",
+              "the model fits every data point perfectly"
+            ],
+            [
+              "between 0 and 1",
+              "share of variance explained (× 100 = percentage)"
+            ],
+            [
+              "0",
+              "no better than simply predicting the mean"
+            ],
+            [
+              "&lt; 0",
+              "worse than predicting the mean (!)"
+            ]
+          ]
+        },
+        {
+          "type": "text",
+          "html": "<p> A value close to 1 means that many data points lie close to the regression line; a value close to 0 means the line explains little. And as you saw in the car-price example: negative is possible too — then your model performs <em>worse</em> than a model that simply always predicts the mean. That sounds odd, but it really happens: a badly trained model, wrong features or a training set that is too small can be the cause. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "implementing and applying R²",
+          "runnable": true,
+          "source": "import numpy as np\n\ndef r2_score(y_true, y_pred):\n    # numerator: spread around the predictions (model errors)\n    ss_res = np.sum((y_true - y_pred)**2)\n    # denominator: spread around the mean (naivest prediction)\n    ss_tot = np.sum((y_true - y_true.mean())**2)\n    return 1 - ss_res / ss_tot\n\n# example values\ny_true = np.array([3.0, -0.5, 2.0, 7.0])\ny_pred = np.array([2.5,  0.0, 2.0, 8.0])\n\nprint('r2_score:', r2_score(y_true, y_pred))  # 0.9486081370449679"
+        },
+        {
+          "type": "callout",
+          "kind": "info",
+          "html": "<p> Compare this with the R&sup2; outcome of the car-price example: <em>negative</em> (&minus;1.53). Same metric, two different worlds: here 95% of the variance is explained, there the model performs worse than the mean. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Exploring: does the line fit the data?",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Below you see three datasets, each with one feature variable and a linear model \\( y_{pred} = b_0 + b_1 x \\), where \\( b_0 \\) is the intercept and \\( b_1 \\) the slope. <strong>Move the sliders</strong> and see immediately what a good fit does to the error measures: a line that runs through the points makes MSE, RMSE and MAE small and \\( R^2 \\) large. </p>"
+        },
+        {
+          "type": "plot",
+          "title": "Dataset A — clean, linear data",
+          "subtitle": "Slide b0 and b1 until the line runs through the points. Best fit roughly: b1 ≈ 1.9, b0 ≈ 1.7.",
+          "xrange": [
+            0,
+            10
+          ],
+          "xlabel": "feature x",
+          "points": [
+            {
+              "x": 0.5,
+              "y": 3.08
+            },
+            {
+              "x": 1.19,
+              "y": 3.52
+            },
+            {
+              "x": 1.88,
+              "y": 5.83
+            },
+            {
+              "x": 2.58,
+              "y": 7.21
+            },
+            {
+              "x": 3.27,
+              "y": 6.72
+            },
+            {
+              "x": 3.96,
+              "y": 8.35
+            },
+            {
+              "x": 4.65,
+              "y": 10.45
+            },
+            {
+              "x": 5.35,
+              "y": 11.44
+            },
+            {
+              "x": 6.04,
+              "y": 12.86
+            },
+            {
+              "x": 6.73,
+              "y": 13.6
+            },
+            {
+              "x": 7.42,
+              "y": 15.88
+            },
+            {
+              "x": 8.12,
+              "y": 17.08
+            },
+            {
+              "x": 8.81,
+              "y": 17.9
+            },
+            {
+              "x": 9.5,
+              "y": 19.78
+            }
+          ],
+          "pointLegend": [
+            {
+              "label": "data points",
+              "color": "yellow"
+            }
+          ],
+          "curves": [
+            {
+              "expr": "b0 + b1*x",
+              "label": "regression line",
+              "color": "cyan"
+            }
+          ],
+          "sliders": [
+            {
+              "param": "b0",
+              "min": -5,
+              "max": 10,
+              "step": 0.1,
+              "value": 2,
+              "label": "b0 (intercept)"
+            },
+            {
+              "param": "b1",
+              "min": -1,
+              "max": 3,
+              "step": 0.05,
+              "value": 1,
+              "label": "b1 (slope)"
+            }
+          ]
+        },
+        {
+          "type": "plot",
+          "title": "Dataset B — with one large outlier",
+          "subtitle": "One point deviates far (24 while the rest sits around the line). Notice how the MSE idea pulls the line towards that point.",
+          "xrange": [
+            0,
+            10
+          ],
+          "xlabel": "feature x",
+          "points": [
+            {
+              "x": 0.5,
+              "y": 3.18
+            },
+            {
+              "x": 1.19,
+              "y": 3.63
+            },
+            {
+              "x": 1.88,
+              "y": 5.61
+            },
+            {
+              "x": 2.58,
+              "y": 24.0,
+              "color": "magenta",
+              "label": "outlier"
+            },
+            {
+              "x": 3.27,
+              "y": 8.41
+            },
+            {
+              "x": 3.96,
+              "y": 9.1
+            },
+            {
+              "x": 4.65,
+              "y": 10.26
+            },
+            {
+              "x": 5.35,
+              "y": 11.22
+            },
+            {
+              "x": 6.04,
+              "y": 13.61
+            },
+            {
+              "x": 6.73,
+              "y": 14.02
+            },
+            {
+              "x": 7.42,
+              "y": 15.1
+            },
+            {
+              "x": 8.12,
+              "y": 16.4
+            },
+            {
+              "x": 8.81,
+              "y": 18.18
+            },
+            {
+              "x": 9.5,
+              "y": 19.32
+            }
+          ],
+          "pointLegend": [
+            {
+              "label": "data points",
+              "color": "yellow"
+            },
+            {
+              "label": "outlier",
+              "color": "magenta"
+            }
+          ],
+          "curves": [
+            {
+              "expr": "b0 + b1*x",
+              "label": "regression line",
+              "color": "cyan"
+            }
+          ],
+          "sliders": [
+            {
+              "param": "b0",
+              "min": -5,
+              "max": 10,
+              "step": 0.1,
+              "value": 2,
+              "label": "b0 (intercept)"
+            },
+            {
+              "param": "b1",
+              "min": -1,
+              "max": 3,
+              "step": 0.05,
+              "value": 1,
+              "label": "b1 (slope)"
+            }
+          ]
+        },
+        {
+          "type": "plot",
+          "title": "Dataset C — curved (quadratic) data",
+          "subtitle": "However you place the line: a straight line never fits a curve. R² stays low — adapt the model (e.g. add x² as a feature) instead of just the line.",
+          "xrange": [
+            0,
+            10
+          ],
+          "xlabel": "feature x",
+          "points": [
+            {
+              "x": 0.5,
+              "y": 3.54
+            },
+            {
+              "x": 1.19,
+              "y": 2.93
+            },
+            {
+              "x": 1.88,
+              "y": 3.49
+            },
+            {
+              "x": 2.58,
+              "y": 2.26
+            },
+            {
+              "x": 3.27,
+              "y": 2.58
+            },
+            {
+              "x": 3.96,
+              "y": 3.14
+            },
+            {
+              "x": 4.65,
+              "y": 4.9
+            },
+            {
+              "x": 5.35,
+              "y": 6.56
+            },
+            {
+              "x": 6.04,
+              "y": 7.65
+            },
+            {
+              "x": 6.73,
+              "y": 9.34
+            },
+            {
+              "x": 7.42,
+              "y": 11.73
+            },
+            {
+              "x": 8.12,
+              "y": 15.22
+            },
+            {
+              "x": 8.81,
+              "y": 18.32
+            },
+            {
+              "x": 9.5,
+              "y": 21.61
+            }
+          ],
+          "pointLegend": [
+            {
+              "label": "data points",
+              "color": "yellow"
+            }
+          ],
+          "curves": [
+            {
+              "expr": "b0 + b1*x",
+              "label": "regression line",
+              "color": "cyan"
+            }
+          ],
+          "sliders": [
+            {
+              "param": "b0",
+              "min": -5,
+              "max": 10,
+              "step": 0.1,
+              "value": 2,
+              "label": "b0 (intercept)"
+            },
+            {
+              "param": "b1",
+              "min": -1,
+              "max": 3,
+              "step": 0.05,
+              "value": 1,
+              "label": "b1 (slope)"
+            }
+          ]
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p> What these three datasets show: dataset <strong>A</strong> is the ideal case — linear, little noise, a high \\( R^2 \\) within reach. Dataset <strong>B</strong> shows how a single outlier inflates the squared measures (MSE/RMSE) and can shift the best line; MAE stays much less sensitive to it. Dataset <strong>C</strong> exposes the limit of the <em>model</em>: no straight line fits, however you slide — the solution is then not to slide better, but to pick a better model (for example \\( x^2 \\) as an extra feature). </p>"
+        },
+        {
+          "type": "callout",
+          "kind": "tip",
+          "html": "<p> With multiple features the equation becomes \\( y_{pred} = b_0 + b_1 x_1 + b_2 x_2 + \\cdots + b_n x_n \\) — a <em>plane</em> instead of a line. The car-price example above is exactly such a case with three features. </p>"
+        }
+      ]
+    }
+  ]
+}

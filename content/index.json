@@ -1,9 +1,9 @@
 {
   "site": {
     "title": "MLP — Machine Learning Practice",
-    "description": "Machine Learning stof helder samengevat: van de eerste basisbegrippen tot scikit-learn, loss functions, logistic regression en SVM's — met formules, diagrammen, code-voorbeelden die je in de browser kunt uitvoeren en geheugensteuntjes voor elke stap.",
+    "description": "Machine Learning stof helder samengevat: van de eerste basisbegrippen tot scikit-learn, loss functions, logistic regression, SVM's en evaluatie-metrics — met formules, diagrammen, code-voorbeelden die je in de browser kunt uitvoeren en geheugensteuntjes voor elke stap.",
     "statFormulas": "±41",
-    "statCode": "27"
+    "statCode": "28"
   },
   "chapters": [
     {
@@ -38,9 +38,9 @@
     },
     {
       "id": "ch5",
-      "name": "Practice",
+      "name": "Evaluatie & metrics",
       "accent": "cyan",
-      "description": "zelf doen: loss & metrics coderen en visualiseren"
+      "description": "modellen beoordelen: metrics voor regressie en classificatie"
     }
   ],
   "topics": [
@@ -135,6 +135,15 @@
       "keywords": "loss diagram, logistic loss, hinge loss, raw model output, curve, vergelijking"
     },
     {
+      "id": "gradient-descent",
+      "chapter": "ch2",
+      "title": "Gradient descent: hoe leert een model?",
+      "summary": "De motor achter bijna elk ML-model: de gradiënt, de update-regel en de learning rate — met een complete simulatie van 300 leerstappen die in de browser draait.",
+      "level": 2,
+      "file": "topics/gradient-descent.json",
+      "keywords": "gradient descent, gradiënt, learning rate, eta, epoch, update-regel, afgeleide, loss landschap, sgd, mini-batch, divergentie, optimizer"
+    },
+    {
       "id": "regularisatie",
       "chapter": "ch3",
       "title": "Regularisatie: de hyperparameter C, L1 en L2",
@@ -189,22 +198,22 @@
       "keywords": "vergelijking, keuze, pros cons, sgdclassifier, alpha, hinge, log_loss, cheat sheet"
     },
     {
-      "id": "regression-practice",
+      "id": "regression-metrics",
       "chapter": "ch5",
-      "title": "Practice: loss functies & metrics bij regressie",
-      "summary": "Compleet uitgewerkt: MSE, RMSE, MAE en R&sup2; vanaf nul, de autoprijs-opgave met antwoord en interactieve regressielijnen met outliers.",
+      "title": "Metrics bij regressie: MSE, RMSE, MAE & R²",
+      "summary": "Hoe meet je de kwaliteit van een regressiemodel? MSE, RMSE, MAE en R² — formules, interpretatie, een uitgewerkt autoprijs-voorbeeld en interactieve plots met outliers.",
       "level": 2,
-      "file": "topics/regression-practice.json",
-      "keywords": "practice, opdracht, uitwerking, antwoord, mse, rmse, mae, r2, verklaarde variantie, regressie, outlier, visualiseren"
+      "file": "topics/regression-metrics.json",
+      "keywords": "metrics, evaluatie, mse, rmse, mae, r2, verklaarde variantie, residu, outlier, regressie, meten, testset"
     },
     {
-      "id": "classification-practice",
+      "id": "classification-metrics",
       "chapter": "ch5",
-      "title": "Practice: loss & metrics bij classificatie",
-      "summary": "Van beslissingsgrens tot binaire cross-entropy, en accuracy, precision, recall en F1 volledig uitgewerkt — met interactieve scheidingslijnen.",
+      "title": "Metrics bij classificatie: confusion matrix, precision & recall",
+      "summary": "De confusion matrix als fundament; accuracy en waarom die misleidt bij scheve klassen; precision, recall en F1 met concrete scenario's — en de binaire cross-entropy als trainingsdoel.",
       "level": 2,
-      "file": "topics/classification-practice.json",
-      "keywords": "practice, opdracht, uitwerking, antwoord, bce, cross entropy, accuracy, precision, recall, f1, confusion matrix, beslissingsgrens"
+      "file": "topics/classification-metrics.json",
+      "keywords": "metrics, evaluatie, confusion matrix, accuracy, precision, recall, f1, bce, cross entropy, threshold, onbalanceerde klassen, beslissingsgrens"
     }
   ]
 }

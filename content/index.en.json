@@ -1,9 +1,9 @@
 {
   "site": {
     "title": "MLP — Machine Learning, clearly summarised",
-    "description": "Machine Learning material, clearly summarised: from the first basic concepts to scikit-learn, loss functions, logistic regression and SVMs — with formulas, diagrams, code examples you can run in your browser and memory aids for every step.",
+    "description": "Machine Learning material, clearly summarised: from the first basic concepts to scikit-learn, loss functions, logistic regression, SVMs and evaluation metrics — with formulas, diagrams, code examples you can run in your browser and memory aids for every step.",
     "statFormulas": "±41",
-    "statCode": "27"
+    "statCode": "28"
   },
   "chapters": [
     {
@@ -38,9 +38,9 @@
     },
     {
       "id": "ch5",
-      "name": "Practice",
+      "name": "Evaluation & metrics",
       "accent": "cyan",
-      "description": "do it yourself: code and visualise loss & metrics"
+      "description": "judging models: metrics for regression and classification"
     }
   ],
   "topics": [
@@ -135,6 +135,15 @@
       "keywords": "loss diagram, logistic loss, hinge loss, raw model output, curve, comparison"
     },
     {
+      "id": "gradient-descent",
+      "chapter": "ch2",
+      "title": "Gradient descent: how does a model learn?",
+      "summary": "The engine behind almost every ML model: the gradient, the update rule and the learning rate — with a complete 300-step simulation that runs in the browser.",
+      "level": 2,
+      "file": "topics.en/gradient-descent.json",
+      "keywords": "gradient descent, gradient, learning rate, eta, epoch, update rule, derivative, loss landscape, sgd, mini-batch, divergence, optimizer"
+    },
+    {
       "id": "regularisatie",
       "chapter": "ch3",
       "title": "Regularisation: the hyperparameter C, L1 and L2",
@@ -189,22 +198,22 @@
       "keywords": "comparison, choice, pros cons, sgdclassifier, alpha, hinge, log_loss, cheat sheet"
     },
     {
-      "id": "regression-practice",
+      "id": "regression-metrics",
       "chapter": "ch5",
-      "title": "Practice: loss functions & metrics for regression",
-      "summary": "Fully worked out: MSE, RMSE, MAE and R&sup2; from scratch, the car-price assignment with the answer, and interactive regression lines with outliers.",
+      "title": "Regression metrics: MSE, RMSE, MAE & R²",
+      "summary": "How do you measure the quality of a regression model? MSE, RMSE, MAE and R² — formulas, interpretation, a worked car-price example and interactive plots with outliers.",
       "level": 2,
-      "file": "topics.en/regression-practice.json",
-      "keywords": "practice, assignment, mse, rmse, mae, r2, explained variance, regression, outlier, visualise"
+      "file": "topics.en/regression-metrics.json",
+      "keywords": "metrics, evaluation, mse, rmse, mae, r2, explained variance, residual, outlier, regression, measuring, test set"
     },
     {
-      "id": "classification-practice",
+      "id": "classification-metrics",
       "chapter": "ch5",
-      "title": "Practice: loss & metrics for classification",
-      "summary": "From decision boundary to binary cross-entropy, with accuracy, precision, recall and F1 fully worked out — with interactive boundaries.",
+      "title": "Classification metrics: confusion matrix, precision & recall",
+      "summary": "The confusion matrix as the foundation; accuracy and why it misleads with imbalanced classes; precision, recall and F1 with concrete scenarios — and binary cross-entropy as the training objective.",
       "level": 2,
-      "file": "topics.en/classification-practice.json",
-      "keywords": "practice, assignment, bce, cross entropy, accuracy, precision, recall, f1, confusion matrix, decision boundary"
+      "file": "topics.en/classification-metrics.json",
+      "keywords": "metrics, evaluation, confusion matrix, accuracy, precision, recall, f1, bce, cross entropy, threshold, imbalanced classes, decision boundary"
     }
   ]
 }

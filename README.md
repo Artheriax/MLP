@@ -5,14 +5,16 @@ Een donkere, modulaire studiewebsite met samenvattingen van de cursus
 basisbegrippen** (wat is ML, soorten leren, data & workflow) tot de
 classifiers — inclusief formules, interactieve diagrammen en
 code-voorbeelden die je **direct in je browser kunt uitvoeren** (via
-Pyodide: CPython + scikit-learn in WebAssembly). De practice-onderwerpen
-bevatten **volledige uitwerkingen met controles**. De site is volledig
-**tweetalig: Nederlands en Engels** (schakelen met de NL/EN-knop rechtsboven).
+Pyodide: CPython + scikit-learn in WebAssembly). Het hoofdstuk
+**Evaluatie & metrics** behandelt MSE, RMSE, MAE, R² en de
+confusion-matrix-metrics, en **gradient descent** legt uit hoe een model
+leert. De site is volledig **tweetalig: Nederlands en Engels** (schakelen
+met de NL/EN-knop rechtsboven).
 
 - **Frontend**: pure HTML/CSS/JS — geen build-stap, geen framework
 - **Backend (optioneel, lokaal)**: FastAPI serveert de site én een REST-API over de content (NL + EN)
 - **Hosting**: 100% GitHub Pages-ready (statische bestanden)
-- **Talen**: NL (standaard) en EN — alle interface-teksten én alle 18 onderwerpen zijn vertaald
+- **Talen**: NL (standaard) en EN — alle interface-teksten én alle 19 onderwerpen zijn vertaald
 
 ---
 
@@ -142,7 +144,7 @@ lesstof toe te voegen:
 
 - `expr` in een plot is een JS-expressie in `x` (en evt. de slider-parameters), bijv. `Math.exp(-gamma*x*x)` of `b0 + b1*x`.
 - Plots ondersteunen sinds v1.1 ook `points` (datapunten, met optionele kleur/label) en meerdere sliders (`sliders: [...]`); het oude enkele-`slider`-formaat werkt nog steeds.
-- Code-blokken met `runnable: true` krijgen een **Uitvoeren**-knop: de code draait in de browser via Pyodide en de uitvoer verschijnt onder het veld. Pyodide onthoudt definities tussen code-velden (top-level functies blijven beschikbaar), dus een uitwerking + vervolgcel werkt net als in Jupyter.
+- Code-blokken met `runnable: true` krijgen een **Uitvoeren**-knop: de code draait in de browser via Pyodide en de uitvoer verschijnt onder het veld. Pyodide onthoudt definities tussen code-velden (top-level functies blijven beschikbaar), dus een voorbeeld + vervolgcel werkt net als in Jupyter.
 - Zet `runnable: true` alleen als de code ook echt in Pyodide draait (numpy/scipy/sklearn uit de standaarddatasets werken prima; geen plots of externe bestanden).
 - Kleuren in plots/onderwerpen: `cyan`, `yellow`, `green`, `magenta`.
 - Onbekende hoofdstukken? Voeg een nieuw object toe aan `chapters` in `content/index.json` (én `index.en.json`) en kies een accent-kleur.
@@ -180,7 +182,7 @@ MLP/
 ├── content/
 │   ├── index.json        # NL: hoofdstukken + onderwerpen-register
 │   ├── index.en.json     # EN: idem
-│   ├── topics/*.json     # NL: 18 onderwerpen (4 basis + 12 cursus + 2 practice met uitwerkingen)
+│   ├── topics/*.json     # NL: 19 onderwerpen (4 basis + 13 theorie incl. gradient descent + 2 metrics)
 │   └── topics.en/*.json  # EN: idem
 ├── main.py               # FastAPI: statische site + REST-API (NL/EN)
 ├── start.sh              # Mac/Linux: venv aanmaken + deps installeren + server starten

@@ -1,0 +1,165 @@
+{
+  "id": "gradient-descent",
+  "chapter": "ch2",
+  "title": "Gradient descent: how does a model learn?",
+  "intro": "Minimising the loss sounds nice — but how does the model find the minimum? Gradient descent: the update rule, the learning rate, and a complete simulation you can run in the browser.",
+  "level": 2,
+  "sections": [
+    {
+      "title": "The problem: descending the mountain",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> In the <a href=\"#/topic/loss-functions\">Loss functions</a> chapter you saw that fitting is really optimising: find the parameters where the loss is smallest. But <em>how</em> do you find them? With two parameters you could still try a grid, but with hundreds or thousands of coefficients (as in logistic regression and SVMs) exhaustive search is hopeless — the search space explodes. </p> <p> The standard answer is a method that is simple yet brilliant: <strong>gradient descent</strong> — descending in the direction of the steepest slope. Picture a landscape of the loss over all possible parameter values (the <em>loss landscape</em>); the minimum is a valley. You are standing somewhere on a slope and you want to go down. The only thing you can observe right where you stand: <em>the slope under your feet</em> — the <strong>gradient</strong>. Walk in the opposite direction and you descend. </p>"
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p> The gradient \\( \\nabla L \\) always points in the direction of <em>steepest ascent</em> of the loss. That is why the update rule has a <em>minus</em> sign: go exactly the other way and you descend as fast as possible. </p>"
+        }
+      ]
+    },
+    {
+      "title": "The update rule",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Every training step adjusts each parameter with the same rule: </p>"
+        },
+        {
+          "type": "formula",
+          "label": "gradient descent update",
+          "latex": "w_{\\text{new}} \\;=\\; w_{\\text{old}} \\; - \\; \\eta \\cdot \\frac{\\partial L}{\\partial w}",
+          "caption": "η (eta) is the learning rate: the step size. The derivative ∂L/∂w is the slope of the loss at the current w."
+        },
+        {
+          "type": "text",
+          "html": "<p> Read the rule as a hiker: <em>\"I am standing at position \\( w \\), the slope here is \\( \\partial L/\\partial w \\), and I take a step downhill of size \\( \\eta \\cdot \\text{slope} \\)\"</em>. When the slope is steep the step is large (far from the minimum). As you approach the bottom the slope flattens and the steps automatically shrink — rolling neatly into the minimum without you having to know it in advance. </p> <p> With a model of multiple parameters (e.g. \\( b_0, b_1, \\ldots, b_n \\)) this happens for <em>every parameter at once</em>: each coefficient gets its own update based on its own derivative. That way the entire decision boundary or regression line shifts a little each step in the direction that lowers the loss the most. </p>"
+        },
+        {
+          "type": "text",
+          "html": "<p> The picture below makes it concrete for a single parameter \\( w \\): a simple loss \\( L(w) = w^2 \\) with its minimum at \\( w = 0 \\). The straight line is the <strong>tangent</strong> at the point \\( w = p \\) — the slope at that point. <strong>Slide p</strong> and see that far from the minimum the tangent points steeply downhill (a big step down) while close to the minimum it is almost flat (small steps). Exactly the dynamics of the update rule. </p>"
+        },
+        {
+          "type": "plot",
+          "title": "Loss landscape L(w) = w² with tangent",
+          "subtitle": "The tangent at point p is the gradient: steep far away, almost flat near the minimum.",
+          "xrange": [
+            -3,
+            3
+          ],
+          "yrange": [
+            0,
+            10
+          ],
+          "xlabel": "parameter w",
+          "ylabel": "loss",
+          "curves": [
+            {
+              "expr": "x*x",
+              "label": "loss L(w) = w²",
+              "color": "yellow"
+            },
+            {
+              "expr": "2*p*(x - p) + p*p",
+              "label": "tangent at w = p",
+              "color": "cyan"
+            }
+          ],
+          "sliders": [
+            {
+              "param": "p",
+              "min": -3,
+              "max": 3,
+              "step": 0.1,
+              "value": 2,
+              "label": "p (position)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "The learning rate: the critical choice",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> The learning rate \\( \\eta \\) determines how large each step is — and with it whether your training succeeds: </p>"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Learning rate",
+            "Behaviour",
+            "Recognisable by"
+          ],
+          "rows": [
+            [
+              "too small (e.g. 0.00001)",
+              "extremely slow descent",
+              "loss decreases but barely; after 100 steps nothing has happened"
+            ],
+            [
+              "good (e.g. 0.01–0.1)",
+              "fast, smooth descent",
+              "loss drops smoothly and levels off"
+            ],
+            [
+              "too large (e.g. 0.5)",
+              "divergence",
+              "loss bounces up and down, or explodes to infinity"
+            ]
+          ]
+        },
+        {
+          "type": "text",
+          "html": "<p> Why can it go wrong? With \\( \\eta \\) too large you overshoot the valley: you jump from one slope to the other, each time <em>higher</em> instead of lower — the loss explodes. With \\( \\eta \\) too small you crawl forward and training becomes uselessly slow. There is no universal correct value: the best learning rate depends on the scale of data and loss. That is why in practice everyone starts with a value around \\( 10^{-3} \\) to \\( 10^{-2} \\) and then inspects the loss curve. </p>"
+        },
+        {
+          "type": "callout",
+          "kind": "tip",
+          "html": "<p> This is exactly why you <strong>monitor the loss curve</strong> during training (in scikit-learn via <code>verbose</code>, or with neural networks via a plot per epoch): smooth descent — good; bouncing — lower \\( \\eta \\); no descent — raise \\( \\eta \\) or train longer. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Gradient descent in code",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Below is the full simulation on a small regression problem with the ideal data \\( y = 1 + 2x \\). The two parameters \\( b \\) (intercept) and \\( w \\) (slope) start at 0 and take 300 steps. Each step: compute the derivatives of the MSE loss, apply the update rule, and watch \\( (b, w) \\) wander towards \\( (1, 2) \\). </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "gradient descent on MSE, from scratch",
+          "runnable": true,
+          "source": "import numpy as np\n\n# data: y = 1 + 2x (ideal, without noise)\nx = np.array([1.0, 2.0, 3.0, 4.0, 5.0])\ny = np.array([3.0, 5.0, 7.0, 9.0, 11.0])\n\nb, w = 0.0, 0.0        # starting point\neta = 0.02             # learning rate\nn_iterations = 300\n\nfor i in range(n_iterations + 1):\n    # predictions and errors with the current parameters\n    y_hat = b + w * x\n    errors = y_hat - y\n\n    # derivatives of the MSE = mean((y_hat - y)^2)\n    dL_db = 2 * np.mean(errors)\n    dL_dw = 2 * np.mean(errors * x)\n\n    # update rule: a small step against the slope\n    b = b - eta * dL_db\n    w = w - eta * dL_dw\n\n    if i % 60 == 0:\n        loss = np.mean(errors**2)\n        print(f'iter {i:3d}  loss = {loss:8.4f}   b = {b:7.4f}   w = {w:7.4f}')\n\nprint()\nprint('found: b =', round(b, 3), ' w =', round(w, 3), '  (truth: b=1, w=2)')"
+        },
+        {
+          "type": "callout",
+          "kind": "info",
+          "html": "<p> Notice that the loss first drops quickly and then ever more slowly: the slopes shrink as the model approaches the minimum, so the steps shrink automatically — exactly what you saw in the tangent plot. Change \\( \\eta \\) to 0.5 (too large) or 0.0005 (too small) and run again to see both failure modes for yourself. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Batch, mini-batch & SGD",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> The code above computes the gradient over <em>all</em> data points per step — this is called <strong>batch gradient descent</strong>. On large datasets that is expensive per step, because every point passes through the derivative. Two variants make it faster: </p> <ul> <li><strong>Stochastic gradient descent (SGD)</strong> — each step uses only a single random point. Cheap, but the step direction is noisy: you zigzag downhill instead of walking straight.</li> <li><strong>Mini-batch gradient descent</strong> — the middle ground: each step uses a small packet of points (e.g. 32 or 64). Much more stable than SGD and much faster than batch; this is the practical standard and what neural networks use.</li> </ul>"
+        },
+        {
+          "type": "text",
+          "html": "<p> Sound familiar? The <strong>SGDClassifier</strong> from the <a href=\"#/topic/vergelijking\">LR vs. SVM</a> chapter is named exactly after this method: it learns per mini-batch and switches between logistic loss and hinge loss through the choice of <code>loss</code>. The learning rate is folded into the <code>alpha</code> hyperparameter there (with an inverse role: higher <code>alpha</code> = smaller effective learning step + more regularisation). </p>"
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p> In scikit-learn you barely notice any of this — <code>fit()</code> handles everything. But as soon as you encounter neural networks or gradient boosting, the same concepts return: learning rate, epochs, mini-batches. The update rule from this chapter is literally the engine under almost every modern ML model. </p>"
+        }
+      ]
+    }
+  ]
+}

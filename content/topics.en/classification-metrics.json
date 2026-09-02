@@ -1,0 +1,557 @@
+{
+  "id": "classification-metrics",
+  "chapter": "ch5",
+  "title": "Classification metrics: confusion matrix, precision & recall",
+  "intro": "How do you judge a classifier? The confusion matrix as the foundation, accuracy and why it can mislead, precision and recall with concrete scenarios, the F1-score — and binary cross-entropy as the training objective, all with code that runs in the browser.",
+  "level": 2,
+  "sections": [
+    {
+      "title": "The confusion matrix",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> In classification the goal is to use the feature variables to create a <strong>decision boundary</strong> that separates the data points by their category. All standard metrics build on one table: the <em>confusion matrix</em>, which crosses the predictions (positive/negative) with reality (positive/negative). Every prediction falls into exactly one of the four cells. </p>"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "",
+            "predicted positive",
+            "predicted negative"
+          ],
+          "rows": [
+            [
+              "<strong>actual positive</strong>",
+              "TP (true positive)",
+              "FN (false negative — missed!)"
+            ],
+            [
+              "<strong>actual negative</strong>",
+              "FP (false positive — false alarm)",
+              "TN (true negative)"
+            ]
+          ]
+        },
+        {
+          "type": "text",
+          "html": "<p> The four cells are quickly internalised: <strong>TP</strong> is a justified alarm (predicted positive, truly positive), <strong>TN</strong> a justified all-clear, <strong>FP</strong> a <em>false alarm</em> (predicted positive, but actually negative) and <strong>FN</strong> a <em>missed case</em> (predicted negative, but actually positive). Note the asymmetry: in almost every application a false alarm and a missed case are <em>not</em> equally bad. In medical screening a missed case (FN) is more serious than one unnecessary follow-up test (FP); in a spam filter a false alarm (FP — an important email in the spam folder) is more annoying than one spam that slips through (FN). </p>"
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p> The confusion matrix itself is already a diagnostic: look at which corner stands out. Many FPs? Your model is too eager (or your threshold is too low). Many FNs? Your model is too cautious — and with logistic regression you can raise or lower the <em>threshold</em> to shift the balance. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Accuracy — and why it can mislead",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> The simplest metric is <strong>accuracy</strong>: the share of predictions that is correct, all taken together. </p>"
+        },
+        {
+          "type": "formula",
+          "label": "accuracy",
+          "latex": "\\text{accuracy} \\;=\\; \\frac{TP + TN}{TP + TN + FP + FN}",
+          "caption": "The share of predictions that is correct — all taken together."
+        },
+        {
+          "type": "text",
+          "html": "<p> The danger hides in <strong>class imbalance</strong>. Suppose 99% of emails are not spam: a model that simply <em>always</em> predicts \"not spam\" scores 99% accuracy — and is completely useless. Accuracy weighs all four cells equally and does not care which error hurts. That is exactly why precision and recall exist. </p>"
+        },
+        {
+          "type": "callout",
+          "kind": "warning",
+          "html": "<p><strong> Rule of thumb:</strong> with imbalanced classes (e.g. 1% fraud, 5% disease) accuracy says almost nothing. Always look at precision and recall — or at the confusion matrix itself. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Precision & recall: the two sides of the error",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> <strong>Precision</strong> looks at everything you <em>called positive</em> and asks: how much of that was truly positive? <strong>Recall</strong> looks at everything that is <em>truly positive</em> and asks: how much of that did I find? Two sides of the same coin — one punishes false alarms (FP), the other missed cases (FN). </p>"
+        },
+        {
+          "type": "formula",
+          "label": "precision",
+          "latex": "\\text{precision} \\;=\\; \\frac{TP}{TP + FP}",
+          "caption": "Of everything I called positive: how much was truly positive? Important when a false alarm is expensive."
+        },
+        {
+          "type": "formula",
+          "label": "recall",
+          "latex": "\\text{recall} \\;=\\; \\frac{TP}{TP + FN}",
+          "caption": "Of everything that is truly positive: how much did I find? Important when you must not miss anything."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Scenario",
+            "Core metric",
+            "Reason"
+          ],
+          "rows": [
+            [
+              "spam filter",
+              "precision",
+              "a false alarm = an important email in the trash"
+            ],
+            [
+              "medical screening",
+              "recall",
+              "a missed case = untreated disease"
+            ],
+            [
+              "fraud detection",
+              "recall",
+              "damage accumulates with every missed fraud"
+            ],
+            [
+              "recommender system",
+              "precision",
+              "irrelevant suggestions cost trust and attention"
+            ]
+          ]
+        },
+        {
+          "type": "text",
+          "html": "<p> Precision and recall are in tension: make the threshold stricter and the number of FPs drops (precision up) while the number of FNs rises (recall down). Make it more lenient and the reverse happens. There is no \"correct\" balance — it depends on the cost of both error types in your application. </p>"
+        }
+      ]
+    },
+    {
+      "title": "F1-score: the balance",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> If you want to summarise precision and recall in a single number, you do not take the ordinary mean (which still awards an extreme precision of 1.0 with a useless recall of 0.0 an average of 0.5) but the <strong>harmonic mean</strong>: </p>"
+        },
+        {
+          "type": "formula",
+          "label": "F1-score",
+          "latex": "F_1 \\;=\\; 2 \\cdot \\frac{\\text{precision} \\cdot \\text{recall}}{\\text{precision} + \\text{recall}}",
+          "caption": "The harmonic mean of precision and recall — a balance between the two."
+        },
+        {
+          "type": "text",
+          "html": "<p> The harmonic mean punishes extremes: if one of the two is low, the F1 sinks with it. A high F1 is only achievable when precision and recall are <em>both</em> high — which is why it so often serves as the summarising metric. </p>"
+        }
+      ]
+    },
+    {
+      "title": "The four metrics in code",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> The four functions below take the <em>true classes</em> and the <em>predicted classes</em> (0/1, no probabilities — the threshold has already been applied). As in the confusion matrix: count TPs, FPs, TNs and FNs with boolean masks. In scikit-learn, <code>accuracy_score</code>, <code>precision_score</code>, <code>recall_score</code> and <code>f1_score</code> exist ready-made — but seeing how they are built makes them concrete. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "implementing accuracy, precision, recall & F1",
+          "runnable": true,
+          "source": "import numpy as np\n\ndef accuracy(y_true, y_pred):\n    # the share of predictions that is correct\n    return np.mean(y_true == y_pred)\n\ndef precision(y_true, y_pred):\n    tp = np.sum((y_true == 1) & (y_pred == 1))\n    fp = np.sum((y_true == 0) & (y_pred == 1))\n    return tp / (tp + fp)\n\ndef recall(y_true, y_pred):\n    tp = np.sum((y_true == 1) & (y_pred == 1))\n    fn = np.sum((y_true == 1) & (y_pred == 0))\n    return tp / (tp + fn)\n\ndef f1(y_true, y_pred):\n    p = precision(y_true, y_pred)\n    r = recall(y_true, y_pred)\n    return 2 * p * r / (p + r)\n\n# example: 10 predictions\ny_true = np.array([1, 0, 1, 1, 0, 0, 1, 0, 1, 1])\ny_pred = np.array([1, 1, 0, 1, 0, 1, 1, 0, 1, 0])\n\n# TP=4, FP=2, TN=2, FN=2\nprint('accuracy :', accuracy(y_true, y_pred))   # 0.6\nprint('precision:', precision(y_true, y_pred))  # 0.6666666666666666\nprint('recall   :', recall(y_true, y_pred))     # 0.6666666666666666\nprint('f1       :', f1(y_true, y_pred))         # 0.6666666666666666"
+        },
+        {
+          "type": "callout",
+          "kind": "tip",
+          "html": "<p> This is how the counting works: <code>tp = np.sum((y_true == 1) &amp; (y_pred == 1))</code> — a boolean mask that is only true where both are 1, and <code>np.sum</code> counts the Trues. Watch out for division by zero: if there is no positive prediction at all, precision is undefined. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Binary cross-entropy: the loss behind the classifier",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> The metrics above judge the <em>final decision</em> (after the threshold). But during training logistic regression has a different objective: the <strong>binary cross-entropy loss (BCE)</strong>. With two categories you use BCE; with more than two classes the <em>categorical</em> cross-entropy. The values of \\( y \\) are the true classes (1 or 0); the values of \\( \\hat{y} \\) are the predicted probabilities (between 0 and 1): </p>"
+        },
+        {
+          "type": "formula",
+          "label": "binary cross-entropy",
+          "latex": "BCE \\;=\\; -\\frac{1}{N} \\sum_{i=1}^{N} \\Bigl[\\, y_i \\log(\\hat{y}_i) + (1 - y_i)\\, \\log(1 - \\hat{y}_i) \\,\\Bigr]",
+          "caption": "Punishes predicted probabilities that lie far from the true class, logarithmically hard."
+        },
+        {
+          "type": "text",
+          "html": "<p> Why exactly this shape? Look at the two cases. If \\( y_i = 1 \\), only \\( -\\log(\\hat{y}_i) \\) remains: predict a probability close to 1 and the penalty is almost zero; predict 0.1 and the penalty is large. If \\( y_i = 0 \\), the term flips around and \\( -\\log(1 - \\hat{y}_i) \\) punishes probabilities towards 1. One function, two directions — and smooth, so it minimises well with gradient descent. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "implementing BCE",
+          "runnable": true,
+          "source": "import numpy as np\n\ndef bce(y_true, y_pred):\n    # prevent log(0) — these two lines are fixed\n    epsilon = 1e-15\n    y_pred = np.clip(y_pred, epsilon, 1 - epsilon)\n\n    # the formula from the theory, copied directly\n    return -np.mean(y_true * np.log(y_pred) + (1 - y_true) * np.log(1 - y_pred))\n\n# example: good probabilities = low loss\ny_true = np.array([1.0, 0.0, 1.0, 0.0])\ny_pred = np.array([0.9, 0.1, 0.8, 0.3])\n\nprint('bce:', bce(y_true, y_pred))  # 0.19763488164214868\n\n# same labels, confident mistakes = high loss\ny_bad = np.array([0.1, 0.9, 0.2, 0.8])\nprint('bce (wrong):', bce(y_true, y_bad))"
+        },
+        {
+          "type": "callout",
+          "kind": "info",
+          "html": "<p> Compare the two outcomes in the run above: probabilities close to the correct labels give a low BCE, confident mistakes give a high one. This is the learning signal: during training the coefficients keep shifting until this loss is as small as possible. See also <a href=\"#/topic/loss-diagrams\">loss diagrams</a>, where the logistic loss plays the same role relative to the hinge loss of SVMs. </p>"
+        }
+      ]
+    },
+    {
+      "title": "From probability to decision: the threshold",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> How a classifier arrives at its decision happens in four steps: <strong>(1)</strong> compute a linear score (the logit) \\( l = b_0 + b_1 x_1 + \\cdots + b_n x_n \\); <strong>(2)</strong> convert it into a probability with the sigmoid \\( \\hat{y} = 1/(1 + e^{-l}) \\); <strong>(3)</strong> apply a threshold (usually 0.5: probability &ge; 0.5 &rarr; positive); <strong>(4)</strong> minimise the BCE during training. The threshold in step 3 is adjustable — and shifting it moves exactly the balance between precision and recall you saw above. </p>"
+        },
+        {
+          "type": "text",
+          "html": "<p> Below: logistic regression with two feature variables (x1 horizontal, x2 vertical). The target has two classes: <span style=\"color:var(--green)\">class 1 (positive)</span> and <span style=\"color:var(--magenta)\">class 0 (negative)</span>. The decision boundary is \\( b_0 + b_1 x_1 + x_2 = 0 \\) — slide <strong>b0</strong> and <strong>b1</strong> and see how the boundary trades one error type for the other. </p>"
+        },
+        {
+          "type": "plot",
+          "title": "Dataset A — linearly separable",
+          "subtitle": "The two classes lie apart: a straight line exists that separates them perfectly. Find it!",
+          "xrange": [
+            0,
+            10
+          ],
+          "yrange": [
+            0,
+            10
+          ],
+          "xlabel": "feature x1",
+          "points": [
+            {
+              "x": 5.9,
+              "y": 6.08,
+              "color": "green"
+            },
+            {
+              "x": 6.71,
+              "y": 5.93,
+              "color": "green"
+            },
+            {
+              "x": 6.61,
+              "y": 6.25,
+              "color": "green"
+            },
+            {
+              "x": 6.7,
+              "y": 7.85,
+              "color": "green"
+            },
+            {
+              "x": 7.28,
+              "y": 5.72,
+              "color": "green"
+            },
+            {
+              "x": 6.7,
+              "y": 7.37,
+              "color": "green"
+            },
+            {
+              "x": 7.11,
+              "y": 4.99,
+              "color": "green"
+            },
+            {
+              "x": 6.56,
+              "y": 6.2,
+              "color": "green"
+            },
+            {
+              "x": 6.76,
+              "y": 6.65,
+              "color": "green"
+            },
+            {
+              "x": 7.07,
+              "y": 7.03,
+              "color": "green"
+            },
+            {
+              "x": 5.19,
+              "y": 7.14,
+              "color": "green"
+            },
+            {
+              "x": 6.21,
+              "y": 7.21,
+              "color": "green"
+            },
+            {
+              "x": 2.69,
+              "y": 3.56,
+              "color": "magenta"
+            },
+            {
+              "x": 2.58,
+              "y": 2.72,
+              "color": "magenta"
+            },
+            {
+              "x": 3.77,
+              "y": 3.41,
+              "color": "magenta"
+            },
+            {
+              "x": 2.83,
+              "y": 2.4,
+              "color": "magenta"
+            },
+            {
+              "x": 1.85,
+              "y": 2.67,
+              "color": "magenta"
+            },
+            {
+              "x": 1.98,
+              "y": 2.66,
+              "color": "magenta"
+            },
+            {
+              "x": 2.17,
+              "y": 1.92,
+              "color": "magenta"
+            },
+            {
+              "x": 3.45,
+              "y": 3.44,
+              "color": "magenta"
+            },
+            {
+              "x": 3.13,
+              "y": 2.58,
+              "color": "magenta"
+            },
+            {
+              "x": 3.62,
+              "y": 3.01,
+              "color": "magenta"
+            },
+            {
+              "x": 2.62,
+              "y": 3.43,
+              "color": "magenta"
+            },
+            {
+              "x": 3.14,
+              "y": 3.4,
+              "color": "magenta"
+            }
+          ],
+          "pointLegend": [
+            {
+              "label": "class 1 (positive)",
+              "color": "green"
+            },
+            {
+              "label": "class 0 (negative)",
+              "color": "magenta"
+            }
+          ],
+          "curves": [
+            {
+              "expr": "-(b0 + b1*x)",
+              "label": "decision boundary",
+              "color": "cyan"
+            }
+          ],
+          "sliders": [
+            {
+              "param": "b0",
+              "min": -15,
+              "max": 5,
+              "step": 0.1,
+              "value": -9.5,
+              "label": "b0"
+            },
+            {
+              "param": "b1",
+              "min": -3,
+              "max": 3,
+              "step": 0.05,
+              "value": 1,
+              "label": "b1"
+            }
+          ]
+        },
+        {
+          "type": "plot",
+          "title": "Dataset B — overlapping classes",
+          "subtitle": "The clouds overlap: no straight line separates them perfectly. Every boundary is a trade-off between false positives and false negatives.",
+          "xrange": [
+            0,
+            10
+          ],
+          "yrange": [
+            0,
+            10
+          ],
+          "xlabel": "feature x1",
+          "points": [
+            {
+              "x": 6.6,
+              "y": 5.07,
+              "color": "green"
+            },
+            {
+              "x": 5.45,
+              "y": 6.71,
+              "color": "green"
+            },
+            {
+              "x": 4.97,
+              "y": 4.2,
+              "color": "green"
+            },
+            {
+              "x": 5.48,
+              "y": 5.29,
+              "color": "green"
+            },
+            {
+              "x": 3.07,
+              "y": 4.17,
+              "color": "green"
+            },
+            {
+              "x": 3.43,
+              "y": 5.09,
+              "color": "green"
+            },
+            {
+              "x": 3.62,
+              "y": 6.86,
+              "color": "green"
+            },
+            {
+              "x": 4.1,
+              "y": 3.01,
+              "color": "green"
+            },
+            {
+              "x": 6.2,
+              "y": 6.25,
+              "color": "green"
+            },
+            {
+              "x": 4.24,
+              "y": 5.96,
+              "color": "green"
+            },
+            {
+              "x": 5.03,
+              "y": 4.71,
+              "color": "green"
+            },
+            {
+              "x": 7.55,
+              "y": 3.43,
+              "color": "green"
+            },
+            {
+              "x": 4.31,
+              "y": 6.39,
+              "color": "magenta"
+            },
+            {
+              "x": 3.41,
+              "y": 2.42,
+              "color": "magenta"
+            },
+            {
+              "x": 4.55,
+              "y": 3.24,
+              "color": "magenta"
+            },
+            {
+              "x": 4.23,
+              "y": 2.81,
+              "color": "magenta"
+            },
+            {
+              "x": 6.6,
+              "y": 3.62,
+              "color": "magenta"
+            },
+            {
+              "x": 3.84,
+              "y": 2.13,
+              "color": "magenta"
+            },
+            {
+              "x": 2.66,
+              "y": 5.15,
+              "color": "magenta"
+            },
+            {
+              "x": 4.47,
+              "y": 3.87,
+              "color": "magenta"
+            },
+            {
+              "x": 4.53,
+              "y": 1.99,
+              "color": "magenta"
+            },
+            {
+              "x": 6.24,
+              "y": 2.68,
+              "color": "magenta"
+            },
+            {
+              "x": 5.45,
+              "y": 4.67,
+              "color": "magenta"
+            },
+            {
+              "x": 4.74,
+              "y": 5.46,
+              "color": "magenta"
+            }
+          ],
+          "pointLegend": [
+            {
+              "label": "class 1 (positive)",
+              "color": "green"
+            },
+            {
+              "label": "class 0 (negative)",
+              "color": "magenta"
+            }
+          ],
+          "curves": [
+            {
+              "expr": "-(b0 + b1*x)",
+              "label": "decision boundary",
+              "color": "cyan"
+            }
+          ],
+          "sliders": [
+            {
+              "param": "b0",
+              "min": -15,
+              "max": 5,
+              "step": 0.1,
+              "value": -5,
+              "label": "b0"
+            },
+            {
+              "param": "b1",
+              "min": -3,
+              "max": 3,
+              "step": 0.05,
+              "value": 1,
+              "label": "b1"
+            }
+          ]
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p> Dataset B shows the core of this chapter: because the clouds overlap, no boundary is perfect, and every shift of the line swaps FPs for FNs — the precision/recall trade-off in plain sight. For non-linearly separated data (e.g. concentric circles) no straight boundary helps; the solution is to <strong>transform features</strong> (for example adding \\( x_1^2 \\) and \\( x_2^2 \\)) or to use a kernel — see <a href=\"#/topic/kernel-svm\">Kernel SVMs</a>. </p>"
+        }
+      ]
+    }
+  ]
+}
