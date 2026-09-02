@@ -48,7 +48,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Hoe ziet dat minimaliseren eruit? Met <code>scipy.optimize.minimize</code> kun je willekeurige functies optimaliseren. Minimeer \\( y = x^2 \\) vanaf een beginpunt, dan vinden de algoritmen een waarde <em>vlak bij</em> nul — typisch iets als \\( 10^{-8} \\). Dat is normaal bij numerieke optimalisatie: je krijgt zelden het exacte antwoord, maar iets dat er heel dicht bij zit. </p> <p> In de oefeningen minimaliseer je de squared error van lineaire regressie, met als inputs de coëfficiënten. De code beantwoordt dan letterlijk de vraag: <em>\"welke waarden van de coëfficiënten maken mijn kwadratische fout zo klein mogelijk?\"</em> — dat is exact wat lineaire regressie doet. </p>"
+          "html": "<p> Hoe ziet dat minimaliseren eruit? Met <code>scipy.optimize.minimize</code> kun je willekeurige functies optimaliseren. Minimeer \\( y = x^2 \\) vanaf een beginpunt, dan vinden de algoritmen een waarde <em>vlak bij</em> nul — typisch iets als \\( 10^{-8} \\). Dat is normaal bij numerieke optimalisatie: je krijgt zelden het exacte antwoord, maar iets dat er heel dicht bij zit. </p> <p> Zo kun je bijvoorbeeld de squared error van lineaire regressie minimaliseren, met als inputs de coëfficiënten. De code beantwoordt dan letterlijk de vraag: <em>\"welke waarden van de coëfficiënten maken mijn kwadratische fout zo klein mogelijk?\"</em> — dat is exact wat lineaire regressie doet. </p>"
         },
         {
           "type": "code",

@@ -1,9 +1,9 @@
 {
   "site": {
     "title": "MLP — Machine Learning, clearly summarised",
-    "description": "Machine Learning material, clearly summarised: from the first basic concepts to scikit-learn, loss functions, logistic regression, SVMs and evaluation metrics — with formulas, diagrams, code examples you can run in your browser and memory aids for every step.",
+    "description": "Machine Learning material, clearly summarised: from the first basic concepts to scikit-learn, loss functions, logistic regression, SVMs and evaluation metrics — with formulas, diagrams, code examples you can run in your browser, memory aids for every step and an FAQ with quick answers.",
     "statFormulas": "±41",
-    "statCode": "28"
+    "statCode": "29"
   },
   "chapters": [
     {
@@ -41,6 +41,12 @@
       "name": "Evaluation & metrics",
       "accent": "cyan",
       "description": "judging models: metrics for regression and classification"
+    },
+    {
+      "id": "ch6",
+      "name": "FAQ",
+      "accent": "green",
+      "description": "quick answers to the most common questions"
     }
   ],
   "topics": [
@@ -214,6 +220,15 @@
       "level": 2,
       "file": "topics.en/classification-metrics.json",
       "keywords": "metrics, evaluation, confusion matrix, accuracy, precision, recall, f1, bce, cross entropy, threshold, imbalanced classes, decision boundary"
+    },
+    {
+      "id": "faq",
+      "chapter": "ch6",
+      "title": "Frequently asked questions (FAQ)",
+      "summary": "Thirteen short, clear answers: classification vs. regression, train/test splits, overfitting, gradient descent, C, kernels, scaling, probabilities and the right metric — with pointers to the matching topic.",
+      "level": 1,
+      "file": "topics.en/faq.json",
+      "keywords": "faq, frequently asked questions, questions, answers, classification, regression, supervised, unsupervised, x, y, train test split, leakage, overfitting, underfitting, gradient descent, loss, regularisation, c, svm, logistic regression, kernel, rbf, scaling, standardscaler, predict_proba, sigmoid, accuracy, precision, recall, f1, mse, rmse, mae, r2, metrics"
     }
   ]
 }

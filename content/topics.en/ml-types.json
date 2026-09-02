@@ -71,7 +71,7 @@
               "regression",
               "a number (quantitative)",
               "car price, house price, temperature",
-              "MSE, RMSE, MAE, R&sup2; — see the <em>Practice</em> chapter"
+              "MSE, RMSE, MAE, R&sup2; — see the <em>Evaluation &amp; metrics</em> chapter"
             ],
             [
               "classification",

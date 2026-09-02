@@ -7,14 +7,16 @@ classifiers — inclusief formules, interactieve diagrammen en
 code-voorbeelden die je **direct in je browser kunt uitvoeren** (via
 Pyodide: CPython + scikit-learn in WebAssembly). Het hoofdstuk
 **Evaluatie & metrics** behandelt MSE, RMSE, MAE, R² en de
-confusion-matrix-metrics, en **gradient descent** legt uit hoe een model
-leert. De site is volledig **tweetalig: Nederlands en Engels** (schakelen
-met de NL/EN-knop rechtsboven).
+confusion-matrix-metrics, **gradient descent** legt uit hoe een model
+leert, en het hoofdstuk **FAQ** geeft korte, heldere antwoorden op de
+veelgestelde vragen — van classificatie vs. regressie tot de keuze van
+de juiste metric. De site is volledig **tweetalig: Nederlands en
+Engels** (schakelen met de NL/EN-knop rechtsboven).
 
 - **Frontend**: pure HTML/CSS/JS — geen build-stap, geen framework
 - **Backend (optioneel, lokaal)**: FastAPI serveert de site én een REST-API over de content (NL + EN)
 - **Hosting**: 100% GitHub Pages-ready (statische bestanden)
-- **Talen**: NL (standaard) en EN — alle interface-teksten én alle 19 onderwerpen zijn vertaald
+- **Talen**: NL (standaard) en EN — alle interface-teksten én alle 20 onderwerpen zijn vertaald
 
 ---
 
@@ -182,7 +184,7 @@ MLP/
 ├── content/
 │   ├── index.json        # NL: hoofdstukken + onderwerpen-register
 │   ├── index.en.json     # EN: idem
-│   ├── topics/*.json     # NL: 19 onderwerpen (4 basis + 13 theorie incl. gradient descent + 2 metrics)
+│   ├── topics/*.json     # NL: 20 onderwerpen (4 basis + 13 theorie incl. gradient descent + 2 metrics + FAQ)
 │   └── topics.en/*.json  # EN: idem
 ├── main.py               # FastAPI: statische site + REST-API (NL/EN)
 ├── start.sh              # Mac/Linux: venv aanmaken + deps installeren + server starten

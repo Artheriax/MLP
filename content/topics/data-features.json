@@ -14,7 +14,7 @@
         },
         {
           "type": "text",
-          "html": "<p> Als voorbeeld nemen we de autodataset die ook in het hoofdstuk <em>Practice</em> terugkomt: vijf auto's, elk beschreven door drie kenmerken, met de prijs als wat we willen voorspellen. Zo'n tabel is bewust klein gehouden — tel maar na: 5 rijen, 4 kolommen. </p>"
+          "html": "<p> Als voorbeeld nemen we de autodataset die ook in het hoofdstuk <em>Evaluatie &amp; metrics</em> terugkomt: vijf auto's, elk beschreven door drie kenmerken, met de prijs als wat we willen voorspellen. Zo'n tabel is bewust klein gehouden — tel maar na: 5 rijen, 4 kolommen. </p>"
         },
         {
           "type": "table",

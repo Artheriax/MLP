@@ -1,9 +1,9 @@
 {
   "site": {
     "title": "MLP — Machine Learning Practice",
-    "description": "Machine Learning stof helder samengevat: van de eerste basisbegrippen tot scikit-learn, loss functions, logistic regression, SVM's en evaluatie-metrics — met formules, diagrammen, code-voorbeelden die je in de browser kunt uitvoeren en geheugensteuntjes voor elke stap.",
+    "description": "Machine Learning stof helder samengevat: van de eerste basisbegrippen tot scikit-learn, loss functions, logistic regression, SVM's en evaluatie-metrics — met formules, diagrammen, code-voorbeelden die je in de browser kunt uitvoeren, geheugensteuntjes voor elke stap en een FAQ met snel antwoord.",
     "statFormulas": "±41",
-    "statCode": "28"
+    "statCode": "29"
   },
   "chapters": [
     {
@@ -41,6 +41,12 @@
       "name": "Evaluatie & metrics",
       "accent": "cyan",
       "description": "modellen beoordelen: metrics voor regressie en classificatie"
+    },
+    {
+      "id": "ch6",
+      "name": "FAQ",
+      "accent": "green",
+      "description": "snel antwoord op de meestgestelde vragen"
     }
   ],
   "topics": [
@@ -214,6 +220,15 @@
       "level": 2,
       "file": "topics/classification-metrics.json",
       "keywords": "metrics, evaluatie, confusion matrix, accuracy, precision, recall, f1, bce, cross entropy, threshold, onbalanceerde klassen, beslissingsgrens"
+    },
+    {
+      "id": "faq",
+      "chapter": "ch6",
+      "title": "Veelgestelde vragen (FAQ)",
+      "summary": "Dertien korte, heldere antwoorden: classificatie vs. regressie, train/test-splits, overfitting, gradient descent, C, kernels, schalen, kansen en de juiste metric — met doorverwijzingen naar het bijbehorende onderwerp.",
+      "level": 1,
+      "file": "topics/faq.json",
+      "keywords": "faq, veelgestelde vragen, vragen, antwoorden, classificatie, regressie, supervised, unsupervised, x, y, train test split, leakage, overfitting, underfitting, gradient descent, loss, regularisatie, c, svm, logistic regression, kernel, rbf, schalen, standardscaler, predict_proba, sigmoid, accuracy, precision, recall, f1, mse, rmse, mae, r2, metrics"
     }
   ]
 }

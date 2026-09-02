@@ -1,0 +1,105 @@
+{
+  "id": "faq",
+  "chapter": "ch6",
+  "title": "Frequently asked questions (FAQ)",
+  "intro": "Thirteen short, clear answers to the most frequently asked questions — from the difference between classification and regression to picking the right metric. Every question points to the topic where the material is covered in depth with examples, so from this single page you can navigate the whole site.",
+  "level": 1,
+  "sections": [
+    {
+      "title": "The basics",
+      "blocks": [
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p><strong>What is the difference between classification and regression?</strong></p><p>Both are supervised learning, but they predict different things. <strong>Classification</strong> predicts a category: spam or not spam, cat or dog, admitted or rejected. <strong>Regression</strong> predicts a continuous number: the price of a car, tomorrow’s temperature, the number of visitors. In scikit-learn you see the difference directly: with classification, <code>.predict()</code> returns class labels; with regression it returns numbers. Note: despite its name, <em>logistic</em> regression is a classifier, because the sigmoid turns the prediction into a probability and therefore into a class. See the topic <em>Supervised learning &amp; the standard workflow</em>.</p>"
+        },
+        {
+          "type": "callout",
+          "kind": "info",
+          "html": "<p><strong>What is the difference between supervised, unsupervised and reinforcement learning?</strong></p><p><strong>Supervised learning</strong> learns from examples <em>with</em> answers: you have features <em>and</em> labels (X and y), and the model learns the relationship between them. <strong>Unsupervised learning</strong> has no labels and looks for structure in the data itself, such as clusters (KMeans) or a more compact representation (PCA). <strong>Reinforcement learning</strong> does not learn from labelled examples but from rewards: an agent tries actions and is told whether they were good. Two questions pick the right family: do you have labels for your data? And does the feedback arrive per example, or only after a series of actions? See <em>The three types of machine learning</em>.</p>"
+        },
+        {
+          "type": "callout",
+          "kind": "info",
+          "html": "<p><strong>What exactly are features, labels, X and y?</strong></p><p>Think of a table: every <strong>row</strong> is one sample (one car, one e-mail, one patient) and every <strong>column</strong> is a feature — a property of that example. The <strong>label</strong> (or target) is the column you want to predict. In scikit-learn you put the features into a 2D array <code>X</code> (shape: n_samples × n_features) and the target into a 1D array <code>y</code>. Models compute with numbers, so categorical columns such as colour must first be turned into numbers, for example with one-hot encoding. See <em>Data, features &amp; labels</em>.</p>"
+        }
+      ]
+    },
+    {
+      "title": "Learning, fitting and generalising",
+      "blocks": [
+        {
+          "type": "callout",
+          "kind": "warning",
+          "html": "<p><strong>Why do I have to split train and test data?</strong></p><p>A model evaluated on the same data it was trained on may simply have <em>memorised</em> the answers — a high score then says nothing about new, unseen data. The test set plays the role of ‘new data’: you use it only once, at the end, to measure how well the model generalises. The classic mistake is <em>data leakage</em>: information from the test set leaks into training, for instance by fitting a scaler or encoder on <em>all</em> your data instead of only the training data. So split first, and fit transformations exclusively on the training data. See <em>Data, features &amp; labels</em> and <em>The ML workflow from start to finish</em>.</p>"
+        },
+        {
+          "type": "callout",
+          "kind": "warning",
+          "html": "<p><strong>What is overfitting and how do I recognise it?</strong></p><p><strong>Overfitting</strong> means the model has learned the training data too precisely — including the noise — and therefore generalises poorly to new data. You recognise it by a large gap: a high score on the training data, a much lower score on the test data. <strong>Underfitting</strong> is the opposite: the model is too simple and scores low everywhere. Remedies for overfitting are a simpler model, more or cleaner data, stronger regularisation (a smaller C) and fewer or better features. See <em>The ML workflow from start to finish</em> for the interactive under/overfitting diagram.</p>"
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p><strong>How does a model actually ‘learn’?</strong></p><p>In two steps. First a <strong>loss function</strong> measures how wrong the model currently is, across all your training examples. Then an optimisation algorithm — usually <strong>gradient descent</strong> — nudges the weights (the coefficients) a small step in the direction in which the loss decreases fastest. This repeats many times, until the loss barely changes any more: the model is then (locally) optimal. The <em>learning rate</em> sets the step size: too large and you overshoot the minimum, too small and learning takes forever. See <em>Loss functions: why fitting is really optimising</em> and <em>Gradient descent: how does a model learn?</em>.</p>"
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p><strong>What does regularisation do and what does the hyperparameter C mean?</strong></p><p>Regularisation adds a <strong>penalty for large coefficients</strong> to the loss. This forces the model to stay simple, which fights overfitting: a model with extreme weights may fit the training data perfectly but generalises badly. <code>C</code> is the dial that controls the strength, though it works <em>backwards</em>: a <strong>large C</strong> means little penalty (a complex model), a <strong>small C</strong> means a strong penalty (a simple model). Turn C down too far and the model underfits instead. See <em>Regularisation: the hyperparameter C, L1 and L2</em>.</p>"
+        }
+      ]
+    },
+    {
+      "title": "Choosing and tuning",
+      "blocks": [
+        {
+          "type": "callout",
+          "kind": "info",
+          "html": "<p><strong>Do I pick LogisticRegression or an SVM?</strong></p><p>Both are linear classifiers that use the same prediction equation — the difference lies in what they optimise. <strong>Logistic regression</strong> minimises the logistic loss and gives per-class probabilities with <code>.predict_proba()</code>; it is a fast, stable baseline. <strong>SVMs</strong> minimise the hinge loss and maximise the <em>margin</em> to the closest points, which can be robust; with kernels they can also learn non-linear boundaries. Scale your features in both cases, and in the end let the score on the test data decide. See <em>LR vs. SVM &amp; the SGDClassifier</em> for the full comparison.</p>"
+        },
+        {
+          "type": "callout",
+          "kind": "info",
+          "html": "<p><strong>What does a kernel do in an SVM?</strong></p><p>A kernel computes the <strong>similarity between two samples as if they lived in a higher dimension</strong>, without carrying out that transformation explicitly — this is called the kernel trick. That allows an SVM to learn a non-linear decision boundary in practice while all the mathematics stays linear. The <em>linear</em> kernel is the fast baseline; the <em>RBF</em> kernel makes flexible, curved boundaries via <code>gamma</code>. A good approach: start with the linear kernel and only switch to RBF when the data is clearly not linearly separable. See <em>Kernel SVMs: non-linear boundaries</em>.</p>"
+        },
+        {
+          "type": "callout",
+          "kind": "tip",
+          "html": "<p><strong>Why should I scale my features?</strong></p><p>Many models are <strong>sensitive to the scale</strong> of the features. KNN works with distances, SVMs with margins and gradient methods with step sizes: one feature with values in the thousands can completely dominate all the others. With <code>StandardScaler</code> you turn every column into mean 0 and spread 1, so all features carry equal weight. Important: fit the scaler on the <em>training data</em> and then use it to transform the test data. Tree models, by the way, are insensitive to scaling. See <em>Data, features &amp; labels</em>.</p>"
+        }
+      ]
+    },
+    {
+      "title": "Predicting and judging",
+      "blocks": [
+        {
+          "type": "callout",
+          "kind": "info",
+          "html": "<p><strong>What does predict_proba do and when do I need probabilities?</strong></p><p><code>.predict()</code> gives hard class labels; <code>.predict_proba()</code> gives, per sample, <strong>probabilities for every class</strong> (summing to 1). Probabilities are useful as soon as ‘which class?’ is not the whole story: how <em>confident</em> is the model? And if the costs of mistakes are asymmetric, you choose the <em>threshold</em> yourself — for example ‘treat only if the probability of disease is above 0.3’ — to tune precision and recall. Behind the scenes the sigmoid (or softmax for multiple classes) turns the raw model output into those probabilities. See <em>Probabilities &amp; the sigmoid function</em>.</p>"
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p><strong>My accuracy is 95% — is my model good?</strong></p><p>Not necessarily. With <strong>class imbalance</strong> — say 95 healthy and 5 sick patients — a dumb model that always predicts ‘healthy’ also reaches 95% accuracy, while it never finds a single sick patient. Precision, recall and F1 give the honest picture in such a case. Run the example below yourself: all four metrics on a dataset where ‘always class 0’ scores 95% accuracy.</p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "accuracy can mislead — four metrics with skewed classes",
+          "runnable": true,
+          "source": "from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score\n\n# 100 patients: 95 healthy (class 0), 5 sick (class 1)\ny_test = [0] * 95 + [1] * 5\n\n# the model predicts 'healthy' (class 0) for everyone\ny_pred = [0] * 100\n\nprint(\"accuracy :\", accuracy_score(y_test, y_pred))\nprint(\"precision:\", precision_score(y_test, y_pred, zero_division=0))\nprint(\"recall   :\", recall_score(y_test, y_pred))\nprint(\"f1-score :\", f1_score(y_test, y_pred, zero_division=0))"
+        },
+        {
+          "type": "text",
+          "html": "<p> The output shows the trap: <strong>accuracy 0.95</strong>, yet precision, recall and F1 are all <strong>0.0</strong> — the model finds not a single positive class and is therefore completely useless for the question that matters. That is exactly why, with skewed classes, you always look beyond accuracy. See <em>Classification metrics: confusion matrix, precision &amp; recall</em> for the full theory. </p>"
+        },
+        {
+          "type": "callout",
+          "kind": "info",
+          "html": "<p><strong>Which metric do I use for regression?</strong></p><p>The four standard metrics each tell you something different about the same predictions. <strong>MSE</strong> penalises large errors quadratically and is exactly the loss that linear regression optimises; <strong>RMSE</strong> is its square root and lives in the same unit as your target; <strong>MAE</strong> is the mean absolute error and is less sensitive to outliers; <strong>R²</strong> compares your model with a dumb baseline (always predicting the mean) and answers: how much better than that baseline are you? If your data has large outliers, MAE says more than RMSE. See <em>Regression metrics: MSE, RMSE, MAE &amp; R²</em> for formulas, interpretation and a worked example.</p>"
+        }
+      ]
+    }
+  ]
+}

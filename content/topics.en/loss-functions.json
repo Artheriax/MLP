@@ -48,7 +48,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> What does that minimisation look like? With <code>scipy.optimize.minimize</code> you can optimise arbitrary functions. Minimise \\( y = x^2 \\) from a starting point and the algorithms find a value <em>very close</em> to zero — typically something like \\( 10^{-8} \\). That is normal in numerical optimisation: you rarely get the exact answer, but something very close to it. </p> <p> In the exercises you minimise the squared error of linear regression, with the coefficients as inputs. The code then literally answers the question: <em>\"which values of the coefficients make my squared error as small as possible?\"</em> — which is exactly what linear regression does. </p>"
+          "html": "<p> What does that minimisation look like? With <code>scipy.optimize.minimize</code> you can optimise arbitrary functions. Minimise \\( y = x^2 \\) from a starting point and the algorithms find a value <em>very close</em> to zero — typically something like \\( 10^{-8} \\). That is normal in numerical optimisation: you rarely get the exact answer, but something very close to it. </p> <p> As a concrete example, you can minimise the squared error of linear regression, with the coefficients as inputs. The code then literally answers the question: <em>\"which values of the coefficients make my squared error as small as possible?\"</em> — which is exactly what linear regression does. </p>"
         },
         {
           "type": "code",

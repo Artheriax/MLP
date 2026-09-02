@@ -14,7 +14,7 @@
         },
         {
           "type": "text",
-          "html": "<p> As an example we take the car dataset that also returns in the <em>Practice</em> chapter: five cars, each described by three characteristics, with the price as the thing we want to predict. The table is deliberately small — count along: 5 rows, 4 columns. </p>"
+          "html": "<p> As an example we take the car dataset that also returns in the <em>Evaluation &amp; metrics</em> chapter: five cars, each described by three characteristics, with the price as the thing we want to predict. The table is deliberately small — count along: 5 rows, 4 columns. </p>"
         },
         {
           "type": "table",

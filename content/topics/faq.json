@@ -1,0 +1,105 @@
+{
+  "id": "faq",
+  "chapter": "ch6",
+  "title": "Veelgestelde vragen (FAQ)",
+  "intro": "Dertien korte, heldere antwoorden op de vragen die het vaakst langskomen — van het verschil tussen classificatie en regressie tot de keuze van de juiste metric. Elke vraag verwijst door naar het onderwerp waar de stof uitgebreid en met voorbeelden staat, zodat je vanuit deze ene pagina de hele site kunt navigeren.",
+  "level": 1,
+  "sections": [
+    {
+      "title": "De basis",
+      "blocks": [
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p><strong>Wat is het verschil tussen classificatie en regressie?</strong></p><p>Beide zijn supervised learning, maar ze voorspellen iets anders. <strong>Classificatie</strong> voorspelt een categorie: spam of geen spam, kat of hond, wel of niet toegelaten. <strong>Regressie</strong> voorspelt een continu getal: de prijs van een auto, de temperatuur morgen, het aantal bezoekers. In scikit-learn zie je het verschil direct terug: <code>.predict()</code> geeft bij classificatie klasselabels terug en bij regressie getallen. Let op: <em>logistic</em> regression is ondanks zijn naam een classifier, want de sigmoid zet de voorspelling om in een kans en dus in een klasse. Zie het onderwerp <em>Supervised learning &amp; de standaard-workflow</em>.</p>"
+        },
+        {
+          "type": "callout",
+          "kind": "info",
+          "html": "<p><strong>Wat is het verschil tussen supervised, unsupervised en reinforcement learning?</strong></p><p><strong>Supervised learning</strong> leert van voorbeelden mét antwoorden: je hebt features <em>en</em> labels (X én y), en het model leert de relatie daartussen. <strong>Unsupervised learning</strong> heeft geen labels en zoekt zelf structuur in de data, zoals clusters (KMeans) of een compactere weergave (PCA). <strong>Reinforcement learning</strong> leert niet van gelabelde voorbeelden maar van beloningen: een agent probeert acties en krijgt te horen of die goed waren. Met twee vragen kies je de juiste familie: heb je labels bij je data? En komt de feedback per voorbeeld of pas na een reeks acties? Zie <em>De drie soorten machine learning</em>.</p>"
+        },
+        {
+          "type": "callout",
+          "kind": "info",
+          "html": "<p><strong>Wat zijn features, labels, X en y precies?</strong></p><p>Denk aan een tabel: elke <strong>rij</strong> is één sample (één auto, één e-mail, één patiënt) en elke <strong>kolom</strong> is een feature — een kenmerk van dat voorbeeld. Het <strong>label</strong> (of target) is de kolom die je wilt voorspellen. In scikit-learn stop je de features in een 2D-array <code>X</code> (vorm: n_samples × n_features) en het target in een 1D-array <code>y</code>. Modellen rekenen met getallen, dus categorische kolommen zoals kleur moeten eerst naar cijfers, bijvoorbeeld via one-hot encoding. Zie <em>Data, features &amp; labels</em>.</p>"
+        }
+      ]
+    },
+    {
+      "title": "Leren, fitten en generaliseren",
+      "blocks": [
+        {
+          "type": "callout",
+          "kind": "warning",
+          "html": "<p><strong>Waarom moet ik train- en testdata splitsen?</strong></p><p>Een model dat op dezelfde data wordt beoordeeld als waarop het is getraind, kan de antwoorden gewoon hebben <em>onthouden</em> — een hoge score zegt dan niets over nieuwe, ongeziene data. De testset speelt de rol van ‘nieuwe data’: die gebruik je pas aan het einde, één keer, om te meten hoe goed het model generaliseert. De klassieke fout is <em>data leakage</em>: informatie uit de testset lekt in de training, bijvoorbeeld door een scaler of encoder op ál je data te fitten in plaats van alleen op de traindata. Split dus eerst, en fit transformaties uitsluitend op de traindata. Zie <em>Data, features &amp; labels</em> en <em>De ML-workflow van begin tot eind</em>.</p>"
+        },
+        {
+          "type": "callout",
+          "kind": "warning",
+          "html": "<p><strong>Wat is overfitting en hoe herken ik het?</strong></p><p><strong>Overfitting</strong> betekent dat het model de trainingsdata te precies heeft geleerd — inclusief de ruis — en daardoor slecht generaliseert naar nieuwe data. Je herkent het aan een groot gat: hoge score op de traindata, veel lagere score op de testdata. <strong>Underfitting</strong> is het omgekeerde: het model is te simpel en scoort overal laag. Tegenmaatregelen tegen overfitting zijn een eenvoudiger model, meer of schonere data, meer regularisatie (kleinere C) en minder of betere features. Zie <em>De ML-workflow van begin tot eind</em> voor het interactieve under/overfitting-diagram.</p>"
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p><strong>Hoe ‘leert’ een model eigenlijk?</strong></p><p>In twee stappen. Eerst meet een <strong>loss function</strong> hoe fout het model op dit moment is, over al je trainingsvoorbeelden heen. Daarna past een optimalisatie-algoritme — meestal <strong>gradient descent</strong> — de gewichten (de coëfficiënten) een klein stapje aan in de richting waarin de loss het snelst daalt. Dat herhaalt zich vele keren, tot de loss nauwelijks nog verandert: dan is het model (lokaal) optimaal. De <em>learning rate</em> bepaalt de stapgrootte: te groot en je schiet voorbij het minimum, te klein en het leren duurt eindeloos. Zie <em>Loss functies: waarom fitten eigenlijk optimaliseren is</em> en <em>Gradient descent: hoe leert een model?</em>.</p>"
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p><strong>Wat doet regularisatie en wat betekent de hyperparameter C?</strong></p><p>Regularisatie voegt aan de loss een <strong>straf voor grote coëfficiënten</strong> toe. Het model wordt daardoor gedwongen eenvoudig te blijven, wat overfitting tegen gaat: een model met extreme gewichten past de traindata misschien perfect, maar generaliseert slecht. <code>C</code> is de knop die de sterkte regelt, al werkt hij <em>omgekeerd</em>: een <strong>groot C</strong> betekent weinig straf (een complex model), een <strong>klein C</strong> betekent veel straf (een simpel model). Draai je C te ver omlaag, dan onderfit het model juist weer. Zie <em>Regularisatie: de hyperparameter C, L1 en L2</em>.</p>"
+        }
+      ]
+    },
+    {
+      "title": "Kiezen en afstemmen",
+      "blocks": [
+        {
+          "type": "callout",
+          "kind": "info",
+          "html": "<p><strong>Kies ik LogisticRegression of een SVM?</strong></p><p>Beide zijn lineaire classifiers die dezelfde voorspellingsvergelijking gebruiken — het verschil zit in wat ze optimaliseren. <strong>Logistic regression</strong> minimaliseert de logistische loss en geeft met <code>.predict_proba()</code> kansen per klasse; het is een snelle, stabiele baseline. <strong>SVM’s</strong> minimaliseren de hinge loss en maximaliseren de <em>marge</em> tot de dichtstbijzijnde punten, wat robuust kan zijn; met kernels leren ze bovendien niet-lineaire grenzen. Schaal je features in beide gevallen, en laat uiteindelijk de score op de testdata beslissen. Zie <em>LR vs. SVM &amp; de SGDClassifier</em> voor de complete vergelijking.</p>"
+        },
+        {
+          "type": "callout",
+          "kind": "info",
+          "html": "<p><strong>Wat doet een kernel in een SVM?</strong></p><p>Een kernel berekent de <strong>overeenkomst tussen twee samples alsof ze in een hogere dimensie liggen</strong>, zonder die transformatie expliciet uit te rekenen — dat heet de kernel trick. Daardoor kan een SVM in de praktijk een niet-lineaire beslisgrens leren terwijl alle wiskunde lineair blijft. De <em>linear</em>-kernel is de snelle baseline; de <em>RBF</em>-kernel maakt via <code>gamma</code> flexibele, gebogen grenzen. Een goede aanpak: begin met de linear kernel en stap pas over naar RBF als de data duidelijk niet lineair scheidbaar is. Zie <em>Kernel SVM’s: niet-lineaire grenzen</em>.</p>"
+        },
+        {
+          "type": "callout",
+          "kind": "tip",
+          "html": "<p><strong>Waarom zou ik mijn features schalen?</strong></p><p>Veel modellen zijn <strong>gevoelig voor de schaal</strong> van de features. KNN werkt met afstanden, SVM’s met marges en gradient-methoden met stapgroottes: één feature met waarden in de duizenden kan alle andere features volledig domineren. Met <code>StandardScaler</code> zet je elke kolom naar gemiddelde 0 en spreiding 1, zodat alle features even zwaar wegen. Belangrijk: fit de scaler op de <em>traindata</em> en gebruik hem daarna om de testdata te transformeren. Boommodellen zijn overigens ongevoelig voor schalen. Zie <em>Data, features &amp; labels</em>.</p>"
+        }
+      ]
+    },
+    {
+      "title": "Voorspellen en beoordelen",
+      "blocks": [
+        {
+          "type": "callout",
+          "kind": "info",
+          "html": "<p><strong>Wat doet predict_proba en wanneer heb ik kansen nodig?</strong></p><p><code>.predict()</code> geeft harde klasselabels; <code>.predict_proba()</code> geeft per sample <strong>kansen voor elke klasse</strong> (samen 1). Kansen zijn nuttig zodra ‘welke klasse?’ niet het hele verhaal is: hoe <em>zeker</em> is het model? En als de kosten van fouten asymmetrisch zijn, kies je zelf de <em>drempel</em> — bijvoorbeeld ‘behandel pas als de kans op ziekte boven 0.3 ligt’ — om precision en recall af te stemmen. Achter de schermen zet de sigmoid (of softmax bij meerdere klassen) de raw model output om in die kansen. Zie <em>Kansen &amp; de sigmoid-functie</em>.</p>"
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p><strong>Mijn accuracy is 95% — is mijn model dan goed?</strong></p><p>Niet per se. Bij <strong>class imbalance</strong> — bijvoorbeeld 95 gezonde en 5 zieke patiënten — haalt een dom model dat altijd ‘gezond’ voorspelt óók 95% accuracy, terwijl het geen enkele zieke patient vindt. Precision, recall en F1 geven in zo’n geval het eerlijke beeld. Draai het voorbeeld hieronder zelf: alle vier de metrics op een dataset waar ‘altijd klasse 0’ 95% accuracy scoort.</p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "accuracy kan misleiden — vier metrics bij scheve klassen",
+          "runnable": true,
+          "source": "from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score\n\n# 100 patienten: 95 gezond (klasse 0), 5 ziek (klasse 1)\ny_test = [0] * 95 + [1] * 5\n\n# het model voorspelt voor iedereen 'gezond' (klasse 0)\ny_pred = [0] * 100\n\nprint(\"accuracy :\", accuracy_score(y_test, y_pred))\nprint(\"precision:\", precision_score(y_test, y_pred, zero_division=0))\nprint(\"recall   :\", recall_score(y_test, y_pred))\nprint(\"f1-score :\", f1_score(y_test, y_pred, zero_division=0))"
+        },
+        {
+          "type": "text",
+          "html": "<p> In de uitvoer zie je het venijn: <strong>accuracy 0.95</strong>, maar precision, recall en F1 zijn alle <strong>0.0</strong> — het model vindt geen enkele positieve klasse en is dus volkomen nutteloos voor de vraag die er toe doet. Precies daarom kijk je bij scheve klassen altijd verder dan accuracy. Zie <em>Metrics bij classificatie: confusion matrix, precision &amp; recall</em> voor de volledige theorie. </p>"
+        },
+        {
+          "type": "callout",
+          "kind": "info",
+          "html": "<p><strong>Welke metric gebruik ik voor regressie?</strong></p><p>De vier standaardmetrics vertellen elk iets anders over dezelfde voorspellingen. <strong>MSE</strong> straft grote fouten kwadratisch en is precies de loss die lineaire regressie optimaliseert; <strong>RMSE</strong> is de vierkantswortel daarvan en ligt in dezelfde eenheid als je target; <strong>MAE</strong> is de gemiddelde absolute fout en is minder gevoelig voor outliers; <strong>R²</strong> vergelijkt je model met een domme baseline (steeds het gemiddelde voorspellen) en zegt: hoeveel beter dan die baseline ben je? Heb je grote outliers in je data, dan zegt MAE meer dan RMSE. Zie <em>Metrics bij regressie: MSE, RMSE, MAE &amp; R²</em> voor formules, interpretatie en een uitgewerkt voorbeeld.</p>"
+        }
+      ]
+    }
+  ]
+}

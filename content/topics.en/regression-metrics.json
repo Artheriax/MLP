@@ -120,7 +120,7 @@
           "type": "formula",
           "label": "car price prediction",
           "latex": "\\hat{y} \\;=\\; b_0 + b_1 x_1 + b_2 x_2 + b_3 x_3 \\;=\\; 20 - x_1 - 0.5\\,x_2 - 2\\,x_3",
-          "caption": "Fill in the feature values per car and you get the predicted price."
+          "caption": "Substitute each car's feature values into the formula and you get its predicted price."
         },
         {
           "type": "text",

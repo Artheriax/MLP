@@ -120,7 +120,7 @@
           "type": "formula",
           "label": "voorspelling autoprijs",
           "latex": "\\hat{y} \\;=\\; b_0 + b_1 x_1 + b_2 x_2 + b_3 x_3 \\;=\\; 20 - x_1 - 0.5\\,x_2 - 2\\,x_3",
-          "caption": "Vul per auto de featurewaarden in en je krijgt de voorspelde prijs."
+          "caption": "Vervang per auto de featurewaarden in de formule en je krijgt de voorspelde prijs."
         },
         {
           "type": "text",
