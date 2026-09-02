@@ -1,5 +1,5 @@
 r"""
-MLP — Machine Learning notes · FastAPI-backend
+MLP — Machine Learning Practice · FastAPI-backend
 ===============================================
 
 Serveert de statische site én een kleine REST-API over de content.
@@ -33,7 +33,7 @@ CONTENT_DIR = BASE_DIR / "content"
 TOPICS_DIR = CONTENT_DIR / "topics"
 
 app = FastAPI(
-    title="MLP — Machine Learning notes API",
+    title="MLP — Machine Learning Practice API",
     description="REST-API over de ML-samenvattingen (hoofdstukken en onderwerpen).",
     version="1.0.0",
 )
