@@ -2,7 +2,7 @@
   "id": "classification-practice",
   "chapter": "ch5",
   "title": "Practice: loss & metrics for classification",
-  "intro": "The sequel to the practice assignment: build up a logistic regression model piece by piece — from decision boundary via probabilities to binary cross-entropy — and implement accuracy, precision, recall and F1 from scratch.",
+  "intro": "The sequel to the practice assignment, worked out: build up a logistic regression model piece by piece — from decision boundary via probabilities to binary cross-entropy — with complete answers for accuracy, precision, recall and F1 from scratch, runnable right in the browser.",
   "level": 2,
   "sections": [
     {
@@ -44,7 +44,7 @@
       ]
     },
     {
-      "title": "Binary cross-entropy: theory & coding",
+      "title": "Binary cross-entropy: theory & worked solution",
       "blocks": [
         {
           "type": "text",
@@ -58,22 +58,14 @@
         },
         {
           "type": "text",
-          "html": "<p> Your turn. The function receives the true classes and the predicted probabilities. The two <code>np.clip</code> lines prevent <code>log(0)</code> — leave them in! Fill in the rest and run the test cell. </p>"
+          "html": "<p> The worked solution below is the complete answer. The function receives the true classes and the predicted probabilities. The two <code>np.clip</code> lines prevent <code>log(0)</code> — and the rest is the formula from the theory, copied over directly. At the bottom is the check against the expected value from the assignment. </p>"
         },
         {
           "type": "code",
           "language": "python",
-          "caption": "assignment — fill in bce",
+          "caption": "worked solution — the answer",
           "runnable": true,
-          "editable": true,
-          "source": "import numpy as np\n\ndef bce(y_true, y_pred):\n\n    # DO NOT CHANGE THESE TWO LINES!\n    ##############################################\n    epsilon = 1e-15\n    y_pred = np.clip(y_pred, epsilon, 1 - epsilon)\n    ##############################################\n\n    # YOUR CODE HERE\n\n    return # YOUR CODE HERE\n"
-        },
-        {
-          "type": "code",
-          "language": "python",
-          "caption": "test cell — do not modify",
-          "runnable": true,
-          "source": "import numpy as np\n\n# DO NOT MODIFY THIS CELL!\ndef _check(name, value, expected):\n    ok = value is not None and abs(value - expected) < 1e-9\n    print(('PASSED    ' if ok else 'NOT YET    ') + name,\n          '->', value, '(expected:', expected, ')')\n\ny_true = np.array([1.0, 0.0, 1.0, 0.0])\ny_pred = np.array([0.9, 0.1, 0.8, 0.3])\n\n_check('bce', bce(y_true, y_pred), 0.19763488164214868)\n"
+          "source": "import numpy as np\n\ndef bce(y_true, y_pred):\n    # prevent log(0) — these two lines are fixed\n    epsilon = 1e-15\n    y_pred = np.clip(y_pred, epsilon, 1 - epsilon)\n\n    # the formula from the theory, copied over directly\n    return -np.mean(y_true * np.log(y_pred) + (1 - y_true) * np.log(1 - y_pred))\n\n# check with the values from the assignment\ny_true = np.array([1.0, 0.0, 1.0, 0.0])\ny_pred = np.array([0.9, 0.1, 0.8, 0.3])\n\nprint('bce:', bce(y_true, y_pred))  # expected 0.19763488164214868\n"
         }
       ]
     },
@@ -124,31 +116,23 @@
       ]
     },
     {
-      "title": "Coding: accuracy, precision, recall & F1",
+      "title": "Worked out: accuracy, precision, recall & F1",
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Fill in the four functions. Each takes the <em>true classes</em> and the <em>predicted classes</em> (0/1, not probabilities — the threshold has already been applied). Compare with the confusion matrix: count the TPs, FPs, TNs and FNs. </p>"
+          "html": "<p> The four functions, fully worked out. Each takes the <em>true classes</em> and the <em>predicted classes</em> (0/1, not probabilities — the threshold has already been applied). As in the confusion matrix: count the TPs, FPs, TNs and FNs. At the bottom the cell checks itself against the expected values. </p>"
         },
         {
           "type": "code",
           "language": "python",
-          "caption": "assignment — fill in the four metrics",
+          "caption": "worked solution — the answer",
           "runnable": true,
-          "editable": true,
-          "source": "import numpy as np\n\n# Accuracy\ndef accuracy(y_true, y_pred):\n    # YOUR CODE HERE\n    return # YOUR CODE HERE\n\n# Precision\ndef precision(y_true, y_pred):\n    # YOUR CODE HERE\n    return # YOUR CODE HERE\n\n# Recall\ndef recall(y_true, y_pred):\n    # YOUR CODE HERE\n    return # YOUR CODE HERE\n\n# F1 Score\ndef f1(y_true, y_pred):\n    # YOUR CODE HERE\n    return # YOUR CODE HERE\n"
-        },
-        {
-          "type": "code",
-          "language": "python",
-          "caption": "test cell — do not modify",
-          "runnable": true,
-          "source": "import numpy as np\n\n# DO NOT MODIFY THIS CELL!\ndef _check(name, value, expected):\n    ok = value is not None and abs(value - expected) < 1e-9\n    print(('PASSED    ' if ok else 'NOT YET    ') + name,\n          '->', value, '(expected:', expected, ')')\n\ny_true = np.array([1, 0, 1, 1, 0, 0, 1, 0, 1, 1])\ny_pred = np.array([1, 1, 0, 1, 0, 1, 1, 0, 1, 0])\n\n# TP=4, FP=2, TN=2, FN=2\n_check('accuracy', accuracy(y_true, y_pred), 0.6)\n_check('precision', precision(y_true, y_pred), 0.6666666666666666)\n_check('recall   ', recall(y_true, y_pred), 0.6666666666666666)\n_check('f1      ', f1(y_true, y_pred), 0.6666666666666666)\n"
+          "source": "import numpy as np\n\ndef accuracy(y_true, y_pred):\n    # the share of predictions that are correct\n    return np.mean(y_true == y_pred)\n\ndef precision(y_true, y_pred):\n    tp = np.sum((y_true == 1) & (y_pred == 1))\n    fp = np.sum((y_true == 0) & (y_pred == 1))\n    return tp / (tp + fp)\n\ndef recall(y_true, y_pred):\n    tp = np.sum((y_true == 1) & (y_pred == 1))\n    fn = np.sum((y_true == 1) & (y_pred == 0))\n    return tp / (tp + fn)\n\ndef f1(y_true, y_pred):\n    p = precision(y_true, y_pred)\n    r = recall(y_true, y_pred)\n    return 2 * p * r / (p + r)\n\n# check with the values from the assignment\ny_true = np.array([1, 0, 1, 1, 0, 0, 1, 0, 1, 1])\ny_pred = np.array([1, 1, 0, 1, 0, 1, 1, 0, 1, 0])\n\n# TP=4, FP=2, TN=2, FN=2\nprint('accuracy :', accuracy(y_true, y_pred))   # expected 0.6\nprint('precision:', precision(y_true, y_pred))  # expected 0.6666666666666666\nprint('recall   :', recall(y_true, y_pred))     # expected 0.6666666666666666\nprint('f1       :', f1(y_true, y_pred))         # expected 0.6666666666666666\n"
         },
         {
           "type": "callout",
           "kind": "tip",
-          "html": "<p> Hint: first count TP, FP, TN and FN with boolean masks, e.g. <code>tp = np.sum((y_true == 1) &amp; (y_pred == 1))</code>. Mind division by zero: with no positive predictions at all, precision is undefined — in the test above that is not a problem. </p>"
+          "html": "<p> How it works: count TP, FP, TN and FN with boolean masks, e.g. <code>tp = np.sum((y_true == 1) &amp; (y_pred == 1))</code>. Mind division by zero: with no positive predictions at all, precision is undefined — in the check above that is not a problem. </p>"
         }
       ]
     },

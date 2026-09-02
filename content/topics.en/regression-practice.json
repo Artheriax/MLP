@@ -2,7 +2,7 @@
   "id": "regression-practice",
   "chapter": "ch5",
   "title": "Practice: loss functions & metrics for regression",
-  "intro": "Hands-on: implement MSE, RMSE, MAE and R&sup2; from scratch, fit a regression line with sliders and discover why one loss fits better than another. Based on the course assignment <em>Loss functions &amp; metrics</em>.",
+  "intro": "The practice assignment, worked out: MSE, RMSE, MAE and R&sup2; from scratch with complete answers you can run in the browser, a regression line to drag with sliders, and an explanation of why one loss fits better than another. Based on the course assignment <em>Loss functions &amp; metrics</em>.",
   "level": 2,
   "sections": [
     {
@@ -93,46 +93,30 @@
         },
         {
           "type": "text",
-          "html": "<p> <strong>Questions:</strong> (1) compute the predictions for each of the five cars; (2) then compute the MSE, RMSE and MAE of the model. Fill in your code in the editable field and press <em>Run</em> — the dataset is already there for you. </p>"
+          "html": "<p> <strong>Questions (from the assignment):</strong> (1) compute the predictions for each of the five cars; (2) then compute the MSE, RMSE and MAE of the model. The worked solution below is the complete answer — press <em>Run</em> to execute the code and see all results right in your browser. </p>"
         },
         {
           "type": "code",
           "language": "python",
-          "caption": "exercise — fill in and run",
-          "runnable": true,
-          "editable": true,
-          "source": "import numpy as np\n\n# rows = cars, columns = [X1, X2, X3]\nX = np.array([[1,  5, 1],\n              [3, 12, 2],\n              [4, 15, 1],\n              [7, 23, 3],\n              [9, 30, 2]], dtype=float)\n\ny = np.array([18, 12, 10, 6, 4], dtype=float)  # price (x1000 EUR)\n\n# trained parameters\nb0, b1, b2, b3 = 20.0, -1.0, -0.5, -2.0\n\n# 1) predictions for each car (y_hat)\n# hint: X @ np.array([b1, b2, b3]) + b0\n# YOUR CODE HERE\n\n# 2) MSE, RMSE and MAE of the model\n# YOUR CODE HERE\n"
-        },
-        {
-          "type": "code",
-          "language": "python",
-          "caption": "worked solution — try it yourself first!",
+          "caption": "worked solution — the answer",
           "runnable": true,
           "source": "import numpy as np\n\nX = np.array([[1,  5, 1],\n              [3, 12, 2],\n              [4, 15, 1],\n              [7, 23, 3],\n              [9, 30, 2]], dtype=float)\ny = np.array([18, 12, 10, 6, 4], dtype=float)\nb0, b1, b2, b3 = 20.0, -1.0, -0.5, -2.0\n\n# 1) predictions\ny_hat = b0 + b1*X[:, 0] + b2*X[:, 1] + b3*X[:, 2]\nprint('predictions:', y_hat)\n\n# 2) loss metrics\nmse_waarde  = np.mean((y - y_hat)**2)\nrmse_waarde = np.sqrt(mse_waarde)\nmae_waarde  = np.mean(np.abs(y - y_hat))\nprint('MSE :', round(mse_waarde, 2))\nprint('RMSE:', round(rmse_waarde, 2))\nprint('MAE :', round(mae_waarde, 2))\n\n# extra: explained variance\nr2_waarde = 1 - np.sum((y - y_hat)**2) / np.sum((y - y.mean())**2)\nprint('R2  :', round(r2_waarde, 2), '(negative = worse than predicting the mean!)')"
         }
       ]
     },
     {
-      "title": "Coding: MSE, RMSE and MAE from scratch",
+      "title": "Worked out: MSE, RMSE and MAE from scratch",
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Time to write the functions yourself. Each function takes two parameters: the <em>true</em> target values and the <em>predicted</em> target values (which can come from any regression model). Fill in the <code># YOUR CODE HERE</code> spots and then run the test cell below to check whether your implementation is correct. </p>"
+          "html": "<p> The functions from scratch, fully worked out. Each function takes two parameters: the <em>true</em> target values and the <em>predicted</em> target values (which can come from any regression model). At the bottom of the cell the code checks itself against the expected values from the assignment. </p>"
         },
         {
           "type": "code",
           "language": "python",
-          "caption": "assignment — fill in the three functions",
+          "caption": "worked solution — the answer",
           "runnable": true,
-          "editable": true,
-          "source": "import numpy as np\n\ndef mse(y_true, y_pred):\n    # YOUR CODE HERE\n    return # YOUR CODE HERE\n\ndef rmse(y_true, y_pred):\n    # YOUR CODE HERE\n    return # YOUR CODE HERE\n\ndef mae(y_true, y_pred):\n    # YOUR CODE HERE\n    return # YOUR CODE HERE\n"
-        },
-        {
-          "type": "code",
-          "language": "python",
-          "caption": "test cell — do not modify",
-          "runnable": true,
-          "source": "import numpy as np\n\n# DO NOT MODIFY THIS CELL!\ndef _check(name, value, expected):\n    ok = value is not None and abs(value - expected) < 1e-9\n    print(('PASSED    ' if ok else 'NOT YET    ') + name,\n          '->', value, '(expected:', expected, ')')\n\ny_true = np.array([3.0, -0.5, 2.0, 7.0])\ny_pred = np.array([2.5,  0.0, 2.0, 8.0])\n\n_check('mse ', mse(y_true, y_pred), 0.375)\n_check('rmse', rmse(y_true, y_pred), 0.6123724356957945)\n_check('mae ', mae(y_true, y_pred), 0.5)\n"
+          "source": "import numpy as np\n\ndef mse(y_true, y_pred):\n    # mean of the squared errors\n    return np.mean((y_true - y_pred)**2)\n\ndef rmse(y_true, y_pred):\n    # square root of the mse — same unit as the target\n    return np.sqrt(mse(y_true, y_pred))\n\ndef mae(y_true, y_pred):\n    # mean of the absolute errors\n    return np.mean(np.abs(y_true - y_pred))\n\n# check with the values from the assignment\ny_true = np.array([3.0, -0.5, 2.0, 7.0])\ny_pred = np.array([2.5,  0.0, 2.0, 8.0])\n\nprint('mse :', mse(y_true, y_pred))   # expected 0.375\nprint('rmse:', rmse(y_true, y_pred))  # expected 0.6123724356957945\nprint('mae :', mae(y_true, y_pred))   # expected 0.5\n"
         }
       ]
     },
@@ -181,17 +165,9 @@
         {
           "type": "code",
           "language": "python",
-          "caption": "assignment — fill in r2_score",
+          "caption": "worked solution — the answer",
           "runnable": true,
-          "editable": true,
-          "source": "import numpy as np\n\ndef r2_score(y_true, y_pred):\n    # YOUR CODE HERE\n    return # YOUR CODE HERE\n"
-        },
-        {
-          "type": "code",
-          "language": "python",
-          "caption": "test cell — do not modify",
-          "runnable": true,
-          "source": "import numpy as np\n\n# DO NOT MODIFY THIS CELL!\ndef _check(name, value, expected):\n    ok = value is not None and abs(value - expected) < 1e-9\n    print(('PASSED    ' if ok else 'NOT YET    ') + name,\n          '->', value, '(expected:', expected, ')')\n\ny_true = np.array([3.0, -0.5, 2.0, 7.0])\ny_pred = np.array([2.5,  0.0, 2.0, 8.0])\n\n_check('r2_score', r2_score(y_true, y_pred), 0.9486081370449679)\n"
+          "source": "import numpy as np\n\ndef r2_score(y_true, y_pred):\n    # numerator: spread around the predictions (the model's errors)\n    ss_res = np.sum((y_true - y_pred)**2)\n    # denominator: spread around the mean (the naive prediction)\n    ss_tot = np.sum((y_true - y_true.mean())**2)\n    return 1 - ss_res / ss_tot\n\n# check with the values from the assignment\ny_true = np.array([3.0, -0.5, 2.0, 7.0])\ny_pred = np.array([2.5,  0.0, 2.0, 8.0])\n\nprint('r2_score:', r2_score(y_true, y_pred))  # expected 0.9486081370449679\n"
         }
       ]
     },

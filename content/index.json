@@ -1,11 +1,17 @@
 {
   "site": {
     "title": "MLP — Machine Learning Practice",
-    "description": "Machine Learning stof helder samengevat: scikit-learn, loss functions, logistic regression en SVM's — met formules, diagrammen, code-voorbeelden die je in de browser kunt uitvoeren en geheugensteuntjes voor elke stap.",
-    "statFormulas": "±39",
-    "statCode": "28"
+    "description": "Machine Learning stof helder samengevat: van de eerste basisbegrippen tot scikit-learn, loss functions, logistic regression en SVM's — met formules, diagrammen, code-voorbeelden die je in de browser kunt uitvoeren en geheugensteuntjes voor elke stap.",
+    "statFormulas": "±41",
+    "statCode": "27"
   },
   "chapters": [
+    {
+      "id": "ch0",
+      "name": "Basis & begrippen",
+      "accent": "yellow",
+      "description": "van ‘wat is ML?’ tot data, features en de workflow"
+    },
     {
       "id": "ch1",
       "name": "Scikit-learn basis",
@@ -38,6 +44,42 @@
     }
   ],
   "topics": [
+    {
+      "id": "ml-basics",
+      "chapter": "ch0",
+      "title": "Wat is machine learning?",
+      "summary": "Van regels schrijven naar regels leren: de definitie (Mitchell's T, E en P), wanneer je ML wel en niet inzet, en generaliseren als kernidee.",
+      "level": 1,
+      "file": "topics/ml-basics.json",
+      "keywords": "machine learning, definitie, arthur samuel, tom mitchell, generaliseren, ervaring, taak, prestatiemaat, regels, overfitting"
+    },
+    {
+      "id": "ml-types",
+      "chapter": "ch0",
+      "title": "De drie soorten machine learning",
+      "summary": "Supervised, unsupervised en reinforcement learning: welke data elk nodig heeft, welke taken erbij horen en hoe je met twee vragen de juiste familie kiest.",
+      "level": 1,
+      "file": "topics/ml-types.json",
+      "keywords": "supervised, unsupervised, reinforcement, clustering, kmeans, labels, gelabelde data, soorten leren, pca, anomaliedetectie"
+    },
+    {
+      "id": "data-features",
+      "chapter": "ch0",
+      "title": "Data, features & labels",
+      "summary": "Rijen zijn samples, kolommen zijn features; X en y in scikit-learn, numerieke en categorische features, en waarom train/test-splitsen heilig is.",
+      "level": 1,
+      "file": "topics/data-features.json",
+      "keywords": "data, features, labels, x, y, kolommen, rijen, samples, one-hot, schalen, train test split, target"
+    },
+    {
+      "id": "ml-workflow-basics",
+      "chapter": "ch0",
+      "title": "De ML-workflow van begin tot eind",
+      "summary": "De acht stappen van vraag tot model, under- en overfitting interactief in beeld, en het fit–predict–score-drietal van scikit-learn.",
+      "level": 1,
+      "file": "topics/ml-workflow-basics.json",
+      "keywords": "workflow, stappen, fit, predict, score, underfitting, overfitting, modelcomplexiteit, trainfout, testfout, basislijn"
+    },
     {
       "id": "supervised-learning",
       "chapter": "ch1",
@@ -150,19 +192,19 @@
       "id": "regression-practice",
       "chapter": "ch5",
       "title": "Practice: loss functies & metrics bij regressie",
-      "summary": "Zelf coderen: MSE, RMSE, MAE en R² vanaf nul, de autoprijs-opgave en interactieve regressielijnen met outliers.",
+      "summary": "Compleet uitgewerkt: MSE, RMSE, MAE en R&sup2; vanaf nul, de autoprijs-opgave met antwoord en interactieve regressielijnen met outliers.",
       "level": 2,
       "file": "topics/regression-practice.json",
-      "keywords": "practice, opdracht, mse, rmse, mae, r2, verklaarde variantie, regressie, outlier, visualiseren"
+      "keywords": "practice, opdracht, uitwerking, antwoord, mse, rmse, mae, r2, verklaarde variantie, regressie, outlier, visualiseren"
     },
     {
       "id": "classification-practice",
       "chapter": "ch5",
       "title": "Practice: loss & metrics bij classificatie",
-      "summary": "Van beslissingsgrens tot binaire cross-entropy, en accuracy, precision, recall en F1 zelf implementeren — met interactieve scheidingslijnen.",
+      "summary": "Van beslissingsgrens tot binaire cross-entropy, en accuracy, precision, recall en F1 volledig uitgewerkt — met interactieve scheidingslijnen.",
       "level": 2,
       "file": "topics/classification-practice.json",
-      "keywords": "practice, opdracht, bce, cross entropy, accuracy, precision, recall, f1, confusion matrix, beslissingsgrens"
+      "keywords": "practice, opdracht, uitwerking, antwoord, bce, cross entropy, accuracy, precision, recall, f1, confusion matrix, beslissingsgrens"
     }
   ]
 }

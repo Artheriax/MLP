@@ -1,7 +1,7 @@
 /* ============================================================
    MLP — blocks.js
    Renderers voor contentblokken:
-   text · formula (KaTeX) · code (copy + uitvoeren, evt. bewerkbaar) ·
+   text · formula (KaTeX) · code (kopieerbaar voorbeeld) ·
    callout · table · plot (interactieve SVG-grafiek met curven,
    datapunten en één of meerdere sliders)
    ============================================================ */
@@ -23,49 +23,38 @@ window.MLP = window.MLP || {};
   MLP.blocks = { accentColorOf };
 
   /* ============================================================
-     Code-veld (kopieren + uitvoeren; optioneel bewerkbaar)
+     Code-veld — voorbeeld met Copy- en Uitvoeren-knop.
+     Uitvoeren draait de code in de browser via Pyodide (js/runner.js).
+     Er zijn geen invul-oefeningen meer: velden `runnable` geeft een
+     Run-knop, `editable` uit oudere content wordt genegeerd.
      ============================================================ */
 
   function renderCodeBlock(block, ctx) {
     const field = el("div", "code-field block");
     field.style.setProperty("--accent", accentColorOf(ctx));
 
-    let source = block.source || "";
+    const source = block.source || "";
     const lang = block.language || "python";
     const runnable = block.runnable === true;
-    const editable = block.editable === true;
 
     /* --- kopbalk --- */
     const head = el("div", "code-head");
     head.appendChild(el("span", "code-lang", escapeHtml(lang)));
     if (block.caption) head.appendChild(el("span", "code-caption", escapeHtml(block.caption)));
 
-    const actions = el("div", "code-actions");
-
-    /* broncode als textarea (bewerkbaar) of pre/code (vast) */
-    let codeArea = null; /* textarea bij editable */
-    let currentSource = () => source;
-    if (editable) {
-      field.classList.add("is-editable");
-      codeArea = document.createElement("textarea");
-      codeArea.className = "code-edit";
-      codeArea.value = source;
-      codeArea.spellcheck = false;
-      codeArea.setAttribute("aria-label", block.caption || "code");
-      /* Tab = 4 spaties i.p.v. focus verliezen */
-      codeArea.addEventListener("keydown", (ev) => {
-        if (ev.key === "Tab") {
-          ev.preventDefault();
-          const s = codeArea;
-          const start = s.selectionStart;
-          s.value = s.value.slice(0, start) + "    " + s.value.slice(s.selectionEnd);
-          s.selectionStart = s.selectionEnd = start + 4;
-        }
-      });
-      currentSource = () => codeArea.value;
-      /* kleine hint dat dit veld bewerkbaar is */
-      head.appendChild(el("span", "code-caption edit-badge", escapeHtml(t("editable_hint"))));
+    /* --- uitvoerpaneel (alleen bij uitvoerbare code) --- */
+    const output = el("div", "code-output");
+    if (runnable) {
+      const label = el("div", "output-label", '<span class="spinner" aria-hidden="true"></span><span class="txt">' + escapeHtml(t("output_label")) + "</span>");
+      const outPre = el("pre");
+      outPre.setAttribute("aria-live", "polite");
+      output.appendChild(label);
+      output.appendChild(outPre);
+      const hint = el("div", "output-hint", escapeHtml(t("output_hint")));
+      output.appendChild(hint);
     }
+
+    const actions = el("div", "code-actions");
 
     if (runnable) {
       const runBtn = el(
@@ -78,7 +67,7 @@ window.MLP = window.MLP || {};
       runBtn.setAttribute("aria-label", t("btn_run_aria"));
       actions.appendChild(runBtn);
       runBtn.addEventListener("click", () => {
-        MLP.runner.runInField(runBtn, output, currentSource());
+        MLP.runner.runInField(runBtn, output, source);
       });
     }
 
@@ -96,7 +85,7 @@ window.MLP = window.MLP || {};
       const oldLabel = copyBtn.innerHTML;
       let copied = false;
       try {
-        await copyToClipboard(currentSource());
+        await copyToClipboard(source);
         copied = true;
       } catch (e) {
         /* beide methoden faalden */
@@ -108,7 +97,7 @@ window.MLP = window.MLP || {};
         /* laatste redmiddel: code selecteren, zodat Ctrl+C zeker werkt */
         try {
           const range = document.createRange();
-          range.selectNodeContents(codeArea ? codeArea : code);
+          range.selectNodeContents(code);
           const sel = window.getSelection();
           sel.removeAllRanges();
           sel.addRange(range);
@@ -127,31 +116,14 @@ window.MLP = window.MLP || {};
     head.appendChild(actions);
     field.appendChild(head);
 
-    /* --- uitvoerpaneel (alleen bij uitvoerbare code) --- */
-    const output = el("div", "code-output");
-    if (runnable) {
-      const label = el("div", "output-label", '<span class="spinner" aria-hidden="true"></span><span class="txt">' + escapeHtml(t("output_label")) + "</span>");
-      const outPre = el("pre");
-      outPre.setAttribute("aria-live", "polite");
-      output.appendChild(label);
-      output.appendChild(outPre);
-      const hint = el("div", "output-hint", escapeHtml(t("output_hint")));
-      output.appendChild(hint);
-    }
-
     /* --- code --- */
-    let code = null;
-    if (editable) {
-      field.appendChild(codeArea);
-    } else {
-      const pre = el("pre");
-      code = el("code", null, escapeHtml(source));
-      code.className = "language-" + escapeHtml(lang);
-      pre.appendChild(code);
-      field.appendChild(pre);
-    }
+    const pre = el("pre");
+    const code = el("code", null, escapeHtml(source));
+    code.className = "language-" + escapeHtml(lang);
+    pre.appendChild(code);
+    field.appendChild(pre);
 
-    if (!editable && window.hljs) {
+    if (window.hljs) {
       try {
         window.hljs.highlightElement(code);
       } catch (e) {

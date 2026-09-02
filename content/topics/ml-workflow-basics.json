@@ -1,0 +1,197 @@
+{
+  "id": "ml-workflow-basics",
+  "chapter": "ch0",
+  "title": "De ML-workflow van begin tot eind",
+  "intro": "Van ruwe vraag naar werkend model: de acht stappen van een ML-project, under- en overfitting interactief in beeld, en het fit–predict–score-drietal dat in heel scikit-learn hetzelfde klinkt.",
+  "level": 1,
+  "sections": [
+    {
+      "title": "De acht stappen in één overzicht",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Een ML-project is geen rechte lijn maar een <strong>lus</strong>: je evalueert, leert en gaat terug naar een eerdere stap. De volgorde hieronder is de kapstok waar elk project — van schoolopdracht tot productiesysteem — aan hangt. De valkuilen-kolom is minstens zo belangrijk als de stappen zelf. </p>"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Stap",
+            "Wat gebeurt er",
+            "Typische valkuil"
+          ],
+          "rows": [
+            [
+              "1. Vraag formuleren",
+              "maak de taak concreet en meetbaar (T, E, P)",
+              "“we willen iets met AI”"
+            ],
+            [
+              "2. Data verzamelen",
+              "genoeg én representatieve samples",
+              "te weinig data, of data met bias"
+            ],
+            [
+              "3. Verkennen &amp; schoonmaken",
+              "missende waarden, outliers, types checken",
+              "vuile data negeren"
+            ],
+            [
+              "4. Features klaarzetten",
+              "relevante kolommen kiezen, encoden, schalen",
+              "irrelevante of lekkende features"
+            ],
+            [
+              "5. Model kiezen",
+              "begin simpel: lineair of KNN",
+              "meteen het complexste model"
+            ],
+            [
+              "6. Trainen",
+              "<code>fit</code> op de trainingsdata",
+              "per ongeluk ook op testdata trainen"
+            ],
+            [
+              "7. Evalueren",
+              "<code>score</code> op testdata, kies de juiste metric",
+              "alleen accuracy bij scheve klassen"
+            ],
+            [
+              "8. Verbeteren &amp; gebruiken",
+              "itereren: features, model, hyperparameters",
+              "één poging doen en stoppen"
+            ]
+          ]
+        },
+        {
+          "type": "text",
+          "html": "<p> De evaluatie in stap 7 stuurt bijna altijd terug: slechte score? Dan kies je andere features (stap 4), een ander model (stap 5) of je verzamelt betere data (stap 2). Ervaren data scientists brengen het merendeel van hun tijd door in stap 2 tot en met 4 — niet in het kiezen van exotische modellen. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Under- en overfitting in beeld",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Twee manieren waarop een model kan mislukken: <strong>underfitting</strong> — het model is te simpel en scoort slecht op train- én testdata — en <strong>overfitting</strong> — het model is te complex, leert de ruis uit de trainingsdata uit het hoofd en verrast je met een slechte test-score. Tussenin zit de sweet spot: voldoende complex om het patroon te vatten, eenvoudig genoeg om te generaliseren. </p>"
+        },
+        {
+          "type": "text",
+          "html": "<p> De grafiek hieronder tekent beide fouten tegen de modelcomplexiteit. De trainfout daalt altijd (complexer = beter kunnen nabouwen). De testfout daalt eerst mee en stijgt dan: dáár begint het overfitten. Schuif met de sliders om te zien hoe een gevoeliger model (hogere “ruisgevoeligheid”) of een vroegere “knik” de U-vorm versterkt. </p>"
+        },
+        {
+          "type": "plot",
+          "title": "Train- en testfout tegen modelcomplexiteit",
+          "subtitle": "De U-vorm van de testfout is het handelsmerk van overfitting. Schuif met de sliders.",
+          "xrange": [
+            0,
+            10
+          ],
+          "yrange": [
+            0,
+            1.1
+          ],
+          "xlabel": "modelcomplexiteit →",
+          "curves": [
+            {
+              "expr": "0.85*Math.exp(-0.45*x) + 0.1",
+              "label": "trainfout",
+              "color": "cyan"
+            },
+            {
+              "expr": "0.85*Math.exp(-0.45*x) + 0.1 + ruis*Math.max(0, x - knik)*Math.max(0, x - knik)/8",
+              "label": "testfout",
+              "color": "magenta"
+            }
+          ],
+          "sliders": [
+            {
+              "param": "ruis",
+              "min": 0.2,
+              "max": 2,
+              "step": 0.05,
+              "value": 1,
+              "label": "ruisgevoeligheid (overfit)"
+            },
+            {
+              "param": "knik",
+              "min": 1,
+              "max": 6,
+              "step": 0.25,
+              "value": 3,
+              "label": "complexiteit waar overfit begint"
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Diagnose",
+            "Trainfout",
+            "Testfout",
+            "Oplossing"
+          ],
+          "rows": [
+            [
+              "underfitting",
+              "hoog",
+              "hoog",
+              "complexer model, méér of betere features"
+            ],
+            [
+              "goede fit",
+              "laag",
+              "laag (iets hoger dan train)",
+              "— je zit goed"
+            ],
+            [
+              "overfitting",
+              "zeer laag",
+              "hoog",
+              "meer data, simpeler model, regularisatie"
+            ]
+          ]
+        },
+        {
+          "type": "callout",
+          "kind": "tip",
+          "html": "<p> In de praktijk is dit het diagnose-gereedschap bij stap 7 van de workflow: <em>vergelijk train- en test-score</em>. Klein verschil = gezond model; groot verschil = overfitting; beide slecht = underfitting. Regularisatie (hoofdstuk 3) is de klassieke medicijn tegen overfitting. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Fit, predict en score",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Eén van de krachten van scikit-learn: <strong>elk model heeft dezelfde drie methoden</strong>. <code>fit(X_train, y_train)</code> traint — het model leert zijn parameters. <code>predict(X)</code> past het model toe op nieuwe samples. <code>score(X_test, y_test)</code> beoordeelt de kwaliteit op onbekende data. Of je nu KNN, LogisticRegression of een SVM kiest: dit drietal verandert niet. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "het drietal in actie",
+          "runnable": true,
+          "source": "import numpy as np\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.linear_model import LinearRegression\n\nX = np.array([[1,  5, 1], [3, 12, 2], [4, 15, 1],\n              [7, 23, 3], [9, 30, 2], [2,  9, 1],\n              [6, 20, 3], [8, 26, 2]], dtype=float)\ny = np.array([18, 12, 10, 6, 4, 15, 8, 5], dtype=float)\n\nX_train, X_test, y_train, y_test = train_test_split(\n    X, y, test_size=0.25, random_state=0)\n\nmodel = LinearRegression()\nmodel.fit(X_train, y_train)                      # 1) leren\nprint('coefficienten  :', model.coef_.round(2))\nprint('intercept      :', model.intercept_.round(2))\nprint('voorspelling   :', model.predict(X_test).round(1))          # 2) toepassen\nprint('test-score (R2):', model.score(X_test, y_test).round(2))    # 3) beoordelen\n"
+        },
+        {
+          "type": "text",
+          "html": "<p> De coefficienten die <code>fit</code> oplevert vormen samen de voorspellingsvergelijking — precies de <em>regels</em> die het model zelf heeft geleerd. Hoe zo'n vergelijking eruitziet, welke loss-functie hem traint en hoe je hem regulariseert, is het onderwerp van de hoofdstukken 1 tot en met 4 van deze site. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Checklist voor je eigen project",
+      "blocks": [
+        {
+          "type": "callout",
+          "kind": "tip",
+          "html": "<p> <strong>Checklist vóór je begint te coderen:</strong> </p> <ul> <li>Kan ik mijn vraag formuleren als voorspelling (getal of categorie)? </li> <li>Heb ik data waarin het antwoord echt zit — en genoeg rijen? </li> <li>Weet ik hoe ik succes ga meten (welke metric, welke drempel)? </li> <li>Heb ik train- en testdata gesplitst vóór alles andere? </li> <li>Begin ik met een simpel model als basislijn? </li> </ul>"
+        },
+        {
+          "type": "text",
+          "html": "<p> Met deze vier basis-onderwerpen heb je het fundament: je weet wat ML is, welke families er bestaan, hoe data eruitziet en welke stappen een project doorloopt. De rest van de site bouwt hierop voort — hoofdstuk 1 duikt direct in scikit-learn, hoofdstuk 2 opent de wiskunde, en de hoofdstukken 3 en 4 behandelen de twee classifiers die centraal staan. </p>"
+        }
+      ]
+    }
+  ]
+}

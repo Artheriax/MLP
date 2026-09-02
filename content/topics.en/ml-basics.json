@@ -1,0 +1,172 @@
+{
+  "id": "ml-basics",
+  "chapter": "ch0",
+  "title": "What is machine learning?",
+  "intro": "The foundation of this site: what machine learning actually is, how it differs from ordinary programming, when you should and should not use it — and why generalising is the core concept that ties everything together.",
+  "level": 1,
+  "sections": [
+    {
+      "title": "From writing rules to learning rules",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> In <strong>traditional programming</strong> you write the rules yourself: a program is a list of instructions that turns input into output. That works excellently as long as you can write the rules down — computing taxes, sorting a list, validating a form. But for some problems that is impossible: how do you encode in rules what a cat in a photo is? Which combination of words, senders and links makes an email suspicious? </p>"
+        },
+        {
+          "type": "text",
+          "html": "<p> <strong>Machine learning flips this around.</strong> Instead of writing rules, you give the computer <em>examples</em> — data with the answers attached — and let the computer derive the rules itself. Pioneer Arthur Samuel (1959) called it: “the field of study that gives computers the ability to learn without being explicitly programmed”. Tom Mitchell (1997) made it measurable: a program <em>learns</em> from experience <em>E</em> with respect to task <em>T</em> and performance measure <em>P</em>, if its performance on <em>T</em>, as measured by <em>P</em>, improves with <em>E</em>. </p>"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "",
+            "Traditional programming",
+            "Machine learning"
+          ],
+          "rows": [
+            [
+              "<strong>you write</strong>",
+              "the rules (the algorithm)",
+              "almost nothing — the data speaks"
+            ],
+            [
+              "<strong>the computer learns</strong>",
+              "nothing",
+              "the rules: the <em>model</em>"
+            ],
+            [
+              "<strong>input</strong>",
+              "rules + data",
+              "data + answers (labels)"
+            ],
+            [
+              "<strong>output</strong>",
+              "answers",
+              "rules that predict <em>new</em> answers"
+            ]
+          ]
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p><strong>Example: the spam filter.</strong> Task <em>T</em>: classify emails as spam or not spam. Experience <em>E</em>: thousands of examples of emails that people have already labelled. Performance measure <em>P</em>: the fraction of emails classified correctly. If you can name these three for a problem, you have a well-defined ML problem on paper. </p>"
+        }
+      ]
+    },
+    {
+      "title": "When (not) to use machine learning",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Machine learning shines when the pattern is <em>complex</em> (faces, speech, behaviour), when there is <em>lots of data</em> to learn from, and when the environment <em>changes</em> (fraudsters adapt their tactics, so a model that keeps learning stays relevant). Recommendation systems, voice assistants and fraud detection are therefore classic ML applications. </p>"
+        },
+        {
+          "type": "text",
+          "html": "<p> But ML is a tool, not a goal. If the rule is simple and deterministic (salary under a collective agreement), ordinary code is better: faster, cheaper and fully explainable. If every decision must be legally justifiable (admission to a study programme), a black-box model is risky. And with little data a model rarely learns anything reliable. </p>"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Situation",
+            "ML suitable?",
+            "Why"
+          ],
+          "rows": [
+            [
+              "Automatically filtering spam emails",
+              "yes",
+              "complex pattern, many examples"
+            ],
+            [
+              "Computing a salary from the CAO rules",
+              "no",
+              "rules are known and deterministic"
+            ],
+            [
+              "Recognising faces in photos",
+              "yes",
+              "impossible to hand-code the rules"
+            ],
+            [
+              "Sorting a list alphabetically",
+              "no",
+              "a simple algorithm already exists"
+            ],
+            [
+              "Finding fraud in millions of transactions",
+              "yes",
+              "scale + changing pattern"
+            ],
+            [
+              "A decision you must explain to a judge",
+              "carefully",
+              "explainability and bias are hard requirements"
+            ]
+          ]
+        },
+        {
+          "type": "callout",
+          "kind": "warning",
+          "html": "<p> An ML model can make mistakes and can inherit biases from its data. Always evaluate on unseen data (see the topic <em>Data, features &amp; labels</em>) and keep a human in the loop for risky decisions. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Learning means generalising",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> The goal of a model is not to reproduce the training examples perfectly — any memory can do that. The goal is to <strong>generalise</strong>: make good predictions for data it has <em>never seen</em>. Think of a student practising with old exams: they should not memorise the answers to those old exams, but recognise the <em>underlying patterns</em> so the real exam goes well too. </p>"
+        },
+        {
+          "type": "text",
+          "html": "<p> In scikit-learn, training is called <em>fit</em> — you “fit” the model to the data. A model that scores perfectly on training data but poorly on new data has learned nothing: it memorises instead of understanding. That is called <strong>overfitting</strong>, and it is the classic pitfall of every ML beginner (and expert). Chapter 1 shows how to detect it with separate train and test data. </p>"
+        },
+        {
+          "type": "callout",
+          "kind": "tip",
+          "html": "<p> Remember this sentence: <em>a model that only performs well on data it has already seen has learned nothing.</em> Almost everything in the workflow — splitting, evaluating, regularising — exists to combat this problem. </p>"
+        }
+      ]
+    },
+    {
+      "title": "What kinds of problems does ML solve?",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> The most common ML tasks are predictions: predicting a <strong>number</strong> (regression) or predicting a <strong>category</strong> (classification). In addition, ML also looks for structure in unlabelled data (clustering). The table below is the quickest way to classify your own problem. </p>"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "What do you predict?",
+            "Type",
+            "Example"
+          ],
+          "rows": [
+            [
+              "a number",
+              "regression",
+              "price of a house or car, tomorrow's temperature"
+            ],
+            [
+              "a category",
+              "classification",
+              "spam/not spam, sick/not sick, cat/dog"
+            ],
+            [
+              "structure (without labels)",
+              "unsupervised",
+              "discovering customer groups in sales data"
+            ]
+          ]
+        },
+        {
+          "type": "callout",
+          "kind": "info",
+          "html": "<p> The rest of this site dives into <em>supervised learning</em> with scikit-learn: first the basic workflow and the classifiers, then the mathematics under the hood (loss functions), and finally logistic regression and support vector machines. </p>"
+        }
+      ]
+    }
+  ]
+}

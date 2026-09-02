@@ -1,0 +1,197 @@
+{
+  "id": "ml-workflow-basics",
+  "chapter": "ch0",
+  "title": "The ML workflow from start to finish",
+  "intro": "From raw question to working model: the eight steps of an ML project, under- and overfitting shown interactively, and the fit–predict–score trio that sounds the same across all of scikit-learn.",
+  "level": 1,
+  "sections": [
+    {
+      "title": "The eight steps at a glance",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> An ML project is not a straight line but a <strong>loop</strong>: you evaluate, learn, and go back to an earlier step. The order below is the coat rack every project hangs on — from school assignment to production system. The pitfall column is at least as important as the steps themselves. </p>"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Step",
+            "What happens",
+            "Typical pitfall"
+          ],
+          "rows": [
+            [
+              "1. Formulate the question",
+              "make the task concrete and measurable (T, E, P)",
+              "“we want to do something with AI”"
+            ],
+            [
+              "2. Collect data",
+              "enough and representative samples",
+              "too little data, or biased data"
+            ],
+            [
+              "3. Explore &amp; clean",
+              "missing values, outliers, types",
+              "ignoring dirty data"
+            ],
+            [
+              "4. Prepare features",
+              "choose relevant columns, encode, scale",
+              "irrelevant or leaking features"
+            ],
+            [
+              "5. Choose a model",
+              "start simple: linear or KNN",
+              "immediately picking the most complex model"
+            ],
+            [
+              "6. Train",
+              "<code>fit</code> on the training data",
+              "accidentally also training on test data"
+            ],
+            [
+              "7. Evaluate",
+              "<code>score</code> on test data, pick the right metric",
+              "only accuracy with skewed classes"
+            ],
+            [
+              "8. Improve &amp; deploy",
+              "iterate: features, model, hyperparameters",
+              "one attempt and stop"
+            ]
+          ]
+        },
+        {
+          "type": "text",
+          "html": "<p> The evaluation in step 7 almost always sends you back: bad score? Then you choose different features (step 4), a different model (step 5) or collect better data (step 2). Experienced data scientists spend most of their time in steps 2 through 4 — not in picking exotic models. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Under- and overfitting in one picture",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Two ways a model can fail: <strong>underfitting</strong> — the model is too simple and scores badly on train <em>and</em> test data — and <strong>overfitting</strong> — the model is too complex, memorises the noise in the training data and surprises you with a bad test score. In between lies the sweet spot: complex enough to capture the pattern, simple enough to generalise. </p>"
+        },
+        {
+          "type": "text",
+          "html": "<p> The chart below plots both errors against model complexity. The training error always goes down (more complex = better able to imitate). The test error follows at first and then rises: that is where overfitting begins. Drag the sliders to see how a more sensitive model (higher “noise sensitivity”) or an earlier “bend” strengthens the U-shape. </p>"
+        },
+        {
+          "type": "plot",
+          "title": "Train and test error against model complexity",
+          "subtitle": "The U-shape of the test error is the hallmark of overfitting. Drag the sliders.",
+          "xrange": [
+            0,
+            10
+          ],
+          "yrange": [
+            0,
+            1.1
+          ],
+          "xlabel": "model complexity →",
+          "curves": [
+            {
+              "expr": "0.85*Math.exp(-0.45*x) + 0.1",
+              "label": "train error",
+              "color": "cyan"
+            },
+            {
+              "expr": "0.85*Math.exp(-0.45*x) + 0.1 + ruis*Math.max(0, x - knik)*Math.max(0, x - knik)/8",
+              "label": "test error",
+              "color": "magenta"
+            }
+          ],
+          "sliders": [
+            {
+              "param": "ruis",
+              "min": 0.2,
+              "max": 2,
+              "step": 0.05,
+              "value": 1,
+              "label": "noise sensitivity (overfit)"
+            },
+            {
+              "param": "knik",
+              "min": 1,
+              "max": 6,
+              "step": 0.25,
+              "value": 3,
+              "label": "complexity where overfit starts"
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Diagnosis",
+            "Train error",
+            "Test error",
+            "Solution"
+          ],
+          "rows": [
+            [
+              "underfitting",
+              "high",
+              "high",
+              "more complex model, more or better features"
+            ],
+            [
+              "good fit",
+              "low",
+              "low (slightly above train)",
+              "— you are doing well"
+            ],
+            [
+              "overfitting",
+              "very low",
+              "high",
+              "more data, simpler model, regularisation"
+            ]
+          ]
+        },
+        {
+          "type": "callout",
+          "kind": "tip",
+          "html": "<p> In practice this is the diagnostic tool for step 7 of the workflow: <em>compare train and test score</em>. Small gap = healthy model; large gap = overfitting; both bad = underfitting. Regularisation (chapter 3) is the classic remedy against overfitting. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Fit, predict and score",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> One of the strengths of scikit-learn: <strong>every model has the same three methods</strong>. <code>fit(X_train, y_train)</code> trains — the model learns its parameters. <code>predict(X)</code> applies the model to new samples. <code>score(X_test, y_test)</code> judges the quality on unseen data. Whether you choose KNN, LogisticRegression or an SVM: this trio never changes. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "the trio in action",
+          "runnable": true,
+          "source": "import numpy as np\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.linear_model import LinearRegression\n\nX = np.array([[1,  5, 1], [3, 12, 2], [4, 15, 1],\n              [7, 23, 3], [9, 30, 2], [2,  9, 1],\n              [6, 20, 3], [8, 26, 2]], dtype=float)\ny = np.array([18, 12, 10, 6, 4, 15, 8, 5], dtype=float)\n\nX_train, X_test, y_train, y_test = train_test_split(\n    X, y, test_size=0.25, random_state=0)\n\nmodel = LinearRegression()\nmodel.fit(X_train, y_train)                      # 1) learn\nprint('coefficients   :', model.coef_.round(2))\nprint('intercept      :', model.intercept_.round(2))\nprint('predictions    :', model.predict(X_test).round(1))          # 2) apply\nprint('test score (R2):', model.score(X_test, y_test).round(2))    # 3) judge\n"
+        },
+        {
+          "type": "text",
+          "html": "<p> The coefficients that <code>fit</code> produces together form the prediction equation — exactly the <em>rules</em> the model learned by itself. What such an equation looks like, which loss function trains it and how you regularise it, is the subject of chapters 1 through 4 of this site. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Checklist for your own project",
+      "blocks": [
+        {
+          "type": "callout",
+          "kind": "tip",
+          "html": "<p> <strong>Checklist before you start coding:</strong> </p> <ul> <li>Can I formulate my question as a prediction (number or category)? </li> <li>Do I have data that actually contains the answer — and enough rows? </li> <li>Do I know how I will measure success (which metric, which threshold)? </li> <li>Have I split train and test data before anything else? </li> <li>Am I starting with a simple model as a baseline? </li> </ul>"
+        },
+        {
+          "type": "text",
+          "html": "<p> With these four basic topics you have the foundation: you know what ML is, which families exist, what data looks like and which steps a project goes through. The rest of the site builds on this — chapter 1 dives straight into scikit-learn, chapter 2 opens the mathematics, and chapters 3 and 4 cover the two central classifiers. </p>"
+        }
+      ]
+    }
+  ]
+}

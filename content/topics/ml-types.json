@@ -1,0 +1,160 @@
+{
+  "id": "ml-types",
+  "chapter": "ch0",
+  "title": "De drie soorten machine learning",
+  "intro": "Supervised, unsupervised of reinforcement? De drie families van machine learning, wat voor data elk nodig heeft, welke taken erbij horen — en hoe je met twee vragen weet welke familie jouw probleem is.",
+  "level": 1,
+  "sections": [
+    {
+      "title": "Overzicht: drie families",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Machine learning wordt ingedeeld naar de <em>soort feedback</em> waar het model van leert. Heb je voorbeelden mét antwoorden, dan heet het <strong>supervised learning</strong>. Heb je alleen data zonder antwoorden en zoek je structuur, dan is het <strong>unsupervised learning</strong>. En leert een programma door te handelen en beloningen te ontvangen, dan heet het <strong>reinforcement learning</strong>. </p>"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Familie",
+            "Data",
+            "Leert van",
+            "Typische taken",
+            "Voorbeelden"
+          ],
+          "rows": [
+            [
+              "supervised",
+              "X <em>en</em> y (gelabeld)",
+              "voorbeelden + juiste antwoorden",
+              "regressie, classificatie",
+              "spamfilter, prijsvoorspelling, diagnose"
+            ],
+            [
+              "unsupervised",
+              "alleen X (ongelabeld)",
+              "structuur in de data",
+              "clustering, dimensiereductie",
+              "klantsegmentatie, anomaliedetectie"
+            ],
+            [
+              "reinforcement",
+              "interactie + beloningen",
+              "trial-and-error",
+              "beslissingen in sequenties",
+              "game-AI, robots, zelfrijdende auto's"
+            ]
+          ]
+        },
+        {
+          "type": "text",
+          "html": "<p> In de praktijk — en op deze hele site — is supervised learning ver het meest gebruikt: het is wat scikit-learn classificeert als “fit op (X, y)”. Maar de twee andere families tref je overal in het vakgebied, dus ze horen in je basisvocabulaire. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Supervised learning: leren met het antwoord erbij",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Bij supervised learning bestaat je data uit <strong>paren</strong>: de features X (wat je weet) en de target y (het antwoord). Het model leert de afbeelding van X naar y, zodat het straks ook voor <em>nieuwe</em> X een y kan voorspellen. Binnen deze familie zijn er twee taken, onderscheiden door wat voor soort y je voorspelt. </p>"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Taak",
+            "Target y",
+            "Voorbeeld",
+            "Hoe meet je kwaliteit?"
+          ],
+          "rows": [
+            [
+              "regressie",
+              "een getal (kwantitatief)",
+              "autoprijs, huisprijs, temperatuur",
+              "MSE, RMSE, MAE, R&sup2; — zie het hoofdstuk <em>Practice</em>"
+            ],
+            [
+              "classificatie",
+              "een categorie (kwalitatief)",
+              "spam/geen spam, ziek/niet ziek",
+              "accuracy, precision, recall, F1 — idem"
+            ]
+          ]
+        },
+        {
+          "type": "text",
+          "html": "<p> Let op de terminology: <em>classificatie</em> met twee klassen heet binair; met drie of meer klassen multi-class (hoofdstuk 3 gaat daar dieper op in). En “regressie” in “logistische regressie” is verwarrend: ondanks de naam is dat een <em>classificatie</em>-algoritme — de regressiestap zit onder de motorkap. </p>"
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p> Kenmerk van supervised learning: <strong>jij hebt het antwoord al</strong> voor je trainingsdata. Het model leert de relatie, niet het antwoord zelf — en wordt daarna getest op vragen die het nog niet kende. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Unsupervised learning: structuur zonder labels",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Soms heb je geen antwoorden — alleen data. <strong>Unsupervised learning</strong> zoekt dan naar structuur: <em>clustering</em> groepeert vergelijkbare samples (KMeans is de klassieker), <em>dimensiereductie</em> comprimeert veel kolommen naar weinige (PCA), en <em>anomaliedetectie</em> vlint de punten die nergens bij horen. Typische toepassing: klantsegmentatie — ontdek zelf welke groepen klanten er in je verkoopdata zitten. </p>"
+        },
+        {
+          "type": "text",
+          "html": "<p> Hieronder een minimaal voorbeeld: acht punten in twee dimensies die duidelijk twee groepjes vormen. KMeans vindt de twee groepen <em>zonder dat iemand ooit heeft verteld wat de groepen zijn</em>. Voer de code gerust uit in je browser. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "KMeans vindt structuur zonder labels",
+          "runnable": true,
+          "source": "import numpy as np\nfrom sklearn.cluster import KMeans\n\n# 8 punten in 2D — twee zichtbare groepjes\nX = np.array([[1, 2], [1.5, 1.8], [1.2, 2.2],\n              [8, 9], [8.5, 8.8], [8.2, 9.3],\n              [1.1, 1.9], [8.8, 9.1]])\n\nkm = KMeans(n_clusters=2, n_init=10, random_state=0).fit(X)\nprint('cluster per punt :', km.labels_)\nprint('centra           :', km.cluster_centers_.round(1))\nprint('punt [2, 2]      -> cluster', km.predict([[2, 2]])[0],\n      '(zit bij het groepje linksonder)')\n"
+        },
+        {
+          "type": "callout",
+          "kind": "tip",
+          "html": "<p> Bij unsupervised learning is er geen y om tegen te checken — de kwaliteit van een clustering beoordeel je <em>zelf</em>, door de groepen te interpreteren. Dat is precies waarom het “leren zonder leraar” heet. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Reinforcement learning: leren door beloning",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> In <strong>reinforcement learning</strong> (RL) leert een <em>agent</em> door te handelen in een omgeving: elke actie levert een (vertraagde) beloning of straf op, en de agent optimaliseert zijn beleid om de totale beloning te maximaliseren. Er is geen gelabeld voorbeeld van “de juiste zet” — alleen de uitkomst op de lange termijn. Bekende resultaten: AlphaGo, robotbesturing, en de RLHF-techniek waarmee grote taalmodellen worden bijgeschaafd. </p>"
+        },
+        {
+          "type": "text",
+          "html": "<p> Het verschil met supervised learning is wezenlijk: bij supervised krijg je per voorbeeld het correcte antwoord; bij RL moet je zelf ontdekken <em>welke</em> acties tot de beloning leidden — en de beloning komt vaak pas veel later. Denk aan schaken: je hoort pas aan het einde of je won. </p>"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Stel jezelf de vraag…",
+            "Dan is je familie…"
+          ],
+          "rows": [
+            [
+              "“Ik heb voorbeelden mét het juiste antwoord.”",
+              "supervised learning"
+            ],
+            [
+              "“Ik heb alleen data en zoek structuur of groepen.”",
+              "unsupervised learning"
+            ],
+            [
+              "“Het systeem leert actie-voor-actie van beloningen.”",
+              "reinforcement learning"
+            ]
+          ]
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p> Deze twee vragen — “heb je labels?” en “komt de feedback per voorbeeld of via beloning?” — plaatsen vrijwel elk ML-systeem in de juiste familie. Een handig hulpmiddel voor opdrachten en tentamens. </p>"
+        }
+      ]
+    }
+  ]
+}

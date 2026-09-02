@@ -19,17 +19,17 @@ window.MLP = window.MLP || {};
       /* document */
       doc_title: "MLP — Machine Learning samengevat",
       doc_description:
-        "Machine Learning stof helder samengevat: scikit-learn, loss functions, logistic regression en SVM's — met formules, voorbeelden en uitvoerbare code.",
+        "Machine Learning stof helder samengevat: van de basis tot scikit-learn, loss functions, logistic regression en SVM's — met formules, voorbeelden en uitvoerbare code.",
       /* navigatie */
       nav_topics: "Onderwerpen",
       brand_sub: "machine\u00a0learning\u00a0Practice",
       lang_switch_to: "Schakel over naar het Engels",
       lang_current: "Nederlands",
       /* hero */
-      hero_eyebrow: "machine learning \u00b7 lineaire classifiers",
+      hero_eyebrow: "machine learning \u00b7 van basis tot classifier",
       hero_title: 'Machine Learning stof, <span class="grad">helder samengevat</span>.',
       hero_lede_fallback:
-        "Alles over logistic regression en support vector machines met scikit-learn: " +
+        "Van de eerste basisbegrippen tot logistic regression en support vector machines met scikit-learn: " +
         "de theorie in begrijpelijke stukjes, met formules, voorbeelden en code die je direct in je browser kunt draaien.",
       hero_cta: "Bekijk de onderwerpen",
       hero_hint: "{ch} hoofdstukken \u00b7 {n} onderwerpen \u00b7 formules &amp; code",
@@ -80,7 +80,6 @@ window.MLP = window.MLP || {};
       output_hint:
         "De code draait volledig in je browser via Pyodide (Python + scikit-learn in WebAssembly). " +
         "De eerste keer laden duurt \u00b110\u201330 s; daarna gaat het snel.",
-      editable_hint: "Bewerkbaar \u2014 pas de code aan en druk op Uitvoeren.",
       formula_fallback: "formule",
       plot_fallback: "grafiek",
       xlabel_fallback: "x",
@@ -116,7 +115,7 @@ window.MLP = window.MLP || {};
       /* document */
       doc_title: "MLP — Machine Learning, clearly summarised",
       doc_description:
-        "Machine Learning material, clearly summarised: scikit-learn, loss functions, logistic regression and SVMs — " +
+        "Machine Learning material, clearly summarised: from the basics to scikit-learn, loss functions, logistic regression and SVMs — " +
         "with formulas, examples and runnable code.",
       /* navigatie */
       nav_topics: "Topics",
@@ -124,10 +123,10 @@ window.MLP = window.MLP || {};
       lang_switch_to: "Switch to Dutch",
       lang_current: "English",
       /* hero */
-      hero_eyebrow: "machine learning \u00b7 linear classifiers",
+      hero_eyebrow: "machine learning \u00b7 from basics to classifiers",
       hero_title: 'Machine Learning, <span class="grad">clearly summarised</span>.',
       hero_lede_fallback:
-        "Everything about logistic regression and support vector machines with scikit-learn: " +
+        "From the first basic concepts to logistic regression and support vector machines with scikit-learn: " +
         "the theory in understandable chunks, with formulas, examples and code you can run right in your browser.",
       hero_cta: "Browse the topics",
       hero_hint: "{ch} chapters \u00b7 {n} topics \u00b7 formulas &amp; code",
@@ -178,7 +177,6 @@ window.MLP = window.MLP || {};
       output_hint:
         "The code runs entirely in your browser via Pyodide (Python + scikit-learn in WebAssembly). " +
         "The first load takes \u00b110\u201330 s; after that it is fast.",
-      editable_hint: "Editable \u2014 change the code and press Run.",
       formula_fallback: "formula",
       plot_fallback: "chart",
       xlabel_fallback: "x",

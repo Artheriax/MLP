@@ -1,11 +1,17 @@
 {
   "site": {
     "title": "MLP — Machine Learning, clearly summarised",
-    "description": "Machine Learning material, clearly summarised: scikit-learn, loss functions, logistic regression and SVMs — with formulas, diagrams, code examples you can run in your browser and memory aids for every step. Now with hands-on practice assignments.",
-    "statFormulas": "±39",
-    "statCode": "28"
+    "description": "Machine Learning material, clearly summarised: from the first basic concepts to scikit-learn, loss functions, logistic regression and SVMs — with formulas, diagrams, code examples you can run in your browser and memory aids for every step.",
+    "statFormulas": "±41",
+    "statCode": "27"
   },
   "chapters": [
+    {
+      "id": "ch0",
+      "name": "Basics & concepts",
+      "accent": "yellow",
+      "description": "from ‘what is ML?’ to data, features and the workflow"
+    },
     {
       "id": "ch1",
       "name": "Scikit-learn basics",
@@ -38,6 +44,42 @@
     }
   ],
   "topics": [
+    {
+      "id": "ml-basics",
+      "chapter": "ch0",
+      "title": "What is machine learning?",
+      "summary": "From writing rules to learning rules: the definition (Mitchell's T, E and P), when you should and should not use ML, and generalising as the core idea.",
+      "level": 1,
+      "file": "topics.en/ml-basics.json",
+      "keywords": "machine learning, definition, arthur samuel, tom mitchell, generalising, experience, task, performance measure, rules, overfitting"
+    },
+    {
+      "id": "ml-types",
+      "chapter": "ch0",
+      "title": "The three types of machine learning",
+      "summary": "Supervised, unsupervised and reinforcement learning: what data each needs, which tasks belong to them and how two questions pick the right family.",
+      "level": 1,
+      "file": "topics.en/ml-types.json",
+      "keywords": "supervised, unsupervised, reinforcement, clustering, kmeans, labels, labelled data, types of learning, pca, anomaly detection"
+    },
+    {
+      "id": "data-features",
+      "chapter": "ch0",
+      "title": "Data, features & labels",
+      "summary": "Rows are samples, columns are features; X and y in scikit-learn, numerical and categorical features, and why the train/test split is sacred.",
+      "level": 1,
+      "file": "topics.en/data-features.json",
+      "keywords": "data, features, labels, x, y, columns, rows, samples, one-hot, scaling, train test split, target"
+    },
+    {
+      "id": "ml-workflow-basics",
+      "chapter": "ch0",
+      "title": "The ML workflow from start to finish",
+      "summary": "The eight steps from question to model, under- and overfitting shown interactively, and scikit-learn's fit–predict–score trio.",
+      "level": 1,
+      "file": "topics.en/ml-workflow-basics.json",
+      "keywords": "workflow, steps, fit, predict, score, underfitting, overfitting, model complexity, train error, test error, baseline"
+    },
     {
       "id": "supervised-learning",
       "chapter": "ch1",
@@ -150,7 +192,7 @@
       "id": "regression-practice",
       "chapter": "ch5",
       "title": "Practice: loss functions & metrics for regression",
-      "summary": "Code it yourself: MSE, RMSE, MAE and R² from scratch, the car-price exercise and interactive regression lines with outliers.",
+      "summary": "Fully worked out: MSE, RMSE, MAE and R&sup2; from scratch, the car-price assignment with the answer, and interactive regression lines with outliers.",
       "level": 2,
       "file": "topics.en/regression-practice.json",
       "keywords": "practice, assignment, mse, rmse, mae, r2, explained variance, regression, outlier, visualise"
@@ -159,7 +201,7 @@
       "id": "classification-practice",
       "chapter": "ch5",
       "title": "Practice: loss & metrics for classification",
-      "summary": "From decision boundary to binary cross-entropy, and implementing accuracy, precision, recall and F1 yourself — with interactive boundaries.",
+      "summary": "From decision boundary to binary cross-entropy, with accuracy, precision, recall and F1 fully worked out — with interactive boundaries.",
       "level": 2,
       "file": "topics.en/classification-practice.json",
       "keywords": "practice, assignment, bce, cross entropy, accuracy, precision, recall, f1, confusion matrix, decision boundary"

@@ -2,7 +2,7 @@
   "id": "regression-practice",
   "chapter": "ch5",
   "title": "Practice: loss functies & metrics bij regressie",
-  "intro": "Zelf aan de slag: implementeer MSE, RMSE, MAE en R&sup2; vanaf nul, pas een regressielijn aan met schuifjes en ontdek waarom de ene loss beter past dan de andere. Gebaseerd op de cursusopdracht <em>Loss functions &amp; metrics</em>.",
+  "intro": "De practice-opdracht uitgewerkt: MSE, RMSE, MAE en R&sup2; vanaf nul met complete antwoorden die je in de browser kunt draaien, een regressielijn om mee te schuiven en uitleg waarom de ene loss beter past dan de andere. Gebaseerd op de cursusopdracht <em>Loss functions &amp; metrics</em>.",
   "level": 2,
   "sections": [
     {
@@ -93,46 +93,30 @@
         },
         {
           "type": "text",
-          "html": "<p> <strong>Vragen:</strong> (1) bereken de voorspellingen voor elk van de vijf auto's; (2) bereken daarna de MSE, RMSE en MAE van het model. Vul je code in in het bewerkbare veld en druk op <em>Uitvoeren</em> — de dataset staat al klaar. </p>"
+          "html": "<p> <strong>Vragen (uit de opdracht):</strong> (1) bereken de voorspellingen voor elk van de vijf auto's; (2) bereken daarna de MSE, RMSE en MAE van het model. De uitwerking hieronder is het complete antwoord — druk op <em>Uitvoeren</em> om de code en alle resultaten direct in je browser te draaien. </p>"
         },
         {
           "type": "code",
           "language": "python",
-          "caption": "opgave — vul in en voer uit",
-          "runnable": true,
-          "editable": true,
-          "source": "import numpy as np\n\n# rijen = auto's, kolommen = [X1, X2, X3]\nX = np.array([[1,  5, 1],\n              [3, 12, 2],\n              [4, 15, 1],\n              [7, 23, 3],\n              [9, 30, 2]], dtype=float)\n\ny = np.array([18, 12, 10, 6, 4], dtype=float)  # prijs (x1000 EUR)\n\n# getrainde parameters\nb0, b1, b2, b3 = 20.0, -1.0, -0.5, -2.0\n\n# 1) voorspellingen voor elke auto (y_hat)\n# hint: X @ np.array([b1, b2, b3]) + b0\n# JOUW CODE HIER\n\n# 2) MSE, RMSE en MAE van het model\n# JOUW CODE HIER\n"
-        },
-        {
-          "type": "code",
-          "language": "python",
-          "caption": "uitwerking — eerst zelf proberen!",
+          "caption": "uitwerking — het antwoord",
           "runnable": true,
           "source": "import numpy as np\n\nX = np.array([[1,  5, 1],\n              [3, 12, 2],\n              [4, 15, 1],\n              [7, 23, 3],\n              [9, 30, 2]], dtype=float)\ny = np.array([18, 12, 10, 6, 4], dtype=float)\nb0, b1, b2, b3 = 20.0, -1.0, -0.5, -2.0\n\n# 1) voorspellingen\ny_hat = b0 + b1*X[:, 0] + b2*X[:, 1] + b3*X[:, 2]\nprint('voorspellingen:', y_hat)\n\n# 2) loss metrics\nmse_waarde  = np.mean((y - y_hat)**2)\nrmse_waarde = np.sqrt(mse_waarde)\nmae_waarde  = np.mean(np.abs(y - y_hat))\nprint('MSE :', round(mse_waarde, 2))\nprint('RMSE:', round(rmse_waarde, 2))\nprint('MAE :', round(mae_waarde, 2))\n\n# extra: verklaarde variantie\nr2_waarde = 1 - np.sum((y - y_hat)**2) / np.sum((y - y.mean())**2)\nprint('R2  :', round(r2_waarde, 2), '(negatief = slechter dan het gemiddelde!')"
         }
       ]
     },
     {
-      "title": "Coderen: MSE, RMSE en MAE vanaf nul",
+      "title": "Uitgewerkt: MSE, RMSE en MAE vanaf nul",
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Tijd om de functies zelf te schrijven. Elke functie krijgt twee parameters: de <em>werkelijke</em> targetwaarden en de <em>voorspelde</em> targetwaarden (die uit elk regressiemodel kunnen komen). Vul de <code># JOUW CODE HIER</code>-plekken in en draai daarna de testcel eronder om te controleren of je implementatie klopt. </p>"
+          "html": "<p> De functies vanaf nul, volledig uitgewerkt. Elke functie krijgt twee parameters: de <em>werkelijke</em> targetwaarden en de <em>voorspelde</em> targetwaarden (die uit elk regressiemodel kunnen komen). Onderin de cel controleert de code zichzelf met de verwachte waarden uit de opdracht. </p>"
         },
         {
           "type": "code",
           "language": "python",
-          "caption": "opdracht — vul de drie functies in",
+          "caption": "uitwerking — het antwoord",
           "runnable": true,
-          "editable": true,
-          "source": "import numpy as np\n\ndef mse(y_true, y_pred):\n    # JOUW CODE HIER\n    return # JOUW CODE HIER\n\ndef rmse(y_true, y_pred):\n    # JOUW CODE HIER\n    return # JOUW CODE HIER\n\ndef mae(y_true, y_pred):\n    # JOUW CODE HIER\n    return # JOUW CODE HIER\n"
-        },
-        {
-          "type": "code",
-          "language": "python",
-          "caption": "testcel — niet wijzigen",
-          "runnable": true,
-          "source": "import numpy as np\n\n# WIJZIG DEZE CODECEL NIET!\ndef _check(naam, waarde, verwacht):\n    ok = waarde is not None and abs(waarde - verwacht) < 1e-9\n    print(('GESLAAGD  ' if ok else 'NOG NIET   ') + naam,\n          '->', waarde, '(verwacht:', verwacht, ')')\n\ny_true = np.array([3.0, -0.5, 2.0, 7.0])\ny_pred = np.array([2.5,  0.0, 2.0, 8.0])\n\n_check('mse ', mse(y_true, y_pred), 0.375)\n_check('rmse', rmse(y_true, y_pred), 0.6123724356957945)\n_check('mae ', mae(y_true, y_pred), 0.5)\n"
+          "source": "import numpy as np\n\ndef mse(y_true, y_pred):\n    # gemiddelde van de gekwadrateerde fouten\n    return np.mean((y_true - y_pred)**2)\n\ndef rmse(y_true, y_pred):\n    # wortel van de mse — zelfde eenheid als de target\n    return np.sqrt(mse(y_true, y_pred))\n\ndef mae(y_true, y_pred):\n    # gemiddelde van de absolute fouten\n    return np.mean(np.abs(y_true - y_pred))\n\n# controle met de waarden uit de opdracht\ny_true = np.array([3.0, -0.5, 2.0, 7.0])\ny_pred = np.array([2.5,  0.0, 2.0, 8.0])\n\nprint('mse :', mse(y_true, y_pred))   # verwacht 0.375\nprint('rmse:', rmse(y_true, y_pred))  # verwacht 0.6123724356957945\nprint('mae :', mae(y_true, y_pred))   # verwacht 0.5\n"
         }
       ]
     },
@@ -181,17 +165,9 @@
         {
           "type": "code",
           "language": "python",
-          "caption": "opdracht — vul r2_score in",
+          "caption": "uitwerking — het antwoord",
           "runnable": true,
-          "editable": true,
-          "source": "import numpy as np\n\ndef r2_score(y_true, y_pred):\n    # JOUW CODE HIER\n    return # JOUW CODE HIER\n"
-        },
-        {
-          "type": "code",
-          "language": "python",
-          "caption": "testcel — niet wijzigen",
-          "runnable": true,
-          "source": "import numpy as np\n\n# WIJZIG DEZE CODECEL NIET!\ndef _check(naam, waarde, verwacht):\n    ok = waarde is not None and abs(waarde - verwacht) < 1e-9\n    print(('GESLAAGD  ' if ok else 'NOG NIET   ') + naam,\n          '->', waarde, '(verwacht:', verwacht, ')')\n\ny_true = np.array([3.0, -0.5, 2.0, 7.0])\ny_pred = np.array([2.5,  0.0, 2.0, 8.0])\n\n_check('r2_score', r2_score(y_true, y_pred), 0.9486081370449679)\n"
+          "source": "import numpy as np\n\ndef r2_score(y_true, y_pred):\n    # teller: spreiding rond de voorspellingen (fouten van het model)\n    ss_res = np.sum((y_true - y_pred)**2)\n    # noemer: spreiding rond het gemiddelde (naiefste voorspelling)\n    ss_tot = np.sum((y_true - y_true.mean())**2)\n    return 1 - ss_res / ss_tot\n\n# controle met de waarden uit de opdracht\ny_true = np.array([3.0, -0.5, 2.0, 7.0])\ny_pred = np.array([2.5,  0.0, 2.0, 8.0])\n\nprint('r2_score:', r2_score(y_true, y_pred))  # verwacht 0.9486081370449679\n"
         }
       ]
     },

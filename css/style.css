@@ -983,32 +983,6 @@ a:hover { color: #ffffff; }
 
 .code-field pre code { font-family: inherit; background: none; border: none; padding: 0; color: inherit; }
 
-/* Bewerkbaar oefen-veld (textarea gedraagt zich als pre) */
-.code-field textarea.code-edit {
-  display: block;
-  width: 100%;
-  margin: 0;
-  padding: 1.05rem 1.2rem;
-  border: 0;
-  background: transparent;
-  font-family: var(--font-mono);
-  font-size: 0.855rem;
-  line-height: 1.7;
-  color: rgba(255, 255, 255, 0.92);
-  tab-size: 4;
-  resize: vertical;
-  min-height: 7rem;
-  white-space: pre;
-  overflow-wrap: normal;
-  overflow-x: auto;
-}
-.code-field textarea.code-edit:focus {
-  outline: none;
-  background: rgba(255,255,255,0.03);
-}
-.code-field.is-editable { border-style: dashed; }
-.code-field.is-editable:hover { border-color: var(--accent); }
-
 /* Plot-datapunten */
 .plot-point { transition: r .15s ease; }
 .plot-point:hover { r: 5.5; }

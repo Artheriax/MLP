@@ -1,16 +1,18 @@
 # MLP — Machine Learning Practice
 
 Een donkere, modulaire studiewebsite met samenvattingen van de cursus
-**Logistic Regression & SVM's met scikit-learn** — inclusief formules,
-interactieve diagrammen, code-voorbeelden die je **direct in je browser
-kunt uitvoeren** (via Pyodide: CPython + scikit-learn in WebAssembly) en
-**practice-opdrachten** met bewerkbare code-velden. De site is volledig
+**Logistic Regression & SVM's met scikit-learn** — van de **eerste
+basisbegrippen** (wat is ML, soorten leren, data & workflow) tot de
+classifiers — inclusief formules, interactieve diagrammen en
+code-voorbeelden die je **direct in je browser kunt uitvoeren** (via
+Pyodide: CPython + scikit-learn in WebAssembly). De practice-onderwerpen
+bevatten **volledige uitwerkingen met controles**. De site is volledig
 **tweetalig: Nederlands en Engels** (schakelen met de NL/EN-knop rechtsboven).
 
 - **Frontend**: pure HTML/CSS/JS — geen build-stap, geen framework
 - **Backend (optioneel, lokaal)**: FastAPI serveert de site én een REST-API over de content (NL + EN)
 - **Hosting**: 100% GitHub Pages-ready (statische bestanden)
-- **Talen**: NL (standaard) en EN — alle interface-teksten én alle 14 onderwerpen zijn vertaald
+- **Talen**: NL (standaard) en EN — alle interface-teksten én alle 18 onderwerpen zijn vertaald
 
 ---
 
@@ -119,10 +121,8 @@ lesstof toe te voegen:
       "blocks": [
         { "type": "text",    "html": "<p>Tekst met <strong>opmaak</strong> en inline wiskunde \\(x^2\\).</p>" },
         { "type": "formula", "label": "naam", "latex": "\\sigma(z) = \\frac{1}{1+e^{-z}}", "caption": "uitleg" },
-        { "type": "code",    "language": "python", "caption": "bijschrift", "runnable": true,
+        { "type": "code",    "language": "python", "caption": "uitwerking", "runnable": true,
           "source": "print('hallo')" },
-        { "type": "code",    "language": "python", "caption": "opdracht", "runnable": true, "editable": true,
-          "source": "# JOUW CODE HIER\nreturn # JOUW CODE HIER" },   // bewerkbaar oefen-veld (textarea)
         { "type": "callout", "kind": "info", "html": "<p>Let op …</p>" },   // info | tip | warning | key
         { "type": "table",   "headers": ["A", "B"], "rows": [["a1", "b1"]] },
         { "type": "plot",    "title": "Grafiek", "xrange": [-4, 4], "yrange": [0, 3],
@@ -142,7 +142,7 @@ lesstof toe te voegen:
 
 - `expr` in een plot is een JS-expressie in `x` (en evt. de slider-parameters), bijv. `Math.exp(-gamma*x*x)` of `b0 + b1*x`.
 - Plots ondersteunen sinds v1.1 ook `points` (datapunten, met optionele kleur/label) en meerdere sliders (`sliders: [...]`); het oude enkele-`slider`-formaat werkt nog steeds.
-- `editable: true` op een code-blok maakt het veld bewerkbaar (textarea): ideaal voor oefeningen — de gebruiker past de code aan en drukt op Uitvoeren. Pyodide onthoudt definities tussen code-velden (top-level functies blijven beschikbaar), dus een opdracht-blok + losse test-blok werkt net als in Jupyter.
+- Code-blokken met `runnable: true` krijgen een **Uitvoeren**-knop: de code draait in de browser via Pyodide en de uitvoer verschijnt onder het veld. Pyodide onthoudt definities tussen code-velden (top-level functies blijven beschikbaar), dus een uitwerking + vervolgcel werkt net als in Jupyter.
 - Zet `runnable: true` alleen als de code ook echt in Pyodide draait (numpy/scipy/sklearn uit de standaarddatasets werken prima; geen plots of externe bestanden).
 - Kleuren in plots/onderwerpen: `cyan`, `yellow`, `green`, `magenta`.
 - Onbekende hoofdstukken? Voeg een nieuw object toe aan `chapters` in `content/index.json` (én `index.en.json`) en kies een accent-kleur.
@@ -174,13 +174,13 @@ MLP/
 ├── js/
 │   ├── i18n.js           # tweetaligheid: alle UI-strings (NL/EN), taalkeuze + -opslag
 │   ├── content.js        # datalaag: FastAPI-API (?lang=) of statische JSON (NL/EN + fallback)
-│   ├── blocks.js         # renderers: tekst, formules (KaTeX), code-velden (vast/bewerkbaar), callouts, tabellen, plots (punten + sliders)
+│   ├── blocks.js         # renderers: tekst, formules (KaTeX), code-velden (uitvoeren + kopiëren), callouts, tabellen, plots (punten + sliders)
 │   ├── runner.js         # Pyodide-runner: code in de browser uitvoeren (lazy geladen)
 │   └── app.js            # router, homepage + tabel, zoekfilter, taalwissel, transitities
 ├── content/
 │   ├── index.json        # NL: hoofdstukken + onderwerpen-register
 │   ├── index.en.json     # EN: idem
-│   ├── topics/*.json     # NL: 14 onderwerpen (waaronder 2 practice-opdrachten)
+│   ├── topics/*.json     # NL: 18 onderwerpen (4 basis + 12 cursus + 2 practice met uitwerkingen)
 │   └── topics.en/*.json  # EN: idem
 ├── main.py               # FastAPI: statische site + REST-API (NL/EN)
 ├── start.sh              # Mac/Linux: venv aanmaken + deps installeren + server starten

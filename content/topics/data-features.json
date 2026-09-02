@@ -1,0 +1,158 @@
+{
+  "id": "data-features",
+  "chapter": "ch0",
+  "title": "Data, features & labels",
+  "intro": "De taal van ML-data: rijen zijn samples, kolommen zijn features, en de kolom die je voorspelt is de target. Hoe X en y er in scikit-learn uitzien, welke soorten features er bestaan — en waarom train/test-splitsen niet onderhandelbaar is.",
+  "level": 1,
+  "sections": [
+    {
+      "title": "Tabeldenken: rijen en kolommen",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Vrijwel elke ML-dataset begint als een <strong>tabel</strong>. Elke <em>rij</em> is één sample (ook wel: observatie of instantie) — één auto, één persoon, één e-mail. Elke <em>kolom</em> is een variabele die die sample beschrijft. Machine learning is niets meer (en niets minder) dan patronen vinden tussen die kolommen. </p>"
+        },
+        {
+          "type": "text",
+          "html": "<p> Als voorbeeld nemen we de autodataset die ook in het hoofdstuk <em>Practice</em> terugkomt: vijf auto's, elk beschreven door drie kenmerken, met de prijs als wat we willen voorspellen. Zo'n tabel is bewust klein gehouden — tel maar na: 5 rijen, 4 kolommen. </p>"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "leeftijd (j)",
+            "kmstand (&times;10.000)",
+            "eigenaren",
+            "prijs (&times; &euro;1000)"
+          ],
+          "rows": [
+            [
+              "1",
+              "5",
+              "1",
+              "18"
+            ],
+            [
+              "3",
+              "12",
+              "2",
+              "12"
+            ],
+            [
+              "4",
+              "15",
+              "1",
+              "10"
+            ],
+            [
+              "7",
+              "23",
+              "3",
+              "6"
+            ],
+            [
+              "9",
+              "30",
+              "2",
+              "4"
+            ]
+          ]
+        },
+        {
+          "type": "callout",
+          "kind": "info",
+          "html": "<p> Jargon-check: <em>feature</em> = input-kolom (ook: onafhankelijke variabele, verklarende variabele). <em>Target</em> / <em>label</em> = de kolom die je voorspelt (afhankelijke variabele). In wiskundige teksten heet de target ook wel <em>y</em> en de features <em>x</em>. </p>"
+        }
+      ]
+    },
+    {
+      "title": "X en y: de scikit-learn-conventie",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> scikit-learn verwacht data altijd in twee stukken: <strong>X</strong>, de feature-matrix (hoofdletter, want tweedimensionaal), en <strong>y</strong>, de target-vector (kleinletter, want eendimensionaal). Elke rij van X hoort precies bij één element van y — rij 3 van X beschrijft dezelfde auto als element 3 van y. </p>"
+        },
+        {
+          "type": "formula",
+          "label": "vorm van de data",
+          "latex": "X \\in \\mathbb{R}^{n \\times p}, \\qquad y \\in \\mathbb{R}^{n}",
+          "caption": "n = aantal samples (rijen), p = aantal features (kolommen). Het model leert de afbeelding van elke rij x_i naar een voorspelling y-hat."
+        },
+        {
+          "type": "text",
+          "html": "<p> Hieronder zie je hoe je de autotabel omzet naar X en y met numpy — en hoe je de vormen en het eerste paar afleest. Dit patroon (data klaarzetten, vormen checken) is altijd je eerste stap in scikit-learn. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "de autotabel als X en y",
+          "runnable": true,
+          "source": "import numpy as np\n\n# rijen = auto's, kolommen = [leeftijd, kmstand, eigenaren]\nX = np.array([[1,  5, 1],\n              [3, 12, 2],\n              [4, 15, 1],\n              [7, 23, 3],\n              [9, 30, 2]], dtype=float)\n\ny = np.array([18, 12, 10, 6, 4])   # prijs (x1000 EUR)\n\nprint('X heeft vorm:', X.shape, '-> n = 5 samples, p = 3 features')\nprint('y heeft vorm:', y.shape, '-> 1 target per sample')\nprint('features van auto 1:', X[0], '-> prijs:', y[0])\n"
+        }
+      ]
+    },
+    {
+      "title": "Soorten features (en hoe je ze klaarzet)",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Features zijn er in drie smaken. <strong>Numerieke</strong> features zijn getallen waar wiskunde mee mag doen (leeftijd, kmstand). <strong>Categorische</strong> features zijn labels: nominaal (rood/blauw — geen volgorde) of ordinaal (laag/midden/hoog — wél volgorde). Modellen rekenen met getallen, dus categorische features moet je <em>encoderen</em>: nominaal via one-hot (één kolom per categorie), ordinaal mag als 0/1/2. </p>"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Type",
+            "Voorbeeld",
+            "Aandachtspunt"
+          ],
+          "rows": [
+            [
+              "numeriek",
+              "leeftijd, kmstand, temperatuur",
+              "grotere schalen domineren afstandsmodellen → schalen/standaardiseren"
+            ],
+            [
+              "categorisch, nominaal",
+              "kleur: rood/blauw/groen",
+              "one-hot encoding; nooit 1/2/3 — dat suggereert volgorde die er niet is"
+            ],
+            [
+              "categorisch, ordinaal",
+              "opleiding: laag/midden/hoog",
+              "mag 0/1/2 zijn, want de volgorde is betekenisvol"
+            ]
+          ]
+        },
+        {
+          "type": "callout",
+          "kind": "warning",
+          "html": "<p> <strong>Garbage in, garbage out.</strong> Een model is nooit beter dan zijn features: missende waarden, outliers en verkeerd gecodeerde categorieën leiden rechtstreeks tot een slecht model. Data verkennen en schoonmaken is géén bijzaak — het is vaak het meeste werk van het hele project. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Train en test: evalueer op onbekende data",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> De gouden regel: <strong>evalueer nooit op de data waar je mee trainde.</strong> Een model dat de trainingsdata uit het hoofd leert, scoort daar perfect en mislukt in het echt. Net als een examen: de antwoorden van oude examens heb je gezien tijdens het oefenen, het echte examen niet. Daarom splits je de data: een groot deel om te trainen (vaak 75–80%) en een kleiner deel om eerlijk te toetsen. </p>"
+        },
+        {
+          "type": "text",
+          "html": "<p> Hieronder de complete mini-flow: splitsen, een simpel model trainen, en dan beide scores printen. Let op het verschil — de train-score is bijna altijd hoger, en het is de <em>test</em>-score die telt. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "train/test-split met KNN",
+          "runnable": true,
+          "source": "import numpy as np\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.neighbors import KNeighborsRegressor\n\nX = np.array([[1,  5, 1], [3, 12, 2], [4, 15, 1],\n              [7, 23, 3], [9, 30, 2], [2,  9, 1],\n              [6, 20, 3], [8, 26, 2]], dtype=float)\ny = np.array([18, 12, 10, 6, 4, 15, 8, 5], dtype=float)\n\n# 75% trainen, 25% testen — het model ziet de testrijen NOOIT\nX_train, X_test, y_train, y_test = train_test_split(\n    X, y, test_size=0.25, random_state=0)\n\nmodel = KNeighborsRegressor(n_neighbors=3).fit(X_train, y_train)\nprint('train-score (optimistisch):', model.score(X_train, y_train).round(2))\nprint('test-score  (eerlijk)     :', model.score(X_test, y_test).round(2))\n\nnieuwe_auto = [[5, 17, 1]]\nprint('voorspelde prijs (x1000 EUR):', model.predict(nieuwe_auto)[0].round(1))\n"
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p> Train-score is een <em>optimistische</em> diagnose, test-score is de <em>eerlijke</em>. Alleen de test-score zegt iets over hoe het model het in de echte wereld zal doen. In het volgende onderwerp zie je hoe dit beschermt tegen under- en overfitting. </p>"
+        }
+      ]
+    }
+  ]
+}

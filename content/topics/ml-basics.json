@@ -1,0 +1,172 @@
+{
+  "id": "ml-basics",
+  "chapter": "ch0",
+  "title": "Wat is machine learning?",
+  "intro": "Het fundament van deze site: wat machine learning eigenlijk is, hoe het verschilt van gewoon programmeren, wanneer je het wel en niet inzet — en waarom generaliseren het kernbegrip is dat alles bij elkaar houdt.",
+  "level": 1,
+  "sections": [
+    {
+      "title": "Van regels schrijven naar regels leren",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Bij <strong>traditioneel programmeren</strong> schrijf jij de regels zelf: een programma is een lijst instructies die input omzet in output. Dat werkt uitstekend zolang je de regels kunt opschrijven — belasting berekenen, een lijst sorteren, een formulier valideren. Maar bij sommige problemen kan dat niet: hoe codeer je in regels wat een kat op een foto is? Welke combinatie van woorden, afzenders en links maakt een e-mail verdacht? </p>"
+        },
+        {
+          "type": "text",
+          "html": "<p> <strong>Machine learning draait het om.</strong> In plaats van regels te schrijven, geef je de computer <em>voorbeelden</em> — data met de antwoorden erbij — en laat je de computer de regels zelf afleiden. Pionier Arthur Samuel (1959) noemde het: “the field of study that gives computers the ability to learn without being explicitly programmed”. Tom Mitchell (1997) maakte het meetbaar: een programma <em>leert</em> van ervaring <em>E</em> met betrekking tot taak <em>T</em> en prestatiemaat <em>P</em>, als zijn prestatie op <em>T</em>, gemeten met <em>P</em>, verbetert met <em>E</em>. </p>"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "",
+            "Traditioneel programmeren",
+            "Machine learning"
+          ],
+          "rows": [
+            [
+              "<strong>jij schrijft</strong>",
+              "de regels (het algoritme)",
+              "bijna niets — de data spreekt"
+            ],
+            [
+              "<strong>de computer leert</strong>",
+              "niets",
+              "de regels: het <em>model</em>"
+            ],
+            [
+              "<strong>input</strong>",
+              "regels + data",
+              "data + antwoorden (labels)"
+            ],
+            [
+              "<strong>output</strong>",
+              "antwoorden",
+              "regels die <em>nieuwe</em> antwoorden voorspellen"
+            ]
+          ]
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p><strong>Voorbeeld: de spamfilter.</strong> Taak <em>T</em>: e-mails classificeren als spam of geen spam. Ervaring <em>E</em>: duizenden voorbeelden van e-mails die mensen al hebben gelabeld. Prestatiemaat <em>P</em>: het aandeel e-mails dat correct wordt geclassificeerd. Kun je bij een probleem deze drie benoemen, dan heb je een ML-probleem scherp op papier.</p>"
+        }
+      ]
+    },
+    {
+      "title": "Wanneer (niet) machine learning?",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Machine learning blinkt uit als het patroon <em>complex</em> is (gezichten, spraak, gedrag), als er <em>veel data</em> is om van te leren, en als de omgeving <em>verandert</em> (fraudeurs passen hun tactiek aan, dus een model dat bijschaait blijft relevant). Aanbevelingsystemen, spraakassistenten en fraudedetectie zijn daarom klassieke ML-toepassingen. </p>"
+        },
+        {
+          "type": "text",
+          "html": "<p> Maar ML is een gereedschap, geen doel. Is de regel simpel en deterministisch (salaris volgens CAO), dan is gewone code beter: sneller, goedkoper en volledig uitlegbaar. Moet elke beslissing juridisch verantwoord kunnen worden (toelating tot een opleiding), dan is een black-box model riskant. En met weinig data leert een model zelden iets betrouwbaars. </p>"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Situatie",
+            "ML geschikt?",
+            "Waarom"
+          ],
+          "rows": [
+            [
+              "E-mails automatisch van spam voorzien",
+              "ja",
+              "patroon is complex, veel voorbeelden"
+            ],
+            [
+              "Salaris berekenen volgens de CAO",
+              "nee",
+              "regels zijn bekend en deterministisch"
+            ],
+            [
+              "Gezichten herkennen in foto's",
+              "ja",
+              "onmogelijk handmatig te regelen"
+            ],
+            [
+              "Een lijst alfabetisch sorteren",
+              "nee",
+              "simpel algoritme bestaat al"
+            ],
+            [
+              "Fraude vinden in miljoenen transacties",
+              "ja",
+              "schaal + veranderend patroon"
+            ],
+            [
+              "Beslissing die je aan een rechter moet uitleggen",
+              "voorzichtig",
+              "uitlegbaarheid en bias zijn hard(e) eisen"
+            ]
+          ]
+        },
+        {
+          "type": "callout",
+          "kind": "warning",
+          "html": "<p> Een ML-model kan fouten maken én vooroordelen uit de data overnemen. Evalueer daarom altijd op onbekende data (zie het onderwerp <em>Data, features &amp; labels</em>) en houd een mens in de loop bij risicovolle beslissingen. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Leren is generaliseren",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Het doel van een model is niet om de trainingsvoorbeelden perfect te reproduceren — dat kan elk geheugen. Het doel is <strong>generaliseren</strong>: goede voorspellingen doen voor data die het <em>nog nooit gezien heeft</em>. Denk aan een student die oefent met oude examens: die wil niet de antwoorden van die oude examens uit het hoofd leren, maar de <em>onderliggende patronen</em> herkennen zodat het echte examen ook lukt. </p>"
+        },
+        {
+          "type": "text",
+          "html": "<p> In scikit-learn heet het trainen <em>fit</em> — je “past” het model aan de data. Een model dat perfect scoort op trainingsdata maar slecht op nieuwe data heeft niets geleerd: het onthoudt in plaats van dat het begrijpt. Dat heet <strong>overfitting</strong>, en het is de klassieke valkuil van elke ML-beginner (en -expert). Hoofdstuk 1 laat je zien hoe je het herkent met aparte train- en testdata. </p>"
+        },
+        {
+          "type": "callout",
+          "kind": "tip",
+          "html": "<p> Onthoud deze zin: <em>een model dat alleen goed presteert op data die het al zag, heeft niets geleerd.</em> Vrijwel alles in de workflow — splitsen, evalueren, regulariseren — bestaat om dit probleem te bestrijden. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Welke soorten problemen lost ML op?",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> De meest voorkomende ML-taken zijn voorspellingen: een <strong>getal</strong> voorspellen (regressie) of een <strong>categorie</strong> voorspellen (classificatie). Daarnaast zoekt ML ook naar structuur in data zonder labels (clustering). De tabel hieronder is de snelste manier om jouw probleem in te delen. </p>"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Wat voorspel je?",
+            "Type",
+            "Voorbeeld"
+          ],
+          "rows": [
+            [
+              "een getal",
+              "regressie",
+              "prijs van een huis of auto, temperatuur morgen"
+            ],
+            [
+              "een categorie",
+              "classificatie",
+              "spam/geen spam, ziek/niet ziek, kat/hond"
+            ],
+            [
+              "structuur (zonder labels)",
+              "unsupervised",
+              "klantgroepen ontdekken in verkoopdata"
+            ]
+          ]
+        },
+        {
+          "type": "callout",
+          "kind": "info",
+          "html": "<p> De rest van deze site duikt in <em>supervised learning</em> met scikit-learn: eerst de basis-workflow en de classifiers, daarna de wiskunde onder de motorkap (loss functies), en tot slot logistic regression en support vector machines. </p>"
+        }
+      ]
+    }
+  ]
+}

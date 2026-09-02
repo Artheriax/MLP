@@ -2,7 +2,7 @@
   "id": "classification-practice",
   "chapter": "ch5",
   "title": "Practice: loss & metrics bij classificatie",
-  "intro": "Het vervolg van de practice-opdracht: bouw een logistisch regressiemodel begrip voor begrip — van beslissingsgrens via kansen tot de binaire cross-entropy — en codeer accuracy, precision, recall en F1 vanaf nul.",
+  "intro": "Het vervolg van de practice-opdracht, uitgewerkt: bouw een logistisch regressiemodel begrip voor begrip — van beslissingsgrens via kansen tot de binaire cross-entropy — met complete antwoorden van accuracy, precision, recall en F1 vanaf nul, direct in de browser uit te voeren.",
   "level": 2,
   "sections": [
     {
@@ -44,7 +44,7 @@
       ]
     },
     {
-      "title": "Binaire cross-entropy: theorie & coderen",
+      "title": "Binaire cross-entropy: theorie & uitwerking",
       "blocks": [
         {
           "type": "text",
@@ -58,22 +58,14 @@
         },
         {
           "type": "text",
-          "html": "<p> Nu jij. De functie krijgt de werkelijke klassen en de voorspelde kansen mee. De twee regels met <code>np.clip</code> voorkomen <code>log(0)</code> — laat die staan! Vul de rest in en draai de testcel. </p>"
+          "html": "<p> De uitwerking hieronder is het complete antwoord. De functie krijgt de werkelijke klassen en de voorspelde kansen mee. De twee regels met <code>np.clip</code> voorkomen <code>log(0)</code> — en de rest is de formule uit de theorie, letterlijk overgeschreven. Onderin staat de controle met de verwachte waarde uit de opdracht. </p>"
         },
         {
           "type": "code",
           "language": "python",
-          "caption": "opdracht — vul bce in",
+          "caption": "uitwerking — het antwoord",
           "runnable": true,
-          "editable": true,
-          "source": "import numpy as np\n\ndef bce(y_true, y_pred):\n\n    # DEZE TWEE REGELS NIET WIJZIGEN!\n    ##############################################\n    epsilon = 1e-15\n    y_pred = np.clip(y_pred, epsilon, 1 - epsilon)\n    ##############################################\n\n    # JOUW CODE HIER\n\n    return # JOUW CODE HIER\n"
-        },
-        {
-          "type": "code",
-          "language": "python",
-          "caption": "testcel — niet wijzigen",
-          "runnable": true,
-          "source": "import numpy as np\n\n# WIJZIG DEZE CODECEL NIET!\ndef _check(naam, waarde, verwacht):\n    ok = waarde is not None and abs(waarde - verwacht) < 1e-9\n    print(('GESLAAGD  ' if ok else 'NOG NIET   ') + naam,\n          '->', waarde, '(verwacht:', verwacht, ')')\n\ny_true = np.array([1.0, 0.0, 1.0, 0.0])\ny_pred = np.array([0.9, 0.1, 0.8, 0.3])\n\n_check('bce', bce(y_true, y_pred), 0.19763488164214868)\n"
+          "source": "import numpy as np\n\ndef bce(y_true, y_pred):\n    # voorkom log(0) — deze twee regels staan vast\n    epsilon = 1e-15\n    y_pred = np.clip(y_pred, epsilon, 1 - epsilon)\n\n    # de formule uit de theorie, direct overgeschreven\n    return -np.mean(y_true * np.log(y_pred) + (1 - y_true) * np.log(1 - y_pred))\n\n# controle met de waarden uit de opdracht\ny_true = np.array([1.0, 0.0, 1.0, 0.0])\ny_pred = np.array([0.9, 0.1, 0.8, 0.3])\n\nprint('bce:', bce(y_true, y_pred))  # verwacht 0.19763488164214868\n"
         }
       ]
     },
@@ -124,31 +116,23 @@
       ]
     },
     {
-      "title": "Coderen: accuracy, precision, recall & F1",
+      "title": "Uitgewerkt: accuracy, precision, recall & F1",
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Vul de vier functies in. Elke functie krijgt de <em>werkelijke klassen</em> en de <em>voorspelde klassen</em> (0/1, geen kansen — threshold is al toegepast). Vergelijk bijvoorbeeld met de confusion-matrix: tel TP's, FP's, TN's en FN's. </p>"
+          "html": "<p> De vier functies, volledig uitgewerkt. Elke functie krijgt de <em>werkelijke klassen</em> en de <em>voorspelde klassen</em> (0/1, geen kansen — de threshold is al toegepast). Zoals in de confusion-matrix: tel TP's, FP's, TN's en FN's. Onderin controleert de cel zichzelf met de verwachte waarden. </p>"
         },
         {
           "type": "code",
           "language": "python",
-          "caption": "opdracht — vul de vier metrics in",
+          "caption": "uitwerking — het antwoord",
           "runnable": true,
-          "editable": true,
-          "source": "import numpy as np\n\n# Accuracy\ndef accuracy(y_true, y_pred):\n    # JOUW CODE HIER\n    return # JOUW CODE HIER\n\n# Precision\ndef precision(y_true, y_pred):\n    # JOUW CODE HIER\n    return # JOUW CODE HIER\n\n# Recall\ndef recall(y_true, y_pred):\n    # JOUW CODE HIER\n    return # JOUW CODE HIER\n\n# F1 Score\ndef f1(y_true, y_pred):\n    # JOUW CODE HIER\n    return # JOUW CODE HIER\n"
-        },
-        {
-          "type": "code",
-          "language": "python",
-          "caption": "testcel — niet wijzigen",
-          "runnable": true,
-          "source": "import numpy as np\n\n# WIJZIG DEZE CODECEL NIET!\ndef _check(naam, waarde, verwacht):\n    ok = waarde is not None and abs(waarde - verwacht) < 1e-9\n    print(('GESLAAGD  ' if ok else 'NOG NIET   ') + naam,\n          '->', waarde, '(verwacht:', verwacht, ')')\n\ny_true = np.array([1, 0, 1, 1, 0, 0, 1, 0, 1, 1])\ny_pred = np.array([1, 1, 0, 1, 0, 1, 1, 0, 1, 0])\n\n# TP=4, FP=2, TN=2, FN=2\n_check('accuracy', accuracy(y_true, y_pred), 0.6)\n_check('precision', precision(y_true, y_pred), 0.6666666666666666)\n_check('recall   ', recall(y_true, y_pred), 0.6666666666666666)\n_check('f1      ', f1(y_true, y_pred), 0.6666666666666666)\n"
+          "source": "import numpy as np\n\ndef accuracy(y_true, y_pred):\n    # het aandeel voorspellingen dat klopt\n    return np.mean(y_true == y_pred)\n\ndef precision(y_true, y_pred):\n    tp = np.sum((y_true == 1) & (y_pred == 1))\n    fp = np.sum((y_true == 0) & (y_pred == 1))\n    return tp / (tp + fp)\n\ndef recall(y_true, y_pred):\n    tp = np.sum((y_true == 1) & (y_pred == 1))\n    fn = np.sum((y_true == 1) & (y_pred == 0))\n    return tp / (tp + fn)\n\ndef f1(y_true, y_pred):\n    p = precision(y_true, y_pred)\n    r = recall(y_true, y_pred)\n    return 2 * p * r / (p + r)\n\n# controle met de waarden uit de opdracht\ny_true = np.array([1, 0, 1, 1, 0, 0, 1, 0, 1, 1])\ny_pred = np.array([1, 1, 0, 1, 0, 1, 1, 0, 1, 0])\n\n# TP=4, FP=2, TN=2, FN=2\nprint('accuracy :', accuracy(y_true, y_pred))   # verwacht 0.6\nprint('precision:', precision(y_true, y_pred))  # verwacht 0.6666666666666666\nprint('recall   :', recall(y_true, y_pred))     # verwacht 0.6666666666666666\nprint('f1       :', f1(y_true, y_pred))         # verwacht 0.6666666666666666\n"
         },
         {
           "type": "callout",
           "kind": "tip",
-          "html": "<p> Hint: tel eerst de TP, FP, TN en FN met booleaanse masks, bijvoorbeeld <code>tp = np.sum((y_true == 1) &amp; (y_pred == 1))</code>. Let op deling door nul: is er geen enkele positieve voorspelling, dan is precision ongedefinieerd — in de test hierboven hoeft dat geen probleem te zijn. </p>"
+          "html": "<p> Zo werkt het: tel de TP, FP, TN en FN met booleaanse masks, bijvoorbeeld <code>tp = np.sum((y_true == 1) &amp; (y_pred == 1))</code>. Let op deling door nul: is er geen enkele positieve voorspelling, dan is precision ongedefinieerd — in de controle hierboven hoeft dat geen probleem te zijn. </p>"
         }
       ]
     },

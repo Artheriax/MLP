@@ -1,0 +1,158 @@
+{
+  "id": "data-features",
+  "chapter": "ch0",
+  "title": "Data, features & labels",
+  "intro": "The language of ML data: rows are samples, columns are features, and the column you predict is the target. What X and y look like in scikit-learn, which kinds of features exist — and why splitting into train and test is non-negotiable.",
+  "level": 1,
+  "sections": [
+    {
+      "title": "Thinking in tables: rows and columns",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Almost every ML dataset starts as a <strong>table</strong>. Each <em>row</em> is one sample (also called: observation or instance) — one car, one person, one email. Each <em>column</em> is a variable describing that sample. Machine learning is nothing more (and nothing less) than finding patterns between those columns. </p>"
+        },
+        {
+          "type": "text",
+          "html": "<p> As an example we take the car dataset that also returns in the <em>Practice</em> chapter: five cars, each described by three characteristics, with the price as the thing we want to predict. The table is deliberately small — count along: 5 rows, 4 columns. </p>"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "age (y)",
+            "mileage (&times;10,000)",
+            "owners",
+            "price (&times; &euro;1000)"
+          ],
+          "rows": [
+            [
+              "1",
+              "5",
+              "1",
+              "18"
+            ],
+            [
+              "3",
+              "12",
+              "2",
+              "12"
+            ],
+            [
+              "4",
+              "15",
+              "1",
+              "10"
+            ],
+            [
+              "7",
+              "23",
+              "3",
+              "6"
+            ],
+            [
+              "9",
+              "30",
+              "2",
+              "4"
+            ]
+          ]
+        },
+        {
+          "type": "callout",
+          "kind": "info",
+          "html": "<p> Jargon check: <em>feature</em> = input column (also: independent variable, explanatory variable). <em>Target</em> / <em>label</em> = the column you predict (dependent variable). In mathematical texts the target is also called <em>y</em> and the features <em>x</em>. </p>"
+        }
+      ]
+    },
+    {
+      "title": "X and y: the scikit-learn convention",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> scikit-learn always expects data in two parts: <strong>X</strong>, the feature matrix (capital letter, because it is two-dimensional), and <strong>y</strong>, the target vector (lower case, because it is one-dimensional). Each row of X corresponds exactly to one element of y — row 3 of X describes the same car as element 3 of y. </p>"
+        },
+        {
+          "type": "formula",
+          "label": "shape of the data",
+          "latex": "X \\in \\mathbb{R}^{n \\times p}, \\qquad y \\in \\mathbb{R}^{n}",
+          "caption": "n = number of samples (rows), p = number of features (columns). The model learns the mapping from each row x_i to a prediction y-hat."
+        },
+        {
+          "type": "text",
+          "html": "<p> Below you see how to turn the car table into X and y with numpy — and how to read out the shapes and the first pair. This pattern (preparing data, checking shapes) is always your first step in scikit-learn. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "the car table as X and y",
+          "runnable": true,
+          "source": "import numpy as np\n\n# rows = cars, columns = [age, mileage, owners]\nX = np.array([[1,  5, 1],\n              [3, 12, 2],\n              [4, 15, 1],\n              [7, 23, 3],\n              [9, 30, 2]], dtype=float)\n\ny = np.array([18, 12, 10, 6, 4])   # price (x1000 EUR)\n\nprint('X has shape:', X.shape, '-> n = 5 samples, p = 3 features')\nprint('y has shape:', y.shape, '-> 1 target per sample')\nprint('features of car 1:', X[0], '-> price:', y[0])\n"
+        }
+      ]
+    },
+    {
+      "title": "Kinds of features (and how to prepare them)",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Features come in three flavours. <strong>Numerical</strong> features are numbers mathematics may operate on (age, mileage). <strong>Categorical</strong> features are labels: nominal (red/blue — no order) or ordinal (low/medium/high — with order). Models compute with numbers, so categorical features must be <em>encoded</em>: nominal via one-hot (one column per category), ordinal may become 0/1/2. </p>"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Type",
+            "Example",
+            "Watch out for"
+          ],
+          "rows": [
+            [
+              "numerical",
+              "age, mileage, temperature",
+              "larger scales dominate distance-based models → scale/standardise"
+            ],
+            [
+              "categorical, nominal",
+              "colour: red/blue/green",
+              "one-hot encoding; never 1/2/3 — that suggests an order that is not there"
+            ],
+            [
+              "categorical, ordinal",
+              "education: low/medium/high",
+              "may be 0/1/2, because the order is meaningful"
+            ]
+          ]
+        },
+        {
+          "type": "callout",
+          "kind": "warning",
+          "html": "<p> <strong>Garbage in, garbage out.</strong> A model is never better than its features: missing values, outliers and wrongly encoded categories lead directly to a bad model. Exploring and cleaning data is not a side note — it is often most of the work of the whole project. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Train and test: evaluate on unseen data",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> The golden rule: <strong>never evaluate on the data you trained on.</strong> A model that memorises the training data scores perfectly there and fails in the real world. Just like an exam: you saw the answers of old exams while practising, not those of the real exam. That is why you split the data: a large part to train on (often 75–80%) and a smaller part to test honestly. </p>"
+        },
+        {
+          "type": "text",
+          "html": "<p> Below the complete mini-flow: split, train a simple model, and print both scores. Note the difference — the train score is almost always higher, and it is the <em>test</em> score that counts. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "train/test split with KNN",
+          "runnable": true,
+          "source": "import numpy as np\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.neighbors import KNeighborsRegressor\n\nX = np.array([[1,  5, 1], [3, 12, 2], [4, 15, 1],\n              [7, 23, 3], [9, 30, 2], [2,  9, 1],\n              [6, 20, 3], [8, 26, 2]], dtype=float)\ny = np.array([18, 12, 10, 6, 4, 15, 8, 5], dtype=float)\n\n# 75% train, 25% test — the model NEVER sees the test rows\nX_train, X_test, y_train, y_test = train_test_split(\n    X, y, test_size=0.25, random_state=0)\n\nmodel = KNeighborsRegressor(n_neighbors=3).fit(X_train, y_train)\nprint('train score (optimistic):', model.score(X_train, y_train).round(2))\nprint('test score  (honest)    :', model.score(X_test, y_test).round(2))\n\nnew_car = [[5, 17, 1]]\nprint('predicted price (x1000 EUR):', model.predict(new_car)[0].round(1))\n"
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p> The train score is an <em>optimistic</em> diagnosis, the test score the <em>honest</em> one. Only the test score says something about how the model will do in the real world. The next topic shows how this protects against under- and overfitting. </p>"
+        }
+      ]
+    }
+  ]
+}
