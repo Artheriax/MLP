@@ -1,0 +1,79 @@
+{
+  "id": "kernel-svm",
+  "chapter": "ch4",
+  "title": "Kernel SVM's: niet-lineaire grenzen",
+  "intro": "Hoe fit je een niet-lineaire beslisgrens met een lineair model? Het antwoord is verrassend simpel: verander de ruimte waarin je lineair bent. Kernels doen dat — en de RBF-kernel is de standaardkeuze.",
+  "level": 3,
+  "sections": [
+    {
+      "title": "Het transformatie-idee",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Neem een 2D-speelgoeddataset die niet lineair scheidbaar is: rode punten clusteren rond de oorsprong \\( (0, 0) \\), blauwe punten liggen ver weg. Hoe je ook een lijn trekt — perfect scheidbaar lukt niet; een lineaire SVM voorspelt misschien gewoon overal \"blauw\". </p> <p> Maar kijk eens naar de transformatie \\( (x_1, x_2) \\to (x_1^2, x_2^2) \\): kwadrateren maakt waarden dicht bij nul klein, en waarden ver van nul (positief of negatief) groot. In dit <strong>nieuwe coordinatenstelsel</strong> zitten de rode punten links-onder en de blauwe rechts-boven — en plotseling zijn ze wél lineair scheidbaar! Een lineaire SVM op de nieuwe features geeft een perfecte classificatie, en terugvertaald naar de originele ruimte is de grens een <strong>ellips</strong>. </p>"
+        },
+        {
+          "type": "formula",
+          "label": "de kerngedachte",
+          "latex": "\\text{lineaire grens in getransformeerde ruimte} \\;\\Longleftrightarrow\\; \\text{niet-lineaire grens in originele ruimte}",
+          "caption": "De transformatie hoeft geen kwadrateren te zijn en de nieuwe ruimte mag zelfs een ander aantal dimensies hebben."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "Transformatie demonstreren: cirkel-data wordt scheidbaar",
+          "runnable": true,
+          "source": "import numpy as np\nfrom sklearn.svm import LinearSVC, SVC\n\nrng = np.random.default_rng(42)\n\n# Rood: dicht bij de oorsprong. Blauw: in een ring eromheen.\nhoek_r = rng.uniform(0, 2 * np.pi, 50)\nr_rood = rng.uniform(0, 1.0, 50)\nrood = np.column_stack([r_rood * np.cos(hoek_r), r_rood * np.sin(hoek_r)])\n\nhoek_b = rng.uniform(0, 2 * np.pi, 80)\nr_blauw = rng.uniform(2.2, 3.4, 80)\nblauw = np.column_stack([r_blauw * np.cos(hoek_b), r_blauw * np.sin(hoek_b)])\n\nX = np.vstack([rood, blauw])\ny = np.array([0] * 50 + [1] * 80)\n\nlin = LinearSVC(max_iter=10000).fit(X, y)\nprint('LinearSVC op originele X   :', round(lin.score(X, y), 3))\n\nX2 = X ** 2                      # transformatie: features kwadrateren\nlin2 = LinearSVC(max_iter=10000).fit(X2, y)\nprint('LinearSVC op (x1^2, x2^2)  :', round(lin2.score(X2, y), 3))\n\nrbf = SVC().fit(X, y)\nprint('SVC met RBF-kernel op X    :', round(rbf.score(X, y), 3))"
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p> Een <strong>lineair model in een getransformeerde ruimte</strong> = een <strong>niet-lineair model in de originele ruimte</strong>. Kernels en kernel-SVM's implementeren zulke feature-transformaties op computationeel efficiënte wijze. </p>"
+        }
+      ]
+    },
+    {
+      "title": "De RBF-kernel en de hyperparameter gamma",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> In scikit-learn gebruik je voor kernels de <code>SVC</code>-klasse (niet <code>LinearSVC</code>). De default is de <strong>RBF-kernel</strong> (radial basis function): denk het als een extreem ingewikkelde feature-transformatie gevolgd door een lineaire grens in die nieuwe ruimte — het kwadrateren uit het vorige voorbeeld, maar dan veel geavanceerder. <code>fit</code> en <code>predict</code> werken zoals je gewend bent. </p> <p> Naast <code>C</code> (regularisatie, als altijd) krijgt de RBF-kernel een eigen hyperparameter: <strong>gamma</strong>, die de <em>gladheid</em> van de grens stuurt. De kernel-waarde tussen twee punten vervalt exponentieel met hun afstand, en gamma bepaalt hoe snel: </p>"
+        },
+        {
+          "type": "formula",
+          "label": "RBF-kernel",
+          "latex": "K(x, x') \\;=\\; e^{-\\,\\gamma\\, \\lVert x - x' \\rVert^2}",
+          "caption": "gamma klein = trage vervalling = gladde grens · gamma groot = snelle vervalling = complexe grens."
+        },
+        {
+          "type": "plot",
+          "title": "Invloed van gamma op de kernel-vorm",
+          "subtitle": "Sleep de slider: hoe groter gamma, hoe 'piekeriger' de kernel — en hoe complexer de beslisgrens.",
+          "xrange": [-3, 3],
+          "yrange": [-0.05, 1.1],
+          "xlabel": "afstand tot support vector",
+          "curves": [
+            { "expr": "Math.exp(-gamma * x * x)", "label": "K(x, 0)", "color": "magenta" }
+          ],
+          "slider": { "param": "gamma", "min": 0.1, "max": 5, "step": 0.1, "value": 1, "label": "γ (gamma)" }
+        },
+        {
+          "type": "text",
+          "html": "<p> Concreet uit de cursus: met <code>gamma=0.01</code> wordt de grens mooi glad; met <code>gamma=2</code> ontstaat rondom elk blauw trainingsvoorbeeld een klein \"eiland\" — en haal je 100% training accuracy. Met de juiste hyperparameters kan een RBF-SVM bijna <em>elke</em> dataset perfect scheiden. Waarom niet altijd de grootste gamma + hoogste trainingscore? Juist: <strong>overfitting</strong>. Zoek de balans met een testset. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "gamma sweep: gladheid vs. complexiteit",
+          "runnable": true,
+          "source": "for gamma in [0.1, 1.0, 10.0]:\n    svc = SVC(gamma=gamma).fit(X, y)\n    print(f'gamma={gamma:<5} train={svc.score(X, y):.3f}'\n          f'  n_support={len(svc.support_vectors_)}')"
+        },
+        {
+          "type": "callout",
+          "kind": "warning",
+          "html": "<p> Klein gamma → simpelere, gladdere grenzen (minder complexiteit). Groot gamma → complexere grenzen. Samen met C bepaalt dit hoe sterk je risico op overfitting is — experimenteer altijd met train <em>én</em> test! </p>"
+        }
+      ]
+    }
+  ]
+}

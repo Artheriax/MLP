@@ -1,0 +1,69 @@
+{
+  "id": "classifiers-gebruiken",
+  "chapter": "ch1",
+  "title": "LogisticRegression, LinearSVC & SVC gebruiken",
+  "intro": "De drie classifiers uit de cursus delen exact dezelfde fit/predict/score-syntax. Het verschil zit onder de motorkap: welke loss er geoptimaliseerd wordt en of de beslisgrens lineair is. Hier zie je ze alle drie aan het werk.",
+  "level": 1,
+  "sections": [
+    {
+      "title": "LogisticRegression: niet alleen \"hard\" voorspellen",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> <code>LogisticRegression</code> importeer je uit <code>sklearn.linear_model</code> — logistic regression is namelijk een <strong>lineair classifier</strong> (waarom dat zo is, volgt in hoofdstuk 2). Instantiëren, fitten en scoren werkt precies zoals bij KNN. Op de wijn-dataset (3 soorten wijn, 13 chemische features) haalt de training accuracy zo rond de 97%. </p> <p> Naast <em>harde</em> voorspellingen (klasse 0, 1 of 2) kan het model ook <strong>confidence-scores</strong> geven met <code>predict_proba</code>: per voorbeeld één kans per klasse, samen altijd precies 1.0. In de cursus geeft het model voor het eerste wijnvoorbeeld ruim 99% kans aan klasse 0 en vrijwel 0% aan de andere twee. Onthoud de e-notatie: <code>9.9e-01</code> betekent \\( 9{,}9 \\times 10^{-1} = 0{,}99 \\), dus 99%. Hoe deze kansen berekend worden, ontrafelen we in hoofdstuk 3. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "LogisticRegression op de wijn-dataset, met kansen",
+          "runnable": true,
+          "source": "from sklearn.datasets import load_wine\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.preprocessing import StandardScaler\n\nX, y = load_wine(return_X_y=True)\nX_train, X_test, y_train, y_test = train_test_split(\n    X, y, test_size=0.25, random_state=42)\n\n# Schalen is goede gewoonte (zie hoofdstuk 3)\nscaler = StandardScaler().fit(X_train)\nX_train = scaler.transform(X_train)\nX_test  = scaler.transform(X_test)\n\nlr = LogisticRegression(max_iter=5000)\nlr.fit(X_train, y_train)\n\nprint('Train accuracy:', round(lr.score(X_train, y_train), 3))\nprint('Test accuracy :', round(lr.score(X_test,  y_test), 3))\n\nprobs = lr.predict_proba(X_test[:1])[0]\nprint('Kansen per klasse:', [round(p, 4) for p in probs])\nprint('Som van kansen   :', round(sum(probs), 4))"
+        },
+        {
+          "type": "callout",
+          "kind": "info",
+          "html": "<p> Merk op: <strong>meer dan 2 klassen</strong>? Geen probleem — scikit-learn regelt multi-class automatisch (hoofdstuk 3 laat zien hoe). </p>"
+        }
+      ]
+    },
+    {
+      "title": "LinearSVC en SVC: de SVM-familie",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> De basis-SVM in scikit-learn heet <code>LinearSVC</code> (linear support vector <em>classifier</em>) en werkt exact hetzelfde als <code>LogisticRegression</code>: instantiëren, fitten, scoren. Daarnaast is er <code>SVC</code>, die standaard een <strong>niet-lineaire</strong> SVM fit via de RBF-kernel. Met de standaard-hyperparameters is de accuracy van <code>SVC</code> niet bijzonder hoog — maar met de juiste instellingen haalt hij 100% <em>trainings</em>accuracy. Dat kan natuurlijk ook gewoon overfitting zijn: precies het risico dat je neemt met complexere modellen. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "Drie classifiers, dezelfde interface",
+          "runnable": true,
+          "source": "from sklearn.svm import LinearSVC, SVC\n\nfor naam, model in [\n    ('LogisticRegression', LogisticRegression(max_iter=5000)),\n    ('LinearSVC          ', LinearSVC(max_iter=10000)),\n    ('SVC (RBF-kernel)   ', SVC()),\n]:\n    model.fit(X_train, y_train)\n    print(f'{naam}  train={model.score(X_train, y_train):.3f}  '\n          f'test={model.score(X_test, y_test):.3f}')"
+        },
+        {
+          "type": "table",
+          "headers": ["Model", "Import", "Beslisgrens", "Karakter"],
+          "rows": [
+            ["LogisticRegression", "<code>sklearn.linear_model</code>", "lineair", "kansen als bonus (predict_proba)"],
+            ["LinearSVC", "<code>sklearn.svm</code>", "lineair", "snelle lineaire SVM"],
+            ["SVC", "<code>sklearn.svm</code>", "standaard niet-lineair", "kernels mogelijk (hoofdstuk 4)"]
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Het belangrijkste model in je hoofd: under- vs. overfitting",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Tot nu toe gebruikten we telkens de <strong>default hyperparameters</strong>. Een hyperparameter is een keuze vóór het fitten die vaak de <em>complexiteit</em> van het model bepaalt — zoals <code>C</code> en <code>gamma</code>. Er is een fundamentele afweging: <strong>underfitting</strong> (het model is te simpel, ziet de patronen niet, lage train- én testscore) versus <strong>overfitting</strong> (het model is te complex, leert de eigenaardigheden van jóuw trainingsset, hoge trainscore maar lagere testscore). </p> <p> In de rest van de cursus zie je wat deze hyperparameters <em>wiskundig</em> doen — en hoe je ze bewust instelt in plaats van gokken. </p>"
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p> Underfitting = te simpel → slecht op alles. Overfitting = te complex → perfect op trainingsdata, slecht op nieuwe data. De kunst is de balans ertussen; regularisatie (hoofdstuk 3) is je belangrijkste gereedschap. </p>"
+        }
+      ]
+    }
+  ]
+}

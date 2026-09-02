@@ -1,0 +1,92 @@
+{
+  "id": "loss-diagrams",
+  "chapter": "ch2",
+  "title": "Loss-diagrammen: logistic loss vs. hinge loss",
+  "intro": "Waarschijnlijk het meest conceptuele onderwerp van de cursus — maar als je dit beeld eenmaal snapt, weet je exact wát logistic regression en SVM's zijn, en waarom ze zich anders gedragen. De grafieken hieronder zijn interactief: beweeg je muis eroverheen.",
+  "level": 2,
+  "sections": [
+    {
+      "title": "Het diagram opzetten",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> We tekenen loss-curven op een vast soort assenstelsel: op de verticale as de <strong>loss</strong>, op de horizontale as de <strong>raw model output</strong> \\( f(x) = w \\cdot x + b \\). Omdat we voorspellen op basis van het teken, verdeelt de verticale as bij nul het plaatje in twee helften: links voorspellen we klasse −1, rechts klasse +1. </p> <p> We bekijken één trainingsvoorbeeld dat in klasse <strong>+1</strong> zit. Dan is de rechterhelft (positieve output) <em>correct</em> en de linkerhelft <em>incorrect</em>. Let op: dit is iets anders dan de beslisgrens-plaatjes van hoofdstuk 1 — hier zijn de assen niet twee features, maar raw output en loss, hoeveel features je model ook heeft. En dit is de loss voor <em>één</em> voorbeeld; de totale loss is de som over alle voorbeelden. </p>"
+        },
+        {
+          "type": "plot",
+          "title": "De 0-1 loss van één voorbeeld (y = +1)",
+          "subtitle": "Links (negatieve raw output): fout → loss 1. Rechts: goed → loss 0.",
+          "xrange": [-4, 4],
+          "yrange": [-0.3, 2],
+          "curves": [
+            { "expr": "(x < 0 ? 1 : 0)", "label": "0-1 loss", "color": "yellow" }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Waarom de squared loss mislukt voor classificatie",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Voor lineaire regressie ís de raw output de voorspelling, en daar werkt de kwadratische loss prima: hoe verder van de echte target (hier aangenomen 1), hoe hoger de loss. Maar voor een lineaire classifier is dat onzin: <em>het teken</em> moet kloppen, de afstand tot de target doet er niet toe. </p> <p> Zie het probleem in de curve: de linkerarm is prima (fouten worden hard gestraft), maar de rechterarm is rampzalig — een grote <em>positieve</em> raw output betekent een <em>correcte, zelfverzekerde</em> voorspelling, en de squared loss straft die juist met een hoge penalty. Je zou dus \"perfect goede\" modellen als slecht beoordelen tijdens het fitten. Dáárom hebben we speciale loss functies voor classificatie nodig. </p>"
+        },
+        {
+          "type": "plot",
+          "title": "Squared loss t.o.v. de raw model output (y = 1)",
+          "subtitle": "De rechterarm stijgt — correcte, zelfverzekerde voorspellingen worden gestraft.",
+          "xrange": [-4, 4],
+          "yrange": [-0.5, 4],
+          "curves": [
+            { "expr": "(x - 1) * (x - 1)", "label": "(x − 1)²", "color": "cyan" }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "De twee sterren: logistic loss en hinge loss",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> De <strong>logistic loss</strong> (gebruikt door logistic regression) is in feite een <em>gladde versie van de 0-1 loss</strong>: beweeg je naar rechts — de zone van correcte voorspellingen — dan daalt de loss geleidelijk. De interpretatie als \"aantal fouten\" is weg, maar in plaats daarvan kun je deze loss wél praktisch minimaliseren. </p> <p> De <strong>hinge loss</strong> (gebruikt door SVM's) heeft dezelfde basisvorm, maar met één cruciaal detail: vanaf raw output <strong>+1</strong> wordt de loss exact nul en blijft hij dat — er is een \"plat\" stuk. Voorspel je een voorbeeld correct <em>buiten een zekere foutmarge</em>, dan draagt het voorbeeld niets meer bij aan de fit. Dit platte stuk is de sleutel tot support vectors in hoofdstuk 4. </p>"
+        },
+        {
+          "type": "plot",
+          "title": "Alle drie de classificatie-losses bij elkaar",
+          "subtitle": "Beweeg over de grafiek om exacte waarden af te lezen.",
+          "xrange": [-4, 4],
+          "yrange": [-0.4, 5],
+          "curves": [
+            { "expr": "(x < 0 ? 1 : 0)", "label": "0-1 loss", "color": "yellow" },
+            { "expr": "Math.log(1 + Math.exp(-x))", "label": "logistic loss", "color": "cyan" },
+            { "expr": "Math.max(0, 1 - x)", "label": "hinge loss", "color": "magenta" }
+          ]
+        },
+        {
+          "type": "formula",
+          "label": "logistic loss",
+          "latex": "L_{\\text{logistic}}\\bigl( y,\\, f(x) \\bigr) \\;=\\; \\log\\!\\left( 1 + e^{-\\,y\\, f(x)} \\right), \\qquad y \\in \\{-1,\\,+1\\}",
+          "caption": "De loss van logistic regression (voor één voorbeeld)."
+        },
+        {
+          "type": "formula",
+          "label": "hinge loss",
+          "latex": "L_{\\text{hinge}}\\bigl( y,\\, f(x) \\bigr) \\;=\\; \\max\\!\\bigl(\\, 0,\\; 1 - y\\, f(x) \\,\\bigr)",
+          "caption": "De loss van SVM's — exact 0 zodra y·f(x) ≥ 1 (het \"platte stuk\")."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "De losses numeriek naast elkaar",
+          "runnable": true,
+          "source": "import numpy as np\n\nraw = np.array([2.0, 0.5, -0.5, -2.0])\ny = 1  # het voorbeeld zit in klasse +1\n\nhinge    = np.maximum(0, 1 - y * raw)\nlogistic = np.log(1 + np.exp(-y * raw))\nzero_one = (np.sign(raw) != y).astype(int)\n\nprint(f\"{'raw':>6} {'0-1':>4} {'hinge':>7} {'logistic':>9}\")\nfor r, z, h, l in zip(raw, zero_one, hinge, logistic):\n    print(f'{r:+6.1f} {z:4d} {h:7.3f} {l:9.3f}')"
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p> Deze twee curve-vormen <strong>zijn</strong> de essence van logistic regression en SVM's. Alles wat volgt — regularisatie, kansen, support vectors, kernels — bouwt voort op deze diagrammen. </p>"
+        }
+      ]
+    }
+  ]
+}

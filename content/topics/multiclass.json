@@ -1,0 +1,80 @@
+{
+  "id": "multiclass",
+  "chapter": "ch3",
+  "title": "Multi-class: one-vs-rest & softmax",
+  "intro": "Meer dan twee klassen? scikit-learn regelt dat automatisch — maar er zit een keuze achter de schermen: losse binaire classifiers per klasse (one-vs-rest), of één gezamenlijk model met een softmax-loss. De gevolgen zijn klein maar begrijpelijk.",
+  "level": 2,
+  "sections": [
+    {
+      "title": "Multi-class betekent 3+ klassen",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Tot nu toe waren alle conceptuele verhalen <em>binair</em> (2 klassen), terwijl we al die tijd ook gewoon multi-class classificatie deden met de wijn-dataset (3 klassen). Tijd om het gordijn op te lichten: hoe doen lineaire classifiers dat? Er zijn twee populaire strategieën. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Strategie 1: one-vs-rest (OvR)",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> <strong>One-vs-rest</strong> traint voor élke klasse een eigen binaire classifier. De code <code>y == 0</code> geeft een array terug die <code>True</code> is waar <code>y</code> gelijk is aan 0 — de eerste classifier leert dus \"klasse 0 of niet-0\", de tweede \"1 of niet-1\", enzovoorts. Voorspellen doe je daarna door alle classifiers hun <strong>raw model output</strong> (in scikit-learn: <code>decision_function</code>) te laten berekenen: de klasse met de <em>grootste</em> raw output wint — die classifier is het meest overtuigd. In de cursus wint classifier 0, dus voorspel je klasse 0. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "One-vs-rest handmatig nabouwen",
+          "runnable": true,
+          "source": "import numpy as np\nfrom sklearn.datasets import load_wine\nfrom sklearn.linear_model import LogisticRegression\n\nX, y = load_wine(return_X_y=True)\n\n# Drie binaire classifiers: 'klasse 0 of niet', 'klasse 1 of niet', ...\nclfs = [LogisticRegression(max_iter=5000).fit(X, y == c) for c in (0, 1, 2)]\n\ni = 0\nraw = [clf.decision_function([X[i]])[0] for clf in clfs]\nprint('Raw outputs per classifier:', np.round(raw, 2))\nprint('Handmatige OvR-voorspelling :', int(np.argmax(raw)),\n      '(grootste raw output)')"
+        },
+        {
+          "type": "callout",
+          "kind": "tip",
+          "html": "<p> Aantrekkelijk aan OvR: je hergebruikt gewoon je bestaande binaire classifier-implementatie — er is niets nieuws nodig. scikit-learn doet dit onder andere via de <code>liblinear</code>-solver. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Strategie 2: multinomial / softmax",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> De <strong>multinomial</strong>-aanpak past juist de <strong>loss functie</strong> aan zodat die direct het multi-class-probleem optimaliseert — termen die je tegenkomt: multinomial logistic regression, <strong>softmax</strong>, of cross-entropy loss. Je fit één keer voor alle klassen in plaats van apart per klasse. In de wereld van neural networks is dit de standaard. Beide strategieën kunnen ook kansen uitvoeren, net als een binaire classifier. </p>"
+        },
+        {
+          "type": "formula",
+          "label": "softmax",
+          "latex": "\\hat{p}_k \\;=\\; \\frac{e^{z_k}}{\\sum_{j=1}^{K} e^{z_j}}, \\qquad z_k = \\text{raw output voor klasse } k",
+          "caption": "De generalizeerde sigmoid voor K klassen: alle kansen zijn positief en sommeren tot 1."
+        },
+        {
+          "type": "table",
+          "headers": ["", "One-vs-rest", "Multinomial (softmax)"],
+          "rows": [
+            ["Fitten", "per klasse één binaire classifier", "één keer, met aangepaste loss"],
+            ["Voorspellen", "grootste raw model output", "grootste softmax-kans"],
+            ["Voordeel", "hergebruik binaire implementatie", "loss staat dichter bij accuracy — soms betere score"],
+            ["Gebruikelijk bij", "SVM's en aanverwante strategieën", "neural networks; standaard bij lbfgs"]
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Hoe zien de coëfficiënten eruit?",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Binair had je één coëfficiënt per feature plus één intercept. Voor 3 klassen heb je bij OvR <strong>3 hele binaire classifiers</strong>: dus één coëfficiënt per feature <em>per klasse</em>, en één intercept per klasse. Bij de wijn-dataset (13 features) is <code>coef_</code> dus een 3×13-array. De multinomial-versie leert <strong>precies evenveel</strong> parameters (ook 3×13) — de aanpak verschilt, maar ruwweg hebben de parameters dezelfde interpretaties. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "Coëfficiënt-vormen vergelijken",
+          "runnable": true,
+          "source": "from sklearn.linear_model import LogisticRegression\n\n# liblinear doet one-vs-rest; lbfgs (default) doet multinomial\novr = LogisticRegression(solver='liblinear', max_iter=5000).fit(X, y)\nmulti = LogisticRegression(max_iter=5000).fit(X, y)\n\nprint('OvR        coef_:', ovr.coef_.shape, ' intercept_:', ovr.intercept_.shape)\nprint('Multinomial coef_:', multi.coef_.shape, ' intercept_:', multi.intercept_.shape)\nprint('OvR voorspelt        :', ovr.predict([X[0]])[0])\nprint('Multinomial voorspelt:', multi.predict([X[0]])[0])"
+        }
+      ]
+    }
+  ]
+}

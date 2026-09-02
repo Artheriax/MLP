@@ -1,0 +1,65 @@
+{
+  "id": "support-vectors",
+  "chapter": "ch4",
+  "title": "Support vectors & de margin",
+  "intro": "Het geheim van SVM's: het merendeel van je trainingsdata mag weg zonder dat het model verandert. De paar voorbeelden die er wél toe doen, heten support vectors — en ze verklaren ook waarom kernel-SVM's zo snel zijn.",
+  "level": 2,
+  "sections": [
+    {
+      "title": "Wat is een SVM, precies?",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> In het verlengde van hoofdstuk 3: logistic regression is een lineaire classifier, geleerd met de <strong>logistic loss</strong>. Een lineaire <strong>SVM</strong> is óók een lineaire classifier, maar dan met de <strong>hinge loss</strong> — en de standaarddefinitie van een SVM voegt daar standaard <strong>L2-regularisatie</strong> aan toe. De loss-diagrammen van hoofdstuk 2 lijken dan ook sprekend op elkaar. </p> <p> Het cruciale verschil is het <strong>platte stuk</strong> van de hinge loss: zodra de raw model output groter is dan +1 — je voorspelde het voorbeeld correct, met een zekere foutmarge — is de loss exact nul. Val je trainingsvoorbeeld in die \"zero-loss zone\", dan draagt het <em>niets</em> bij aan de fit: verwijder je het voorbeeld, dan verandert er niets aan het model. Dit is hét kenmerk van SVM's. </p>"
+        },
+        {
+          "type": "formula",
+          "label": "SVM = hinge + L2",
+          "latex": "\\min_{w,\\,b}\\; \\sum_{i=1}^{n} \\max\\!\\bigl(0,\\; 1 - y_i (w \\cdot x_i + b)\\bigr) \\;+\\; \\lambda \\, \\lVert w \\rVert_2^2",
+          "caption": "De standaard SVM: hinge loss per voorbeeld plus L2-regularisatie op de coëfficiënten."
+        }
+      ]
+    },
+    {
+      "title": "Support vectors: de voorbeelden die ertoe doen",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> <strong>Support vectors</strong> zijn de voorbeelden die <em>niet</em> in het platte stuk vallen — in formulevorm: voorbeelden met \\( y_i \\, f(x_i) \\le 1 \\). Dat zijn (1) de <strong>incorrect geclassificeerde</strong> voorbeelden én (2) de <strong>correct geclassificeerde voorbeelden dicht bij de grens</strong>. Hoe dicht \"dicht genoeg\" is, stuurt de regularisatiesterkte. </p> <p> Vergelijk dat met logistic regression: daar is géén plat stuk — élk data-punt beïnvloedt de fit. Bij een SVM zijn juist de <em>niet</em>-support-vectors opmerkelijk: je kunt ze weggooien zonder effect. Kritisch voor de populariteit van SVM's: kernel-SVM's (later dit hoofdstuk) zijn verrassend snel, mede omdat slimme algoritmes alleen schalen met het <em>aantal support vectors</em> in plaats van met het totale aantal trainingsvoorbeelden. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "Hoeveel van je data is eigenlijk support vector?",
+          "runnable": true,
+          "source": "from sklearn.svm import SVC\nfrom sklearn.datasets import load_wine\n\nX, y = load_wine(return_X_y=True)\n\nsvc = SVC(kernel='linear', C=1.0).fit(X, y)\n\nprint('Trainingsvoorbeelden :', len(X))\nprint('Support vectors      :', len(svc.support_vectors_))\nprint('Per klasse           :', svc.n_support_)\nprint('Training score       :', round(svc.score(X, y), 3))"
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p> Verwijder een <strong>niet</strong>-support vector → model verandert niet. Verwijder een <strong>support vector</strong> → model verandert wél. Support vectors zijn letterlijk de voorbeelden die het model \"dragen\". </p>"
+        }
+      ]
+    },
+    {
+      "title": "Het max-margin perspectief",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Buiten deze cursus om zul je SVM's vaak omschreven zien als <strong>\"margin maximizers\"</strong> — volledigheidshalve dat beeld. Op een lineair scheidbare dataset valt de geleerde grens precies <em>halverwege</em> beide klassen. Dat is aantrekkelijk: zonder extra informatie is een grens die beide klassen evenveel ruimte geeft logischer dan een grens die vlak tegen één klasse aan plakt. </p> <p> De afstand van de support vectors tot de grens heet de <strong>margin</strong>. Zolang de regularisatiesterkte niet te groot is, maximaliseert de SVM de margin op scheidbare data. De meeste datasets zijn echter níet lineair scheidbaar (verwacht geen 100% training accuracy), maar de max-margin-gedachte bleek <strong>wiskundig equivalent</strong> aan wat we al hadden: hinge loss + L2-regularisatie. Twee brillen, hetzelfde model. </p>"
+        },
+        {
+          "type": "formula",
+          "label": "margin",
+          "latex": "\\text{margin} \\;=\\; \\frac{2}{\\lVert w \\rVert_2}",
+          "caption": "De breedte van de marge rondom de beslisgrens. Margin maximaliseren = ‖w‖ minimaliseren — vandaar de L2-straf."
+        },
+        {
+          "type": "callout",
+          "kind": "info",
+          "html": "<p> Waarom klopt dit precies? De hinge loss eist correcte voorspellingen met marge (\\( y\\,f(x) \\ge 1 \\)); de L2-term houdt \\( \\lVert w \\rVert \\) klein — en samen duwt dat de grens precies in het midden. </p>"
+        }
+      ]
+    }
+  ]
+}

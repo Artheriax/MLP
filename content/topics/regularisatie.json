@@ -1,0 +1,82 @@
+{
+  "id": "regularisatie",
+  "chapter": "ch3",
+  "title": "Regularisatie: de hyperparameter C, L1 en L2",
+  "intro": "Regularisatie is je belangrijkste wapen tegen overfitting: je straft grote coëfficiënten, waardoor het model \"voorzichtiger\" wordt. In scikit-learn stuur je dit met één hyperparameter: C.",
+  "level": 2,
+  "sections": [
+    {
+      "title": "C = omgekeerde regularisatiesterkte",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Regularisatie bestrijdt overfitting door de <strong>coëfficiënten klein te houden</strong>. In scikit-learn is <code>C</code> de <em>inverse</em> van de regularisatiesterkte: een <strong>grote C betekent weinig regularisatie</strong> en een <strong>kleine C betekent veel regularisatie</strong>. Test je het, dan zie je het effect direct: met een kleinere C worden de geleerde coëfficiënten kleiner. </p>"
+        },
+        {
+          "type": "formula",
+          "label": "geregelulariseerd optimalisatieprobleem",
+          "latex": "\\min_{w,\\,b}\\; \\sum_{i=1}^{n} L\\bigl(y_i,\\, f(x_i)\\bigr) \\;+\\; \\lambda\\, R(w), \\qquad C \\;=\\; \\frac{1}{\\lambda}",
+          "caption": "De loss plus een strafterm op de coëfficiënten; C is de omgekeerde sterkte λ."
+        },
+        {
+          "type": "formula",
+          "label": "twee soorten straf",
+          "latex": "R_{L2}(w) \\;=\\; \\lVert w \\rVert_2^2 \\;=\\; \\textstyle\\sum_j w_j^2 \\qquad\\qquad R_{L1}(w) \\;=\\; \\lVert w \\rVert_1 \\;=\\; \\textstyle\\sum_j \\lvert w_j \\rvert",
+          "caption": "L2 (=\"ridge\") straft kwadraten, L1 (=\"lasso\") straft absolute waarden."
+        }
+      ]
+    },
+    {
+      "title": "Wat regularisatie doet met train- en testscore",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Waarom daalt de <strong>training</strong> accuracy als je regulariseert? Regularisatie is een extra term bij de originele loss, die grote coëfficiënten straft. Zonder regularisatie maximaliseer je in feite de trainingprestatie; mét regularisatie optimaliseer je een compromis, en hoe zwaarder de straf (kleinere C), hoe verder je afdrijft van dat optimum. Training accuracy gaat dus vanzelf omlaag. </p> <p> En de <strong>test</strong> accuracy? Die verbetert juist vaak. Het intuïtieve beeld: stel dat je een feature helemaal niet zou gebruiken — dat is hetzelfde als zijn coëfficiënt op nul zetten. Regulariseren is een <em>compromis</em> tussen een feature helemaal weglaten (coef = 0) en volledig gebruiken (de niet-geregelulariseerde waarde). Als een feature te zwaar gebruiken overfitting veroorzaakte, zorgt regularisatie ervoor dat je minder hard \"fit\" en dus minder overfit. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "Het effect van C op train- en testscore",
+          "runnable": true,
+          "source": "from sklearn.datasets import load_breast_cancer\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.preprocessing import StandardScaler\n\nX, y = load_breast_cancer(return_X_y=True)\nX_train, X_test, y_train, y_test = train_test_split(\n    X, y, test_size=0.25, random_state=42)\n\nscaler = StandardScaler().fit(X_train)\nX_train_s = scaler.transform(X_train)\nX_test_s  = scaler.transform(X_test)\n\nfor C in [100.0, 1.0, 0.01]:\n    lr = LogisticRegression(C=C, max_iter=5000).fit(X_train_s, y_train)\n    print(f'C={C:<6} train={lr.score(X_train_s, y_train):.3f}'\n          f'  test={lr.score(X_test_s, y_test):.3f}')"
+        },
+        {
+          "type": "callout",
+          "kind": "tip",
+          "html": "<p> <strong>Schaal je features</strong> (bijv. met <code>StandardScaler</code>) vóór je regulariseert — coëfficiënten zijn alleen eerlijk te vergelijken als de features vergelijkbare schalen hebben. </p>"
+        }
+      ]
+    },
+    {
+      "title": "L1 vs. L2: kwadraten versus absolute waarden",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Voor lineaire regressie ken je de namen <strong>ridge</strong> (L2) en <strong>lasso</strong> (L1) — buiten lineaire regressie heten de algemene concepten L2- en L1-regularisatie, en alles wat je daarover weet geldt óók voor logistic regression. Beiden verminderen overfitting, maar L1 heeft een extra superkracht: <strong>feature selection</strong>. L1 zet veel coëfficiënten exact op nul, waardoor die features genegeerd worden; L2 verkleint ze alleen maar. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "L1 doet feature selection, L2 verkleint alles",
+          "runnable": true,
+          "source": "import numpy as np\nfrom sklearn.linear_model import LogisticRegression\n\nlr_l2 = LogisticRegression(penalty='l2', max_iter=5000).fit(X_train_s, y_train)\nlr_l1 = LogisticRegression(penalty='l1', C=0.5, solver='liblinear').fit(X_train_s, y_train)\n\nnul_l2 = np.sum(np.abs(lr_l2.coef_[0]) < 1e-6)\nnul_l1 = np.sum(np.abs(lr_l1.coef_[0]) < 1e-6)\nprint(f\"L2: {nul_l2} van de {lr_l2.coef_.shape[1]} coëfficiënten exact nul\")\nprint(f\"L1: {nul_l1} van de {lr_l1.coef_.shape[1]} coëfficiënten exact nul\")\nprint('L1 coëfficiënten (eerste 10):', np.round(lr_l1.coef_[0][:10], 2))\nprint('L2 coëfficiënten (eerste 10):', np.round(lr_l2.coef_[0][:10], 2))"
+        },
+        {
+          "type": "table",
+          "headers": ["", "L1 (lasso)", "L2 (ridge)"],
+          "rows": [
+            ["Strafterm", "\\( \\sum \\lvert w_j \\rvert \\)", "\\( \\sum w_j^2 \\)"],
+            ["Effect op coëfficiënten", "velen worden <strong>exact nul</strong>", "allemaal kleiner"],
+            ["Feature selection", "ingebouwd", "nee"],
+            ["Extra", "let op de <code>solver</code> (bijv. <code>liblinear</code>)", "default solver werkt"]
+          ]
+        },
+        {
+          "type": "callout",
+          "kind": "warning",
+          "html": "<p> Voor L1 in scikit-learn moet je vaak de <code>solver</code> aanpassen (bijv. <code>solver='liblinear'</code>) — de standaard-solver is niet compatibel met L1. </p>"
+        }
+      ]
+    }
+  ]
+}

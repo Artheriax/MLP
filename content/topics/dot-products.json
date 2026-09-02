@@ -1,0 +1,78 @@
+{
+  "id": "dot-products",
+  "chapter": "ch2",
+  "title": "Dot products & de voorspellingsvergelijking",
+  "intro": "Dit hoofdstuk is het wiskundige fundament van de cursus. Met één ingrediënt — het dot-product — kun je exact beschrijven hoe élke lineaire classifier voorspelt. Wie deze vergelijking snapt, snapt logistic regression én SVM's tegelijk.",
+  "level": 2,
+  "sections": [
+    {
+      "title": "Het dot-product",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Het <strong>dot-product</strong> (inwendig product) van twee vectoren is: vermenigvuldig ze element-gewijs en tel alles op. Met <code>x = [0, 1, 2]</code> en <code>y = [3, 4, 5]</code> krijg je 0×3 = 0, 1×4 = 4 en 2×5 = 10, samen \\( 0 + 4 + 10 = 14 \\). In Python (recente versies) gebruik je daarvoor de <code>@</code>-operator: <code>x @ y</code>. Je kunt het dot-product zien als <em>vermenigvuldigen in hogere dimensies</em>, omdat x en y arrays van waarden zijn. </p>"
+        },
+        {
+          "type": "formula",
+          "label": "dot-product",
+          "latex": "x \\cdot y \\;=\\; \\sum_{i=1}^{p} x_i\\, y_i",
+          "caption": "In numpy: x @ y — element-gewijs vermenigvuldigen en sommeren."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "Het dot-product in numpy",
+          "runnable": true,
+          "source": "import numpy as np\n\nx = np.array([0, 1, 2])\ny = np.array([3, 4, 5])\n\nprint('x * y (element-gewijs):', x * y)\nprint('som daarvan            :', sum(x * y))\nprint('x @ y (dot-product)    :', x @ y)"
+        }
+      ]
+    },
+    {
+      "title": "De voorspellingsvergelijking van lineaire classifiers",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Nu de kern van de cursus. Een lineaire classifier voorspelt in twee stappen. Eerst berekent hij de <strong>raw model output</strong>: het dot-product van de coëfficiënten (de geleerde <code>coef_</code>) met de features, plus de intercept (de geleerde <code>intercept_</code>). Daarna kijkt hij alleen naar het <strong>teken</strong>: positief → de positieve klasse, negatief → de negatieve klasse. </p> <p> Cruciaal inzicht: <em>dit patroon is voor logistic regression en lineaire SVM's identiek</em>. In scikit-learn-termen: verschillende <code>fit</code>-functies, dezelfde <code>predict</code>-functie. Het verschil tussen de modellen zit dus volledig in hoe ze <em>gefit</em> worden — dat zijn de loss functies, later dit hoofdstuk. </p>"
+        },
+        {
+          "type": "formula",
+          "label": "raw model output",
+          "latex": "f(x) \\;=\\; w \\cdot x + b \\;=\\; \\sum_{i=1}^{p} w_i x_i + b",
+          "caption": "w = coëfficiënten (lr.coef_), b = intercept (lr.intercept_)."
+        },
+        {
+          "type": "formula",
+          "label": "voorspelling",
+          "latex": "\\hat{y} \\;=\\; \\operatorname{sign}\\!\\left( w \\cdot x + b \\right)",
+          "caption": "Positief → positieve klasse, negatief → negatieve klasse (scikit-learn vertaalt dit naar de klassenamen in jouw data)."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "predict() zelf nabouwen met coef_ en intercept_",
+          "runnable": true,
+          "source": "import numpy as np\nfrom sklearn.datasets import load_breast_cancer\nfrom sklearn.linear_model import LogisticRegression\n\nX, y = load_breast_cancer(return_X_y=True)\nlr = LogisticRegression(max_iter=10000).fit(X, y)\n\nfor i in (10, 20):\n    raw = lr.coef_ @ X[i] + lr.intercept_\n    print(f'voorbeeld {i:2d}: raw = {raw[0]:+8.3f}  '\n          f'sign = {np.sign(raw[0]):+2.0f}  '\n          f'lr.predict = {lr.predict([X[i]])[0]}')"
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p> Zie hoe <code>predict</code> niets anders doet dan <strong>het teken van de raw model output</strong> terugvertalen naar de klassenamen (hier 0 en 1). Zelfde uitkomst, elke lineaire classifier. </p>"
+        }
+      ]
+    },
+    {
+      "title": "De grens zien: coëfficiënten en intercept sturen de boundary",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Op de beslisgrens zelf is de raw model output precies <strong>nul</strong>. Ga je aan de ene kant verder van de grens af, dan wordt de output steeds negatiever; aan de andere kant steeds positiever. Het <em>teken</em> zegt dus aan welke kant van de grens je zit — de <em>grootte</em> zegt hoe ver. </p> <p> De waarde van <code>b</code> (intercept) verschuift de grens door de ruimte; verander je <code>b</code>, dan verschuiven alle raw outputs mee. De coëfficiënten <code>w</code> bepalen de <strong>oriëntatie</strong> van de grens: andere coëfficiënten, andere richting van de lijn. Dit is letterlijk wat <code>fit</code> leert: de waarden van <code>w</code> en <code>b</code> die de loss minimaliseren. </p>"
+        },
+        {
+          "type": "callout",
+          "kind": "info",
+          "html": "<p> In 2D zijn er twee coëfficiënten terwijl een lijnrichting maar één getal nodig heeft. De <em>verhouding</em> van de coëfficiënten geeft de richting van de grens; de <em>grootte</em> (magnitude) komt in hoofdstuk 3 terug als mate van confidence. </p>"
+        }
+      ]
+    }
+  ]
+}

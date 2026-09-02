@@ -1,0 +1,71 @@
+{
+  "id": "supervised-learning",
+  "chapter": "ch1",
+  "title": "Supervised learning & de standaard-workflow",
+  "intro": "Voordat we naar logistic regression en SVM's kijken, zetten we het fundament: wat supervised learning precies is en welke vaste stappen je in scikit-learn altijd doorloopt. Alles wat later komt — loss functies, regularisatie, kernels — bouwt voort op dit patroon.",
+  "level": 1,
+  "sections": [
+    {
+      "title": "Wat is supervised learning?",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Bij <strong>supervised learning</strong> leer je een verband tussen <strong>inputs en outputs</strong>, op basis van voorbeelden. De inputs heten conventioneel <code>X</code> (features) en de outputs <code>y</code> (targets). Bij de newsgroups-dataset uit de cursus zijn de features afgeleid van de woorden die in elk artikel voorkomen (ongeveer 130.000 features) en is <code>y</code> het onderwerp van het artikel — precies datgene wat we willen voorspellen. Met ~11.000 trainingsvoorbeelden leer je zo een functie die nieuwe artikelen classificeert. </p> <p> Er zijn twee smaken: <strong>classificatie</strong> (de <code>y</code>-waarden zijn categorieën, zoals \"goed/niet-goed\" of \"wel/geen spam\") en <strong>regressie</strong> (de <code>y</code>-waarden zijn doorlopende getallen, zoals een prijs of temperatuur). Deze cursus gaat over <em>classificatie</em> — en binnen classificatie over de twee populairste <strong>lineaire classifiers</strong>: logistic regression en support vector machines. </p>"
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p> Supervised learning = leren van voorbeelden van <strong>input-output paren</strong> (X, y), zodat je bij <em>nieuwe</em> input de juiste output kunt voorspellen. </p>"
+        }
+      ]
+    },
+    {
+      "title": "De scikit-learn workflow: fit → predict → score",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Het mooie van scikit-learn is dat élk model dezelfde syntax heeft, of je nu KNN, logistic regression of een SVM gebruikt. Er zijn vier vaste stappen: <strong>importeren</strong> van de klasse, <strong>instantiëren</strong> (hier geef je hyperparameters op, zoals het aantal buren bij KNN), <strong>fitten</strong> met <code>fit(X, y)</code>, en daarna <strong>voorspellen</strong> met <code>predict</code> of <strong>evalueren</strong> met <code>score</code>. Een hyperparameter is een keuze die je <em>vóór</em> het fitten maakt en die de complexiteit van het model stuurt. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "De volledige workflow met KNN op de digits-dataset",
+          "runnable": true,
+          "source": "from sklearn.datasets import load_digits\nfrom sklearn.neighbors import KNeighborsClassifier\n\n# 1. Data laden: X = afbeeldingen (8x8 pixels), y = cijfer 0-9\nX, y = load_digits(return_X_y=True)\nprint('X vorm:', X.shape, '| y vorm:', y.shape)\n\n# 2. Instantieren + hyperparameters opgeven\nknn = KNeighborsClassifier(n_neighbors=5)\n\n# 3. Fitten op de trainingsdata\nknn.fit(X, y)\n\n# 4. Voorspellen en scoren\ny_pred = knn.predict(X)\nprint('Eerste 5 voorspellingen:', y_pred[:5])\nprint('Echte cijfers         :', y[:5])\nprint('Training score         :', round(knn.score(X, y), 3))"
+        },
+        {
+          "type": "callout",
+          "kind": "tip",
+          "html": "<p> <code>y_pred</code> bevat één voorspelling per rij van <code>X</code> — ook als je predict aanroept op de trainingsdata zelf, zoals hierboven. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Generaliseren: waarom een testscore verplicht is",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> De training score hierboven is bijna 100% — maar dat zegt weinig. Wat we echt willen weten is of het model <strong>generaliseert</strong> naar data die het nog nooit gezien heeft. De standaardoplossing is een <strong>validatie-/testset</strong>: met <code>train_test_split</code> houd je standaard 25% van de voorbeelden apart. Belangrijk: je <em>refit</em>t het model op alleen de trainingsset, want als het model de testset al tijdens het fitten heeft gezien, is de testset zijn doel voorbij. </p> <p> In de cursus daalt de score van KNN op de newsgroups-data van ~100% (train) naar ~66% (test). Of dat \"goed\" is, hangt af van de situatie — maar de trainingsfout was in elk geval een slechte voorspelling van hoe het model nieuwe data classificeert. </p>"
+        },
+        {
+          "type": "formula",
+          "label": "accuracy",
+          "latex": "\\text{accuracy} \\;=\\; \\frac{\\#\\text{ correct voorspeld}}{\\#\\text{ voorbeelden}}",
+          "caption": "De score-functie van classifiers in scikit-learn berekent standaard de accuracy."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "Eerlijk evalueren met train_test_split",
+          "runnable": true,
+          "source": "from sklearn.model_selection import train_test_split\n\nX_train, X_test, y_train, y_test = train_test_split(\n    X, y, test_size=0.25, random_state=42)\n\n# Fit ALLEEN op de trainingsset\nknn = KNeighborsClassifier(n_neighbors=5)\nknn.fit(X_train, y_train)\n\nprint('Train score:', round(knn.score(X_train, y_train), 3))\nprint('Test score :', round(knn.score(X_test,  y_test), 3))"
+        },
+        {
+          "type": "callout",
+          "kind": "warning",
+          "html": "<p> Train nooit op de testset. De testset is een \"simulatie\" van nieuwe data — zodra het model die tijdens het fitten ziet, meet je geen generalisatie meer maar geheugen. </p>"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "id": "vergelijking",
+  "chapter": "ch4",
+  "title": "LR vs. SVM & de SGDClassifier",
+  "intro": "De eindscore van de cursus: wanneer kies je logistic regression en wanneer een SVM? En als kers op de taart: de SGDClassifier, die bewijst dat deze modellen alleen verschillen in hun loss functie.",
+  "level": 3,
+  "sections": [
+    {
+      "title": "Pros & cons naast elkaar",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Beide zijn lineaire classifiers, en beide kunnen met kernels werken — al is dat bij SVM's gebruikelijker, omdat de voorspellingen veel sneller zijn als het aantal support vectors klein is. Beide laten zich overhalen tot kansen, maar bij logistic regression is dat <em>natuurlijk</em> (het zit in de loss), bij SVM's vereist het extra werk. Beide uitbreiden naar multi-class kan via one-vs-rest óf door de loss direct aan te passen. </p> <p> Het scherpste verschil blijft: bij logistic regression (zoals bij de meeste methodes) beïnvloeden <strong>alle</strong> data-punten de fit; bij een SVM zijn alleen de <strong>support vectors</strong> van belang — de rest mag weg. En tot slot een kwestie van definitie: \"logistic regression\" verwijst niet naar een specifiek type regularisatie, maar \"SVM\" betekent bij conventie: lineaire classifier met hinge loss <em>plus</em> L2-regularisatie. </p>"
+        },
+        {
+          "type": "table",
+          "headers": ["Aspect", "Logistic Regression", "SVM"],
+          "rows": [
+            ["Type", "lineaire classifier", "lineaire classifier (hinge + L2)"],
+            ["Kernels", "kan, maar minder gebruikelijk", "gebruikelijk — snel bij weinig support vectors"],
+            ["Kansen", "natuurlijk (predict_proba)", "mogelijk, maar minder vanzelfsprekend"],
+            ["Multi-class", "OvR of multinomial/softmax", "meestal (OvR-achtige) strategieën"],
+            ["Wat beïnvloedt de fit?", "alle trainingspunten", "alleen de support vectors"],
+            ["Karakter", "kansen & confidence", "marges & robuust tegen overbodige data"]
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Cheat sheet: imports en hyperparameters",
+      "blocks": [
+        {
+          "type": "table",
+          "headers": ["Klasse", "Import", "Belangrijkste hyperparameters"],
+          "rows": [
+            ["LogisticRegression", "<code>sklearn.linear_model</code>", "<code>C</code> (klein = meer regularisatie) · <code>penalty</code> (<code>l2</code>/<code>l1</code>) · multi-class-aanpak"],
+            ["LinearSVC", "<code>sklearn.svm</code>", "<code>C</code> — snelle lineaire SVM"],
+            ["SVC", "<code>sklearn.svm</code>", "<code>C</code> · <code>kernel</code> (<code>rbf</code>, <code>linear</code>, …) · <code>gamma</code> (alleen RBF: klein = glad)"]
+          ]
+        },
+        {
+          "type": "callout",
+          "kind": "tip",
+          "html": "<p> Een lineaire SVM fitten kan ook via <code>SVC(kernel='linear')</code>, maar <code>LinearSVC</code> is vaak sneller. En er zijn méér hyperparameters dan deze — durf de documentatie te lezen. </p>"
+        }
+      ]
+    },
+    {
+      "title": "SGDClassifier: het bewijs dat alleen de loss verschilt",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Tot slot een klasse die de rode draad van de cursus illustreert: <code>SGDClassifier</code> (SGD = <strong>stochastic gradient descent</strong>). Hij kan veel grotere datasets aan dan de andere methodes. Het mooie: om te schakelen tussen logistic regression en een lineaire SVM hoef je alleen de <code>loss</code>-hyperparameter te wijzigen — <em>het model is hetzelfde, alleen de loss verandert</em>. Precies wat we in hoofdstuk 2 zagen. </p> <p> Eén \"gotcha\": de regularisatie-hyperparameter heet hier <code>alpha</code> in plaats van <code>C</code> — en grotere <code>alpha</code> betekent méér regularisatie. Kortom: <code>alpha</code> is de inverse van <code>C</code>. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "Twee regels wisselen tussen LR en lineaire SVM",
+          "runnable": true,
+          "source": "from sklearn.datasets import load_wine\nfrom sklearn.linear_model import SGDClassifier\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.preprocessing import StandardScaler\n\nX, y = load_wine(return_X_y=True)\nX_tr, X_te, y_tr, y_te = train_test_split(X, y, test_size=0.25, random_state=42)\nscaler = StandardScaler().fit(X_tr)\nX_tr, X_te = scaler.transform(X_tr), scaler.transform(X_te)\n\nfor loss, naam in [('hinge', 'lineaire SVM'), ('log_loss', 'logistic regression')]:\n    sgd = SGDClassifier(loss=loss, max_iter=2000, tol=1e-3, random_state=42)\n    sgd.fit(X_tr, y_tr)\n    print(f'loss={loss:<9} ({naam})  train={sgd.score(X_tr, y_tr):.3f}'\n          f'  test={sgd.score(X_te, y_te):.3f}')"
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p> Lineaire classifiers delen één predict-stap (het teken van \\( w \\cdot x + b \\)); wat ze onderscheidt is de <strong>loss</strong> die tijdens het fitten geoptimaliseerd wordt — logistic loss, hinge loss, of iets anders. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Waar staat dit alles in het grotere geheel?",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Zoom uit: data science is het beantwoorden van vragen en nemen van beslissingen op basis van data, en combineert stukken als datacollectie, datapreparatie, databaseontwerp, visualisatie, communicatie, software engineering en machine learning. Binnen machine learning zijn er takken als supervised learning, unsupervised learning en reinforcement learning; wij zaten in supervised learning — een target voorspellen uit features met gelabelde data. Binnen supervised learning richtten we ons op <em>classificatie</em> (categorische targets), en daarbinnen op de twee populairste lineaire classifiers: logistic regression en SVM's. </p> <p> Veel geleerd — en tegelijk het topje van de ijsberg. Volgende stappen om te verkennen: niet-lineaire classifiers uitgebreid, tree-based methodes (random forests, boosting), of de kanten op van unsupervised learning. </p>"
+        }
+      ]
+    }
+  ]
+}

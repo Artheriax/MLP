@@ -1,0 +1,70 @@
+{
+  "id": "kansen-sigmoid",
+  "chapter": "ch3",
+  "title": "Kansen & de sigmoid-functie",
+  "intro": "Tot nu toe deed logistic regression harde voorspellingen: deze klasse, of die. Maar onder de motorkap zit een prachtig mechanisme dat de raw model output omzet in een echte kans — en dat verklaart meteen wanneer het model \"zeker van zichzelf\" is.",
+  "level": 2,
+  "sections": [
+    {
+      "title": "Van beslisgrens naar kansbeeld",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> In hoofdstuk 1 zagen we beslisgrens-plaatjes met ingekleurde gebieden: overal waar de fill kleur is, voorspel je die klasse. Maak je hetzelfde plaatje maar nu met de <strong>voorspelde kans</strong> van de rode klasse als kleur, dan ontstaat een glooiend landschap: op de beslisgrens is de kans precies <strong>0,5</strong>, verder van de grens wordt de kans steeds roder ( richting 1) of blauwer (richting 0). Zijn we >50% zeker dat het rood is → voorspel rood; anders blauw. De harde beslisgrens en het kansbeeld zijn dus twee kanten van dezelfde medaille. </p>"
+        },
+        {
+          "type": "callout",
+          "kind": "info",
+          "html": "<p> In die kansfiguren was regularisatie vrijwel uitgezet (heel grote C). Zet je regularisatie aan, dan vallen de kansen dichter rond 0,5 — kleinere coëfficiënten betekenen <em>minder zelfverzekerde</em> voorspellingen. Zie het verband: overconfidence ↔ overfitting. </p>"
+        }
+      ]
+    },
+    {
+      "title": "De sigmoid: van elke getal naar [0, 1]",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Hoe worden die kansen berekend? Uit de <strong>raw model output</strong>, die zélf elk reëel getal kan zijn — terwijl kansen tussen 0 en 1 liggen. We hebben dus iets nodig dat de raw output \"samendrukt\" naar dat interval: de <strong>sigmoid-functie</strong>. Bekijk de curve: bij raw output nul is de kans 0,5 (precies op de grens); bij positieve raw output (we voorspelden de positieve klasse) nadert de kans van de positieve klasse 1; bij negatieve output nadert zij 0 — oftewel: groot vertrouwen in de negatieve klasse. Omdat de raw output groeit naarmate je verder van de grens zit, ben je daar ook zelfverzekerder. </p>"
+        },
+        {
+          "type": "formula",
+          "label": "sigmoid-functie",
+          "latex": "\\sigma(z) \\;=\\; \\frac{1}{1 + e^{-z}} \\qquad\\Longrightarrow\\qquad P(y = 1 \\mid x) \\;=\\; \\sigma\\bigl( w \\cdot x + b \\bigr)",
+          "caption": "De sigmoid perst elke raw output in (0, 1) — dit is de kans dat het voorbeeld in de positieve klasse valt."
+        },
+        {
+          "type": "plot",
+          "title": "De sigmoid-functie",
+          "subtitle": "Beweeg over de curve: bij z = 0 is σ = 0,5 — precies op de beslisgrens.",
+          "xrange": [-6, 6],
+          "yrange": [-0.15, 1.15],
+          "xlabel": "raw model output z",
+          "curves": [
+            { "expr": "1 / (1 + Math.exp(-x))", "label": "σ(z) = P(y=1)", "color": "green" }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Zelf checken: predict_proba = sigmoid(decision_function)",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> In scikit-learn is <code>decision_function</code> precies de raw model output, en <code>predict_proba</code> de sigmoid daarvan. Je kunt het zelf verifiëren: reken de sigmoid van de raw output met de hand en vergelijk met wat <code>predict_proba</code> geeft — identiek. Extra inzicht uit de cursus: met 2 features heb je 2 coëfficiënten, terwijl een lijnrichting maar één getal nodig heeft. De <strong>verhouding</strong> van de coëfficiënten geeft de richting van de grens, de <strong>grootte</strong> (magnitude) geeft je confidence-niveau. Regularisatie verandert dus niet alleen de zekerheid, maar vaak ook de oriëntatie van de grens. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "Handmatig sigmoid vs. predict_proba",
+          "runnable": true,
+          "source": "import numpy as np\nfrom sklearn.datasets import load_breast_cancer\nfrom sklearn.linear_model import LogisticRegression\n\nX, y = load_breast_cancer(return_X_y=True)\nlr = LogisticRegression(max_iter=10000).fit(X, y)\n\ndef sigmoid(z):\n    return 1 / (1 + np.exp(-z))\n\ni = 12\nraw = lr.decision_function([X[i]])[0]\nprint('raw model output   :', round(raw, 4))\nprint('sigmoid(raw)       :', round(sigmoid(raw), 4))\nprint('predict_proba      :', lr.predict_proba([X[i]])[0].round(4))\nkans = sigmoid(raw)\nprint('predict            :', lr.predict([X[i]])[0],\n      '(kans', '> 0.5)' if kans > 0.5 else '(kans < 0.5)')"
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p> Harde voorspelling = gewoon de vraag \"is <code>sigmoid(raw) &gt; 0.5</code>?\" — en dat is hetzelfde als \"is de raw output positief?\" Alles valt terug op de voorspellingsvergelijking van hoofdstuk 2. </p>"
+        }
+      ]
+    }
+  ]
+}

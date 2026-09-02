@@ -1,0 +1,65 @@
+{
+  "id": "decision-boundaries",
+  "chapter": "ch1",
+  "title": "Lineaire decision boundaries & vocabulaire",
+  "intro": "Wat betekent het eigenlijk dat een classifier \"lineair\" is? Alles draait om de decision boundary: het grensvlak tussen de gebieden waarin het model de ene dan wel de andere klasse voorspelt.",
+  "level": 1,
+  "sections": [
+    {
+      "title": "De decision boundary",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Een <strong>decision boundary</strong> vertelt je welke klasse het model voorspelt voor elke waarde van <code>x</code>. In een 2D-plaatje voorspelt de classifier bijvoorbeeld de blauwe klasse in het blauwe gebied (waar feature 2 klein is) en de rode klasse in het rode gebied (waar feature 2 groot is). De scheidende lijn ertussen is de beslisgrens. </p> <p> Zo'n grens heet <strong>lineair</strong> als hij een rechte lijn is — in <em>elke</em> oriëntatie, dus ook schuin. Een <strong>niet-lineaire</strong> grens is elke andere vorm; dat kan zelfs leiden tot niet-aangrenzende gebieden met dezelfde voorspelling, zoals een \"eiland\" van blauw midden in rood gebied. In hun basisvorm zijn logistic regression én SVM's lineaire classifiers; niet-lineaire varianten volgen in hoofdstuk 4. </p>"
+        },
+        {
+          "type": "formula",
+          "label": "hyperplane",
+          "latex": "w_1 x_1 + w_2 x_2 + b = 0",
+          "caption": "De lineaire beslisgrens in 2D: een lijn. Grenst het model aan 1 aan de ene kant, dan voorspelt het klasse +1, anders klasse −1."
+        },
+        {
+          "type": "text",
+          "html": "<p> Met 2 features is de grens een lijn, met 3 features een vlak, en met 5 features wordt de ruimte van mogelijke x-waarden 5-dimensioneel (moeilijk te tekenen!) en is de grens een <strong>hyperplane</strong>: een hoger-dimensionaal \"vlak\" dat de ruimte in twee helften deelt. Het principe blijft identiek — alleen de dimensie verandert. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Lineair scheidbare data",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Een dataset heet <strong>linearly separable</strong> (lineair scheidbaar) als er één rechte grens bestaat die de klassen perfect van elkaar scheidt. Voorlopig praten we over <em>binair</em> (2-klassen) classificatie; multi-class volgt in hoofdstuk 3. </p> <p> Scheidbaarheid is een eigenschap van de <em>data</em>, niet van het model: sommige datasets kun je met geen enkele lijn perfect verdelen. Een eenvoudige sanity-check: fit een lineaire classifier en kijk of de training accuracy 1.0 is — dan was er kennelijk een scheidende grens te vinden. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "Lineair scheidbare clusters maken en checken",
+          "runnable": true,
+          "source": "import numpy as np\nfrom sklearn.linear_model import LogisticRegression\n\nrng = np.random.default_rng(0)\n\n# Twee clusters: ver uit elkaar -> lineair scheidbaar\nblauw = rng.normal([0, 0],   0.6, size=(50, 2))\nrood  = rng.normal([3, 3],   0.6, size=(50, 2))\nX = np.vstack([blauw, rood])\ny = np.array([0] * 50 + [1] * 50)\n\nlr = LogisticRegression().fit(X, y)\nprint('Training accuracy:', lr.score(X, y))\nprint('=> 1.0 betekent: lineair scheidbaar')\n\n# Nu door elkaar: niet meer scheidbaar\ngemengd = rng.normal([1.5, 1.5], 1.1, size=(100, 2))\ny_gem = rng.integers(0, 2, 100)\nlr2 = LogisticRegression().fit(gemengd, y_gem)\nprint('Accuracy gemengde data:', lr2.score(gemengd, y_gem))"
+        }
+      ]
+    },
+    {
+      "title": "Kernvocabulaire van de cursus",
+      "blocks": [
+        {
+          "type": "table",
+          "headers": ["Begrip", "Betekenis"],
+          "rows": [
+            ["Classificatie", "supervised learning waarbij de y-waarden categorieën zijn (tegenovergestelde: regressie, met doorlopende waarden)"],
+            ["Decision boundary", "het grensvlak tussen gebieden met verschillende voorspelde klassen"],
+            ["Lineaire classifier", "een model dat een lineaire (rechte) beslisgrens leert"],
+            ["Lineair scheidbaar", "een dataset die perfect door één lineaire grens gescheiden kan worden"],
+            ["Hyperplane", "de generalisatie van een lijn/vlak naar hogere dimensies"]
+          ]
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p> Als logistic regression en lineaire SVM's <strong>allebei</strong> lineaire classifiers zijn — waarin verschillen ze dan? Dat is precies de vraag van hoofdstuk 2: het antwoord zit in de <strong>loss functie</strong>, niet in de predictiestap. </p>"
+        }
+      ]
+    }
+  ]
+}

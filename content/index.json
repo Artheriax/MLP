@@ -1,0 +1,142 @@
+{
+  "site": {
+    "title": "MLP — Machine Learning samengevat",
+    "description": "Machine Learning stof helder samengevat: scikit-learn, loss functions, logistic regression en SVM's — met formules, diagrammen, code-voorbeelden die je in de browser kunt uitvoeren en geheugensteuntjes voor elke stap."
+  },
+  "chapters": [
+    {
+      "id": "ch1",
+      "name": "Scikit-learn basis",
+      "accent": "cyan",
+      "description": "de workflow: data, fit, predict en evalueren"
+    },
+    {
+      "id": "ch2",
+      "name": "Wiskunde & loss",
+      "accent": "yellow",
+      "description": "voorspellingsvergelijkingen en loss functies"
+    },
+    {
+      "id": "ch3",
+      "name": "Logistic Regression",
+      "accent": "green",
+      "description": "regularisatie, kansen en multi-class"
+    },
+    {
+      "id": "ch4",
+      "name": "SVM's",
+      "accent": "magenta",
+      "description": "support vectors, marges en kernels"
+    }
+  ],
+  "topics": [
+    {
+      "id": "supervised-learning",
+      "chapter": "ch1",
+      "title": "Supervised learning & de standaard-workflow",
+      "summary": "X en y, classificatie vs. regressie, en de scikit-learn syntax: import, instantiate, fit, predict, score.",
+      "level": 1,
+      "file": "topics/supervised-learning.json",
+      "keywords": "supervised learning, X, y, classificatie, regressie, knn, workflow, syntax"
+    },
+    {
+      "id": "classifiers-gebruiken",
+      "chapter": "ch1",
+      "title": "LogisticRegression, LinearSVC & SVC gebruiken",
+      "summary": "De drie classifiers in de praktijk, predict_proba met confidence-scores, en het under/overfitting-model.",
+      "level": 1,
+      "file": "topics/classifiers-gebruiken.json",
+      "keywords": "logisticregression, linearsvc, svc, predict_proba, hyperparameters, overfitting, underfitting"
+    },
+    {
+      "id": "decision-boundaries",
+      "chapter": "ch1",
+      "title": "Lineaire decision boundaries & vocabulaire",
+      "summary": "Wat een beslisgrens is, wanneer die lineair is, hyperplanes in hogere dimensies en de kernbegrippenlijst.",
+      "level": 1,
+      "file": "topics/decision-boundaries.json",
+      "keywords": "decision boundary, lineair, hyperplane, lineair scheidbaar, classificatie, vocabulaire"
+    },
+    {
+      "id": "dot-products",
+      "chapter": "ch2",
+      "title": "Dot products & de voorspellingsvergelijking",
+      "summary": "Het dot-product, de raw model output en hoe elke lineaire classifier precies dezelfde predict-stap gebruikt.",
+      "level": 2,
+      "file": "topics/dot-products.json",
+      "keywords": "dot product, numpy, @, raw model output, coef_, intercept_, sign, voorspellen"
+    },
+    {
+      "id": "loss-functions",
+      "chapter": "ch2",
+      "title": "Loss functies: waarom fitten eigenlijk optimaliseren is",
+      "summary": "Loss als strafscore, de squared loss, de 0-1 loss en minimaliseren met scipy.optimize.minimize.",
+      "level": 2,
+      "file": "topics/loss-functions.json",
+      "keywords": "loss functie, squared loss, least squares, 0-1 loss, scipy, minimize, optimaliseren"
+    },
+    {
+      "id": "loss-diagrams",
+      "chapter": "ch2",
+      "title": "Loss-diagrammen: logistic loss vs. hinge loss",
+      "summary": "De vier loss-curves in één beeld, en waarom de vorm van de curve het gedrag van het model bepaalt.",
+      "level": 2,
+      "file": "topics/loss-diagrams.json",
+      "keywords": "loss diagram, logistic loss, hinge loss, raw model output, curve, vergelijking"
+    },
+    {
+      "id": "regularisatie",
+      "chapter": "ch3",
+      "title": "Regularisatie: de hyperparameter C, L1 en L2",
+      "summary": "Hoe C regularisatie bestuurt, wat het doet met train- en testscores, en wanneer L1 (feature selection) kiest.",
+      "level": 2,
+      "file": "topics/regularisatie.json",
+      "keywords": "regularisatie, C, l1, l2, ridge, lasso, schalen, feature selection, liblinear"
+    },
+    {
+      "id": "kansen-sigmoid",
+      "chapter": "ch3",
+      "title": "Kansen & de sigmoid-functie",
+      "summary": "predict_proba ontrafeld: de sigmoid perst de raw model output in [0, 1] en verbindt confidence met de beslisgrens.",
+      "level": 2,
+      "file": "topics/kansen-sigmoid.json",
+      "keywords": "predict_proba, sigmoid, kans, confidence, beslisgrens, 0.5, decision_function"
+    },
+    {
+      "id": "multiclass",
+      "chapter": "ch3",
+      "title": "Multi-class: one-vs-rest & softmax",
+      "summary": "Van binair naar 3+ klassen: losse classifiers per klasse of één gezamenlijke softmax-loss — en de coefficient-vormen.",
+      "level": 2,
+      "file": "topics/multiclass.json",
+      "keywords": "multi-class, one-vs-rest, ovr, multinomial, softmax, cross entropy, coefficients"
+    },
+    {
+      "id": "support-vectors",
+      "chapter": "ch4",
+      "title": "Support vectors & de margin",
+      "summary": "Waarom de meeste trainingspunten niets bijdragen aan de fit, en hoe de max-margin-view samenhangt met hinge loss + L2.",
+      "level": 2,
+      "file": "topics/support-vectors.json",
+      "keywords": "support vectors, hinge loss, margin, plat stuk, verwijderen, max margin"
+    },
+    {
+      "id": "kernel-svm",
+      "chapter": "ch4",
+      "title": "Kernel SVM's: niet-lineaire grenzen",
+      "summary": "Features transformeren maakt data lineair scheidbaar; de RBF-kernel doet dat efficiënt, gamma stuurt de gladheid.",
+      "level": 3,
+      "file": "topics/kernel-svm.json",
+      "keywords": "kernel, rbf, gamma, transformatie, niet lineair, feature map, cirkel, ellips"
+    },
+    {
+      "id": "vergelijking",
+      "chapter": "ch4",
+      "title": "LR vs. SVM & de SGDClassifier",
+      "summary": "De eindscore: wanneer kies je welke classifier, de belangrijkste hyperparameters en loss wisselen met één regel.",
+      "level": 3,
+      "file": "topics/vergelijking.json",
+      "keywords": "vergelijking, keuze, pros cons, sgdclassifier, alpha, hinge, log_loss, cheat sheet"
+    }
+  ]
+}
