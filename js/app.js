@@ -54,12 +54,16 @@ window.MLP = window.MLP || {};
      ============================================================ */
 
   let homeBuilt = false;
-  let indexCache = null;
+  /* Cache als ÉCHT element, niet als DocumentFragment: een fragment
+     raakt leeg zodra het ge-append wordt (de kinderen verhuizen), waardoor
+     de homepage bij terugkeer leeg bleek. Een element houdt zijn kinderen
+     én event-listeners (zoeken, chips, rij-kliks) gewoon vast. */
+  let homeDom = null;
 
   async function renderHome() {
-    if (homeBuilt && indexCache) {
+    if (homeBuilt && homeDom) {
       view().innerHTML = "";
-      view().appendChild(indexCache);
+      view().appendChild(homeDom);
       return;
     }
 
@@ -70,9 +74,10 @@ window.MLP = window.MLP || {};
       renderLoadError(err);
       return;
     }
-    indexCache = buildHomeDom(index);
+    homeDom = el("div", "home-cache");
+    homeDom.appendChild(buildHomeDom(index));
     view().innerHTML = "";
-    view().appendChild(indexCache);
+    view().appendChild(homeDom);
     homeBuilt = true;
   }
 
@@ -290,8 +295,6 @@ window.MLP = window.MLP || {};
   /* ============================================================
      Onderwerppagina
      ============================================================ */
-
-  const topicDomCache = {};
 
   async function renderTopic(id) {
     let topic;
