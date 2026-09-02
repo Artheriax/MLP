@@ -1,0 +1,79 @@
+{
+  "id": "kernel-svm",
+  "chapter": "ch4",
+  "title": "Kernel SVMs: non-linear boundaries",
+  "intro": "How do you fit a non-linear decision boundary with a linear model? The answer is surprisingly simple: change the space in which you are linear. Kernels do exactly that — and the RBF kernel is the default choice.",
+  "level": 3,
+  "sections": [
+    {
+      "title": "The transformation idea",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Take a 2D toy dataset that is not linearly separable: red points cluster around the origin \\( (0, 0) \\), blue points lie far away. However you draw a line — perfect separation is impossible; a linear SVM might simply predict \"blue\" everywhere. </p> <p> But look at the transformation \\( (x_1, x_2) \\to (x_1^2, x_2^2) \\): squaring makes values close to zero small, and values far from zero (positive or negative) large. In this <strong>new coordinate system</strong> the red points sit bottom-left and the blue ones top-right — and suddenly they <em>are</em> linearly separable! A linear SVM on the new features gives a perfect classification, and translated back to the original space the boundary is an <strong>ellipse</strong>. </p>"
+        },
+        {
+          "type": "formula",
+          "label": "the core idea",
+          "latex": "\\text{linear boundary in transformed space} \\;\\Longleftrightarrow\\; \\text{non-linear boundary in original space}",
+          "caption": "The transformation need not be squaring, and the new space may even have a different number of dimensions."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "Demonstrating the transformation: circle data becomes separable",
+          "runnable": true,
+          "source": "import numpy as np\nfrom sklearn.svm import LinearSVC, SVC\n\nrng = np.random.default_rng(42)\n\n# Red: close to the origin. Blue: in a ring around it.\nang_r = rng.uniform(0, 2 * np.pi, 50)\nr_red = rng.uniform(0, 1.0, 50)\nred = np.column_stack([r_red * np.cos(ang_r), r_red * np.sin(ang_r)])\n\nang_b = rng.uniform(0, 2 * np.pi, 80)\nr_blue = rng.uniform(2.2, 3.4, 80)\nblue = np.column_stack([r_blue * np.cos(ang_b), r_blue * np.sin(ang_b)])\n\nX = np.vstack([red, blue])\ny = np.array([0] * 50 + [1] * 80)\n\nlin = LinearSVC(max_iter=10000).fit(X, y)\nprint('LinearSVC on original X    :', round(lin.score(X, y), 3))\n\nX2 = X ** 2                      # transformation: square the features\nlin2 = LinearSVC(max_iter=10000).fit(X2, y)\nprint('LinearSVC on (x1^2, x2^2)  :', round(lin2.score(X2, y), 3))\n\nrbf = SVC().fit(X, y)\nprint('SVC with RBF kernel on X   :', round(rbf.score(X, y), 3))"
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p> A <strong>linear model in a transformed space</strong> = a <strong>non-linear model in the original space</strong>. Kernels and kernel SVMs implement such feature transformations in a computationally efficient way. </p>"
+        }
+      ]
+    },
+    {
+      "title": "The RBF kernel and the hyperparameter gamma",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> In scikit-learn you use the <code>SVC</code> class for kernels (not <code>LinearSVC</code>). The default is the <strong>RBF kernel</strong> (radial basis function): think of it as an extremely intricate feature transformation followed by a linear boundary in that new space — the squaring from the previous example, but far more sophisticated. <code>fit</code> and <code>predict</code> work as you are used to. </p> <p> Besides <code>C</code> (regularisation, as always) the RBF kernel gets its own hyperparameter: <strong>gamma</strong>, which steers the <em>smoothness</em> of the boundary. The kernel value between two points decays exponentially with their distance, and gamma determines how fast: </p>"
+        },
+        {
+          "type": "formula",
+          "label": "RBF kernel",
+          "latex": "K(x, x') \\;=\\; e^{-\\,\\gamma\\, \\lVert x - x' \\rVert^2}",
+          "caption": "small gamma = slow decay = smooth boundary \u00b7 large gamma = fast decay = complex boundary."
+        },
+        {
+          "type": "plot",
+          "title": "The influence of gamma on the kernel shape",
+          "subtitle": "Drag the slider: the larger gamma, the \"peakier\" the kernel — and the more complex the decision boundary.",
+          "xrange": [-3, 3],
+          "yrange": [-0.05, 1.1],
+          "xlabel": "distance to support vector",
+          "curves": [
+            { "expr": "Math.exp(-gamma * x * x)", "label": "K(x, 0)", "color": "magenta" }
+          ],
+          "slider": { "param": "gamma", "min": 0.1, "max": 5, "step": 0.1, "value": 1, "label": "\u03b3 (gamma)" }
+        },
+        {
+          "type": "text",
+          "html": "<p> Concretely from the course: with <code>gamma=0.01</code> the boundary is nicely smooth; with <code>gamma=2</code> a small \"island\" appears around every blue training example — and you reach 100% training accuracy. With the right hyperparameters an RBF SVM can separate almost <em>any</em> dataset perfectly. Why not always pick the largest gamma + highest training score? Exactly: <strong>overfitting</strong>. Search for the balance with a test set. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "gamma sweep: smoothness vs. complexity",
+          "runnable": true,
+          "source": "for gamma in [0.1, 1.0, 10.0]:\n    svc = SVC(gamma=gamma).fit(X, y)\n    print(f'gamma={gamma:<5} train={svc.score(X, y):.3f}'\n          f'  n_support={len(svc.support_vectors_)}')"
+        },
+        {
+          "type": "callout",
+          "kind": "warning",
+          "html": "<p> Small gamma \u2192 simpler, smoother boundaries (less complexity). Large gamma \u2192 more complex boundaries. Together with C this determines how strong your overfitting risk is — always experiment with train <em>and</em> test! </p>"
+        }
+      ]
+    }
+  ]
+}

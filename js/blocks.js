@@ -1,8 +1,9 @@
 /* ============================================================
    MLP — blocks.js
    Renderers voor contentblokken:
-   text · formula (KaTeX) · code (copy + uitvoeren) · callout ·
-   table · plot (interactieve SVG-grafiek)
+   text · formula (KaTeX) · code (copy + uitvoeren, evt. bewerkbaar) ·
+   callout · table · plot (interactieve SVG-grafiek met curven,
+   datapunten en één of meerdere sliders)
    ============================================================ */
 
 window.MLP = window.MLP || {};
@@ -11,6 +12,7 @@ window.MLP = window.MLP || {};
   "use strict";
 
   const { escapeHtml, el, COLORS } = MLP.util;
+  const t = (k) => MLP.i18n.t(k);
 
   /* Accentkleur van een hoofdstuk ophalen (voor context-elementen) */
   function accentColorOf(ctx) {
@@ -21,16 +23,17 @@ window.MLP = window.MLP || {};
   MLP.blocks = { accentColorOf };
 
   /* ============================================================
-     Code-veld (kopieren + uitvoeren)
+     Code-veld (kopieren + uitvoeren; optioneel bewerkbaar)
      ============================================================ */
 
   function renderCodeBlock(block, ctx) {
     const field = el("div", "code-field block");
     field.style.setProperty("--accent", accentColorOf(ctx));
 
-    const source = block.source || "";
+    let source = block.source || "";
     const lang = block.language || "python";
     const runnable = block.runnable === true;
+    const editable = block.editable === true;
 
     /* --- kopbalk --- */
     const head = el("div", "code-head");
@@ -39,36 +42,61 @@ window.MLP = window.MLP || {};
 
     const actions = el("div", "code-actions");
 
+    /* broncode als textarea (bewerkbaar) of pre/code (vast) */
+    let codeArea = null; /* textarea bij editable */
+    let currentSource = () => source;
+    if (editable) {
+      field.classList.add("is-editable");
+      codeArea = document.createElement("textarea");
+      codeArea.className = "code-edit";
+      codeArea.value = source;
+      codeArea.spellcheck = false;
+      codeArea.setAttribute("aria-label", block.caption || "code");
+      /* Tab = 4 spaties i.p.v. focus verliezen */
+      codeArea.addEventListener("keydown", (ev) => {
+        if (ev.key === "Tab") {
+          ev.preventDefault();
+          const s = codeArea;
+          const start = s.selectionStart;
+          s.value = s.value.slice(0, start) + "    " + s.value.slice(s.selectionEnd);
+          s.selectionStart = s.selectionEnd = start + 4;
+        }
+      });
+      currentSource = () => codeArea.value;
+      /* kleine hint dat dit veld bewerkbaar is */
+      head.appendChild(el("span", "code-caption edit-badge", escapeHtml(t("editable_hint"))));
+    }
+
     if (runnable) {
       const runBtn = el(
         "button",
         "code-btn btn-run",
-        '<svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M4 2.5v11l9-5.5-9-5.5z"/></svg> Uitvoeren'
+        '<svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M4 2.5v11l9-5.5-9-5.5z"/></svg> ' + escapeHtml(t("btn_run"))
       );
       runBtn.type = "button";
-      runBtn.title = "Draai deze code in je browser (Pyodide/WebAssembly)";
-      runBtn.setAttribute("aria-label", "Code uitvoeren");
+      runBtn.title = t("btn_run_title");
+      runBtn.setAttribute("aria-label", t("btn_run_aria"));
       actions.appendChild(runBtn);
       runBtn.addEventListener("click", () => {
-        MLP.runner.runInField(runBtn, output, source);
+        MLP.runner.runInField(runBtn, output, currentSource());
       });
     }
 
     const copyBtn = el(
       "button",
       "code-btn btn-copy",
-      '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.6"/><path d="M10.5 3.5h-7a1 1 0 0 0-1 1v7"/></svg> Kopiëren'
+      '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.6"/><path d="M10.5 3.5h-7a1 1 0 0 0-1 1v7"/></svg> ' + escapeHtml(t("btn_copy"))
     );
     copyBtn.type = "button";
-    copyBtn.title = "Kopieer de code naar je klembord";
-    copyBtn.setAttribute("aria-label", "Code kopiëren");
+    copyBtn.title = t("btn_copy_title");
+    copyBtn.setAttribute("aria-label", t("btn_copy_aria"));
     copyBtn.addEventListener("click", async () => {
       const okLabel =
-        '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2.5 8.5l3.5 3.5 7-8"/></svg> Gekopieerd!';
+        '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2.5 8.5l3.5 3.5 7-8"/></svg> ' + escapeHtml(t("btn_copied"));
       const oldLabel = copyBtn.innerHTML;
       let copied = false;
       try {
-        await copyToClipboard(source);
+        await copyToClipboard(currentSource());
         copied = true;
       } catch (e) {
         /* beide methoden faalden */
@@ -80,13 +108,13 @@ window.MLP = window.MLP || {};
         /* laatste redmiddel: code selecteren, zodat Ctrl+C zeker werkt */
         try {
           const range = document.createRange();
-          range.selectNodeContents(code);
+          range.selectNodeContents(codeArea ? codeArea : code);
           const sel = window.getSelection();
           sel.removeAllRanges();
           sel.addRange(range);
-          copyBtn.innerHTML = "Geselecteerd — Ctrl+C";
+          copyBtn.innerHTML = escapeHtml(t("btn_selected"));
         } catch (e) {
-          copyBtn.innerHTML = "Mislukt";
+          copyBtn.innerHTML = escapeHtml(t("btn_failed"));
         }
       }
       setTimeout(() => {
@@ -99,14 +127,31 @@ window.MLP = window.MLP || {};
     head.appendChild(actions);
     field.appendChild(head);
 
-    /* --- code --- */
-    const pre = el("pre");
-    const code = el("code", null, escapeHtml(source));
-    code.className = "language-" + escapeHtml(lang);
-    pre.appendChild(code);
-    field.appendChild(pre);
+    /* --- uitvoerpaneel (alleen bij uitvoerbare code) --- */
+    const output = el("div", "code-output");
+    if (runnable) {
+      const label = el("div", "output-label", '<span class="spinner" aria-hidden="true"></span><span class="txt">' + escapeHtml(t("output_label")) + "</span>");
+      const outPre = el("pre");
+      outPre.setAttribute("aria-live", "polite");
+      output.appendChild(label);
+      output.appendChild(outPre);
+      const hint = el("div", "output-hint", escapeHtml(t("output_hint")));
+      output.appendChild(hint);
+    }
 
-    if (window.hljs) {
+    /* --- code --- */
+    let code = null;
+    if (editable) {
+      field.appendChild(codeArea);
+    } else {
+      const pre = el("pre");
+      code = el("code", null, escapeHtml(source));
+      code.className = "language-" + escapeHtml(lang);
+      pre.appendChild(code);
+      field.appendChild(pre);
+    }
+
+    if (!editable && window.hljs) {
       try {
         window.hljs.highlightElement(code);
       } catch (e) {
@@ -114,23 +159,7 @@ window.MLP = window.MLP || {};
       }
     }
 
-    /* --- uitvoerpaneel (alleen bij uitvoerbare code) --- */
-    const output = el("div", "code-output");
-    if (runnable) {
-      const label = el("div", "output-label", '<span class="spinner" aria-hidden="true"></span><span class="txt">Uitvoer</span>');
-      const outPre = el("pre");
-      outPre.setAttribute("aria-live", "polite");
-      output.appendChild(label);
-      output.appendChild(outPre);
-      const hint = el(
-        "div",
-        "output-hint",
-        "De code draait volledig in je browser via Pyodide (Python + scikit-learn in WebAssembly). " +
-          "De eerste keer laden duurt ±10–30 s; daarna gaat het snel."
-      );
-      output.appendChild(hint);
-      field.appendChild(output);
-    }
+    if (runnable) field.appendChild(output);
 
     return field;
   }
@@ -163,6 +192,8 @@ window.MLP = window.MLP || {};
 
   /* ============================================================
      Plot-blok — interactieve SVG-grafiek
+     Ondersteunt: curven (functies van x), datapunten en
+     meerdere sliders (`sliders: [...]` of het oudere `slider`).
      ============================================================ */
 
   function renderPlotBlock(block, ctx) {
@@ -188,7 +219,21 @@ window.MLP = window.MLP || {};
       color: COLORS[c.color] || c.color || COLORS.cyan,
     }));
 
-    const sliderSpec = spec.slider || null;
+    /* datapunten: [{x, y, color?, label?}] */
+    const points = (spec.points || []).map((p) => ({
+      x: Number(p.x),
+      y: Number(p.y),
+      color: COLORS[p.color] || p.color || accentColorOf(ctx),
+      label: p.label || null,
+    }));
+
+    /* sliders: nieuw formaat is een array; oud formaat (object) wordt genormaliseerd */
+    let sliders = null;
+    if (Array.isArray(spec.sliders)) {
+      sliders = spec.sliders.map((s) => Object.assign({}, s));
+    } else if (spec.slider) {
+      sliders = [Object.assign({}, spec.slider)];
+    }
 
     const W = 620, H = 380;
     const PAD = { l: 54, r: 18, t: 18, b: 44 };
@@ -200,23 +245,38 @@ window.MLP = window.MLP || {};
       return node;
     }
 
+    /* huidige parameterwaarden (naam → waarde) */
+    function paramValues() {
+      const vals = {};
+      (sliders || []).forEach((s) => (vals[s.param] = s.value));
+      return vals;
+    }
+
     function build() {
       canvas.innerHTML = "";
       const xr = spec.xrange || [-4, 4];
       let yr = spec.yrange || [-1.2, 3.2];
 
       /* y-bereik automatisch als niet opgegeven */
-      if (!spec.yrange && curves.length) {
+      if (!spec.yrange) {
         let ymin = Infinity, ymax = -Infinity;
-        const f = compileExpr(curves[0].expr, sliderSpec ? sliderSpec.value : null);
-        for (let i = 0; i <= 120; i++) {
-          const x = xr[0] + ((xr[1] - xr[0]) * i) / 120;
-          const y = f(x);
-          if (isFinite(y)) {
-            ymin = Math.min(ymin, y);
-            ymax = Math.max(ymax, y);
+        const probe = (f) => {
+          for (let i = 0; i <= 120; i++) {
+            const x = xr[0] + ((xr[1] - xr[0]) * i) / 120;
+            const y = f(x);
+            if (isFinite(y)) {
+              ymin = Math.min(ymin, y);
+              ymax = Math.max(ymax, y);
+            }
           }
-        }
+        };
+        if (curves.length) probe(compileExpr(curves[0].expr));
+        points.forEach((p) => {
+          if (xr[0] <= p.x && p.x <= xr[1]) {
+            ymin = Math.min(ymin, p.y);
+            ymax = Math.max(ymax, p.y);
+          }
+        });
         if (ymin === Infinity) { ymin = -1; ymax = 1; }
         if (ymax - ymin < 0.5) { ymax += 0.5; ymin -= 0.5; }
         const m = (ymax - ymin) * 0.08;
@@ -224,7 +284,7 @@ window.MLP = window.MLP || {};
       }
 
       const svg = svgNode("svg", { viewBox: "0 0 " + W + " " + H, role: "img" });
-      const desc = spec.title || "grafiek";
+      const desc = spec.title || t("plot_fallback");
       svg.appendChild(svgNode("title", {})).textContent = desc;
       svg.setAttribute("aria-label", desc);
 
@@ -265,25 +325,24 @@ window.MLP = window.MLP || {};
       /* ticklabels */
       const tickAttrs = { fill: "rgba(255,255,255,0.45)", "font-size": 11, "font-family": "JetBrains Mono, monospace" };
       for (let gx = Math.ceil(xr[0] / xstep) * xstep; gx <= xr[1] + 1e-9; gx += xstep) {
-        const t = svgNode("text", Object.assign({ x: sx(gx), y: H - PAD.b + 18, "text-anchor": "middle" }, tickAttrs));
-        t.textContent = fmt(gx);
-        svg.appendChild(t);
+        const tk = svgNode("text", Object.assign({ x: sx(gx), y: H - PAD.b + 18, "text-anchor": "middle" }, tickAttrs));
+        tk.textContent = fmt(gx);
+        svg.appendChild(tk);
       }
       for (let gy = Math.ceil(yr[0] / ystep) * ystep; gy <= yr[1] + 1e-9; gy += ystep) {
-        const t = svgNode("text", Object.assign({ x: PAD.l - 8, y: sy(gy) + 4, "text-anchor": "end" }, tickAttrs));
-        t.textContent = fmt(gy);
-        svg.appendChild(t);
+        const tk = svgNode("text", Object.assign({ x: PAD.l - 8, y: sy(gy) + 4, "text-anchor": "end" }, tickAttrs));
+        tk.textContent = fmt(gy);
+        svg.appendChild(tk);
       }
 
       /* asnamen */
       const xa = svgNode("text", Object.assign({ x: W - PAD.r, y: H - PAD.b + 34, "text-anchor": "end", fill: "rgba(255,255,255,0.5)", "font-size": 11, "font-family": "Inter, sans-serif" }, {}));
-      xa.textContent = spec.xlabel || "raw model output";
+      xa.textContent = spec.xlabel || t("xlabel_fallback");
       svg.appendChild(xa);
 
       /* curven */
-      const paramVal = sliderSpec ? sliderSpec.value : null;
       curves.forEach((c) => {
-        const f = compileExpr(c.expr, paramVal);
+        const f = compileExpr(c.expr);
         const N = 240;
         let d = "";
         let pen = false;
@@ -305,6 +364,26 @@ window.MLP = window.MLP || {};
         }
       });
 
+      /* datapunten */
+      points.forEach((p) => {
+        if (p.x < xr[0] || p.x > xr[1] || p.y < yr[0] || p.y > yr[1]) return;
+        const c = svgNode("circle", {
+          class: "plot-point",
+          cx: sx(p.x).toFixed(1),
+          cy: sy(p.y).toFixed(1),
+          r: 4.2,
+          fill: p.color,
+          stroke: "rgba(22,22,22,0.9)",
+          "stroke-width": 1.2,
+        });
+        if (p.label) {
+          const title = svgNode("title", {});
+          title.textContent = p.label + " (" + +p.x.toFixed(2) + ", " + +p.y.toFixed(2) + ")";
+          c.appendChild(title);
+        }
+        svg.appendChild(c);
+      });
+
       /* crosshair + hover */
       const cross = svgNode("line", { x1: 0, y1: PAD.t, x2: 0, y2: H - PAD.b, stroke: "rgba(255,255,255,0.25)", "stroke-dasharray": "4 4", "stroke-width": 1, opacity: 0 });
       svg.appendChild(cross);
@@ -323,12 +402,25 @@ window.MLP = window.MLP || {};
         cross.setAttribute("opacity", 1);
         let rows = '<span class="tt-x">x = ' + x.toFixed(2) + "</span>";
         curves.forEach((c) => {
-          const f = compileExpr(c.expr, paramVal);
+          const f = compileExpr(c.expr);
           const y = f(x);
           rows +=
             '<br><span class="sw" style="background:' + c.color + '"></span>' +
             escapeHtml(c.label) + " = " + (isFinite(y) ? y.toFixed(2) : "—");
         });
+        /* dichtstbijzijnde datapunt op deze x */
+        if (points.length) {
+          let best = null, bestD = Infinity;
+          points.forEach((p) => {
+            const d = Math.abs(p.x - x);
+            if (d < bestD) { bestD = d; best = p; }
+          });
+          if (best && bestD < (xr[1] - xr[0]) / 20) {
+            rows +=
+              '<br><span class="sw" style="background:' + best.color + '"></span>punt = (' +
+              +best.x.toFixed(2) + ", " + +best.y.toFixed(2) + ")";
+          }
+        }
         tooltip.innerHTML = rows;
         /* mx staat in viewBox-eenheden → omrekenen naar CSS-pixels */
         tooltip.style.left = mx / scale + "px";
@@ -343,11 +435,16 @@ window.MLP = window.MLP || {};
       canvas.appendChild(svg);
     }
 
-    function compileExpr(expr, paramValue) {
-      /* compileer "Math.log(1+Math.exp(-x))" tot f(x) — evt. met extra parameter */
-      if (sliderSpec && paramValue !== null && paramValue !== undefined) {
-        const f = new Function("x", sliderSpec.param, '"use strict"; return (' + expr + ");");
-        return (x) => f(x, paramValue);
+    /* compileer een expressie met de huidige slider-waarden */
+    function compileExpr(expr) {
+      const params = paramValues();
+      const names = Object.keys(params);
+      const vals = names.map((n) => params[n]);
+      if (names.length) {
+        const args = ["x"].concat(names);
+        const body = '"use strict"; return (' + expr + ");";
+        const f = new Function(...args, body);
+        return (x) => f(x, ...vals);
       }
       const f = new Function("x", '"use strict"; return (' + expr + ");");
       return f;
@@ -355,36 +452,42 @@ window.MLP = window.MLP || {};
 
     build();
 
-    /* legenda */
+    /* legenda: curven + puntkleuren */
+    const seen = {};
     curves.forEach((c) => {
       legend.appendChild(
         el("span", "li", '<span class="sw" style="background:' + c.color + '"></span>' + escapeHtml(c.label))
       );
     });
+    (spec.pointLegend || []).forEach((pl) => {
+      legend.appendChild(
+        el("span", "li", '<span class="sw" style="background:' + (COLORS[pl.color] || pl.color) + '"></span>' + escapeHtml(pl.label))
+      );
+    });
 
-    /* slider */
-    let sliderLabel = null;
-    if (sliderSpec) {
-      const row = el("div", "plot-slider");
-      const lab = el("label", null, escapeHtml(sliderSpec.label || sliderSpec.param));
-      const input = document.createElement("input");
-      input.type = "range";
-      input.min = sliderSpec.min;
-      input.max = sliderSpec.max;
-      input.step = sliderSpec.step || 0.1;
-      input.value = sliderSpec.value;
-      input.setAttribute("aria-label", sliderSpec.label || sliderSpec.param);
-      const val = el("span", "slider-val", String(+Number(sliderSpec.value).toFixed(2)));
-      row.appendChild(lab);
-      row.appendChild(input);
-      row.appendChild(val);
-      card.appendChild(row);
-      sliderLabel = val;
+    /* sliders (één of meer) */
+    if (sliders && sliders.length) {
+      sliders.forEach((sliderSpec) => {
+        const row = el("div", "plot-slider");
+        const lab = el("label", null, escapeHtml(sliderSpec.label || sliderSpec.param));
+        const input = document.createElement("input");
+        input.type = "range";
+        input.min = sliderSpec.min;
+        input.max = sliderSpec.max;
+        input.step = sliderSpec.step || 0.1;
+        input.value = sliderSpec.value;
+        input.setAttribute("aria-label", sliderSpec.label || sliderSpec.param);
+        const val = el("span", "slider-val", String(+Number(sliderSpec.value).toFixed(2)));
+        row.appendChild(lab);
+        row.appendChild(input);
+        row.appendChild(val);
+        card.appendChild(row);
 
-      input.addEventListener("input", () => {
-        sliderSpec.value = parseFloat(input.value);
-        val.textContent = String(+sliderSpec.value.toFixed(2));
-        build();
+        input.addEventListener("input", () => {
+          sliderSpec.value = parseFloat(input.value);
+          val.textContent = String(+sliderSpec.value.toFixed(2));
+          build();
+        });
       });
     }
 
@@ -398,7 +501,7 @@ window.MLP = window.MLP || {};
   function renderFormulaBlock(block, ctx) {
     const wrap = el("div", "formula-block block");
     wrap.style.setProperty("--accent", accentColorOf(ctx));
-    const label = el("div", "formula-label", block.label || "formule");
+    const label = el("div", "formula-label", escapeHtml(block.label || t("formula_fallback")));
     wrap.appendChild(label);
     const target = el("div");
     wrap.appendChild(target);
@@ -425,8 +528,8 @@ window.MLP = window.MLP || {};
   function renderCalloutBlock(block, ctx) {
     const wrap = el("div", "callout block");
     wrap.style.setProperty("--accent", accentColorOf(ctx));
-    const tagText = { info: "info", tip: "tip", warning: "pas op", key: "kern" }[block.kind] || "info";
-    wrap.appendChild(el("span", "callout-tag", tagText));
+    const tagText = t("callout_" + (block.kind || "info"));
+    wrap.appendChild(el("span", "callout-tag", escapeHtml(tagText)));
     wrap.appendChild(el("div", "callout-body", block.html || ""));
     return wrap;
   }
@@ -437,7 +540,7 @@ window.MLP = window.MLP || {};
     const table = el("table", "data-table");
     const thead = el("thead");
     const trh = el("tr");
-    (block.headers || []).forEach((h) => trh.appendChild(el("th", null, h)));
+    (block.headers || []).forEach((h) => trh.appendChild(el("th", null, String(h))));
     thead.appendChild(trh);
     table.appendChild(thead);
     const tbody = el("tbody");

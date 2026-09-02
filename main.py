@@ -2,7 +2,8 @@ r"""
 MLP — Machine Learning Practice · FastAPI-backend
 ===============================================
 
-Serveert de statische site én een kleine REST-API over de content.
+Serveert de statische site én een kleine REST-API over de content
+(in het Nederlands én Engels — `?lang=en`).
 
 Lokaal draaien (eenvoudig — maakt automatisch een venv aan):
     bash start.sh        # Mac / Linux / Git Bash
@@ -23,7 +24,7 @@ anders terug op de JSON-bestanden in content/.
 import json
 from pathlib import Path
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
@@ -34,8 +35,8 @@ TOPICS_DIR = CONTENT_DIR / "topics"
 
 app = FastAPI(
     title="MLP — Machine Learning Practice API",
-    description="REST-API over de ML-samenvattingen (hoofdstukken en onderwerpen).",
-    version="1.0.0",
+    description="REST-API over de ML-samenvattingen (hoofdstukken en onderwerpen), in NL en EN.",
+    version="1.1.0",
 )
 
 # Handig als je de API ook vanaf een andere poort/host wilt aanspreken.
@@ -59,16 +60,37 @@ def read_json(path: Path):
         raise HTTPException(status_code=500, detail=f"Ongeldige JSON in {path.name}: {err}")
 
 
-def get_index() -> dict:
-    return read_json(CONTENT_DIR / "index.json")
+def normalize_lang(lang: str) -> str:
+    """Alleen 'nl' en 'en' zijn geldig; de rest valt terug op 'nl'."""
+    return lang if lang in ("nl", "en") else "nl"
 
 
-def find_topic(topic_id: str) -> dict:
-    """Valideer het id tegen de index en geef het inhoudsbestand terug."""
-    index = get_index()
+def index_path(lang: str) -> Path:
+    """content/index.json (NL) of content/index.en.json (EN)."""
+    suffix = ".en" if normalize_lang(lang) == "en" else ""
+    return CONTENT_DIR / f"index{suffix}.json"
+
+
+def get_index(lang: str = "nl") -> dict:
+    return read_json(index_path(lang))
+
+
+def find_topic(topic_id: str, lang: str = "nl") -> dict:
+    """Valideer het id tegen de index en geef het inhoudsbestand terug.
+
+    De EN-index verwijst naar bestanden in content/topics.en/, de NL-index
+    naar content/topics/ — het pad staat in het index-veld `file`.
+    """
+    index = get_index(lang)
     for topic in index.get("topics", []):
         if topic["id"] == topic_id:
             return read_json(CONTENT_DIR / topic["file"])
+    # EN-variant ontbreekt? val dan terug op de NL-versie.
+    if normalize_lang(lang) == "en":
+        index = get_index("nl")
+        for topic in index.get("topics", []):
+            if topic["id"] == topic_id:
+                return read_json(CONTENT_DIR / topic["file"])
     raise HTTPException(status_code=404, detail=f"Onbekend onderwerp: {topic_id}")
 
 
@@ -77,45 +99,45 @@ def find_topic(topic_id: str) -> dict:
 @app.get("/api/health")
 def health():
     """Gezondheidscheck — de frontend gebruikt dit om de API te detecteren."""
-    return {"status": "ok", "service": "mlp-api", "version": "1.0.0"}
+    return {"status": "ok", "service": "mlp-api", "version": "1.1.0", "languages": ["nl", "en"]}
 
 
 @app.get("/api/index")
-def api_index():
+def api_index(lang: str = "nl"):
     """Volledige index: site-info, hoofdstukken en de onderwerpenlijst."""
-    return get_index()
+    return get_index(lang)
 
 
 @app.get("/api/chapters")
-def api_chapters():
+def api_chapters(lang: str = "nl"):
     """Alleen de hoofdstukken."""
-    return {"chapters": get_index().get("chapters", [])}
+    return {"chapters": get_index(lang).get("chapters", [])}
 
 
 @app.get("/api/topics")
-def api_topics(chapter: str | None = None):
+def api_topics(chapter: str | None = None, lang: str = "nl"):
     """De onderwerpenlijst (optioneel gefilterd op hoofdstuk-id)."""
-    topics = get_index().get("topics", [])
+    topics = get_index(lang).get("topics", [])
     if chapter:
         topics = [t for t in topics if t.get("chapter") == chapter]
     return {"count": len(topics), "topics": topics}
 
 
 @app.get("/api/topics/{topic_id}")
-def api_topic(topic_id: str):
+def api_topic(topic_id: str, lang: str = "nl"):
     """Alle content van één onderwerp."""
-    return find_topic(topic_id)
+    return find_topic(topic_id, lang)
 
 
 @app.get("/api/search")
-def api_search(q: str, max_results: int = 25):
-    """Eenvoudige trefwoord-zoekging door titels, samenvattingen en keywords."""
+def api_search(q: str, max_results: int = 25, lang: str = "nl"):
+    """Eenvoudige trefwoord-zoekopdracht door titels, samenvattingen en keywords."""
     needle = q.strip().lower()
     if not needle:
         return {"query": q, "count": 0, "results": []}
 
     results = []
-    for topic in get_index().get("topics", []):
+    for topic in get_index(lang).get("topics", []):
         haystack = " ".join(
             [topic.get("title", ""), topic.get("summary", ""), topic.get("keywords", "")]
         ).lower()

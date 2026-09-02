@@ -1,0 +1,211 @@
+{
+  "id": "classification-practice",
+  "chapter": "ch5",
+  "title": "Practice: loss & metrics bij classificatie",
+  "intro": "Het vervolg van de practice-opdracht: bouw een logistisch regressiemodel begrip voor begrip — van beslissingsgrens via kansen tot de binaire cross-entropy — en codeer accuracy, precision, recall en F1 vanaf nul.",
+  "level": 2,
+  "sections": [
+    {
+      "title": "Classificatie en de beslissingsgrens",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Bij classificatie is het doel om met de featurevariabelen een <strong>beslissingsgrens</strong> te cre&euml;ren die de datapunten scheidt op basis van hun categorie. Een voorbeeld van zo'n classificatie-algoritme is <em>logistische regressie</em>. </p>"
+        },
+        {
+          "type": "callout",
+          "kind": "warning",
+          "html": "<p><strong>Let op!</strong> Logistische regressie heeft het woord \"regressie\" in de naam, maar het is een <em>classificatie</em>-algoritme. De naam verwijst naar de regressiestap <em>onder de motorkap</em> (het fitten van de lineaire beslissingsgrens), niet naar wat het model doet. </p>"
+        },
+        {
+          "type": "text",
+          "html": "<p> Het bouwen van een classificatiemodel verloopt in vier stappen. <strong>Stap 1: maak een beslissingsgrens.</strong> Bij logistische regressie is die lineair: </p>"
+        },
+        {
+          "type": "formula",
+          "label": "beslissingsgrens (logit)",
+          "latex": "l \\;=\\; b_0 + b_1 x_1 + b_2 x_2 + \\cdots + b_n x_n",
+          "caption": "De waarde l heet de logit: een score op basis van de features, van -&infin; tot +&infin;."
+        },
+        {
+          "type": "text",
+          "html": "<p> Een hogere score betekent een grotere kans op de <em>positieve</em> klasse, een lagere score een grotere kans op de <em>negatieve</em> klasse. <strong>Stap 2: zet logits om in kansen.</strong> De logit moet vertaald worden naar een waarde tussen 0 en 1 — dat doet de <strong>sigmo&iuml;defunctie</strong>: </p>"
+        },
+        {
+          "type": "formula",
+          "label": "sigmoïde",
+          "latex": "\\hat{y} \\;=\\; \\frac{1}{1 + e^{-l}}",
+          "caption": "Hier is e &asymp; 2.718 de grondslag van de natuurlijke logaritme."
+        },
+        {
+          "type": "text",
+          "html": "<p> <strong>Stap 3: gebruik een threshold om te classificeren.</strong> Meestal is die 0.5: is de voorspelde kans &ge; 0.5, dan voorspelt het model <em>positief</em>; is die &lt; 0.5, dan <em>negatief</em>. De threshold is aanpasbaar, afhankelijk van hoe voorzichtig of risicovol je wilt zijn. <strong>Stap 4: bereken de cross-entropy loss</strong> — de loss functie voor classificatie. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Binaire cross-entropy: theorie & coderen",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Zijn er twee categorie&euml;n, dan gebruik je het <strong>binaire cross-entropy loss (BCE)</strong>; bij meer dan twee klassen het <em>categorische</em> cross-entropy loss. De waarden van \\( y \\) zijn de werkelijke klassen (1 of 0); de waarden van \\( \\hat{y} \\) zijn de voorspelde kansen (tussen 0 en 1): </p>"
+        },
+        {
+          "type": "formula",
+          "label": "binaire cross-entropy",
+          "latex": "BCE \\;=\\; -\\frac{1}{N} \\sum_{i=1}^{N} \\Bigl[\\, y_i \\log(\\hat{y}_i) + (1 - y_i)\\, \\log(1 - \\hat{y}_i) \\,\\Bigr]",
+          "caption": "Straft voorspelde kansen die ver van de echte klasse af liggen, logarithmisch hard."
+        },
+        {
+          "type": "text",
+          "html": "<p> Nu jij. De functie krijgt de werkelijke klassen en de voorspelde kansen mee. De twee regels met <code>np.clip</code> voorkomen <code>log(0)</code> — laat die staan! Vul de rest in en draai de testcel. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "opdracht — vul bce in",
+          "runnable": true,
+          "editable": true,
+          "source": "import numpy as np\n\ndef bce(y_true, y_pred):\n\n    # DEZE TWEE REGELS NIET WIJZIGEN!\n    ##############################################\n    epsilon = 1e-15\n    y_pred = np.clip(y_pred, epsilon, 1 - epsilon)\n    ##############################################\n\n    # JOUW CODE HIER\n\n    return # JOUW CODE HIER\n"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "testcel — niet wijzigen",
+          "runnable": true,
+          "source": "import numpy as np\n\n# WIJZIG DEZE CODECEL NIET!\ndef _check(naam, waarde, verwacht):\n    ok = waarde is not None and abs(waarde - verwacht) < 1e-9\n    print(('GESLAAGD  ' if ok else 'NOG NIET   ') + naam,\n          '->', waarde, '(verwacht:', verwacht, ')')\n\ny_true = np.array([1.0, 0.0, 1.0, 0.0])\ny_pred = np.array([0.9, 0.1, 0.8, 0.3])\n\n_check('bce', bce(y_true, y_pred), 0.19763488164214868)\n"
+        }
+      ]
+    },
+    {
+      "title": "Metrics bij classificatie: de theorie",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Veelgebruikte metrics bij classificatie zijn <strong>accuracy</strong>, <strong>precision</strong>, <strong>recall</strong> en de <strong>F1-score</strong>. Alle vier bouwen voort op de <em>confusion matrix</em>: een tabel die de voorspellingen (positief/negatief) kruist met de werkelijkheid (positief/negatief). </p>"
+        },
+        {
+          "type": "table",
+          "headers": ["", "voorspeld positief", "voorspeld negatief"],
+          "rows": [
+            ["<strong>echt positief</strong>", "TP (true positive)", "FN (false negative — gemist!)"],
+            ["<strong>echt negatief</strong>", "FP (false positive — vals alarm)", "TN (true negative)"]
+          ]
+        },
+        {
+          "type": "formula",
+          "label": "accuracy",
+          "latex": "\\text{accuracy} \\;=\\; \\frac{TP + TN}{TP + TN + FP + FN}",
+          "caption": "Het aandeel voorspellingen dat klopt — alles bij elkaar."
+        },
+        {
+          "type": "formula",
+          "label": "precision",
+          "latex": "\\text{precision} \\;=\\; \\frac{TP}{TP + FP}",
+          "caption": "Van alles wat ik positief noemde: hoeveel was echt positief? Belangrijk als een vals alarm duur is."
+        },
+        {
+          "type": "formula",
+          "label": "recall",
+          "latex": "\\text{recall} \\;=\\; \\frac{TP}{TP + FN}",
+          "caption": "Van alles wat echt positief is: hoeveel heb ik gevonden? Belangrijk als je niets mag missen."
+        },
+        {
+          "type": "formula",
+          "label": "F1-score",
+          "latex": "F_1 \\;=\\; 2 \\cdot \\frac{\\text{precision} \\cdot \\text{recall}}{\\text{precision} + \\text{recall}}",
+          "caption": "Het harmonisch gemiddelde van precision en recall — evenwicht tussen beide."
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p><strong>Opdracht:</strong> geef voor elk van deze metrics een voorbeeld van een scenario waarin je die metric zou gebruiken. Denk aan: spamfilters (precision), medische screenings (recall), en situaties met scheve klassenverdelingen (accuracy kan misleiden). </p>"
+        }
+      ]
+    },
+    {
+      "title": "Coderen: accuracy, precision, recall & F1",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Vul de vier functies in. Elke functie krijgt de <em>werkelijke klassen</em> en de <em>voorspelde klassen</em> (0/1, geen kansen — threshold is al toegepast). Vergelijk bijvoorbeeld met de confusion-matrix: tel TP's, FP's, TN's en FN's. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "opdracht — vul de vier metrics in",
+          "runnable": true,
+          "editable": true,
+          "source": "import numpy as np\n\n# Accuracy\ndef accuracy(y_true, y_pred):\n    # JOUW CODE HIER\n    return # JOUW CODE HIER\n\n# Precision\ndef precision(y_true, y_pred):\n    # JOUW CODE HIER\n    return # JOUW CODE HIER\n\n# Recall\ndef recall(y_true, y_pred):\n    # JOUW CODE HIER\n    return # JOUW CODE HIER\n\n# F1 Score\ndef f1(y_true, y_pred):\n    # JOUW CODE HIER\n    return # JOUW CODE HIER\n"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "testcel — niet wijzigen",
+          "runnable": true,
+          "source": "import numpy as np\n\n# WIJZIG DEZE CODECEL NIET!\ndef _check(naam, waarde, verwacht):\n    ok = waarde is not None and abs(waarde - verwacht) < 1e-9\n    print(('GESLAAGD  ' if ok else 'NOG NIET   ') + naam,\n          '->', waarde, '(verwacht:', verwacht, ')')\n\ny_true = np.array([1, 0, 1, 1, 0, 0, 1, 0, 1, 1])\ny_pred = np.array([1, 1, 0, 1, 0, 1, 1, 0, 1, 0])\n\n# TP=4, FP=2, TN=2, FN=2\n_check('accuracy', accuracy(y_true, y_pred), 0.6)\n_check('precision', precision(y_true, y_pred), 0.6666666666666666)\n_check('recall   ', recall(y_true, y_pred), 0.6666666666666666)\n_check('f1      ', f1(y_true, y_pred), 0.6666666666666666)\n"
+        },
+        {
+          "type": "callout",
+          "kind": "tip",
+          "html": "<p> Hint: tel eerst de TP, FP, TN en FN met booleaanse masks, bijvoorbeeld <code>tp = np.sum((y_true == 1) &amp; (y_pred == 1))</code>. Let op deling door nul: is er geen enkele positieve voorspelling, dan is precision ongedefinieerd — in de test hierboven hoeft dat geen probleem te zijn. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Visualiseren: past de scheidingslijn?",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Hieronder: logistische regressie met twee featurevariabelen (x1 horizontaal, x2 verticaal). De target heeft twee klassen: <span style=\"color:var(--green)\">klasse 1 (positief)</span> en <span style=\"color:var(--magenta)\">klasse 0 (negatief)</span>. De beslissingsgrens is \\( b_0 + b_1 x_1 + x_2 = 0 \\) — schuif met <strong>b0</strong> en <strong>b1</strong> om de grens te draaien en te verschuiven, en probeer de klassen te scheiden. </p>"
+        },
+        {
+          "type": "plot",
+          "title": "Dataset A — lineair scheidbaar",
+          "subtitle": "De twee klassen liggen uit elkaar: er bestaat een rechte lijn die ze perfect scheidt. Zoek hem!",
+          "xrange": [0, 10],
+          "yrange": [0, 10],
+          "xlabel": "feature x1",
+          "points": [
+            {"x": 5.9, "y": 6.08, "color": "green"}, {"x": 6.71, "y": 5.93, "color": "green"}, {"x": 6.61, "y": 6.25, "color": "green"}, {"x": 6.7, "y": 7.85, "color": "green"}, {"x": 7.28, "y": 5.72, "color": "green"}, {"x": 6.7, "y": 7.37, "color": "green"}, {"x": 7.11, "y": 4.99, "color": "green"}, {"x": 6.56, "y": 6.2, "color": "green"}, {"x": 6.76, "y": 6.65, "color": "green"}, {"x": 7.07, "y": 7.03, "color": "green"}, {"x": 5.19, "y": 7.14, "color": "green"}, {"x": 6.21, "y": 7.21, "color": "green"},
+            {"x": 2.69, "y": 3.56, "color": "magenta"}, {"x": 2.58, "y": 2.72, "color": "magenta"}, {"x": 3.77, "y": 3.41, "color": "magenta"}, {"x": 2.83, "y": 2.4, "color": "magenta"}, {"x": 1.85, "y": 2.67, "color": "magenta"}, {"x": 1.98, "y": 2.66, "color": "magenta"}, {"x": 2.17, "y": 1.92, "color": "magenta"}, {"x": 3.45, "y": 3.44, "color": "magenta"}, {"x": 3.13, "y": 2.58, "color": "magenta"}, {"x": 3.62, "y": 3.01, "color": "magenta"}, {"x": 2.62, "y": 3.43, "color": "magenta"}, {"x": 3.14, "y": 3.4, "color": "magenta"}
+          ],
+          "pointLegend": [{"label": "klasse 1 (positief)", "color": "green"}, {"label": "klasse 0 (negatief)", "color": "magenta"}],
+          "curves": [{"expr": "-(b0 + b1*x)", "label": "beslissingsgrens", "color": "cyan"}],
+          "sliders": [
+            {"param": "b0", "min": -15, "max": 5, "step": 0.1, "value": -9.5, "label": "b0"},
+            {"param": "b1", "min": -3, "max": 3, "step": 0.05, "value": 1, "label": "b1"}
+          ]
+        },
+        {
+          "type": "plot",
+          "title": "Dataset B — overlappende klassen",
+          "subtitle": "De wolken overlappen: geen enkele rechte lijn scheidt ze perfect. Elke grens is een afweging tussen fout-positieven en fout-negatieven.",
+          "xrange": [0, 10],
+          "yrange": [0, 10],
+          "xlabel": "feature x1",
+          "points": [
+            {"x": 6.6, "y": 5.07, "color": "green"}, {"x": 5.45, "y": 6.71, "color": "green"}, {"x": 4.97, "y": 4.2, "color": "green"}, {"x": 5.48, "y": 5.29, "color": "green"}, {"x": 3.07, "y": 4.17, "color": "green"}, {"x": 3.43, "y": 5.09, "color": "green"}, {"x": 3.62, "y": 6.86, "color": "green"}, {"x": 4.1, "y": 3.01, "color": "green"}, {"x": 6.2, "y": 6.25, "color": "green"}, {"x": 4.24, "y": 5.96, "color": "green"}, {"x": 5.03, "y": 4.71, "color": "green"}, {"x": 7.55, "y": 3.43, "color": "green"},
+            {"x": 4.31, "y": 6.39, "color": "magenta"}, {"x": 3.41, "y": 2.42, "color": "magenta"}, {"x": 4.55, "y": 3.24, "color": "magenta"}, {"x": 4.23, "y": 2.81, "color": "magenta"}, {"x": 6.6, "y": 3.62, "color": "magenta"}, {"x": 3.84, "y": 2.13, "color": "magenta"}, {"x": 2.66, "y": 5.15, "color": "magenta"}, {"x": 4.47, "y": 3.87, "color": "magenta"}, {"x": 4.53, "y": 1.99, "color": "magenta"}, {"x": 6.24, "y": 2.68, "color": "magenta"}, {"x": 5.45, "y": 4.67, "color": "magenta"}, {"x": 4.74, "y": 5.46, "color": "magenta"}
+          ],
+          "pointLegend": [{"label": "klasse 1 (positief)", "color": "green"}, {"label": "klasse 0 (negatief)", "color": "magenta"}],
+          "curves": [{"expr": "-(b0 + b1*x)", "label": "beslissingsgrens", "color": "cyan"}],
+          "sliders": [
+            {"param": "b0", "min": -15, "max": 5, "step": 0.1, "value": -5, "label": "b0"},
+            {"param": "b1", "min": -3, "max": 3, "step": 0.05, "value": 1, "label": "b1"}
+          ]
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p><strong>Opgaven (uit de opdracht):</strong></p><ul><li>Wat zijn de beste waarden voor de loss die je kunt vinden voor dataset A en B?</li><li>Welke waarden van b0 en b1 horen daarbij?</li><li>Waarom blijft de loss voor dataset B hoog, hoe je ook schuift? Hoe zou je hem verbeteren?</li></ul>"
+        },
+        {
+          "type": "callout",
+          "kind": "info",
+          "html": "<p> In het originele notebook is er ook een <em>dataset C</em> met kwadratisch gescheiden data: een rechte grens kan die nooit perfect scheiden. De oplossing is dezelfde als bij de SVM's: <strong>features transformeren</strong> (bijvoorbeeld \\( x_1^2 \\) en \\( x_2^2 \\) toevoegen) of een kernel gebruiken — dan wordt de data alsnog lineair scheidbaar in een hogere dimensie. </p>"
+        }
+      ]
+    }
+  ]
+}

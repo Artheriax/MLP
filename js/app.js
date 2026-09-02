@@ -2,6 +2,7 @@
    MLP — app.js
    Hash-router + views: home (hero + onderwerpen-tabel) en
    onderwerppagina. Koppelt alles aan elkaar.
+   Alle zichtbare teksten komen uit js/i18n.js (NL/EN).
    ============================================================ */
 
 window.MLP = window.MLP || {};
@@ -10,6 +11,9 @@ window.MLP = window.MLP || {};
   "use strict";
 
   const { $, $$, el, escapeHtml, COLORS } = MLP.util;
+  const t = (k) => MLP.i18n.t(k);
+  const tf = (k, v) => MLP.i18n.tf(k, v);
+  const LEVELS = () => MLP.i18n.LEVELS[MLP.i18n.lang()];
 
   const view = () => document.getElementById("view");
   const app = () => document.getElementById("app");
@@ -47,6 +51,7 @@ window.MLP = window.MLP || {};
 
   function updateNav(r) {
     $$("[data-nav]").forEach((a) => a.classList.toggle("active", r.name === "home"));
+    $$("[data-nav]").forEach((a) => (a.textContent = t("nav_topics")));
   }
 
   /* ============================================================
@@ -88,17 +93,17 @@ window.MLP = window.MLP || {};
     /* ---------- Hero ---------- */
     const hero = el("section", "hero");
     hero.innerHTML =
-      '<p class="hero-eyebrow">machine learning · lineaire classifiers</p>' +
-      '<h1>Machine Learning stof, <span class="grad">helder samengevat</span>.</h1>' +
+      '<p class="hero-eyebrow">' + escapeHtml(t("hero_eyebrow")) + "</p>" +
+      "<h1>" + t("hero_title") + "</h1>" +
       '<p class="hero-lede">' +
-      (site.description ||
-        "Alles over logistic regression en support vector machines met scikit-learn: " +
-        "de theorie in begrijpelijke stukjes, met formules, voorbeelden en code die je direct in je browser kunt draaien.") +
+      escapeHtml(site.description || t("hero_lede_fallback")) +
       "</p>" +
       '<div class="hero-actions">' +
-      '<a class="btn btn-primary" href="#onderwerpen">Bekijk de onderwerpen' +
+      '<a class="btn btn-primary" href="#onderwerpen">' + escapeHtml(t("hero_cta")) +
       '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M8 2v11M3.5 8.5L8 13l4.5-4.5"/></svg></a>' +
-      '<span class="hero-hint">4 hoofdstukken · 12 onderwerpen · formules &amp; code</span>' +
+      '<span class="hero-hint">' +
+      tf("hero_hint", { ch: (index.chapters || []).length, n: (index.topics || []).length }) +
+      "</span>" +
       "</div>";
 
     /* stats */
@@ -106,13 +111,13 @@ window.MLP = window.MLP || {};
     const nChapters = (index.chapters || []).length;
     const stats = el("div", "hero-stats");
     const statDefs = [
-      { v: String(nChapters), l: "hoofdstukken", c: "c-cyan" },
-      { v: String(nTopics), l: "onderwerpen", c: "c-green" },
-      { v: "±25", l: "formules & diagrammen", c: "c-yellow" },
-      { v: "13", l: "code-voorbeelden", c: "c-magenta" },
+      { v: String(nChapters), l: t("stat_chapters"), c: "c-cyan" },
+      { v: String(nTopics), l: t("stat_topics"), c: "c-green" },
+      { v: site.statFormulas || "±39", l: t("stat_formulas"), c: "c-yellow" },
+      { v: site.statCode || "28", l: t("stat_code"), c: "c-magenta" },
     ];
     statDefs.forEach((s) => {
-      stats.appendChild(el("div", "stat", '<span class="stat-value ' + s.c + '">' + s.v + '</span><span class="stat-label">' + s.l + "</span>"));
+      stats.appendChild(el("div", "stat", '<span class="stat-value ' + s.c + '">' + s.v + '</span><span class="stat-label">' + escapeHtml(s.l) + "</span>"));
     });
     hero.appendChild(stats);
     frag.appendChild(hero);
@@ -124,9 +129,8 @@ window.MLP = window.MLP || {};
       el(
         "div",
         "section-head",
-        '<h2><span class="kicker">01</span> Kies een onderwerp</h2>' +
-          "<p>Klik op een rij in de tabel om de samenvatting te openen. " +
-          "Filter op hoofdstuk of zoek op trefwoord — elk onderwerp bevat theorie, formules, code en geheugensteuntjes.</p>"
+        '<h2><span class="kicker">' + escapeHtml(t("section_kicker")) + "</span> " + escapeHtml(t("section_title")) + "</h2>" +
+          "<p>" + escapeHtml(t("section_lede")) + "</p>"
       )
     );
 
@@ -140,14 +144,14 @@ window.MLP = window.MLP || {};
     const search = document.createElement("input");
     search.type = "search";
     search.id = "searchInput";
-    search.placeholder = "Zoek in onderwerpen… (bijv. ‘kernel’ of ‘regularisatie’)";
-    search.setAttribute("aria-label", "Zoek in onderwerpen");
+    search.placeholder = t("search_placeholder");
+    search.setAttribute("aria-label", t("search_aria"));
     searchWrap.appendChild(search);
     filterBar.appendChild(searchWrap);
 
     const chipRow = el("div", "chip-row");
     chipRow.setAttribute("role", "group");
-    chipRow.setAttribute("aria-label", "Filter op hoofdstuk");
+    chipRow.setAttribute("aria-label", t("chips_aria"));
     const chapters = index.chapters || [];
     const chips = [];
     const mkChip = (label, dot, chapterId) => {
@@ -164,7 +168,7 @@ window.MLP = window.MLP || {};
       chipRow.appendChild(chip);
       return chip;
     };
-    mkChip("Alle", "rgba(255,255,255,0.85)", null);
+    mkChip(escapeHtml(t("chip_all")), "rgba(255,255,255,0.85)", null);
     chapters.forEach((ch) => mkChip(escapeHtml(ch.name), "var(--" + ch.accent + ")", ch.id));
 
     filterBar.appendChild(chipRow);
@@ -176,7 +180,8 @@ window.MLP = window.MLP || {};
     const thead = el(
       "thead",
       null,
-      "<tr><th>Hoofdstuk</th><th>Onderwerp</th><th>Wat leer je</th><th>Niveau</th></tr>"
+      "<tr><th>" + escapeHtml(t("th_chapter")) + "</th><th>" + escapeHtml(t("th_topic")) + "</th><th>" +
+        escapeHtml(t("th_learn")) + "</th><th>" + escapeHtml(t("th_level")) + "</th></tr>"
     );
     table.appendChild(thead);
     const tbody = el("tbody");
@@ -185,8 +190,8 @@ window.MLP = window.MLP || {};
 
     let i = 0;
     let currentChapter = null;
-    (index.topics || []).forEach((t) => {
-      const ch = chapterById[t.chapter] || { name: "Overig", accent: "cyan", id: "x" };
+    (index.topics || []).forEach((tp) => {
+      const ch = chapterById[tp.chapter] || { name: "Overig", accent: "cyan", id: "x" };
       if (ch.id !== currentChapter) {
         currentChapter = ch.id;
         const groupRow = el("tr", "chapter-row");
@@ -206,33 +211,33 @@ window.MLP = window.MLP || {};
       const row = el("tr", "topic-row");
       row.tabIndex = 0;
       row.setAttribute("role", "link");
-      row.dataset.topic = t.id;
-      row.dataset.chapter = t.chapter;
-      row.dataset.search = (t.title + " " + (t.summary || "") + " " + (t.keywords || "") + " " + (ch.name || "")).toLowerCase();
-      row.setAttribute("aria-label", "Open onderwerp: " + t.title);
+      row.dataset.topic = tp.id;
+      row.dataset.chapter = tp.chapter;
+      row.dataset.search = (tp.title + " " + (tp.summary || "") + " " + (tp.keywords || "") + " " + (ch.name || "")).toLowerCase();
+      row.setAttribute("aria-label", tf("row_aria", { title: tp.title }));
       row.style.setProperty("--accent", "var(--" + ch.accent + ")");
       row.style.setProperty("--i", i);
 
-      const level = t.level || 1;
+      const level = tp.level || 1;
       const dots =
         '<span class="level-dots">' +
         [1, 2, 3].map((n) => '<i class="' + (n <= level ? "on" : "") + '"></i>').join("") +
-        '</span><span class="level-label">' + (MLP.LEVELS[level] || "") + "</span>";
+        '</span><span class="level-label">' + (LEVELS()[level] || "") + "</span>";
 
       row.innerHTML =
         "<td></td>" +
         '<td class="td-main"><span class="td-title">' +
-        escapeHtml(t.title) +
+        escapeHtml(tp.title) +
         '<span class="arrow" aria-hidden="true"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 8h11M9 3.5L13.5 8 9 12.5"/></svg></span></span></td>' +
         '<td class="td-summary">' +
-        escapeHtml(t.summary || "") +
+        escapeHtml(tp.summary || "") +
         "</td>" +
         '<td class="td-level">' +
         dots +
         "</td>";
 
       const go = () => {
-        location.hash = "#/onderwerp/" + encodeURIComponent(t.id);
+        location.hash = "#/onderwerp/" + encodeURIComponent(tp.id);
       };
       row.addEventListener("click", go);
       row.addEventListener("keydown", (ev) => {
@@ -277,7 +282,7 @@ window.MLP = window.MLP || {};
       if (visible === 0) {
         if (!emptyRow) {
           emptyRow = el("tr", "empty-row");
-          emptyRow.appendChild(el("td", null, "Geen onderwerpen gevonden — probeer een andere zoekterm."));
+          emptyRow.appendChild(el("td", null, escapeHtml(t("empty_row"))));
           emptyRow.firstChild.colSpan = 4;
           tbody.appendChild(emptyRow);
         }
@@ -325,7 +330,7 @@ window.MLP = window.MLP || {};
     };
 
     const topics = index.topics || [];
-    const pos = topics.findIndex((t) => t.id === id);
+    const pos = topics.findIndex((tp) => tp.id === id);
     const prev = pos > 0 ? topics[pos - 1] : null;
     const next = pos >= 0 && pos < topics.length - 1 ? topics[pos + 1] : null;
 
@@ -335,15 +340,16 @@ window.MLP = window.MLP || {};
 
     /* kop */
     const head = el("header", "topic-head");
-    head.appendChild(
-      el(
-        "a",
-        "crumb",
-        '<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M10 2.5L4.5 8l5.5 5.5"/></svg> Alle onderwerpen <span class="sep">/</span> ' +
-          escapeHtml(chapter.name)
-      )
+    const crumb = el(
+      "a",
+      "crumb",
+      '<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M10 2.5L4.5 8l5.5 5.5"/></svg> ' +
+        escapeHtml(t("crumb_all")) +
+        ' <span class="sep">/</span> ' +
+        escapeHtml(chapter.name)
     );
-    head.firstChild.href = "#/";
+    crumb.href = "#/";
+    head.appendChild(crumb);
     head.appendChild(el("div", "topic-chapter", '<span class="dot" style="width:8px;height:8px;border-radius:50%;background:var(--accent);display:inline-block"></span> ' + escapeHtml(chapter.name)));
     head.appendChild(el("h1", "topic-title", escapeHtml(topic.title)));
 
@@ -351,9 +357,9 @@ window.MLP = window.MLP || {};
     const minutes = Math.max(1, Math.round(words / 190));
     const meta = el("div", "topic-meta");
     meta.innerHTML =
-      '<span class="m">' + (MLP.LEVELS[topic.level || 1] || "Basis") + "</span>" +
-      '<span class="m">± ' + minutes + " min lezen</span>" +
-      '<span class="m">' + (topic.sections || []).length + " secties</span>";
+      '<span class="m">' + (LEVELS()[topic.level || 1] || t("meta_level_fallback")) + "</span>" +
+      '<span class="m">' + escapeHtml(tf("meta_minutes", { n: minutes })) + "</span>" +
+      '<span class="m">' + escapeHtml(tf("meta_sections", { n: (topic.sections || []).length })) + "</span>";
     head.appendChild(meta);
 
     if (topic.intro) head.appendChild(el("p", "topic-intro", topic.intro));
@@ -369,16 +375,16 @@ window.MLP = window.MLP || {};
     /* pager */
     if (prev || next) {
       const pager = el("nav", "pager");
-      pager.setAttribute("aria-label", "Navigatie tussen onderwerpen");
+      pager.setAttribute("aria-label", t("pager_aria"));
       if (prev) {
-        const a = el("a", "prev", '<span class="dir">‹ vorige</span><span class="pg-title">' + escapeHtml(prev.title) + "</span>");
+        const a = el("a", "prev", '<span class="dir">' + escapeHtml(t("pager_prev")) + '</span><span class="pg-title">' + escapeHtml(prev.title) + "</span>");
         a.href = "#/onderwerp/" + encodeURIComponent(prev.id);
         pager.appendChild(a);
       } else {
         pager.appendChild(el("span"));
       }
       if (next) {
-        const a = el("a", "next", '<span class="dir">volgende ›</span><span class="pg-title">' + escapeHtml(next.title) + "</span>");
+        const a = el("a", "next", '<span class="dir">' + escapeHtml(t("pager_next")) + '</span><span class="pg-title">' + escapeHtml(next.title) + "</span>");
         a.href = "#/onderwerp/" + encodeURIComponent(next.id);
         pager.appendChild(a);
       }
@@ -432,16 +438,13 @@ window.MLP = window.MLP || {};
       el(
         "div",
         "error-card",
-        "<h2>Content kon niet geladen worden</h2>" +
-          "<p>De onderwerpen staan in JSON-bestanden en worden geladen via HTTP. " +
+        "<h2>" + escapeHtml(t("error_title")) + "</h2>" +
+          "<p>" +
           (isFile
-            ? "Je hebt de site rechtstreeks als bestand geopend — start een server, bijvoorbeeld met <code>uvicorn main:app</code> (FastAPI) of <code>python -m http.server</code>."
-            : "Controleer of de map <code>content/</code> compleet is en of de server draait. " +
-              "Foutmelding: <code>" +
-              escapeHtml(String((err && err.message) || err)) +
-              "</code>") +
+            ? t("error_body_file")
+            : tf("error_body_server", { err: String((err && err.message) || err) })) +
           "</p>" +
-          "<p>Zie <code>README.md</code> voor de snelle start.</p>"
+          "<p>" + t("error_footer") + "</p>"
       )
     );
   }
@@ -487,18 +490,58 @@ window.MLP = window.MLP || {};
   }
 
   /* ============================================================
+     Taalwissel
+     ============================================================ */
+
+  function updateLangToggle() {
+    const btn = document.getElementById("langToggle");
+    if (!btn) return;
+    const lang = MLP.i18n.lang();
+    /* toont altijd de taal waar je HEEN kunt schakelen */
+    btn.textContent = lang === "nl" ? "EN" : "NL";
+    btn.setAttribute("aria-label", t("lang_switch_to"));
+    btn.title = t("lang_switch_to");
+  }
+
+  function initLangToggle() {
+    const btn = document.getElementById("langToggle");
+    if (!btn) return;
+    btn.addEventListener("click", () => {
+      MLP.i18n.setLang(MLP.i18n.lang() === "nl" ? "en" : "nl");
+    });
+
+    window.addEventListener("mlp:langchange", () => {
+      /* caches leeg en views opnieuw renderen in de nieuwe taal */
+      MLP.data.clearCache();
+      homeBuilt = false;
+      homeDom = null;
+      currentRoute = null;
+      updateLangToggle();
+      route();
+    });
+
+    updateLangToggle();
+    MLP.i18n.applyToDocument();
+  }
+
+  /* ============================================================
      Opstarten
      ============================================================ */
 
   window.addEventListener("hashchange", route);
 
-  window.addEventListener("DOMContentLoaded", () => {
+  let booted = false;
+  function boot() {
+    if (booted) return; /* bescherming tegen dubbel opstarten (defer + DOMContentLoaded) */
+    booted = true;
     initProgress();
+    initLangToggle();
     route();
-  });
+  }
 
-  if (document.readyState !== "loading") {
-    initProgress();
-    route();
+  if (document.readyState === "loading") {
+    window.addEventListener("DOMContentLoaded", boot);
+  } else {
+    boot();
   }
 })(window.MLP);

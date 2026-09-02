@@ -1,0 +1,70 @@
+{
+  "id": "kansen-sigmoid",
+  "chapter": "ch3",
+  "title": "Probabilities & the sigmoid function",
+  "intro": "So far logistic regression made hard predictions: this class, or that. But under the hood sits a beautiful mechanism that turns the raw model output into a genuine probability — which immediately explains when the model is \"sure of itself\".",
+  "level": 2,
+  "sections": [
+    {
+      "title": "From decision boundary to probability map",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> In chapter 1 we saw decision-boundary pictures with coloured regions: wherever the fill has a colour, that class is predicted. Make the same picture but now colour it by the <strong>predicted probability</strong> of the red class and a rolling landscape appears: on the decision boundary the probability is exactly <strong>0.5</strong>; further away from the boundary it becomes ever redder (towards 1) or bluer (towards 0). More than 50% sure it is red \u2192 predict red; otherwise blue. The hard decision boundary and the probability map are thus two sides of the same coin. </p>"
+        },
+        {
+          "type": "callout",
+          "kind": "info",
+          "html": "<p> In those probability figures regularisation was almost switched off (very large C). Turn regularisation on and the probabilities hug 0.5 more closely — smaller coefficients mean <em>less confident</em> predictions. See the connection: overconfidence \u2194 overfitting. </p>"
+        }
+      ]
+    },
+    {
+      "title": "The sigmoid: from any number to [0, 1]",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> How are those probabilities computed? From the <strong>raw model output</strong>, which itself can be any real number — while probabilities lie between 0 and 1. So we need something that \"squeezes\" the raw output into that interval: the <strong>sigmoid function</strong>. Look at the curve: at raw output zero the probability is 0.5 (exactly on the boundary); at positive raw output (we predicted the positive class) the probability of the positive class approaches 1; at negative output it approaches 0 — in other words: strong confidence in the negative class. Because the raw output grows the further you are from the boundary, you are also more confident there. </p>"
+        },
+        {
+          "type": "formula",
+          "label": "sigmoid function",
+          "latex": "\\sigma(z) \\;=\\; \\frac{1}{1 + e^{-z}} \\qquad\\Longrightarrow\\qquad P(y = 1 \\mid x) \\;=\\; \\sigma\\bigl( w \\cdot x + b \\bigr)",
+          "caption": "The sigmoid squeezes any raw output into (0, 1) — this is the probability that the example belongs to the positive class."
+        },
+        {
+          "type": "plot",
+          "title": "The sigmoid function",
+          "subtitle": "Move over the curve: at z = 0, \u03c3 = 0.5 — exactly on the decision boundary.",
+          "xrange": [-6, 6],
+          "yrange": [-0.15, 1.15],
+          "xlabel": "raw model output z",
+          "curves": [
+            { "expr": "1 / (1 + Math.exp(-x))", "label": "\u03c3(z) = P(y=1)", "color": "green" }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Check it yourself: predict_proba = sigmoid(decision_function)",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> In scikit-learn, <code>decision_function</code> is precisely the raw model output, and <code>predict_proba</code> the sigmoid of it. You can verify this yourself: compute the sigmoid of the raw output by hand and compare it with what <code>predict_proba</code> gives — identical. An extra insight from the course: with 2 features you have 2 coefficients, while the direction of a line needs only one number. The <strong>ratio</strong> of the coefficients gives the direction of the boundary, the <strong>magnitude</strong> gives your confidence level. Regularisation therefore changes not only the certainty but often also the orientation of the boundary. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "Manual sigmoid vs. predict_proba",
+          "runnable": true,
+          "source": "import numpy as np\nfrom sklearn.datasets import load_breast_cancer\nfrom sklearn.linear_model import LogisticRegression\n\nX, y = load_breast_cancer(return_X_y=True)\nlr = LogisticRegression(max_iter=10000).fit(X, y)\n\ndef sigmoid(z):\n    return 1 / (1 + np.exp(-z))\n\ni = 12\nraw = lr.decision_function([X[i]])[0]\nprint('raw model output   :', round(raw, 4))\nprint('sigmoid(raw)       :', round(sigmoid(raw), 4))\nprint('predict_proba      :', lr.predict_proba([X[i]])[0].round(4))\nprob = sigmoid(raw)\nprint('predict            :', lr.predict([X[i]])[0],\n      '(probability', '> 0.5)' if prob > 0.5 else '(probability < 0.5)')"
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p> A hard prediction is simply the question \"is <code>sigmoid(raw) &gt; 0.5</code>?\" — which is the same as \"is the raw output positive?\" Everything falls back on the prediction equation of chapter 2. </p>"
+        }
+      ]
+    }
+  ]
+}

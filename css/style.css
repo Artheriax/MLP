@@ -216,6 +216,23 @@ a:hover { color: #ffffff; }
 .topnav a.active { color: var(--cyan); background: var(--cyan-soft); }
 .nav-ghost { display: none; }
 
+/* ---------- Taal-wisselknop ---------- */
+
+.lang-toggle {
+  font: 600 0.78rem/1 "JetBrains Mono", ui-monospace, monospace;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  background: transparent;
+  border: 1px solid var(--border, rgba(255,255,255,0.14));
+  border-radius: 999px;
+  padding: 0.42rem 0.72rem;
+  margin-left: 0.35rem;
+  cursor: pointer;
+  transition: color .2s ease, border-color .2s ease, background .2s ease;
+}
+.lang-toggle:hover { color: var(--text); border-color: rgba(255,255,255,0.35); }
+.lang-toggle:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+
 /* ---------- Hero ---------- */
 
 .hero {
@@ -965,6 +982,36 @@ a:hover { color: #ffffff; }
 }
 
 .code-field pre code { font-family: inherit; background: none; border: none; padding: 0; color: inherit; }
+
+/* Bewerkbaar oefen-veld (textarea gedraagt zich als pre) */
+.code-field textarea.code-edit {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 1.05rem 1.2rem;
+  border: 0;
+  background: transparent;
+  font-family: var(--font-mono);
+  font-size: 0.855rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.92);
+  tab-size: 4;
+  resize: vertical;
+  min-height: 7rem;
+  white-space: pre;
+  overflow-wrap: normal;
+  overflow-x: auto;
+}
+.code-field textarea.code-edit:focus {
+  outline: none;
+  background: rgba(255,255,255,0.03);
+}
+.code-field.is-editable { border-style: dashed; }
+.code-field.is-editable:hover { border-color: var(--accent); }
+
+/* Plot-datapunten */
+.plot-point { transition: r .15s ease; }
+.plot-point:hover { r: 5.5; }
 
 /* Pyodide-status / uitvoer */
 .code-output {

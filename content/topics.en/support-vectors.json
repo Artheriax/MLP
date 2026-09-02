@@ -1,0 +1,65 @@
+{
+  "id": "support-vectors",
+  "chapter": "ch4",
+  "title": "Support vectors & the margin",
+  "intro": "The secret of SVMs: the majority of your training data can be thrown away without the model changing. The few examples that <em>do</em> matter are called support vectors — and they also explain why kernel SVMs are so fast.",
+  "level": 2,
+  "sections": [
+    {
+      "title": "What exactly is an SVM?",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Continuing from chapter 3: logistic regression is a linear classifier, learned with the <strong>logistic loss</strong>. A linear <strong>SVM</strong> is also a linear classifier, but with the <strong>hinge loss</strong> — and the standard definition of an SVM adds <strong>L2 regularisation</strong> to that by default. The loss diagrams of chapter 2 therefore look strikingly similar. </p> <p> The crucial difference is the <strong>flat section</strong> of the hinge loss: as soon as the raw model output exceeds +1 — you predicted the example correctly, with a certain error margin — the loss is exactly zero. When a training example falls in that \"zero-loss zone\", it contributes <em>nothing</em> to the fit: remove the example and the model does not change. This is <em>the</em> defining feature of SVMs. </p>"
+        },
+        {
+          "type": "formula",
+          "label": "SVM = hinge + L2",
+          "latex": "\\min_{w,\\,b}\\; \\sum_{i=1}^{n} \\max\\!\\bigl(0,\\; 1 - y_i (w \\cdot x_i + b)\\bigr) \\;+\\; \\lambda \\, \\lVert w \\rVert_2^2",
+          "caption": "The standard SVM: hinge loss per example plus L2 regularisation on the coefficients."
+        }
+      ]
+    },
+    {
+      "title": "Support vectors: the examples that matter",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> <strong>Support vectors</strong> are the examples that do <em>not</em> fall in the flat section — in formula form: examples with \\( y_i \\, f(x_i) \\le 1 \\). These are (1) the <strong>incorrectly classified</strong> examples and (2) the <strong>correctly classified examples close to the boundary</strong>. How close is \"close enough\" is steered by the regularisation strength. </p> <p> Compare that with logistic regression: there is no flat section there — <em>every</em> data point influences the fit. With an SVM it is precisely the <em>non</em>-support vectors that are remarkable: you can throw them away without any effect. Critical for the popularity of SVMs: kernel SVMs (later in this chapter) are surprisingly fast, partly because clever algorithms scale only with the <em>number of support vectors</em> instead of the total number of training examples. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "How much of your data is actually a support vector?",
+          "runnable": true,
+          "source": "from sklearn.svm import SVC\nfrom sklearn.datasets import load_wine\n\nX, y = load_wine(return_X_y=True)\n\nsvc = SVC(kernel='linear', C=1.0).fit(X, y)\n\nprint('Training examples  :', len(X))\nprint('Support vectors    :', len(svc.support_vectors_))\nprint('Per class          :', svc.n_support_)\nprint('Training score     :', round(svc.score(X, y), 3))"
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p> Remove a <strong>non</strong>-support vector \u2192 the model does not change. Remove a <strong>support vector</strong> \u2192 the model <em>does</em> change. Support vectors are literally the examples that \"carry\" the model. </p>"
+        }
+      ]
+    },
+    {
+      "title": "The max-margin perspective",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Outside this course you will often see SVMs described as <strong>\"margin maximizers\"</strong> — for completeness, that picture. On a linearly separable dataset the learned boundary falls exactly <em>halfway</em> between the two classes. That is attractive: without extra information, a boundary that gives both classes equal room is more sensible than one pressed tightly against a single class. </p> <p> The distance from the support vectors to the boundary is called the <strong>margin</strong>. As long as the regularisation strength is not too large, the SVM maximises the margin on separable data. Most datasets, however, are <em>not</em> linearly separable (don't expect 100% training accuracy), but the max-margin idea turned out to be <strong>mathematically equivalent</strong> to what we already had: hinge loss + L2 regularisation. Two pairs of glasses, the same model. </p>"
+        },
+        {
+          "type": "formula",
+          "label": "margin",
+          "latex": "\\text{margin} \\;=\\; \\frac{2}{\\lVert w \\rVert_2}",
+          "caption": "The width of the buffer zone around the decision boundary. Maximising the margin = minimising \u2016w\u2016 — hence the L2 penalty."
+        },
+        {
+          "type": "callout",
+          "kind": "info",
+          "html": "<p> Why does this work exactly? The hinge loss demands correct predictions with a margin (\\( y\\,f(x) \\ge 1 \\)); the L2 term keeps \\( \\lVert w \\rVert \\) small — and together that pushes the boundary exactly into the middle. </p>"
+        }
+      ]
+    }
+  ]
+}

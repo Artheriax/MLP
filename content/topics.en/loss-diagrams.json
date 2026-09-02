@@ -1,0 +1,92 @@
+{
+  "id": "loss-diagrams",
+  "chapter": "ch2",
+  "title": "Loss diagrams: logistic loss vs. hinge loss",
+  "intro": "Probably the most conceptual topic of the course — but once you grasp this picture, you know exactly <em>what</em> logistic regression and SVMs are and why they behave differently. The charts below are interactive: move your mouse over them.",
+  "level": 2,
+  "sections": [
+    {
+      "title": "Setting up the diagram",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> We draw loss curves on a fixed kind of coordinate system: on the vertical axis the <strong>loss</strong>, on the horizontal axis the <strong>raw model output</strong> \\( f(x) = w \\cdot x + b \\). Because we predict based on the sign, the vertical axis at zero splits the picture into two halves: on the left we predict class \u22121, on the right class +1. </p> <p> We look at a single training example that belongs to class <strong>+1</strong>. Then the right half (positive output) is <em>correct</em> and the left half is <em>incorrect</em>. Note: this is different from the decision-boundary pictures of chapter 1 — here the axes are not two features, but raw output and loss, no matter how many features your model has. And this is the loss for <em>one</em> example; the total loss is the sum over all examples. </p>"
+        },
+        {
+          "type": "plot",
+          "title": "The 0-1 loss of one example (y = +1)",
+          "subtitle": "Left (negative raw output): wrong → loss 1. Right: correct → loss 0.",
+          "xrange": [-4, 4],
+          "yrange": [-0.3, 2],
+          "curves": [
+            { "expr": "(x < 0 ? 1 : 0)", "label": "0-1 loss", "color": "yellow" }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Why the squared loss fails for classification",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> For linear regression the raw output <em>is</em> the prediction, and there the squared loss works fine: the further from the true target (here assumed 1), the higher the loss. But for a linear classifier that makes no sense: <em>the sign</em> has to be right, the distance to the target is irrelevant. </p> <p> See the problem in the curve: the left arm is fine (mistakes are punished hard), but the right arm is disastrous — a large <em>positive</em> raw output means a <em>correct, confident</em> prediction, and the squared loss punishes exactly that with a high penalty. You would thus judge \"perfectly good\" models as bad during fitting. <em>That</em> is why we need special loss functions for classification. </p>"
+        },
+        {
+          "type": "plot",
+          "title": "Squared loss vs. the raw model output (y = 1)",
+          "subtitle": "The right arm rises — correct, confident predictions get punished.",
+          "xrange": [-4, 4],
+          "yrange": [-0.5, 4],
+          "curves": [
+            { "expr": "(x - 1) * (x - 1)", "label": "(x \u2212 1)\u00b2", "color": "cyan" }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "The two stars: logistic loss and hinge loss",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> The <strong>logistic loss</strong> (used by logistic regression) is in effect a <em>smoothed version of the 0-1 loss</em>: as you move right — the zone of correct predictions — the loss decreases gradually. The interpretation as \"number of mistakes\" is gone, but in exchange this loss <em>can</em> be minimised in practice. </p> <p> The <strong>hinge loss</strong> (used by SVMs) has the same basic shape, but with one crucial detail: from raw output <strong>+1</strong> onwards the loss is exactly zero and stays there — there is a \"flat\" section. When you predict an example correctly <em>beyond a certain error margin</em>, the example no longer contributes anything to the fit. This flat section is the key to support vectors in chapter 4. </p>"
+        },
+        {
+          "type": "plot",
+          "title": "All three classification losses together",
+          "subtitle": "Move over the chart to read off exact values.",
+          "xrange": [-4, 4],
+          "yrange": [-0.4, 5],
+          "curves": [
+            { "expr": "(x < 0 ? 1 : 0)", "label": "0-1 loss", "color": "yellow" },
+            { "expr": "Math.log(1 + Math.exp(-x))", "label": "logistic loss", "color": "cyan" },
+            { "expr": "Math.max(0, 1 - x)", "label": "hinge loss", "color": "magenta" }
+          ]
+        },
+        {
+          "type": "formula",
+          "label": "logistic loss",
+          "latex": "L_{\\text{logistic}}\\bigl( y,\\, f(x) \\bigr) \\;=\\; \\log\\!\\left( 1 + e^{-\\,y\\, f(x)} \\right), \\qquad y \\in \\{-1,\\,+1\\}",
+          "caption": "The loss of logistic regression (for one example)."
+        },
+        {
+          "type": "formula",
+          "label": "hinge loss",
+          "latex": "L_{\\text{hinge}}\\bigl( y,\\, f(x) \\bigr) \\;=\\; \\max\\!\\bigl(\\, 0,\\; 1 - y\\, f(x) \\,\\bigr)",
+          "caption": "The loss of SVMs — exactly 0 as soon as y\u00b7f(x) \u2265 1 (the \"flat section\")."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "The losses side by side, numerically",
+          "runnable": true,
+          "source": "import numpy as np\n\nraw = np.array([2.0, 0.5, -0.5, -2.0])\ny = 1  # the example belongs to class +1\n\nhinge    = np.maximum(0, 1 - y * raw)\nlogistic = np.log(1 + np.exp(-y * raw))\nzero_one = (np.sign(raw) != y).astype(int)\n\nprint(f\"{'raw':>6} {'0-1':>4} {'hinge':>7} {'logistic':>9}\")\nfor r, z, h, l in zip(raw, zero_one, hinge, logistic):\n    print(f'{r:+6.1f} {z:4d} {h:7.3f} {l:9.3f}')"
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p> These two curve shapes <strong>are</strong> the essence of logistic regression and SVMs. Everything that follows — regularisation, probabilities, support vectors, kernels — builds on these diagrams. </p>"
+        }
+      ]
+    }
+  ]
+}

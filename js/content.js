@@ -1,8 +1,11 @@
 /* ============================================================
    MLP — content.js
-   Datalaag: laadt content via de FastAPI-API als die draait,
-   en valt anders terug op de statische JSON-bestanden
-   (zo werkt de site ook op GitHub Pages / elke static host).
+   Datalaag: laadt de content in de actieve taal.
+   - NL: content/index.json + content/topics/<id>.json
+   - EN: content/index.en.json + content/topics.en/<id>.json
+     (met fallback op het NL-bestand als de EN-variant ontbreekt)
+   - API-modus: FastAPI-back-end met ?lang= parameter
+   Bevat ook kleine DOM/HTML-utilities (el, $, $$, escapeHtml).
    ============================================================ */
 
 window.MLP = window.MLP || {};
@@ -10,13 +13,11 @@ window.MLP = window.MLP || {};
 (function (MLP) {
   "use strict";
 
-  /* ---------- Kleine helpers ---------- */
-
   const $ = (sel, root) => (root || document).querySelector(sel);
-  const $$ = (sel, root) => Array.from((root || document).querySelectorAll(sel));
+  const $$ = (sel, root) => Array.prototype.slice.call((root || document).querySelectorAll(sel));
 
-  const escapeHtml = (str) =>
-    String(str)
+  const escapeHtml = (s) =>
+    String(s)
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;")
@@ -34,21 +35,25 @@ window.MLP = window.MLP || {};
   const COLORS = {
     cyan: "#7FDBDA",
     yellow: "#F9E79F",
-    green: "#B9F6CA",
-    magenta: "#F6A5C0",
+    green: "#A9DFBF",
+    magenta: "#F5B7B1",
   };
 
   MLP.util = { $, $$, escapeHtml, el, COLORS };
 
-  MLP.LEVELS = {
-    1: "Basis",
-    2: "Verdieping",
-    3: "Gevorderd",
-  };
-
   /* ---------- Datalaag ---------- */
 
   const cache = { mode: null, index: null, topics: {} };
+
+  function lang() {
+    return MLP.i18n && MLP.i18n.lang ? MLP.i18n.lang() : "nl";
+  }
+
+  function clearCache() {
+    cache.mode = null;
+    cache.index = null;
+    cache.topics = {};
+  }
 
   async function fetchJson(url, timeoutMs) {
     const opts = {};
@@ -87,8 +92,14 @@ window.MLP = window.MLP || {};
     return "static";
   }
 
+  /* Pad naar het indexbestand van de actieve taal. */
+  function indexFile() {
+    return lang() === "en" ? "content/index.en.json" : "content/index.json";
+  }
+
   MLP.data = {
     detectMode,
+    clearCache,
 
     /* Volledige index (hoofdstukken + onderwerpen) */
     async getIndex() {
@@ -97,12 +108,20 @@ window.MLP = window.MLP || {};
       let data = null;
       if (mode === "api") {
         try {
-          data = await fetchJson("api/index");
+          data = await fetchJson("api/index?lang=" + lang());
         } catch (e) {
           cache.mode = "static";
         }
       }
-      if (!data) data = await fetchJson("content/index.json");
+      if (!data) {
+        try {
+          data = await fetchJson(indexFile());
+        } catch (e) {
+          /* EN-bestand ontbreekt? val terug op NL */
+          if (lang() === "en") data = await fetchJson("content/index.json");
+          else throw e;
+        }
+      }
       cache.index = data;
       return data;
     },
@@ -114,12 +133,21 @@ window.MLP = window.MLP || {};
       let data = null;
       if (mode === "api") {
         try {
-          data = await fetchJson("api/topics/" + encodeURIComponent(id));
+          data = await fetchJson("api/topics/" + encodeURIComponent(id) + "?lang=" + lang());
         } catch (e) {
           cache.mode = "static";
         }
       }
-      if (!data) data = await fetchJson("content/topics/" + id + ".json");
+      if (!data) {
+        const base = lang() === "en" ? "content/topics.en/" : "content/topics/";
+        try {
+          data = await fetchJson(base + id + ".json");
+        } catch (e) {
+          /* EN-variant ontbreekt → NL-bestand */
+          if (lang() === "en") data = await fetchJson("content/topics/" + id + ".json");
+          else throw e;
+        }
+      }
       cache.topics[id] = data;
       return data;
     },

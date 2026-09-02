@@ -1,7 +1,9 @@
 {
   "site": {
-    "title": "MLP — Machine Learning samengevat",
-    "description": "Machine Learning stof helder samengevat: scikit-learn, loss functions, logistic regression en SVM's — met formules, diagrammen, code-voorbeelden die je in de browser kunt uitvoeren en geheugensteuntjes voor elke stap."
+    "title": "MLP — Machine Learning Practice",
+    "description": "Machine Learning stof helder samengevat: scikit-learn, loss functions, logistic regression en SVM's — met formules, diagrammen, code-voorbeelden die je in de browser kunt uitvoeren en geheugensteuntjes voor elke stap.",
+    "statFormulas": "±39",
+    "statCode": "28"
   },
   "chapters": [
     {
@@ -27,6 +29,12 @@
       "name": "SVM's",
       "accent": "magenta",
       "description": "support vectors, marges en kernels"
+    },
+    {
+      "id": "ch5",
+      "name": "Practice",
+      "accent": "cyan",
+      "description": "zelf doen: loss & metrics coderen en visualiseren"
     }
   ],
   "topics": [
@@ -137,6 +145,24 @@
       "level": 3,
       "file": "topics/vergelijking.json",
       "keywords": "vergelijking, keuze, pros cons, sgdclassifier, alpha, hinge, log_loss, cheat sheet"
+    },
+    {
+      "id": "regression-practice",
+      "chapter": "ch5",
+      "title": "Practice: loss functies & metrics bij regressie",
+      "summary": "Zelf coderen: MSE, RMSE, MAE en R² vanaf nul, de autoprijs-opgave en interactieve regressielijnen met outliers.",
+      "level": 2,
+      "file": "topics/regression-practice.json",
+      "keywords": "practice, opdracht, mse, rmse, mae, r2, verklaarde variantie, regressie, outlier, visualiseren"
+    },
+    {
+      "id": "classification-practice",
+      "chapter": "ch5",
+      "title": "Practice: loss & metrics bij classificatie",
+      "summary": "Van beslissingsgrens tot binaire cross-entropy, en accuracy, precision, recall en F1 zelf implementeren — met interactieve scheidingslijnen.",
+      "level": 2,
+      "file": "topics/classification-practice.json",
+      "keywords": "practice, opdracht, bce, cross entropy, accuracy, precision, recall, f1, confusion matrix, beslissingsgrens"
     }
   ]
 }

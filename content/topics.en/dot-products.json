@@ -1,0 +1,78 @@
+{
+  "id": "dot-products",
+  "chapter": "ch2",
+  "title": "Dot products & the prediction equation",
+  "intro": "This chapter is the mathematical foundation of the course. With a single ingredient — the dot product — you can describe exactly how <em>every</em> linear classifier makes predictions. Whoever understands this equation understands logistic regression and SVMs at the same time.",
+  "level": 2,
+  "sections": [
+    {
+      "title": "The dot product",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> The <strong>dot product</strong> (inner product) of two vectors is: multiply them element-wise and add everything up. With <code>x = [0, 1, 2]</code> and <code>y = [3, 4, 5]</code> you get 0\u00d73 = 0, 1\u00d74 = 4 and 2\u00d75 = 10, together \\( 0 + 4 + 10 = 14 \\). In Python (recent versions) you use the <code>@</code> operator for this: <code>x @ y</code>. You can think of the dot product as <em>multiplication in higher dimensions</em>, since x and y are arrays of values. </p>"
+        },
+        {
+          "type": "formula",
+          "label": "dot product",
+          "latex": "x \\cdot y \\;=\\; \\sum_{i=1}^{p} x_i\\, y_i",
+          "caption": "In numpy: x @ y — element-wise multiplication and summation."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "The dot product in numpy",
+          "runnable": true,
+          "source": "import numpy as np\n\nx = np.array([0, 1, 2])\ny = np.array([3, 4, 5])\n\nprint('x * y (element-wise):', x * y)\nprint('sum of that         :', sum(x * y))\nprint('x @ y (dot product) :', x @ y)"
+        }
+      ]
+    },
+    {
+      "title": "The prediction equation of linear classifiers",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Now the heart of the course. A linear classifier predicts in two steps. First it computes the <strong>raw model output</strong>: the dot product of the coefficients (the learned <code>coef_</code>) with the features, plus the intercept (the learned <code>intercept_</code>). Then it only looks at the <strong>sign</strong>: positive \u2192 the positive class, negative \u2192 the negative class. </p> <p> Crucial insight: <em>this pattern is identical for logistic regression and linear SVMs</em>. In scikit-learn terms: different <code>fit</code> functions, the same <code>predict</code> function. The difference between the models therefore lies entirely in how they are <em>fitted</em> — those are the loss functions, later in this chapter. </p>"
+        },
+        {
+          "type": "formula",
+          "label": "raw model output",
+          "latex": "f(x) \\;=\\; w \\cdot x + b \\;=\\; \\sum_{i=1}^{p} w_i x_i + b",
+          "caption": "w = coefficients (lr.coef_), b = intercept (lr.intercept_)."
+        },
+        {
+          "type": "formula",
+          "label": "prediction",
+          "latex": "\\hat{y} \\;=\\; \\operatorname{sign}\\!\\left( w \\cdot x + b \\right)",
+          "caption": "Positive \u2192 positive class, negative \u2192 negative class (scikit-learn translates this into the class names of your data)."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "Rebuilding predict() yourself with coef_ and intercept_",
+          "runnable": true,
+          "source": "import numpy as np\nfrom sklearn.datasets import load_breast_cancer\nfrom sklearn.linear_model import LogisticRegression\n\nX, y = load_breast_cancer(return_X_y=True)\nlr = LogisticRegression(max_iter=10000).fit(X, y)\n\nfor i in (10, 20):\n    raw = lr.coef_ @ X[i] + lr.intercept_\n    print(f'example {i:2d}: raw = {raw[0]:+8.3f}  '\n          f'sign = {np.sign(raw[0]):+2.0f}  '\n          f'lr.predict = {lr.predict([X[i]])[0]}')"
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p> See how <code>predict</code> does nothing but translate <strong>the sign of the raw model output</strong> back into class names (here 0 and 1). Same outcome, for every linear classifier. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Seeing the boundary: coefficients and intercept steer it",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> On the decision boundary itself the raw model output is exactly <strong>zero</strong>. Move away from the boundary on one side and the output becomes ever more negative; on the other side ever more positive. The <em>sign</em> therefore tells you on which side of the boundary you are — the <em>magnitude</em> tells you how far. </p> <p> The value of <code>b</code> (intercept) shifts the boundary through space; change <code>b</code> and all raw outputs shift along. The coefficients <code>w</code> determine the <strong>orientation</strong> of the boundary: different coefficients, different direction of the line. This is literally what <code>fit</code> learns: the values of <code>w</code> and <code>b</code> that minimise the loss. </p>"
+        },
+        {
+          "type": "callout",
+          "kind": "info",
+          "html": "<p> In 2D there are two coefficients while the direction of a line needs only one number. The <em>ratio</em> of the coefficients gives the direction of the boundary; the <em>magnitude</em> returns in chapter 3 as a measure of confidence. </p>"
+        }
+      ]
+    }
+  ]
+}

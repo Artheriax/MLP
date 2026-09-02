@@ -1,0 +1,211 @@
+{
+  "id": "classification-practice",
+  "chapter": "ch5",
+  "title": "Practice: loss & metrics for classification",
+  "intro": "The sequel to the practice assignment: build up a logistic regression model piece by piece — from decision boundary via probabilities to binary cross-entropy — and implement accuracy, precision, recall and F1 from scratch.",
+  "level": 2,
+  "sections": [
+    {
+      "title": "Classification and the decision boundary",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> In classification the goal is to use the feature variables to create a <strong>decision boundary</strong> that separates the data points based on their categories. One example of such a classification algorithm is <em>logistic regression</em>. </p>"
+        },
+        {
+          "type": "callout",
+          "kind": "warning",
+          "html": "<p><strong>Watch out!</strong> Logistic regression has the word \"regression\" in its name, but it is a <em>classification</em> algorithm. The name refers to the regression step <em>under the hood</em> (fitting the linear decision boundary), not to what the model does. </p>"
+        },
+        {
+          "type": "text",
+          "html": "<p> Building a classification model happens in four steps. <strong>Step 1: create a decision boundary.</strong> With logistic regression it is linear: </p>"
+        },
+        {
+          "type": "formula",
+          "label": "decision boundary (logit)",
+          "latex": "l \\;=\\; b_0 + b_1 x_1 + b_2 x_2 + \\cdots + b_n x_n",
+          "caption": "The value l is called the logit: a score based on the features, ranging from -&infin; to +&infin;."
+        },
+        {
+          "type": "text",
+          "html": "<p> A higher score means a larger probability of the <em>positive</em> class, a lower score a larger probability of the <em>negative</em> class. <strong>Step 2: convert logits into probabilities.</strong> The logit must be translated into a value between 0 and 1 — that is what the <strong>sigmoid function</strong> does: </p>"
+        },
+        {
+          "type": "formula",
+          "label": "sigmoid",
+          "latex": "\\hat{y} \\;=\\; \\frac{1}{1 + e^{-l}}",
+          "caption": "Here e &asymp; 2.718 is the base of the natural logarithm."
+        },
+        {
+          "type": "text",
+          "html": "<p> <strong>Step 3: use a threshold to classify.</strong> Usually 0.5: if the predicted probability is &ge; 0.5 the model predicts <em>positive</em>; if it is &lt; 0.5, <em>negative</em>. The threshold is adjustable, depending on how cautious or risk-seeking you want to be. <strong>Step 4: compute the cross-entropy loss</strong> — the loss function for classification. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Binary cross-entropy: theory & coding",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> With two categories you use <strong>binary cross-entropy loss (BCE)</strong>; with more than two classes the <em>categorical</em> cross-entropy loss. The values of \\( y \\) are the true classes (1 or 0); the values of \\( \\hat{y} \\) are the predicted probabilities (between 0 and 1): </p>"
+        },
+        {
+          "type": "formula",
+          "label": "binary cross-entropy",
+          "latex": "BCE \\;=\\; -\\frac{1}{N} \\sum_{i=1}^{N} \\Bigl[\\, y_i \\log(\\hat{y}_i) + (1 - y_i)\\, \\log(1 - \\hat{y}_i) \\,\\Bigr]",
+          "caption": "Punishes predicted probabilities far from the true class, logarithmically hard."
+        },
+        {
+          "type": "text",
+          "html": "<p> Your turn. The function receives the true classes and the predicted probabilities. The two <code>np.clip</code> lines prevent <code>log(0)</code> — leave them in! Fill in the rest and run the test cell. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "assignment — fill in bce",
+          "runnable": true,
+          "editable": true,
+          "source": "import numpy as np\n\ndef bce(y_true, y_pred):\n\n    # DO NOT CHANGE THESE TWO LINES!\n    ##############################################\n    epsilon = 1e-15\n    y_pred = np.clip(y_pred, epsilon, 1 - epsilon)\n    ##############################################\n\n    # YOUR CODE HERE\n\n    return # YOUR CODE HERE\n"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "test cell — do not modify",
+          "runnable": true,
+          "source": "import numpy as np\n\n# DO NOT MODIFY THIS CELL!\ndef _check(name, value, expected):\n    ok = value is not None and abs(value - expected) < 1e-9\n    print(('PASSED    ' if ok else 'NOT YET    ') + name,\n          '->', value, '(expected:', expected, ')')\n\ny_true = np.array([1.0, 0.0, 1.0, 0.0])\ny_pred = np.array([0.9, 0.1, 0.8, 0.3])\n\n_check('bce', bce(y_true, y_pred), 0.19763488164214868)\n"
+        }
+      ]
+    },
+    {
+      "title": "Metrics for classification: the theory",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Widely used metrics for classification are <strong>accuracy</strong>, <strong>precision</strong>, <strong>recall</strong> and the <strong>F1-score</strong>. All four build on the <em>confusion matrix</em>: a table crossing the predictions (positive/negative) with reality (positive/negative). </p>"
+        },
+        {
+          "type": "table",
+          "headers": ["", "predicted positive", "predicted negative"],
+          "rows": [
+            ["<strong>actually positive</strong>", "TP (true positive)", "FN (false negative — missed!)"],
+            ["<strong>actually negative</strong>", "FP (false positive — false alarm)", "TN (true negative)"]
+          ]
+        },
+        {
+          "type": "formula",
+          "label": "accuracy",
+          "latex": "\\text{accuracy} \\;=\\; \\frac{TP + TN}{TP + TN + FP + FN}",
+          "caption": "The share of predictions that are correct — everything combined."
+        },
+        {
+          "type": "formula",
+          "label": "precision",
+          "latex": "\\text{precision} \\;=\\; \\frac{TP}{TP + FP}",
+          "caption": "Of everything I called positive: how much truly was? Important when a false alarm is expensive."
+        },
+        {
+          "type": "formula",
+          "label": "recall",
+          "latex": "\\text{recall} \\;=\\; \\frac{TP}{TP + FN}",
+          "caption": "Of everything that is truly positive: how much did I find? Important when nothing may be missed."
+        },
+        {
+          "type": "formula",
+          "label": "F1-score",
+          "latex": "F_1 \\;=\\; 2 \\cdot \\frac{\\text{precision} \\cdot \\text{recall}}{\\text{precision} + \\text{recall}}",
+          "caption": "The harmonic mean of precision and recall — a balance between the two."
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p><strong>Assignment:</strong> give an example of a scenario for each of these metrics in which you would use it. Think of: spam filters (precision), medical screening (recall), and situations with skewed class distributions (accuracy can mislead). </p>"
+        }
+      ]
+    },
+    {
+      "title": "Coding: accuracy, precision, recall & F1",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Fill in the four functions. Each takes the <em>true classes</em> and the <em>predicted classes</em> (0/1, not probabilities — the threshold has already been applied). Compare with the confusion matrix: count the TPs, FPs, TNs and FNs. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "assignment — fill in the four metrics",
+          "runnable": true,
+          "editable": true,
+          "source": "import numpy as np\n\n# Accuracy\ndef accuracy(y_true, y_pred):\n    # YOUR CODE HERE\n    return # YOUR CODE HERE\n\n# Precision\ndef precision(y_true, y_pred):\n    # YOUR CODE HERE\n    return # YOUR CODE HERE\n\n# Recall\ndef recall(y_true, y_pred):\n    # YOUR CODE HERE\n    return # YOUR CODE HERE\n\n# F1 Score\ndef f1(y_true, y_pred):\n    # YOUR CODE HERE\n    return # YOUR CODE HERE\n"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "test cell — do not modify",
+          "runnable": true,
+          "source": "import numpy as np\n\n# DO NOT MODIFY THIS CELL!\ndef _check(name, value, expected):\n    ok = value is not None and abs(value - expected) < 1e-9\n    print(('PASSED    ' if ok else 'NOT YET    ') + name,\n          '->', value, '(expected:', expected, ')')\n\ny_true = np.array([1, 0, 1, 1, 0, 0, 1, 0, 1, 1])\ny_pred = np.array([1, 1, 0, 1, 0, 1, 1, 0, 1, 0])\n\n# TP=4, FP=2, TN=2, FN=2\n_check('accuracy', accuracy(y_true, y_pred), 0.6)\n_check('precision', precision(y_true, y_pred), 0.6666666666666666)\n_check('recall   ', recall(y_true, y_pred), 0.6666666666666666)\n_check('f1      ', f1(y_true, y_pred), 0.6666666666666666)\n"
+        },
+        {
+          "type": "callout",
+          "kind": "tip",
+          "html": "<p> Hint: first count TP, FP, TN and FN with boolean masks, e.g. <code>tp = np.sum((y_true == 1) &amp; (y_pred == 1))</code>. Mind division by zero: with no positive predictions at all, precision is undefined — in the test above that is not a problem. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Visualising: does the separating line fit?",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Below: logistic regression with two feature variables (x1 horizontal, x2 vertical). The target has two classes: <span style=\"color:var(--green)\">class 1 (positive)</span> and <span style=\"color:var(--magenta)\">class 0 (negative)</span>. The decision boundary is \\( b_0 + b_1 x_1 + x_2 = 0 \\) — drag <strong>b0</strong> and <strong>b1</strong> to rotate and shift the boundary, and try to separate the classes. </p>"
+        },
+        {
+          "type": "plot",
+          "title": "Dataset A — linearly separable",
+          "subtitle": "The two classes lie apart: a straight line exists that separates them perfectly. Find it!",
+          "xrange": [0, 10],
+          "yrange": [0, 10],
+          "xlabel": "feature x1",
+          "points": [
+            {"x": 5.9, "y": 6.08, "color": "green"}, {"x": 6.71, "y": 5.93, "color": "green"}, {"x": 6.61, "y": 6.25, "color": "green"}, {"x": 6.7, "y": 7.85, "color": "green"}, {"x": 7.28, "y": 5.72, "color": "green"}, {"x": 6.7, "y": 7.37, "color": "green"}, {"x": 7.11, "y": 4.99, "color": "green"}, {"x": 6.56, "y": 6.2, "color": "green"}, {"x": 6.76, "y": 6.65, "color": "green"}, {"x": 7.07, "y": 7.03, "color": "green"}, {"x": 5.19, "y": 7.14, "color": "green"}, {"x": 6.21, "y": 7.21, "color": "green"},
+            {"x": 2.69, "y": 3.56, "color": "magenta"}, {"x": 2.58, "y": 2.72, "color": "magenta"}, {"x": 3.77, "y": 3.41, "color": "magenta"}, {"x": 2.83, "y": 2.4, "color": "magenta"}, {"x": 1.85, "y": 2.67, "color": "magenta"}, {"x": 1.98, "y": 2.66, "color": "magenta"}, {"x": 2.17, "y": 1.92, "color": "magenta"}, {"x": 3.45, "y": 3.44, "color": "magenta"}, {"x": 3.13, "y": 2.58, "color": "magenta"}, {"x": 3.62, "y": 3.01, "color": "magenta"}, {"x": 2.62, "y": 3.43, "color": "magenta"}, {"x": 3.14, "y": 3.4, "color": "magenta"}
+          ],
+          "pointLegend": [{"label": "class 1 (positive)", "color": "green"}, {"label": "class 0 (negative)", "color": "magenta"}],
+          "curves": [{"expr": "-(b0 + b1*x)", "label": "decision boundary", "color": "cyan"}],
+          "sliders": [
+            {"param": "b0", "min": -15, "max": 5, "step": 0.1, "value": -9.5, "label": "b0"},
+            {"param": "b1", "min": -3, "max": 3, "step": 0.05, "value": 1, "label": "b1"}
+          ]
+        },
+        {
+          "type": "plot",
+          "title": "Dataset B — overlapping classes",
+          "subtitle": "The clouds overlap: no straight line separates them perfectly. Every boundary is a trade-off between false positives and false negatives.",
+          "xrange": [0, 10],
+          "yrange": [0, 10],
+          "xlabel": "feature x1",
+          "points": [
+            {"x": 6.6, "y": 5.07, "color": "green"}, {"x": 5.45, "y": 6.71, "color": "green"}, {"x": 4.97, "y": 4.2, "color": "green"}, {"x": 5.48, "y": 5.29, "color": "green"}, {"x": 3.07, "y": 4.17, "color": "green"}, {"x": 3.43, "y": 5.09, "color": "green"}, {"x": 3.62, "y": 6.86, "color": "green"}, {"x": 4.1, "y": 3.01, "color": "green"}, {"x": 6.2, "y": 6.25, "color": "green"}, {"x": 4.24, "y": 5.96, "color": "green"}, {"x": 5.03, "y": 4.71, "color": "green"}, {"x": 7.55, "y": 3.43, "color": "green"},
+            {"x": 4.31, "y": 6.39, "color": "magenta"}, {"x": 3.41, "y": 2.42, "color": "magenta"}, {"x": 4.55, "y": 3.24, "color": "magenta"}, {"x": 4.23, "y": 2.81, "color": "magenta"}, {"x": 6.6, "y": 3.62, "color": "magenta"}, {"x": 3.84, "y": 2.13, "color": "magenta"}, {"x": 2.66, "y": 5.15, "color": "magenta"}, {"x": 4.47, "y": 3.87, "color": "magenta"}, {"x": 4.53, "y": 1.99, "color": "magenta"}, {"x": 6.24, "y": 2.68, "color": "magenta"}, {"x": 5.45, "y": 4.67, "color": "magenta"}, {"x": 4.74, "y": 5.46, "color": "magenta"}
+          ],
+          "pointLegend": [{"label": "class 1 (positive)", "color": "green"}, {"label": "class 0 (negative)", "color": "magenta"}],
+          "curves": [{"expr": "-(b0 + b1*x)", "label": "decision boundary", "color": "cyan"}],
+          "sliders": [
+            {"param": "b0", "min": -15, "max": 5, "step": 0.1, "value": -5, "label": "b0"},
+            {"param": "b1", "min": -3, "max": 3, "step": 0.05, "value": 1, "label": "b1"}
+          ]
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p><strong>Exercises (from the assignment):</strong></p><ul><li>What are the best loss values you can find for dataset A and B?</li><li>Which values of b0 and b1 go with them?</li><li>Why does the loss for dataset B stay high no matter how you slide? How would you improve it?</li></ul>"
+        },
+        {
+          "type": "callout",
+          "kind": "info",
+          "html": "<p> In the original notebook there is also a <em>dataset C</em> with quadratically separated data: a straight boundary can never separate it perfectly. The solution is the same as with SVMs: <strong>transform features</strong> (for example add \\( x_1^2 \\) and \\( x_2^2 \\)) or use a kernel — the data then becomes linearly separable in a higher dimension after all. </p>"
+        }
+      ]
+    }
+  ]
+}

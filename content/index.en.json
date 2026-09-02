@@ -1,0 +1,168 @@
+{
+  "site": {
+    "title": "MLP — Machine Learning, clearly summarised",
+    "description": "Machine Learning material, clearly summarised: scikit-learn, loss functions, logistic regression and SVMs — with formulas, diagrams, code examples you can run in your browser and memory aids for every step. Now with hands-on practice assignments.",
+    "statFormulas": "±39",
+    "statCode": "28"
+  },
+  "chapters": [
+    {
+      "id": "ch1",
+      "name": "Scikit-learn basics",
+      "accent": "cyan",
+      "description": "the workflow: data, fit, predict and evaluate"
+    },
+    {
+      "id": "ch2",
+      "name": "Maths & loss",
+      "accent": "yellow",
+      "description": "prediction equations and loss functions"
+    },
+    {
+      "id": "ch3",
+      "name": "Logistic Regression",
+      "accent": "green",
+      "description": "regularisation, probabilities and multi-class"
+    },
+    {
+      "id": "ch4",
+      "name": "SVMs",
+      "accent": "magenta",
+      "description": "support vectors, margins and kernels"
+    },
+    {
+      "id": "ch5",
+      "name": "Practice",
+      "accent": "cyan",
+      "description": "do it yourself: code and visualise loss & metrics"
+    }
+  ],
+  "topics": [
+    {
+      "id": "supervised-learning",
+      "chapter": "ch1",
+      "title": "Supervised learning & the standard workflow",
+      "summary": "X and y, classification vs. regression, and the scikit-learn syntax: import, instantiate, fit, predict, score.",
+      "level": 1,
+      "file": "topics.en/supervised-learning.json",
+      "keywords": "supervised learning, X, y, classification, regression, knn, workflow, syntax"
+    },
+    {
+      "id": "classifiers-gebruiken",
+      "chapter": "ch1",
+      "title": "Using LogisticRegression, LinearSVC & SVC",
+      "summary": "The three classifiers in practice, predict_proba with confidence scores, and the under/overfitting model.",
+      "level": 1,
+      "file": "topics.en/classifiers-gebruiken.json",
+      "keywords": "logisticregression, linearsvc, svc, predict_proba, hyperparameters, overfitting, underfitting"
+    },
+    {
+      "id": "decision-boundaries",
+      "chapter": "ch1",
+      "title": "Linear decision boundaries & vocabulary",
+      "summary": "What a decision boundary is, when it is linear, hyperplanes in higher dimensions and the core glossary.",
+      "level": 1,
+      "file": "topics.en/decision-boundaries.json",
+      "keywords": "decision boundary, linear, hyperplane, linearly separable, classification, vocabulary"
+    },
+    {
+      "id": "dot-products",
+      "chapter": "ch2",
+      "title": "Dot products & the prediction equation",
+      "summary": "The dot product, the raw model output and how every linear classifier uses the exact same predict step.",
+      "level": 2,
+      "file": "topics.en/dot-products.json",
+      "keywords": "dot product, numpy, @, raw model output, coef_, intercept_, sign, predict"
+    },
+    {
+      "id": "loss-functions",
+      "chapter": "ch2",
+      "title": "Loss functions: why fitting is really optimising",
+      "summary": "Loss as a penalty score, the squared loss, the 0-1 loss and minimising with scipy.optimize.minimize.",
+      "level": 2,
+      "file": "topics.en/loss-functions.json",
+      "keywords": "loss function, squared loss, least squares, 0-1 loss, scipy, minimize, optimise"
+    },
+    {
+      "id": "loss-diagrams",
+      "chapter": "ch2",
+      "title": "Loss diagrams: logistic loss vs. hinge loss",
+      "summary": "The four loss curves in one picture, and why the shape of the curve determines the model's behaviour.",
+      "level": 2,
+      "file": "topics.en/loss-diagrams.json",
+      "keywords": "loss diagram, logistic loss, hinge loss, raw model output, curve, comparison"
+    },
+    {
+      "id": "regularisatie",
+      "chapter": "ch3",
+      "title": "Regularisation: the hyperparameter C, L1 and L2",
+      "summary": "How C steers regularisation, what it does to train and test scores, and when L1 (feature selection) is the pick.",
+      "level": 2,
+      "file": "topics.en/regularisatie.json",
+      "keywords": "regularisation, C, l1, l2, ridge, lasso, scaling, feature selection, liblinear"
+    },
+    {
+      "id": "kansen-sigmoid",
+      "chapter": "ch3",
+      "title": "Probabilities & the sigmoid function",
+      "summary": "predict_proba unravelled: the sigmoid squeezes the raw model output into [0, 1] and connects confidence with the decision boundary.",
+      "level": 2,
+      "file": "topics.en/kansen-sigmoid.json",
+      "keywords": "predict_proba, sigmoid, probability, confidence, decision boundary, 0.5, decision_function"
+    },
+    {
+      "id": "multiclass",
+      "chapter": "ch3",
+      "title": "Multi-class: one-vs-rest & softmax",
+      "summary": "From binary to 3+ classes: separate classifiers per class or one joint softmax loss — and what the coefficients look like.",
+      "level": 2,
+      "file": "topics.en/multiclass.json",
+      "keywords": "multi-class, one-vs-rest, ovr, multinomial, softmax, cross entropy, coefficients"
+    },
+    {
+      "id": "support-vectors",
+      "chapter": "ch4",
+      "title": "Support vectors & the margin",
+      "summary": "Why most training points contribute nothing to the fit, and how the max-margin view connects to hinge loss + L2.",
+      "level": 2,
+      "file": "topics.en/support-vectors.json",
+      "keywords": "support vectors, hinge loss, margin, flat section, removing, max margin"
+    },
+    {
+      "id": "kernel-svm",
+      "chapter": "ch4",
+      "title": "Kernel SVMs: non-linear boundaries",
+      "summary": "Transforming features makes data linearly separable; the RBF kernel does it efficiently, gamma steers the smoothness.",
+      "level": 3,
+      "file": "topics.en/kernel-svm.json",
+      "keywords": "kernel, rbf, gamma, transformation, non linear, feature map, circle, ellipse"
+    },
+    {
+      "id": "vergelijking",
+      "chapter": "ch4",
+      "title": "LR vs. SVM & the SGDClassifier",
+      "summary": "The final score: when to pick which classifier, the key hyperparameters and swapping the loss in one line.",
+      "level": 3,
+      "file": "topics.en/vergelijking.json",
+      "keywords": "comparison, choice, pros cons, sgdclassifier, alpha, hinge, log_loss, cheat sheet"
+    },
+    {
+      "id": "regression-practice",
+      "chapter": "ch5",
+      "title": "Practice: loss functions & metrics for regression",
+      "summary": "Code it yourself: MSE, RMSE, MAE and R² from scratch, the car-price exercise and interactive regression lines with outliers.",
+      "level": 2,
+      "file": "topics.en/regression-practice.json",
+      "keywords": "practice, assignment, mse, rmse, mae, r2, explained variance, regression, outlier, visualise"
+    },
+    {
+      "id": "classification-practice",
+      "chapter": "ch5",
+      "title": "Practice: loss & metrics for classification",
+      "summary": "From decision boundary to binary cross-entropy, and implementing accuracy, precision, recall and F1 yourself — with interactive boundaries.",
+      "level": 2,
+      "file": "topics.en/classification-practice.json",
+      "keywords": "practice, assignment, bce, cross entropy, accuracy, precision, recall, f1, confusion matrix, decision boundary"
+    }
+  ]
+}

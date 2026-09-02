@@ -1,0 +1,71 @@
+{
+  "id": "supervised-learning",
+  "chapter": "ch1",
+  "title": "Supervised learning & the standard workflow",
+  "intro": "Before we look at logistic regression and SVMs, we lay the foundation: what supervised learning actually is and which fixed steps you always follow in scikit-learn. Everything that follows — loss functions, regularisation, kernels — builds on this pattern.",
+  "level": 1,
+  "sections": [
+    {
+      "title": "What is supervised learning?",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> In <strong>supervised learning</strong> you learn a mapping between <strong>inputs and outputs</strong>, based on examples. By convention the inputs are called <code>X</code> (features) and the outputs <code>y</code> (targets). In the newsgroups dataset from the course, the features are derived from the words occurring in each article (about 130,000 features) and <code>y</code> is the topic of the article — exactly the thing we want to predict. With ~11,000 training examples you learn a function that classifies new articles. </p> <p> There are two flavours: <strong>classification</strong> (the <code>y</code> values are categories, such as \"good/not-good\" or \"spam/not spam\") and <strong>regression</strong> (the <code>y</code> values are continuous numbers, such as a price or a temperature). This course is about <em>classification</em> — and within classification, about the two most popular <strong>linear classifiers</strong>: logistic regression and support vector machines. </p>"
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p> Supervised learning = learning from examples of <strong>input-output pairs</strong> (X, y), so that you can predict the correct output for <em>new</em> input. </p>"
+        }
+      ]
+    },
+    {
+      "title": "The scikit-learn workflow: fit → predict → score",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> The beauty of scikit-learn is that <em>every</em> model has the same syntax, whether you use KNN, logistic regression or an SVM. There are four fixed steps: <strong>import</strong> the class, <strong>instantiate</strong> (this is where you set hyperparameters, such as the number of neighbours for KNN), <strong>fit</strong> with <code>fit(X, y)</code>, and afterwards <strong>predict</strong> with <code>predict</code> or <strong>evaluate</strong> with <code>score</code>. A hyperparameter is a choice you make <em>before</em> fitting and it controls the complexity of the model. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "The complete workflow with KNN on the digits dataset",
+          "runnable": true,
+          "source": "from sklearn.datasets import load_digits\nfrom sklearn.neighbors import KNeighborsClassifier\n\n# 1. Load the data: X = images (8x8 pixels), y = digit 0-9\nX, y = load_digits(return_X_y=True)\nprint('X shape:', X.shape, '| y shape:', y.shape)\n\n# 2. Instantiate + set hyperparameters\nknn = KNeighborsClassifier(n_neighbors=5)\n\n# 3. Fit on the training data\nknn.fit(X, y)\n\n# 4. Predict and score\ny_pred = knn.predict(X)\nprint('First 5 predictions:', y_pred[:5])\nprint('True digits        :', y[:5])\nprint('Training score     :', round(knn.score(X, y), 3))"
+        },
+        {
+          "type": "callout",
+          "kind": "tip",
+          "html": "<p> <code>y_pred</code> contains one prediction per row of <code>X</code> — even when you call predict on the training data itself, as above. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Generalising: why a test score is mandatory",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> The training score above is almost 100% — but that says little. What we really want to know is whether the model <strong>generalises</strong> to data it has never seen. The standard solution is a <strong>validation/test set</strong>: with <code>train_test_split</code> you keep 25% of the examples apart by default. Important: you <em>refit</em> the model on the training set only, because once the model has seen the test set during fitting, the test set has lost its purpose. </p> <p> In the course, KNN's score on the newsgroups data drops from ~100% (train) to ~66% (test). Whether that is \"good\" depends on the situation — but the training error was in any case a poor prediction of how the model classifies new data. </p>"
+        },
+        {
+          "type": "formula",
+          "label": "accuracy",
+          "latex": "\\text{accuracy} \\;=\\; \\frac{\\#\\text{ correctly predicted}}{\\#\\text{ examples}}",
+          "caption": "The score function of scikit-learn classifiers computes accuracy by default."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "Honest evaluation with train_test_split",
+          "runnable": true,
+          "source": "from sklearn.model_selection import train_test_split\n\nX_train, X_test, y_train, y_test = train_test_split(\n    X, y, test_size=0.25, random_state=42)\n\n# Fit ONLY on the training set\nknn = KNeighborsClassifier(n_neighbors=5)\nknn.fit(X_train, y_train)\n\nprint('Train score:', round(knn.score(X_train, y_train), 3))\nprint('Test score :', round(knn.score(X_test,  y_test), 3))"
+        },
+        {
+          "type": "callout",
+          "kind": "warning",
+          "html": "<p> Never train on the test set. The test set is a \"simulation\" of new data — as soon as the model sees it during fitting, you are no longer measuring generalisation but memorisation. </p>"
+        }
+      ]
+    }
+  ]
+}

@@ -3,6 +3,7 @@
    Voert Python-code uit in de browser via Pyodide
    (CPython in WebAssembly) + scikit-learn.
    Wordt lazy geladen: pas bij de eerste klik op "Uitvoeren".
+   Statusmeldingen komen uit js/i18n.js (NL/EN).
    ============================================================ */
 
 window.MLP = window.MLP || {};
@@ -12,6 +13,7 @@ window.MLP = window.MLP || {};
 
   const PYODIDE_VERSION = "0.26.4";
   const PYODIDE_URL = "https://cdn.jsdelivr.net/pyodide/v" + PYODIDE_VERSION + "/full/";
+  const t = (k) => MLP.i18n.t(k);
 
   function loadScriptOnce(src) {
     return new Promise((resolve, reject) => {
@@ -25,7 +27,7 @@ window.MLP = window.MLP || {};
         s.dataset.loaded = "1";
         resolve();
       };
-      s.onerror = () => reject(new Error("Kon script niet laden: " + src));
+      s.onerror = () => reject(new Error(t("script_load_fail") + src));
       document.head.appendChild(s);
     });
   }
@@ -38,16 +40,16 @@ window.MLP = window.MLP || {};
 
   async function ensurePyodide(onStatus) {
     if (state.pyodide) return state.pyodide;
-    if (state.failed) throw new Error("Pyodide is eerder mislukt — herlaad de pagina om het opnieuw te proberen.");
+    if (state.failed) throw new Error(t("run_failed_before"));
     if (!state.loadingPromise) {
       state.loadingPromise = (async () => {
-        onStatus("Python-omgeving laden (eenmalig, ±10–30 s)…");
+        onStatus(t("run_loading_py"));
         await loadScriptOnce(PYODIDE_URL + "pyodide.js");
         if (typeof loadPyodide === "undefined") {
           throw new Error("Pyodide-script geladen, maar loadPyodide ontbreekt (CDN gewijzigd?)");
         }
         const py = await loadPyodide({ indexURL: PYODIDE_URL });
-        onStatus("scikit-learn + numpy laden…");
+        onStatus(t("run_loading_skl"));
         await py.loadPackage(["scikit-learn"]);
         state.pyodide = py;
         onStatus(null);
@@ -75,7 +77,7 @@ window.MLP = window.MLP || {};
     outPre.textContent = "";
 
     const say = (msg) => {
-      if (label) label.textContent = msg || "Uitvoer";
+      if (label) label.textContent = msg || t("output_label");
       if (hint) hint.style.display = msg ? "none" : "";
     };
 
@@ -88,12 +90,12 @@ window.MLP = window.MLP || {};
 
     try {
       const py = await ensurePyodide(say);
-      say("Uitvoeren…");
+      say(t("run_running"));
       py.setStdout({ batched: (s) => write(s, false) });
       py.setStderr({ batched: (s) => write(s, true) });
       await py.runPythonAsync(source);
       if (!outPre.textContent) {
-        outPre.textContent = "(geen uitvoer — code draaide zonder print)";
+        outPre.textContent = t("run_no_output");
         outPre.style.color = "var(--text-faint)";
         setTimeout(() => (outPre.style.color = ""), 1500);
       }
@@ -101,16 +103,13 @@ window.MLP = window.MLP || {};
       const msg = String((err && err.message) || err);
       outPre.classList.add("is-error");
       outPre.textContent =
-        "Fout bij laden of uitvoeren:\n" +
+        t("run_error_prefix") + "\n" +
         msg +
-        (state.failed
-          ? "\n\nTip: check je internetverbinding (Pyodide komt van een CDN) of herlaad de pagina."
-          : "");
+        (state.failed ? t("run_error_tip") : "");
       if (hint) hint.style.display = "none";
     } finally {
       outputEl.classList.remove("loading");
       say(null);
-      if (label) label.textContent = "Uitvoer";
       button.disabled = false;
     }
   }

@@ -1,0 +1,68 @@
+{
+  "id": "loss-functions",
+  "chapter": "ch2",
+  "title": "Loss functions: why fitting is really optimising",
+  "intro": "Much of machine learning revolves around one thing: minimising a loss. Once you understand this perspective you see connections between models, pick up new models faster and can tune them to your own problem.",
+  "level": 2,
+  "sections": [
+    {
+      "title": "Loss as a penalty score",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> A <strong>loss function</strong> is a penalty score that indicates how <em>badly</em> the model is doing on the training data. Fitting can be seen as: shuffling the coefficients (parameters) until that penalty score is as small as possible. Does that sound familiar? Exactly — <strong>least squares linear regression</strong> (like <code>LinearRegression</code>) minimises the sum of the squared errors on the training set, with the error defined as the difference between the true and the predicted target. </p> <p> Note a subtle but important distinction: the <strong>loss</strong> is used to <em>fit</em> the model; the <strong>score</strong> is used to see how it is going. Often they coincide, but that is not guaranteed. </p>"
+        },
+        {
+          "type": "formula",
+          "label": "squared loss (linear regression)",
+          "latex": "L \\;=\\; \\sum_{i=1}^{n} \\left( y_i - \\hat{y}_i \\right)^2",
+          "caption": "Least squares: the sum of squared errors over all training examples."
+        },
+        {
+          "type": "table",
+          "headers": ["Concept", "Role", "Question it answers"],
+          "rows": [
+            ["Loss", "fitting", "\"which parameters make the error on the training data small?\""],
+            ["Score", "evaluating", "\"how well does the model perform on (new) data?\""]
+          ]
+        }
+      ]
+    },
+    {
+      "title": "The 0-1 loss: counting your mistakes",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> For classification the squared error is unsuitable, because <code>y</code> values are categories, not numbers. The most natural candidate: <strong>count your mistakes</strong>. That is the <strong>0-1 loss</strong> — per example it is 0 (prediction correct) or 1 (prediction wrong), and the sum over the training set is exactly the number of mistakes made. </p> <p> Conceptually beautiful, but in practice this loss turned out to be <strong>very hard to minimise directly</strong> — which is why logistic regression and SVMs do not use it. They adopt a smooth (differentiable) approximation that <em>can</em> be optimised efficiently. </p>"
+        },
+        {
+          "type": "formula",
+          "label": "0-1 loss",
+          "latex": "L_{0\\text{-}1}\\left( y,\\, \\hat{y} \\right) \\;=\\; \\mathbb{1}\\left[\\, \\hat{y} \\neq y \\,\\right] \\;=\\; \\begin{cases} 0 & \\hat{y} = y \\quad\\text{(correct)} \\\\[4pt] 1 & \\hat{y} \\neq y \\quad\\text{(mistake)} \\end{cases}",
+          "caption": "The sum over all training examples = the number of mistakes on the training set."
+        }
+      ]
+    },
+    {
+      "title": "Minimising a loss with scipy",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> What does that minimisation look like? With <code>scipy.optimize.minimize</code> you can optimise arbitrary functions. Minimise \\( y = x^2 \\) from a starting point and the algorithms find a value <em>very close</em> to zero — typically something like \\( 10^{-8} \\). That is normal in numerical optimisation: you rarely get the exact answer, but something very close to it. </p> <p> In the exercises you minimise the squared error of linear regression, with the coefficients as inputs. The code then literally answers the question: <em>\"which values of the coefficients make my squared error as small as possible?\"</em> — which is exactly what linear regression does. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "scipy.optimize.minimize in action",
+          "runnable": true,
+          "source": "import numpy as np\nfrom scipy.optimize import minimize\n\n# Minimise y = x^2, starting from x = 3\nresult = minimize(np.square, x0=3.0)\nprint('minimum at x =', result.x[0])\nprint('loss value    =', result.fun)\n\n# And from a different starting point\nresult2 = minimize(np.square, x0=-10.0)\nprint('from -10      :', result2.x[0])"
+        },
+        {
+          "type": "callout",
+          "kind": "tip",
+          "html": "<p> Don't expect exact zeros: numerical optimisation gives answers \"in the neighbourhood\" — \\( \\approx 10^{-8} \\) is a perfectly fine result. </p>"
+        }
+      ]
+    }
+  ]
+}

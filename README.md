@@ -1,13 +1,16 @@
-# MLP — Machine Learning samengevat
+# MLP — Machine Learning Practice
 
 Een donkere, modulaire studiewebsite met samenvattingen van de cursus
 **Logistic Regression & SVM's met scikit-learn** — inclusief formules,
-interactieve diagrammen en code-voorbeelden die je **direct in je browser
-kunt uitvoeren** (via Pyodide: CPython + scikit-learn in WebAssembly).
+interactieve diagrammen, code-voorbeelden die je **direct in je browser
+kunt uitvoeren** (via Pyodide: CPython + scikit-learn in WebAssembly) en
+**practice-opdrachten** met bewerkbare code-velden. De site is volledig
+**tweetalig: Nederlands en Engels** (schakelen met de NL/EN-knop rechtsboven).
 
 - **Frontend**: pure HTML/CSS/JS — geen build-stap, geen framework
-- **Backend (optioneel, lokaal)**: FastAPI serveert de site én een REST-API over de content
+- **Backend (optioneel, lokaal)**: FastAPI serveert de site én een REST-API over de content (NL + EN)
 - **Hosting**: 100% GitHub Pages-ready (statische bestanden)
+- **Talen**: NL (standaard) en EN — alle interface-teksten én alle 14 onderwerpen zijn vertaald
 
 ---
 
@@ -87,7 +90,18 @@ lesstof toe te voegen:
 
 1. Maak een nieuw bestand `content/topics/<id>.json` (bv. `decision-trees.json`).
 2. Voeg een regel toe aan de `topics`-lijst in `content/index.json`.
-3. Klaar — de tabel, navigatie, zoeken en paging werken automatisch.
+3. (optioneel, voor de Engelse versie) maak `content/topics.en/<id>.json` aan
+   en voeg de regel ook toe aan `content/index.en.json` — ontbreekt de
+   EN-variant, dan valt de site automatisch terug op de NL-versie.
+4. Klaar — de tabel, navigatie, zoeken en paging werken automatisch.
+
+### Tweetaligheid (i18n)
+
+- De taal staat in `js/i18n.js` (UI-strings) + de content-mappen:
+  `content/topics/` (NL) en `content/topics.en/` (EN).
+- De keuze wordt onthouden in `localStorage` (sleutel `mlp-lang`); zonder
+  voorkeur kiest de site op basis van de browsertaal.
+- In de API-modus vraag je de Engelse versie op met `?lang=en`.
 
 ### Schema van een onderwerp
 
@@ -107,11 +121,17 @@ lesstof toe te voegen:
         { "type": "formula", "label": "naam", "latex": "\\sigma(z) = \\frac{1}{1+e^{-z}}", "caption": "uitleg" },
         { "type": "code",    "language": "python", "caption": "bijschrift", "runnable": true,
           "source": "print('hallo')" },
+        { "type": "code",    "language": "python", "caption": "opdracht", "runnable": true, "editable": true,
+          "source": "# JOUW CODE HIER\nreturn # JOUW CODE HIER" },   // bewerkbaar oefen-veld (textarea)
         { "type": "callout", "kind": "info", "html": "<p>Let op …</p>" },   // info | tip | warning | key
         { "type": "table",   "headers": ["A", "B"], "rows": [["a1", "b1"]] },
         { "type": "plot",    "title": "Grafiek", "xrange": [-4, 4], "yrange": [0, 3],
           "curves": [{ "expr": "Math.max(0, 1-x)", "label": "hinge", "color": "magenta" }],
-          "slider": { "param": "gamma", "min": 0.1, "max": 5, "step": 0.1, "value": 1, "label": "γ" } }
+          "points": [{ "x": 1, "y": 2, "color": "green" }],
+          "sliders": [
+            { "param": "b0", "min": -5, "max": 10, "step": 0.1, "value": 2, "label": "b0" },
+            { "param": "b1", "min": -1, "max": 3, "step": 0.05, "value": 1, "label": "b1" }
+          ] }
       ]
     }
   ]
@@ -120,10 +140,12 @@ lesstof toe te voegen:
 
 **Tips**
 
-- `expr` in een plot is een JS-expressie in `x` (en evt. de slider-parameter), bijv. `Math.exp(-gamma*x*x)`.
+- `expr` in een plot is een JS-expressie in `x` (en evt. de slider-parameters), bijv. `Math.exp(-gamma*x*x)` of `b0 + b1*x`.
+- Plots ondersteunen sinds v1.1 ook `points` (datapunten, met optionele kleur/label) en meerdere sliders (`sliders: [...]`); het oude enkele-`slider`-formaat werkt nog steeds.
+- `editable: true` op een code-blok maakt het veld bewerkbaar (textarea): ideaal voor oefeningen — de gebruiker past de code aan en drukt op Uitvoeren. Pyodide onthoudt definities tussen code-velden (top-level functies blijven beschikbaar), dus een opdracht-blok + losse test-blok werkt net als in Jupyter.
 - Zet `runnable: true` alleen als de code ook echt in Pyodide draait (numpy/scipy/sklearn uit de standaarddatasets werken prima; geen plots of externe bestanden).
 - Kleuren in plots/onderwerpen: `cyan`, `yellow`, `green`, `magenta`.
-- Onbekende hoofdstukken? Voeg een nieuw object toe aan `chapters` in `content/index.json` en kies een accent-kleur.
+- Onbekende hoofdstukken? Voeg een nieuw object toe aan `chapters` in `content/index.json` (én `index.en.json`) en kies een accent-kleur.
 
 ---
 
@@ -132,13 +154,14 @@ lesstof toe te voegen:
 | Endpoint | Beschrijving |
 |---|---|
 | `GET /api/health` | gezondheidscheck (frontend gebruikt dit voor detectie) |
-| `GET /api/index` | volledige index (site, hoofdstukken, onderwerpen) |
-| `GET /api/chapters` | hoofdstukken |
-| `GET /api/topics` | onderwerpenlijst (`?chapter=ch1` om te filteren) |
-| `GET /api/topics/{id}` | alle content van één onderwerp |
-| `GET /api/search?q=kernel` | trefwoord-zoekopdracht |
+| `GET /api/index?lang=nl\|en` | volledige index (site, hoofdstukken, onderwerpen) |
+| `GET /api/chapters?lang=nl\|en` | hoofdstukken |
+| `GET /api/topics?lang=nl\|en` | onderwerpenlijst (`?chapter=ch1` om te filteren) |
+| `GET /api/topics/{id}?lang=nl\|en` | alle content van één onderwerp |
+| `GET /api/search?q=kernel&lang=nl\|en` | trefwoord-zoekopdracht |
 
-De API leest dezelfde JSON-bestanden als de statische site — één bron van waarheid.
+De API leest dezelfde JSON-bestanden als de statische site — één bron van
+waarheid. Zonder `lang`-parameter krijg je de NL-versie.
 
 ---
 
@@ -146,17 +169,20 @@ De API leest dezelfde JSON-bestanden als de statische site — één bron van wa
 
 ```
 MLP/
-├── index.html            # enige HTML-pagina (SPA met hash-routering #/onderwerp/<id>)
+├── index.html            # enige HTML-pagina (SPA met hash-routering #/onderwerp/<id> + NL/EN-schakelaar)
 ├── css/style.css         # volledig ontwerp (#161616 · wit · pastel-accenten)
 ├── js/
-│   ├── content.js        # datalaag: FastAPI-API of statische JSON (automatische fallback)
-│   ├── blocks.js           # renderers: tekst, formules (KaTeX), code-velden, callouts, tabellen, plots
+│   ├── i18n.js           # tweetaligheid: alle UI-strings (NL/EN), taalkeuze + -opslag
+│   ├── content.js        # datalaag: FastAPI-API (?lang=) of statische JSON (NL/EN + fallback)
+│   ├── blocks.js         # renderers: tekst, formules (KaTeX), code-velden (vast/bewerkbaar), callouts, tabellen, plots (punten + sliders)
 │   ├── runner.js         # Pyodide-runner: code in de browser uitvoeren (lazy geladen)
-│   └── app.js            # router, homepage + tabel, zoekfilter, transitities
+│   └── app.js            # router, homepage + tabel, zoekfilter, taalwissel, transitities
 ├── content/
-│   ├── index.json        # hoofdstukken + onderwerpen-register
-│   └── topics/*.json     # 12 onderwerpen over de cursus
-├── main.py               # FastAPI: statische site + REST-API
+│   ├── index.json        # NL: hoofdstukken + onderwerpen-register
+│   ├── index.en.json     # EN: idem
+│   ├── topics/*.json     # NL: 14 onderwerpen (waaronder 2 practice-opdrachten)
+│   └── topics.en/*.json  # EN: idem
+├── main.py               # FastAPI: statische site + REST-API (NL/EN)
 ├── start.sh              # Mac/Linux: venv aanmaken + deps installeren + server starten
 ├── start.bat             # Windows-idem (dubbelklikken kan)
 ├── requirements.txt      # fastapi + uvicorn

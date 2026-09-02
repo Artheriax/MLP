@@ -1,0 +1,82 @@
+{
+  "id": "regularisatie",
+  "chapter": "ch3",
+  "title": "Regularisation: the hyperparameter C, L1 and L2",
+  "intro": "Regularisation is your most important weapon against overfitting: you penalise large coefficients, which makes the model more \"cautious\". In scikit-learn you steer this with a single hyperparameter: C.",
+  "level": 2,
+  "sections": [
+    {
+      "title": "C = inverse regularisation strength",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Regularisation fights overfitting by <strong>keeping the coefficients small</strong>. In scikit-learn, <code>C</code> is the <em>inverse</em> of the regularisation strength: a <strong>large C means little regularisation</strong> and a <strong>small C means strong regularisation</strong>. Put it to the test and you see the effect immediately: with a smaller C the learned coefficients shrink. </p>"
+        },
+        {
+          "type": "formula",
+          "label": "regularised optimisation problem",
+          "latex": "\\min_{w,\\,b}\\; \\sum_{i=1}^{n} L\\bigl(y_i,\\, f(x_i)\\bigr) \\;+\\; \\lambda\\, R(w), \\qquad C \\;=\\; \\frac{1}{\\lambda}",
+          "caption": "The loss plus a penalty term on the coefficients; C is the inverse strength \u03bb."
+        },
+        {
+          "type": "formula",
+          "label": "two kinds of penalty",
+          "latex": "R_{L2}(w) \\;=\\; \\lVert w \\rVert_2^2 \\;=\\; \\textstyle\\sum_j w_j^2 \\qquad\\qquad R_{L1}(w) \\;=\\; \\lVert w \\rVert_1 \\;=\\; \\textstyle\\sum_j \\lvert w_j \\rvert",
+          "caption": "L2 (=\"ridge\") penalises squares, L1 (=\"lasso\") penalises absolute values."
+        }
+      ]
+    },
+    {
+      "title": "What regularisation does to train and test scores",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Why does <strong>training</strong> accuracy drop when you regularise? Regularisation is an extra term added to the original loss that penalises large coefficients. Without regularisation you effectively maximise training performance; <em>with</em> regularisation you optimise a compromise, and the heavier the penalty (smaller C), the further you drift from that optimum. Training accuracy therefore goes down automatically. </p> <p> And <strong>test</strong> accuracy? That often improves. The intuitive picture: suppose you stopped using a feature entirely — that is the same as setting its coefficient to zero. Regularising is a <em>compromise</em> between leaving a feature out completely (coef = 0) and using it fully (the unregularised value). If using a feature too heavily caused overfitting, regularisation makes you \"fit\" less hard and therefore overfit less. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "The effect of C on train and test scores",
+          "runnable": true,
+          "source": "from sklearn.datasets import load_breast_cancer\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.preprocessing import StandardScaler\n\nX, y = load_breast_cancer(return_X_y=True)\nX_train, X_test, y_train, y_test = train_test_split(\n    X, y, test_size=0.25, random_state=42)\n\nscaler = StandardScaler().fit(X_train)\nX_train_s = scaler.transform(X_train)\nX_test_s  = scaler.transform(X_test)\n\nfor C in [100.0, 1.0, 0.01]:\n    lr = LogisticRegression(C=C, max_iter=5000).fit(X_train_s, y_train)\n    print(f'C={C:<6} train={lr.score(X_train_s, y_train):.3f}'\n          f'  test={lr.score(X_test_s, y_test):.3f}')"
+        },
+        {
+          "type": "callout",
+          "kind": "tip",
+          "html": "<p> <strong>Scale your features</strong> (e.g. with <code>StandardScaler</code>) before regularising — coefficients are only fairly comparable when the features have similar scales. </p>"
+        }
+      ]
+    },
+    {
+      "title": "L1 vs. L2: squares versus absolute values",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> For linear regression you know the names <strong>ridge</strong> (L2) and <strong>lasso</strong> (L1) — outside linear regression the general concepts are called L2 and L1 regularisation, and everything you know about them applies to logistic regression too. Both reduce overfitting, but L1 has an extra superpower: <strong>feature selection</strong>. L1 sets many coefficients exactly to zero, so those features are ignored; L2 merely shrinks them. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "L1 does feature selection, L2 shrinks everything",
+          "runnable": true,
+          "source": "import numpy as np\nfrom sklearn.linear_model import LogisticRegression\n\nlr_l2 = LogisticRegression(penalty='l2', max_iter=5000).fit(X_train_s, y_train)\nlr_l1 = LogisticRegression(penalty='l1', C=0.5, solver='liblinear').fit(X_train_s, y_train)\n\nzero_l2 = np.sum(np.abs(lr_l2.coef_[0]) < 1e-6)\nzero_l1 = np.sum(np.abs(lr_l1.coef_[0]) < 1e-6)\nprint(f\"L2: {zero_l2} of the {lr_l2.coef_.shape[1]} coefficients exactly zero\")\nprint(f\"L1: {zero_l1} of the {lr_l1.coef_.shape[1]} coefficients exactly zero\")\nprint('L1 coefficients (first 10):', np.round(lr_l1.coef_[0][:10], 2))\nprint('L2 coefficients (first 10):', np.round(lr_l2.coef_[0][:10], 2))"
+        },
+        {
+          "type": "table",
+          "headers": ["", "L1 (lasso)", "L2 (ridge)"],
+          "rows": [
+            ["Penalty term", "\\( \\sum \\lvert w_j \\rvert \\)", "\\( \\sum w_j^2 \\)"],
+            ["Effect on coefficients", "many become <strong>exactly zero</strong>", "all of them shrink"],
+            ["Feature selection", "built in", "no"],
+            ["Extra", "mind the <code>solver</code> (e.g. <code>liblinear</code>)", "default solver works"]
+          ]
+        },
+        {
+          "type": "callout",
+          "kind": "warning",
+          "html": "<p> For L1 in scikit-learn you often need to change the <code>solver</code> (e.g. <code>solver='liblinear'</code>) — the default solver is not compatible with L1. </p>"
+        }
+      ]
+    }
+  ]
+}
