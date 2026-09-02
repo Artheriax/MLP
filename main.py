@@ -1,13 +1,19 @@
-"""
+r"""
 MLP — Machine Learning notes · FastAPI-backend
 ===============================================
 
 Serveert de statische site én een kleine REST-API over de content.
 
-Lokaal draaien:
+Lokaal draaien (eenvoudig — maakt automatisch een venv aan):
+    bash start.sh        # Mac / Linux / Git Bash
+    start.bat            # Windows
+    → http://127.0.0.1:8000
+
+Of handmatig:
+    python -m venv .venv
+    source .venv/bin/activate        # Windows: .venv\Scripts\activate
     pip install -r requirements.txt
     uvicorn main:app --reload
-    → http://127.0.0.1:8000
 
 Op GitHub Pages draait de site gewoon als statische site (zonder deze
 backend); de frontend detecteert zelf of de API beschikbaar is en valt

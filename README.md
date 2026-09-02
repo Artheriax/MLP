@@ -15,14 +15,42 @@ kunt uitvoeren** (via Pyodide: CPython + scikit-learn in WebAssembly).
 
 ### Optie A — met FastAPI (aanbevolen voor lokaal werken)
 
+**Mac / Linux / Git Bash:**
 ```bash
-pip install -r requirements.txt
-uvicorn main:app --reload
+bash start.sh
 ```
+
+**Windows:** dubbelklik op **`start.bat`** (of voer het uit in de cmd).
+
+Het script doet alles automatisch:
+
+1. maakt de eerste keer een **virtual environment** aan in `.venv/` (zodat niets
+   globaal geïnstalleerd wordt en je systeem schoon blijft);
+2. installeert `fastapi` + `uvicorn` **binnen die venv**;
+3. start de server met `uvicorn main:app --reload`.
+
+De tweede keer dat je het draait, worden stappen 1–2 overgeslagen en start de
+server meteen. Wil je volledig opnieuw beginnen? Verwijder dan gewoon de map
+`.venv/` — die staat sowieso in `.gitignore`, dus die wordt nooit gecommit.
 
 Open **http://127.0.0.1:8000** — de site detecteert automatisch dat de API
 draait en laadt de content via `/api/...`. Je kunt de API ook los bekijken op
 **http://127.0.0.1:8000/docs** (interactieve Swagger-documentatie).
+
+<details>
+<summary>Zonder startscript — handmatig met venv</summary>
+
+```bash
+python -m venv .venv
+# activeren (Mac/Linux):
+source .venv/bin/activate
+# activeren (Windows):
+.venv\Scripts\activate
+
+pip install -r requirements.txt
+uvicorn main:app --reload
+```
+</details>
 
 ### Optie B — zonder Python
 
@@ -129,6 +157,8 @@ MLP/
 │   ├── index.json        # hoofdstukken + onderwerpen-register
 │   └── topics/*.json     # 12 onderwerpen over de cursus
 ├── main.py               # FastAPI: statische site + REST-API
+├── start.sh              # Mac/Linux: venv aanmaken + deps installeren + server starten
+├── start.bat             # Windows-idem (dubbelklikken kan)
 ├── requirements.txt      # fastapi + uvicorn
 ├── .nojekyll             # GitHub Pages: geen Jekyll
 └── README.md             # dit bestand
