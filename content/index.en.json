@@ -54,10 +54,10 @@
       "id": "ml-basics",
       "chapter": "ch0",
       "title": "What is machine learning?",
-      "summary": "From writing rules to learning rules: the definition (Mitchell's T, E and P), when you should and should not use ML, and generalising as the core idea.",
+      "summary": "From writing rules to learning rules: the definition (task T, experience E and performance measure P), when you should and should not use ML, and generalising as the core idea.",
       "level": 1,
       "file": "topics.en/ml-basics.json",
-      "keywords": "machine learning, definition, arthur samuel, tom mitchell, generalising, experience, task, performance measure, rules, overfitting"
+      "keywords": "machine learning, definition, generalising, experience, task, performance measure, rules, overfitting"
     },
     {
       "id": "ml-types",
@@ -153,7 +153,7 @@
       "id": "logistic-regression",
       "chapter": "ch3",
       "title": "Logistic regression: why it isn't actually a regression",
-      "summary": "In theory it is a classifier, not a regression model: where the confusing name comes from, the pipeline from line to probability to class, and why plain linear regression fails on 0/1 labels.",
+      "summary": "In theory it is a classifier, not a regression model: why the name misleads, the pipeline from line to probability to class, and why plain linear regression fails on 0/1 labels.",
       "level": 2,
       "file": "topics/logistic-regression.json",
       "keywords": "logistic regression, classification, regression, name, logit, log odds, sigmoid, threshold, pipeline, predict_proba, predict, linear vs logistic"

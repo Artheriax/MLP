@@ -2,7 +2,7 @@
   "id": "supervised-learning",
   "chapter": "ch1",
   "title": "Supervised learning & de standaard-workflow",
-  "intro": "Voordat we naar logistic regression en SVM's kijken, zetten we het fundament: wat supervised learning precies is en welke vaste stappen je in scikit-learn altijd doorloopt. Alles wat later komt — loss functies, regularisatie, kernels — bouwt voort op dit patroon.",
+  "intro": "Wat supervised learning precies is en welke vaste stappen je in scikit-learn altijd doorloopt — loss functies, regularisatie en kernels bouwen voort op dit patroon.",
   "level": 1,
   "sections": [
     {
@@ -24,7 +24,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Het mooie van scikit-learn is dat élk model dezelfde syntax heeft, of je nu KNN, logistic regression of een SVM gebruikt. Er zijn vier vaste stappen: <strong>importeren</strong> van de klasse, <strong>instantiëren</strong> (hier geef je hyperparameters op, zoals het aantal buren bij KNN), <strong>fitten</strong> met <code>fit(X, y)</code>, en daarna <strong>voorspellen</strong> met <code>predict</code> of <strong>evalueren</strong> met <code>score</code>. Een hyperparameter is een keuze die je <em>vóór</em> het fitten maakt en die de complexiteit van het model stuurt. </p>"
+          "html": "<p> In scikit-learn heeft élk model dezelfde syntax, of je nu KNN, logistic regression of een SVM gebruikt. Er zijn vier vaste stappen: <strong>importeren</strong> van de klasse, <strong>instantiëren</strong> (hier geef je hyperparameters op, zoals het aantal buren bij KNN), <strong>fitten</strong> met <code>fit(X, y)</code>, en daarna <strong>voorspellen</strong> met <code>predict</code> of <strong>evalueren</strong> met <code>score</code>. Een hyperparameter is een keuze die je <em>vóór</em> het fitten maakt en die de complexiteit van het model stuurt. </p>"
         },
         {
           "type": "code",

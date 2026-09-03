@@ -2,7 +2,7 @@
   "id": "ml-basics",
   "chapter": "ch0",
   "title": "What is machine learning?",
-  "intro": "The foundation of this site: what machine learning actually is, how it differs from ordinary programming, when you should and should not use it — and why generalising is the core concept that ties everything together.",
+  "intro": "What machine learning actually is, how it differs from ordinary programming, when you should and should not use it — and why generalising is the core concept.",
   "level": 1,
   "sections": [
     {
@@ -14,7 +14,7 @@
         },
         {
           "type": "text",
-          "html": "<p> <strong>Machine learning flips this around.</strong> Instead of writing rules, you give the computer <em>examples</em> — data with the answers attached — and let the computer derive the rules itself. Pioneer Arthur Samuel (1959) called it: “the field of study that gives computers the ability to learn without being explicitly programmed”. Tom Mitchell (1997) made it measurable: a program <em>learns</em> from experience <em>E</em> with respect to task <em>T</em> and performance measure <em>P</em>, if its performance on <em>T</em>, as measured by <em>P</em>, improves with <em>E</em>. </p>"
+          "html": "<p> <strong>Machine learning flips this around.</strong> Instead of writing rules, you give the computer <em>examples</em> — data with the answers attached — and let the computer derive the rules itself. The formal definition: a program <em>learns</em> from experience <em>E</em> with respect to task <em>T</em> and performance measure <em>P</em>, if its performance on <em>T</em>, as measured by <em>P</em>, improves with <em>E</em>. </p>"
         },
         {
           "type": "table",

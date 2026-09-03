@@ -10,7 +10,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Een <strong>loss functie</strong> is een penalty-score die aangeeft hoe <em>slecht</em> het model het op de trainingsdata doet. Het fitten kun je zien als: net zo lang schuiven met de coëfficiënten (parameters) tot die strafscore zo klein mogelijk is. Ken je dat al? Klopt — <strong>least squares lineaire regressie</strong> (zoals <code>LinearRegression</code>) minimaliseert de som van de kwadraten van de fouten op de trainingsset, met fout gedefinieerd als het verschil tussen de echte en voorspelde target. </p> <p> Let op een subtiel maar belangrijk verschil: de <strong>loss</strong> wordt gebruikt om het model te <em>fitten</em>; de <strong>score</strong> wordt gebruikt om te zien hoe het gaat. Vaak vallen die samen, maar dat is niet gegarandeerd. </p>"
+          "html": "<p> Een <strong>loss functie</strong> is een penalty-score die aangeeft hoe <em>slecht</em> het model het op de trainingsdata doet. Het fitten kun je zien als: net zo lang schuiven met de coëfficiënten (parameters) tot die strafscore zo klein mogelijk is. <strong>Least squares lineaire regressie</strong> (zoals <code>LinearRegression</code>) minimaliseert de som van de kwadraten van de fouten op de trainingsset, met fout gedefinieerd als het verschil tussen de echte en voorspelde target. </p> <p> Let op een subtiel maar belangrijk verschil: de <strong>loss</strong> wordt gebruikt om het model te <em>fitten</em>; de <strong>score</strong> wordt gebruikt om te zien hoe het gaat. Vaak vallen die samen, maar dat is niet gegarandeerd. </p>"
         },
         {
           "type": "formula",
@@ -33,7 +33,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Voor classificatie is de kwadratische fout niet geschikt, want <code>y</code>-waarden zijn categorieën, geen getallen. De natuurlijkste kandidaat: <strong>tel je fouten</strong>. Dat is de <strong>0-1 loss</strong> — per voorbeeld is die 0 (voorspelling klopt) of 1 (voorspelling klopt niet), en de som over de trainingsset is precies het aantal gemaakte fouten. </p> <p> Conceptueel prachtig, maar in de praktijk bleek deze loss <strong>heel lastig direct te minimaliseren</strong> — daarom gebruiken logistic regression en SVM's hem niet. Zij nemen een gladde (differentieerbare) benadering, die wél efficiënt geoptimaliseerd kan worden. </p>"
+          "html": "<p> Voor classificatie is de kwadratische fout niet geschikt, want <code>y</code>-waarden zijn categorieën, geen getallen. De natuurlijkste kandidaat: <strong>tel je fouten</strong>. Dat is de <strong>0-1 loss</strong> — per voorbeeld is die 0 (voorspelling klopt) of 1 (voorspelling klopt niet), en de som over de trainingsset is precies het aantal gemaakte fouten. </p> <p> Conceptueel netjes, maar in de praktijk is deze loss <strong>heel lastig direct te minimaliseren</strong> — daarom gebruiken logistic regression en SVM's hem niet. Zij nemen een gladde (differentieerbare) benadering, die wél efficiënt geoptimaliseerd kan worden. </p>"
         },
         {
           "type": "formula",

@@ -2,7 +2,7 @@
   "id": "vergelijking",
   "chapter": "ch4",
   "title": "LR vs. SVM & de SGDClassifier",
-  "intro": "De eindscore van de cursus: wanneer kies je logistic regression en wanneer een SVM? En als kers op de taart: de SGDClassifier, die bewijst dat deze modellen alleen verschillen in hun loss functie.",
+  "intro": "Wanneer kies je logistic regression en wanneer een SVM? Plus de SGDClassifier, die laat zien dat deze modellen alleen in hun loss functie verschillen.",
   "level": 3,
   "sections": [
     {
@@ -50,7 +50,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Tot slot een klasse die de rode draad van de cursus illustreert: <code>SGDClassifier</code> (SGD = <strong>stochastic gradient descent</strong>). Hij kan veel grotere datasets aan dan de andere methodes. Het mooie: om te schakelen tussen logistic regression en een lineaire SVM hoef je alleen de <code>loss</code>-hyperparameter te wijzigen — <em>het model is hetzelfde, alleen de loss verandert</em>. Precies wat we in hoofdstuk 2 zagen. </p> <p> Eén \"gotcha\": de regularisatie-hyperparameter heet hier <code>alpha</code> in plaats van <code>C</code> — en grotere <code>alpha</code> betekent méér regularisatie. Kortom: <code>alpha</code> is de inverse van <code>C</code>. </p>"
+          "html": "<p> Tot slot een klasse die de rode draad van de cursus illustreert: <code>SGDClassifier</code> (SGD = <strong>stochastic gradient descent</strong>). Hij kan veel grotere datasets aan dan de andere methodes. Om te schakelen tussen logistic regression en een lineaire SVM hoef je alleen de <code>loss</code>-hyperparameter te wijzigen — <em>het model is hetzelfde, alleen de loss verandert</em>. Precies wat we in hoofdstuk 2 zagen. </p> <p> Eén \"gotcha\": de regularisatie-hyperparameter heet hier <code>alpha</code> in plaats van <code>C</code> — en grotere <code>alpha</code> betekent méér regularisatie. Kortom: <code>alpha</code> is de inverse van <code>C</code>. </p>"
         },
         {
           "type": "code",
@@ -71,7 +71,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Zoom uit: data science is het beantwoorden van vragen en nemen van beslissingen op basis van data, en combineert stukken als datacollectie, datapreparatie, databaseontwerp, visualisatie, communicatie, software engineering en machine learning. Binnen machine learning zijn er takken als supervised learning, unsupervised learning en reinforcement learning; wij zaten in supervised learning — een target voorspellen uit features met gelabelde data. Binnen supervised learning richtten we ons op <em>classificatie</em> (categorische targets), en daarbinnen op de twee populairste lineaire classifiers: logistic regression en SVM's. </p> <p> Veel geleerd — en tegelijk het topje van de ijsberg. Volgende stappen om te verkennen: niet-lineaire classifiers uitgebreid, tree-based methodes (random forests, boosting), of de kanten op van unsupervised learning. </p>"
+          "html": "<p> Zoom uit: data science is het beantwoorden van vragen en nemen van beslissingen op basis van data, en combineert stukken als datacollectie, datapreparatie, databaseontwerp, visualisatie, communicatie, software engineering en machine learning. Binnen machine learning zijn er takken als supervised learning, unsupervised learning en reinforcement learning; wij zaten in supervised learning — een target voorspellen uit features met gelabelde data. Binnen supervised learning richtten we ons op <em>classificatie</em> (categorische targets), en daarbinnen op de twee populairste lineaire classifiers: logistic regression en SVM's. </p> <p> Vervolgstappen: tree-based methodes (random forests, boosting), niet-lineaire classifiers in diepte, of unsupervised learning. </p>"
         }
       ]
     }

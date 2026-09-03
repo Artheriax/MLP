@@ -10,7 +10,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Tot nu toe waren alle conceptuele verhalen <em>binair</em> (2 klassen), terwijl we al die tijd ook gewoon multi-class classificatie deden met de wijn-dataset (3 klassen). Tijd om het gordijn op te lichten: hoe doen lineaire classifiers dat? Er zijn twee populaire strategieën. </p>"
+          "html": "<p> Tot nu toe waren alle conceptuele verhalen <em>binair</em> (2 klassen), terwijl we al die tijd ook gewoon multi-class classificatie deden met de wijn-dataset (3 klassen). Hoe doen lineaire classifiers dat? Er zijn twee populaire strategieën. </p>"
         }
       ]
     },

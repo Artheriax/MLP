@@ -2,7 +2,7 @@
   "id": "supervised-learning",
   "chapter": "ch1",
   "title": "Supervised learning & the standard workflow",
-  "intro": "Before we look at logistic regression and SVMs, we lay the foundation: what supervised learning actually is and which fixed steps you always follow in scikit-learn. Everything that follows — loss functions, regularisation, kernels — builds on this pattern.",
+  "intro": "What supervised learning actually is and which fixed steps you always follow in scikit-learn — loss functions, regularisation and kernels build on this pattern.",
   "level": 1,
   "sections": [
     {
@@ -24,7 +24,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> The beauty of scikit-learn is that <em>every</em> model has the same syntax, whether you use KNN, logistic regression or an SVM. There are four fixed steps: <strong>import</strong> the class, <strong>instantiate</strong> (this is where you set hyperparameters, such as the number of neighbours for KNN), <strong>fit</strong> with <code>fit(X, y)</code>, and afterwards <strong>predict</strong> with <code>predict</code> or <strong>evaluate</strong> with <code>score</code>. A hyperparameter is a choice you make <em>before</em> fitting and it controls the complexity of the model. </p>"
+          "html": "<p> In scikit-learn, <em>every</em> model has the same syntax, whether you use KNN, logistic regression or an SVM. There are four fixed steps: <strong>import</strong> the class, <strong>instantiate</strong> (this is where you set hyperparameters, such as the number of neighbours for KNN), <strong>fit</strong> with <code>fit(X, y)</code>, and afterwards <strong>predict</strong> with <code>predict</code> or <strong>evaluate</strong> with <code>score</code>. A hyperparameter is a choice you make <em>before</em> fitting and it controls the complexity of the model. </p>"
         },
         {
           "type": "code",

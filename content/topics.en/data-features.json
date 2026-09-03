@@ -10,11 +10,11 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Almost every ML dataset starts as a <strong>table</strong>. Each <em>row</em> is one sample (also called: observation or instance) — one car, one person, one email. Each <em>column</em> is a variable describing that sample. Machine learning is nothing more (and nothing less) than finding patterns between those columns. </p>"
+          "html": "<p> Almost every ML dataset starts as a <strong>table</strong>. Each <em>row</em> is one sample (also called: observation or instance) — one car, one person, one email. Each <em>column</em> is a variable describing that sample. Machine learning comes down to finding patterns between those columns. </p>"
         },
         {
           "type": "text",
-          "html": "<p> As an example we take the car dataset that also returns in the <em>Evaluation &amp; metrics</em> chapter: five cars, each described by three characteristics, with the price as the thing we want to predict. The table is deliberately small — count along: 5 rows, 4 columns. </p>"
+          "html": "<p> As an example we take the car dataset that also returns in the <em>Evaluation &amp; metrics</em> chapter: five cars, each described by three characteristics, with the price as the thing we want to predict. The table is deliberately small: 5 rows, 4 columns. </p>"
         },
         {
           "type": "table",

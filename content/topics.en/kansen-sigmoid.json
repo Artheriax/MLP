@@ -2,7 +2,7 @@
   "id": "kansen-sigmoid",
   "chapter": "ch3",
   "title": "Probabilities & the sigmoid function",
-  "intro": "So far logistic regression made hard predictions: this class, or that. But under the hood sits a beautiful mechanism that turns the raw model output into a genuine probability — and that immediately explains when the model is &quot;sure of itself&quot;. Here you'll find the sigmoid formula, what <code>exp()</code> actually does, and why the S-curve pops up everywhere: from logistic regression to neural networks.",
+  "intro": "So far logistic regression made hard predictions: this class, or that. But under the hood a mechanism turns the raw model output into a genuine probability — and that immediately explains when the model is &quot;sure of itself&quot;. Here you'll find the sigmoid formula, what <code>exp()</code> actually does, and why the S-curve pops up everywhere: from logistic regression to neural networks.",
   "level": 2,
   "sections": [
     {

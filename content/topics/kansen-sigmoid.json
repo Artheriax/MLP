@@ -2,7 +2,7 @@
   "id": "kansen-sigmoid",
   "chapter": "ch3",
   "title": "Kansen & de sigmoid-functie",
-  "intro": "Tot nu toe deed logistic regression harde voorspellingen: deze klasse, of die. Maar onder de motorkap zit een prachtig mechanisme dat de raw model output omzet in een echte kans — en dat verklaart meteen wanneer het model &quot;zeker van zichzelf&quot; is. Hier vind je de sigmoid-formule, wat <code>exp()</code> precies doet en waarom de S-curve overal opduikt: van logistic regression tot neurale netwerken.",
+  "intro": "Tot nu toe deed logistic regression harde voorspellingen: deze klasse, of die. Maar onder de motorkap zet een mechanisme de raw model output om in een echte kans — en dat verklaart meteen wanneer het model &quot;zeker van zichzelf&quot; is. Hier vind je de sigmoid-formule, wat <code>exp()</code> precies doet en waarom de S-curve overal opduikt: van logistic regression tot neurale netwerken.",
   "level": 2,
   "sections": [
     {

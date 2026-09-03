@@ -2,19 +2,19 @@
   "id": "logistic-regression",
   "chapter": "ch3",
   "title": "Logistic regression: waarom het eigenlijk geen regressie is",
-  "intro": "De meest verwarrende naam in machine learning. In theorie is logistic regression géén regressie-model maar een classificatiemethode: de naam verwijst naar hoe het model tot stand komt, niet naar wat het oplevert. Van naamgeschiedenis via de pipeline (lijn → kans → klasse) tot waarom gewone lineaire regressie niet deugt voor klassen — met een interactieve vergelijking en live metrics.",
+  "intro": "In theorie is logistic regression géén regressiemodel maar een classificatiemethode: de naam verwijst naar hoe het model getraind wordt, niet naar wat het oplevert. De pipeline (lijn → kans → klasse), waarom gewone lineaire regressie niet deugt voor klassen en hoe de logistische loss het model traint — met een interactieve vergelijking en live metrics.",
   "level": 2,
   "sections": [
     {
-      "title": "Een classifier met een verwarrende naam",
+      "title": "Een classifier, geen regressiemodel",
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Laten we met de deur in huis vallen: <strong>logistic regression is ondanks zijn naam in theorie geen regressiemodel</strong>. Een regressiemodel voorspelt een <em>doorlopend getal</em> — een prijs, een temperatuur, een hoeveelheid. Logistic regression voorspelt een <em>klasse</em>: spam of geen spam, goedaardig of kwaadaardig, wel of niet churnen. Dat is classificatie, en in de familieboom van machine learning hoort de methode dan ook bij de classifiers, naast SVM's en decision trees. In scikit-learn zie je dat terug: <code>LogisticRegression</code> heeft een <code>predict()</code> die klasselabels uitstalt (0/1 of namen), niet een getal op een schaal. </p>"
+          "html": "<p> <strong>Logistic regression is ondanks zijn naam in theorie geen regressiemodel</strong>. Een regressiemodel voorspelt een <em>doorlopend getal</em> — een prijs, een temperatuur, een hoeveelheid. Logistic regression voorspelt een <em>klasse</em>: spam of geen spam, goedaardig of kwaadaardig, wel of niet churnen. Dat is classificatie, en in de familieboom van machine learning hoort de methode dan ook bij de classifiers, naast SVM's en decision trees. In scikit-learn zie je dat terug: <code>LogisticRegression</code> heeft een <code>predict()</code> die klasselabels uitstalt (0/1 of namen), niet een getal op een schaal. </p>"
         },
         {
           "type": "text",
-          "html": "<p> Waar komt de verwarrende naam dan vandaan? Uit de statistiek. De methode ontstond in de jaren veertig en vijftig (de term <em>logit</em> is van Joseph Berkson, 1944; David Cox beschreef de methode in 1958 als 'de regressie van binaire data'). Wat er geregresseerd wordt, is niet de klasse zelf maar de <strong>log-odds</strong> — het logaritme van de kansverhouding \\( \\log \\frac{P(y=1)}{P(y=0)} \\) — en dat wél als een lineaire functie van de features. In die strikte, statistische zin is er dus een regressie te ontdekken <em>onder de motorkap</em>. Maar zodra je de uitkomst afvlakt naar een kans en met een drempel van 0,5 naar een klasselabel knipt, gedraagt het model zich volledig als classifier — en zo gebruikt de hele ML-wereld hem ook. </p>"
+          "html": "<p> Waar komt de naam dan vandaan? Uit de statistiek. Wat er geregresseerd wordt, is niet de klasse zelf maar de <strong>log-odds</strong> — het logaritme van de kansverhouding \\( \\log \\frac{P(y=1)}{P(y=0)} \\) — en dat wél als een lineaire functie van de features. In die strikte, statistische zin is er dus een regressie te ontdekken <em>onder de motorkap</em>. Maar zodra je de uitkomst afvlakt naar een kans en met een drempel van 0,5 naar een klasselabel knipt, gedraagt het model zich volledig als classifier — en zo gebruikt de hele ML-wereld hem ook. </p>"
         },
         {
           "type": "callout",
@@ -227,7 +227,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Twijfel je nog aan de classificatie-aard? Laad een echte dataset en kijk wat <code>predict()</code> uitstalt: een klasselabel, geen getal. De kansen van <code>predict_proba()</code> sommen per sample tot exact 1 — ook al tekenend voor een kansenmodel, niet voor een regressiemodel. </p>"
+          "html": "<p> Laad een echte dataset en kijk wat <code>predict()</code> uitstalt: een klasselabel, geen getal. De kansen van <code>predict_proba()</code> sommen per sample tot exact 1 — ook al tekenend voor een kansenmodel, niet voor een regressiemodel. </p>"
         },
         {
           "type": "code",

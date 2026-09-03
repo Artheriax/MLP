@@ -2,7 +2,7 @@
   "id": "vergelijking",
   "chapter": "ch4",
   "title": "LR vs. SVM & the SGDClassifier",
-  "intro": "The final score of the course: when do you choose logistic regression and when an SVM? And as a cherry on top: the SGDClassifier, which proves that these models differ only in their loss function.",
+  "intro": "When do you choose logistic regression and when an SVM? Plus the SGDClassifier, which shows that these models differ only in their loss function.",
   "level": 3,
   "sections": [
     {
@@ -50,7 +50,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Finally, a class that illustrates the red thread of the course: <code>SGDClassifier</code> (SGD = <strong>stochastic gradient descent</strong>). It can handle much larger datasets than the other methods. The beautiful part: to switch between logistic regression and a linear SVM you only need to change the <code>loss</code> hyperparameter — <em>the model is the same, only the loss changes</em>. Exactly what we saw in chapter 2. </p> <p> One \"gotcha\": the regularisation hyperparameter here is called <code>alpha</code> instead of <code>C</code> — and a larger <code>alpha</code> means <em>more</em> regularisation. In short: <code>alpha</code> is the inverse of <code>C</code>. </p>"
+          "html": "<p> Finally, a class that illustrates the red thread of the course: <code>SGDClassifier</code> (SGD = <strong>stochastic gradient descent</strong>). It can handle much larger datasets than the other methods. To switch between logistic regression and a linear SVM you only need to change the <code>loss</code> hyperparameter — <em>the model is the same, only the loss changes</em>. Exactly what we saw in chapter 2. </p> <p> One \"gotcha\": the regularisation hyperparameter here is called <code>alpha</code> instead of <code>C</code> — and a larger <code>alpha</code> means <em>more</em> regularisation. In short: <code>alpha</code> is the inverse of <code>C</code>. </p>"
         },
         {
           "type": "code",
@@ -71,7 +71,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Zoom out: data science is answering questions and making decisions based on data, and combines pieces such as data collection, data preparation, database design, visualisation, communication, software engineering and machine learning. Within machine learning there are branches like supervised learning, unsupervised learning and reinforcement learning; we stayed inside supervised learning — predicting a target from features with labelled data. Within supervised learning we focused on <em>classification</em> (categorical targets), and within that on the two most popular linear classifiers: logistic regression and SVMs. </p> <p> A lot learned — and at the same time the tip of the iceberg. Next steps to explore: non-linear classifiers in depth, tree-based methods (random forests, boosting), or heading towards unsupervised learning. </p>"
+          "html": "<p> Zoom out: data science is answering questions and making decisions based on data, and combines pieces such as data collection, data preparation, database design, visualisation, communication, software engineering and machine learning. Within machine learning there are branches like supervised learning, unsupervised learning and reinforcement learning; we stayed inside supervised learning — predicting a target from features with labelled data. Within supervised learning we focused on <em>classification</em> (categorical targets), and within that on the two most popular linear classifiers: logistic regression and SVMs. </p> <p> Next steps: tree-based methods (random forests, boosting), non-linear classifiers in depth, or unsupervised learning. </p>"
         }
       ]
     }

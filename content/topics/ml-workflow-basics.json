@@ -201,7 +201,7 @@
         },
         {
           "type": "text",
-          "html": "<p> Met deze vier basis-onderwerpen heb je het fundament: je weet wat ML is, welke families er bestaan, hoe data eruitziet en welke stappen een project doorloopt. De rest van de site bouwt hierop voort — hoofdstuk 1 duikt direct in scikit-learn, hoofdstuk 2 opent de wiskunde, en de hoofdstukken 3 en 4 behandelen de twee classifiers die centraal staan. </p>"
+          "html": "<p> Verder lezen: hoofdstuk 1 gaat direct in op scikit-learn, hoofdstuk 2 opent de wiskunde, hoofdstuk 3 en 4 behandelen logistic regression en SVM's, en hoofdstuk 5 de evaluatie-metrics. </p>"
         }
       ]
     }

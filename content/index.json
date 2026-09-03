@@ -54,10 +54,10 @@
       "id": "ml-basics",
       "chapter": "ch0",
       "title": "Wat is machine learning?",
-      "summary": "Van regels schrijven naar regels leren: de definitie (Mitchell's T, E en P), wanneer je ML wel en niet inzet, en generaliseren als kernidee.",
+      "summary": "Van regels schrijven naar regels leren: de definitie (taak T, ervaring E en prestatiemaat P), wanneer je ML wel en niet inzet, en generaliseren als kernidee.",
       "level": 1,
       "file": "topics/ml-basics.json",
-      "keywords": "machine learning, definitie, arthur samuel, tom mitchell, generaliseren, ervaring, taak, prestatiemaat, regels, overfitting"
+      "keywords": "machine learning, definitie, generaliseren, ervaring, taak, prestatiemaat, regels, overfitting"
     },
     {
       "id": "ml-types",
@@ -153,7 +153,7 @@
       "id": "logistic-regression",
       "chapter": "ch3",
       "title": "Logistic regression: waarom het eigenlijk geen regressie is",
-      "summary": "In theorie is het een classifier, niet een regressiemodel: waar de verwarrende naam vandaan komt, de pipeline van lijn naar kans naar klasse, en waarom gewone lineaire regressie niet deugt voor 0/1-labels.",
+      "summary": "In theorie is het een classifier, niet een regressiemodel: waarom de naam misleidt, de pipeline van lijn naar kans naar klasse, en waarom gewone lineaire regressie niet deugt voor 0/1-labels.",
       "level": 2,
       "file": "topics/logistic-regression.json",
       "keywords": "logistic regression, classificatie, regressie, naam, logit, log odds, sigmoid, drempel, threshold, pipeline, predict_proba, predict, lineaire regressie vs logistic"

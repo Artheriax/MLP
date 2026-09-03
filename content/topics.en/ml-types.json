@@ -47,7 +47,7 @@
         },
         {
           "type": "text",
-          "html": "<p> In practice — and on this entire site — supervised learning is by far the most used: it is what scikit-learn describes as “fit on (X, y)”. But you will meet the two other families everywhere in the field, so they belong in your basic vocabulary. </p>"
+          "html": "<p> In practice supervised learning is by far the most used: it is what scikit-learn describes as “fit on (X, y)”. The other two families belong to the basic vocabulary of the field. </p>"
         }
       ]
     },
@@ -122,7 +122,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> In <strong>reinforcement learning</strong> (RL) an <em>agent</em> learns by acting in an environment: every action yields a (delayed) reward or penalty, and the agent optimises its policy to maximise the total reward. There is no labelled example of “the right move” — only the long-term outcome. Famous results: AlphaGo, robot control, and the RLHF technique used to fine-tune large language models. </p>"
+          "html": "<p> In <strong>reinforcement learning</strong> (RL) an <em>agent</em> learns by acting in an environment: every action yields a (delayed) reward or penalty, and the agent optimises its policy to maximise the total reward. There is no labelled example of “the right move” — only the long-term outcome. Applications: robot control, game AI and the RLHF technique used to fine-tune large language models. </p>"
         },
         {
           "type": "text",

@@ -10,7 +10,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> A <strong>loss function</strong> is a penalty score that indicates how <em>badly</em> the model is doing on the training data. Fitting can be seen as: shuffling the coefficients (parameters) until that penalty score is as small as possible. Does that sound familiar? Exactly — <strong>least squares linear regression</strong> (like <code>LinearRegression</code>) minimises the sum of the squared errors on the training set, with the error defined as the difference between the true and the predicted target. </p> <p> Note a subtle but important distinction: the <strong>loss</strong> is used to <em>fit</em> the model; the <strong>score</strong> is used to see how it is going. Often they coincide, but that is not guaranteed. </p>"
+          "html": "<p> A <strong>loss function</strong> is a penalty score that indicates how <em>badly</em> the model is doing on the training data. Fitting can be seen as: shuffling the coefficients (parameters) until that penalty score is as small as possible. <strong>Least squares linear regression</strong> (like <code>LinearRegression</code>) minimises the sum of the squared errors on the training set, with the error defined as the difference between the true and the predicted target. </p> <p> Note a subtle but important distinction: the <strong>loss</strong> is used to <em>fit</em> the model; the <strong>score</strong> is used to see how it is going. Often they coincide, but that is not guaranteed. </p>"
         },
         {
           "type": "formula",
@@ -33,7 +33,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> For classification the squared error is unsuitable, because <code>y</code> values are categories, not numbers. The most natural candidate: <strong>count your mistakes</strong>. That is the <strong>0-1 loss</strong> — per example it is 0 (prediction correct) or 1 (prediction wrong), and the sum over the training set is exactly the number of mistakes made. </p> <p> Conceptually beautiful, but in practice this loss turned out to be <strong>very hard to minimise directly</strong> — which is why logistic regression and SVMs do not use it. They adopt a smooth (differentiable) approximation that <em>can</em> be optimised efficiently. </p>"
+          "html": "<p> For classification the squared error is unsuitable, because <code>y</code> values are categories, not numbers. The most natural candidate: <strong>count your mistakes</strong>. That is the <strong>0-1 loss</strong> — per example it is 0 (prediction correct) or 1 (prediction wrong), and the sum over the training set is exactly the number of mistakes made. </p> <p> Conceptually neat, but in practice this loss is <strong>very hard to minimise directly</strong> — which is why logistic regression and SVMs do not use it. They adopt a smooth (differentiable) approximation that <em>can</em> be optimised efficiently. </p>"
         },
         {
           "type": "formula",

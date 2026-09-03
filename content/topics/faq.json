@@ -16,7 +16,7 @@
         {
           "type": "callout",
           "kind": "key",
-          "html": "<p><strong>Waarom heet logistic regression &quot;regression&quot; als het classificeert?</strong></p><p>Door een historische naam. Onder de motorkap wordt de log-odds van de kans (de <em>logit</em>) lineair &quot;geregresseerd&quot; op de features — in die statistische zin zit er dus een regressie verscholen. Maar de uitkomst is een kans die bij een drempel van 0,5 tot een klasselabel wordt geknipt: in theorie en in de praktijk is het een <strong>classifier</strong>. Scikit-learn bevestigt dat: <code>predict()</code> geeft klassen terug, geen getallen. Het volledige verhaal staat in <a href=\"#/topic/logistic-regression\">Logistic regression: waarom het eigenlijk geen regressie is</a>. </p>"
+          "html": "<p><strong>Waarom heet logistic regression &quot;regression&quot; als het classificeert?</strong></p><p>De naam verwijst naar wat er onder de motorkap gebeurt: de log-odds van de kans (de <em>logit</em>) wordt lineair &quot;geregresseerd&quot; op de features — in die statistische zin zit er dus een regressie verscholen. Maar de uitkomst is een kans die bij een drempel van 0,5 tot een klasselabel wordt geknipt: in theorie en in de praktijk is het een <strong>classifier</strong>. Scikit-learn bevestigt dat: <code>predict()</code> geeft klassen terug, geen getallen. Het volledige verhaal staat in <a href=\"#/topic/logistic-regression\">Logistic regression: waarom het eigenlijk geen regressie is</a>. </p>"
         },
         {
           "type": "callout",
@@ -71,7 +71,7 @@
         {
           "type": "callout",
           "kind": "tip",
-          "html": "<p><strong>Waarom zou ik mijn features schalen?</strong></p><p>Veel modellen zijn <strong>gevoelig voor de schaal</strong> van de features. KNN werkt met afstanden, SVM’s met marges en gradient-methoden met stapgroottes: één feature met waarden in de duizenden kan alle andere features volledig domineren. Met <code>StandardScaler</code> zet je elke kolom naar gemiddelde 0 en spreiding 1, zodat alle features even zwaar wegen. Belangrijk: fit de scaler op de <em>traindata</em> en gebruik hem daarna om de testdata te transformeren. Boommodellen zijn overigens ongevoelig voor schalen. Zie <em>Data, features &amp; labels</em>.</p>"
+          "html": "<p><strong>Waarom zou ik mijn features schalen?</strong></p><p>Veel modellen zijn <strong>gevoelig voor de schaal</strong> van de features. KNN werkt met afstanden, SVM’s met marges en gradient-methoden met stapgroottes: één feature met waarden in de duizenden kan alle andere features volledig domineren. Met <code>StandardScaler</code> zet je elke kolom naar gemiddelde 0 en spreiding 1, zodat alle features even zwaar wegen. Belangrijk: fit de scaler op de <em>traindata</em> en gebruik hem daarna om de testdata te transformeren. Boommodellen zijn daarentegen ongevoelig voor schalen. Zie <em>Data, features &amp; labels</em>.</p>"
         }
       ]
     },

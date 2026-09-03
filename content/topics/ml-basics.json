@@ -2,7 +2,7 @@
   "id": "ml-basics",
   "chapter": "ch0",
   "title": "Wat is machine learning?",
-  "intro": "Het fundament van deze site: wat machine learning eigenlijk is, hoe het verschilt van gewoon programmeren, wanneer je het wel en niet inzet — en waarom generaliseren het kernbegrip is dat alles bij elkaar houdt.",
+  "intro": "Wat machine learning is, hoe het verschilt van gewoon programmeren, wanneer je het wel en niet inzet — en waarom generaliseren het kernbegrip is.",
   "level": 1,
   "sections": [
     {
@@ -14,7 +14,7 @@
         },
         {
           "type": "text",
-          "html": "<p> <strong>Machine learning draait het om.</strong> In plaats van regels te schrijven, geef je de computer <em>voorbeelden</em> — data met de antwoorden erbij — en laat je de computer de regels zelf afleiden. Pionier Arthur Samuel (1959) noemde het: “the field of study that gives computers the ability to learn without being explicitly programmed”. Tom Mitchell (1997) maakte het meetbaar: een programma <em>leert</em> van ervaring <em>E</em> met betrekking tot taak <em>T</em> en prestatiemaat <em>P</em>, als zijn prestatie op <em>T</em>, gemeten met <em>P</em>, verbetert met <em>E</em>. </p>"
+          "html": "<p> <strong>Machine learning draait het om.</strong> In plaats van regels te schrijven, geef je de computer <em>voorbeelden</em> — data met de antwoorden erbij — en laat je de computer de regels zelf afleiden. De formele definitie luidt: een programma <em>leert</em> van ervaring <em>E</em> met betrekking tot taak <em>T</em> en prestatiemaat <em>P</em>, als zijn prestatie op <em>T</em>, gemeten met <em>P</em>, verbetert met <em>E</em>. </p>"
         },
         {
           "type": "table",

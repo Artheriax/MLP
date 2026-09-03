@@ -201,7 +201,7 @@
         },
         {
           "type": "text",
-          "html": "<p> With these four basic topics you have the foundation: you know what ML is, which families exist, what data looks like and which steps a project goes through. The rest of the site builds on this — chapter 1 dives straight into scikit-learn, chapter 2 opens the mathematics, and chapters 3 and 4 cover the two central classifiers. </p>"
+          "html": "<p> Further reading: chapter 1 dives straight into scikit-learn, chapter 2 opens the mathematics, chapters 3 and 4 cover logistic regression and SVMs, and chapter 5 the evaluation metrics. </p>"
         }
       ]
     }

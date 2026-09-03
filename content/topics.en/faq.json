@@ -16,7 +16,7 @@
         {
           "type": "callout",
           "kind": "key",
-          "html": "<p><strong>Why is logistic regression called &quot;regression&quot; if it classifies?</strong></p><p>Because of a historical name. Under the hood the log-odds of the probability (the <em>logit</em>) is linearly &quot;regressed&quot; onto the features — in that statistical sense a regression is hiding in there. But the outcome is a probability clipped into a class label at a 0.5 threshold: in theory and in practice it is a <strong>classifier</strong>. Scikit-learn confirms it: <code>predict()</code> returns classes, not numbers. The full story is in <a href=\"#/topic/logistic-regression\">Logistic regression: why it isn't actually a regression</a>. </p>"
+          "html": "<p><strong>Why is logistic regression called &quot;regression&quot; if it classifies?</strong></p><p>The name refers to what happens under the hood: the log-odds of the probability (the <em>logit</em>) is linearly &quot;regressed&quot; onto the features — in that statistical sense a regression is hiding in there. But the outcome is a probability clipped into a class label at a 0.5 threshold: in theory and in practice it is a <strong>classifier</strong>. Scikit-learn confirms it: <code>predict()</code> returns classes, not numbers. The full story is in <a href=\"#/topic/logistic-regression\">Logistic regression: why it isn't actually a regression</a>. </p>"
         },
         {
           "type": "callout",
@@ -71,7 +71,7 @@
         {
           "type": "callout",
           "kind": "tip",
-          "html": "<p><strong>Why should I scale my features?</strong></p><p>Many models are <strong>sensitive to the scale</strong> of the features. KNN works with distances, SVMs with margins and gradient methods with step sizes: one feature with values in the thousands can completely dominate all the others. With <code>StandardScaler</code> you turn every column into mean 0 and spread 1, so all features carry equal weight. Important: fit the scaler on the <em>training data</em> and then use it to transform the test data. Tree models, by the way, are insensitive to scaling. See <em>Data, features &amp; labels</em>.</p>"
+          "html": "<p><strong>Why should I scale my features?</strong></p><p>Many models are <strong>sensitive to the scale</strong> of the features. KNN works with distances, SVMs with margins and gradient methods with step sizes: one feature with values in the thousands can completely dominate all the others. With <code>StandardScaler</code> you turn every column into mean 0 and spread 1, so all features carry equal weight. Important: fit the scaler on the <em>training data</em> and then use it to transform the test data. Tree models, on the other hand, are insensitive to scaling. See <em>Data, features &amp; labels</em>.</p>"
         }
       ]
     },

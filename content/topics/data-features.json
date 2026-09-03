@@ -10,11 +10,11 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Vrijwel elke ML-dataset begint als een <strong>tabel</strong>. Elke <em>rij</em> is één sample (ook wel: observatie of instantie) — één auto, één persoon, één e-mail. Elke <em>kolom</em> is een variabele die die sample beschrijft. Machine learning is niets meer (en niets minder) dan patronen vinden tussen die kolommen. </p>"
+          "html": "<p> Vrijwel elke ML-dataset begint als een <strong>tabel</strong>. Elke <em>rij</em> is één sample (ook wel: observatie of instantie) — één auto, één persoon, één e-mail. Elke <em>kolom</em> is een variabele die die sample beschrijft. Machine learning komt neer op patronen vinden tussen die kolommen. </p>"
         },
         {
           "type": "text",
-          "html": "<p> Als voorbeeld nemen we de autodataset die ook in het hoofdstuk <em>Evaluatie &amp; metrics</em> terugkomt: vijf auto's, elk beschreven door drie kenmerken, met de prijs als wat we willen voorspellen. Zo'n tabel is bewust klein gehouden — tel maar na: 5 rijen, 4 kolommen. </p>"
+          "html": "<p> Als voorbeeld nemen we de autodataset die ook in het hoofdstuk <em>Evaluatie &amp; metrics</em> terugkomt: vijf auto's, elk beschreven door drie kenmerken, met de prijs als wat we willen voorspellen. De tabel is bewust klein gehouden: 5 rijen, 4 kolommen. </p>"
         },
         {
           "type": "table",

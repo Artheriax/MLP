@@ -47,7 +47,7 @@
         },
         {
           "type": "text",
-          "html": "<p> In de praktijk — en op deze hele site — is supervised learning ver het meest gebruikt: het is wat scikit-learn classificeert als “fit op (X, y)”. Maar de twee andere families tref je overal in het vakgebied, dus ze horen in je basisvocabulaire. </p>"
+          "html": "<p> In de praktijk is supervised learning het meest gebruikte type — het is wat scikit-learn bedoelt met “fit op (X, y)”. De andere twee families horen bij het basisvocabulaire van het vakgebied. </p>"
         }
       ]
     },
@@ -122,7 +122,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> In <strong>reinforcement learning</strong> (RL) leert een <em>agent</em> door te handelen in een omgeving: elke actie levert een (vertraagde) beloning of straf op, en de agent optimaliseert zijn beleid om de totale beloning te maximaliseren. Er is geen gelabeld voorbeeld van “de juiste zet” — alleen de uitkomst op de lange termijn. Bekende resultaten: AlphaGo, robotbesturing, en de RLHF-techniek waarmee grote taalmodellen worden bijgeschaafd. </p>"
+          "html": "<p> In <strong>reinforcement learning</strong> (RL) leert een <em>agent</em> door te handelen in een omgeving: elke actie levert een (vertraagde) beloning of straf op, en de agent optimaliseert zijn beleid om de totale beloning te maximaliseren. Er is geen gelabeld voorbeeld van “de juiste zet” — alleen de uitkomst op de lange termijn. Toepassingen: robotbesturing, spel-AI en de RLHF-techniek waarmee grote taalmodellen worden bijgeschaafd. </p>"
         },
         {
           "type": "text",

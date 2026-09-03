@@ -2,19 +2,19 @@
   "id": "logistic-regression",
   "chapter": "ch3",
   "title": "Logistic regression: why it isn't actually a regression",
-  "intro": "The most confusing name in machine learning. In theory logistic regression is not a regression model but a classification method: the name refers to how the model is built, not to what it delivers. From the history of the name through the pipeline (line → probability → class) to why plain linear regression fails for classes — with an interactive comparison and live metrics.",
+  "intro": "In theory logistic regression is not a regression model but a classification method: the name refers to how the model is trained, not to what it delivers. The pipeline (line → probability → class), why plain linear regression fails for classes and how the logistic loss trains the model — with an interactive comparison and live metrics.",
   "level": 2,
   "sections": [
     {
-      "title": "A classifier with a confusing name",
+      "title": "A classifier, not a regression model",
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Let's get straight to the point: <strong>despite its name, logistic regression is in theory not a regression model</strong>. A regression model predicts a <em>continuous number</em> — a price, a temperature, a quantity. Logistic regression predicts a <em>class</em>: spam or not spam, benign or malignant, churn or stay. That is classification, and in the machine learning family tree the method belongs with the classifiers, next to SVMs and decision trees. Scikit-learn reflects this: <code>LogisticRegression</code> has a <code>predict()</code> that hands out class labels (0/1 or names), not a number on a scale. </p>"
+          "html": "<p> <strong>Despite its name, logistic regression is in theory not a regression model</strong>. A regression model predicts a <em>continuous number</em> — a price, a temperature, a quantity. Logistic regression predicts a <em>class</em>: spam or not spam, benign or malignant, churn or stay. That is classification, and in the machine learning family tree the method belongs with the classifiers, next to SVMs and decision trees. Scikit-learn reflects this: <code>LogisticRegression</code> has a <code>predict()</code> that hands out class labels (0/1 or names), not a number on a scale. </p>"
         },
         {
           "type": "text",
-          "html": "<p> So where does the confusing name come from? From statistics. The method emerged in the 1940s and 50s (the term <em>logit</em> is due to Joseph Berkson, 1944; David Cox described the method in 1958 as 'the regression of binary data'). What is actually regressed is not the class itself but the <strong>log-odds</strong> — the logarithm of the probability ratio \\( \\log \\frac{P(y=1)}{P(y=0)} \\) — and that <em>is</em> a linear function of the features. In that strict statistical sense there is indeed a regression hiding <em>under the hood</em>. But the moment you flatten the outcome into a probability and snip it into a class label at a 0.5 threshold, the model behaves entirely as a classifier — and that is how the entire ML world uses it. </p>"
+          "html": "<p> Where does the name come from? From statistics. What is actually regressed is not the class itself but the <strong>log-odds</strong> — the logarithm of the probability ratio \\( \\log \\frac{P(y=1)}{P(y=0)} \\) — and that <em>is</em> a linear function of the features. In that strict statistical sense there is indeed a regression hiding <em>under the hood</em>. But the moment you flatten the outcome into a probability and snip it into a class label at a 0.5 threshold, the model behaves entirely as a classifier — and that is how the entire ML world uses it. </p>"
         },
         {
           "type": "callout",
@@ -227,7 +227,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Still doubting its classification nature? Load a real dataset and look at what <code>predict()</code> hands you: a class label, not a number. The probabilities from <code>predict_proba()</code> sum to exactly 1 per sample — equally telling for a probability model, not a regression model. </p>"
+          "html": "<p> Load a real dataset and look at what <code>predict()</code> hands you: a class label, not a number. The probabilities from <code>predict_proba()</code> sum to exactly 1 per sample — equally telling for a probability model, not a regression model. </p>"
         },
         {
           "type": "code",

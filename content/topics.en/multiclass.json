@@ -10,7 +10,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> So far all the conceptual stories were <em>binary</em> (2 classes), while all along we were simply doing multi-class classification with the wine dataset (3 classes). Time to lift the curtain: how do linear classifiers pull that off? There are two popular strategies. </p>"
+          "html": "<p> So far all the conceptual stories were <em>binary</em> (2 classes), while all along we were simply doing multi-class classification with the wine dataset (3 classes). How do linear classifiers pull that off? There are two popular strategies. </p>"
         }
       ]
     },
