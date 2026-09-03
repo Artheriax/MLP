@@ -82,7 +82,7 @@
         {
           "type": "plot",
           "title": "Train and test error against model complexity",
-          "subtitle": "The U-shape of the test error is the hallmark of overfitting. Drag the sliders.",
+          "subtitle": "The U-shape of the test error is the hallmark of overfitting. Drag the sliders — the live metrics track the lowest test error and the gap between train and test error on the right.",
           "xrange": [
             0,
             10
@@ -120,6 +120,18 @@
               "step": 0.25,
               "value": 3,
               "label": "complexity where overfit starts"
+            }
+          ],
+          "metrics": [
+            {
+              "label": "lowest test error",
+              "expr": "(()=>{let m=1e9;for(let i=0;i<=100;i++){const x=i/10;m=Math.min(m,0.85*Math.exp(-0.45*x)+0.1+ruis*Math.max(0,x-knik)*Math.max(0,x-knik)/8)}return m})()",
+              "decimals": 2
+            },
+            {
+              "label": "overfitting gap (x=10)",
+              "expr": "ruis*Math.max(0,10-knik)*Math.max(0,10-knik)/8",
+              "decimals": 2
             }
           ]
         },

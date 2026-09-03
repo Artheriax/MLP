@@ -164,8 +164,10 @@ window.MLP = window.MLP || {};
 
   /* ============================================================
      Plot-blok — interactieve SVG-grafiek
-     Ondersteunt: curven (functies van x), datapunten en
-     meerdere sliders (`sliders: [...]` of het oudere `slider`).
+     Ondersteunt: curven (functies van x), datapunten,
+     meerdere sliders (`sliders: [...]` of het oudere `slider`) en
+     live metrics (`metrics: [...]`) die realtime meebewegen met
+     de sliders.
      ============================================================ */
 
   function renderPlotBlock(block, ctx) {
@@ -205,6 +207,50 @@ window.MLP = window.MLP || {};
       sliders = spec.sliders.map((s) => Object.assign({}, s));
     } else if (spec.slider) {
       sliders = [Object.assign({}, spec.slider)];
+    }
+
+    /* live metrics: [{label, expr, decimals?, unit?, target?, dir?, tol?}]
+       De expressie wordt geëvalueerd met de actuele slider-waarden
+       (als benoemde parameters) en `pts` = de ruwe datapunten uit de
+       content. Optioneel `target` + `dir` ("min"/"max") laat de chip
+       oplichten zodra de metric in het doelbereik zit. */
+    const metricSpecs = Array.isArray(spec.metrics) ? spec.metrics : null;
+    let metricCells = null;
+
+    function updateMetrics() {
+      if (!metricCells) return;
+      const params = paramValues();
+      const names = Object.keys(params);
+      const vals = names.map((n) => params[n]);
+      const rawPts = (spec.points || []).map((p) => ({ x: Number(p.x), y: Number(p.y), color: p.color, label: p.label, cls: p.cls }));
+      metricCells.forEach((cell) => {
+        const m = cell.spec;
+        let v;
+        try {
+          const args = names.concat(["pts"]);
+          const f = new Function(...args, '"use strict"; return (' + m.expr + ");");
+          v = f(...vals, rawPts);
+        } catch (e) {
+          v = NaN;
+        }
+        let txt;
+        if (typeof v === "number" && isFinite(v)) {
+          const d = m.decimals == null ? 3 : m.decimals;
+          txt = String(+v.toFixed(d));
+        } else if (typeof v === "string") {
+          txt = v;
+        } else {
+          txt = "\u2014";
+        }
+        cell.val.textContent = txt;
+        /* doelbereik: chip licht op zodra de metric goed genoeg is */
+        let good = false;
+        if (typeof v === "number" && isFinite(v) && m.target != null) {
+          const tol = m.tol != null ? m.tol : Math.max(Math.abs(m.target) * 0.05, 0.001);
+          good = m.dir === "min" ? v <= m.target + tol : v >= m.target - tol;
+        }
+        cell.wrap.classList.toggle("good", good);
+      });
     }
 
     const W = 620, H = 380;
@@ -336,6 +382,38 @@ window.MLP = window.MLP || {};
         }
       });
 
+      /* markers: punten die met de sliders meebewegen
+         ({x: expr, y: expr, color?, label?}) — exprs zien de slider-params */
+      (spec.markers || []).forEach((mk) => {
+        try {
+          const params = paramValues();
+          const names = Object.keys(params);
+          const vals = names.map((n) => params[n]);
+          const fx = new Function(...names, '"use strict"; return (' + (mk.x || "0") + ");");
+          const fy = new Function(...names, '"use strict"; return (' + (mk.y || "0") + ");");
+          const mx = fx(...vals), my = fy(...vals);
+          if (!isFinite(mx) || !isFinite(my)) return;
+          if (mx < xr[0] || mx > xr[1] || my < yr[0] || my > yr[1]) return;
+          const dot = svgNode("circle", {
+            class: "plot-point",
+            cx: sx(mx).toFixed(1),
+            cy: sy(my).toFixed(1),
+            r: 5.5,
+            fill: COLORS[mk.color] || mk.color || "#ffffff",
+            stroke: "rgba(22,22,22,0.9)",
+            "stroke-width": 1.4,
+          });
+          if (mk.label) {
+            const tt = svgNode("title", {});
+            tt.textContent = mk.label + " (" + +mx.toFixed(2) + ", " + +my.toFixed(2) + ")";
+            dot.appendChild(tt);
+          }
+          svg.appendChild(dot);
+        } catch (e) {
+          /* marker-optioneel: fouten zijn niet fataal */
+        }
+      });
+
       /* datapunten */
       points.forEach((p) => {
         if (p.x < xr[0] || p.x > xr[1] || p.y < yr[0] || p.y > yr[1]) return;
@@ -437,6 +515,26 @@ window.MLP = window.MLP || {};
       );
     });
 
+    /* live metrics-balk — waarden worden bij elke sliderbeweging herberekend */
+    if (metricSpecs && metricSpecs.length) {
+      const bar = el("div", "plot-metrics");
+      bar.setAttribute("role", "group");
+      bar.setAttribute("aria-label", t("plot_metrics_aria"));
+      metricCells = metricSpecs.map((m) => {
+        const wrap = el("div", "plot-metric");
+        const dot = el("span", "pm-dot");
+        dot.setAttribute("aria-hidden", "true");
+        wrap.appendChild(dot);
+        wrap.appendChild(el("span", "pm-label", escapeHtml(m.label || "")));
+        const val = el("span", "pm-value", "\u2014");
+        wrap.appendChild(val);
+        bar.appendChild(wrap);
+        return { spec: m, wrap: wrap, val: val };
+      });
+      card.appendChild(bar);
+      updateMetrics();
+    }
+
     /* sliders (één of meer) */
     if (sliders && sliders.length) {
       sliders.forEach((sliderSpec) => {
@@ -459,6 +557,7 @@ window.MLP = window.MLP || {};
           sliderSpec.value = parseFloat(input.value);
           val.textContent = String(+sliderSpec.value.toFixed(2));
           build();
+          updateMetrics();
         });
       });
     }

@@ -36,7 +36,7 @@ TOPICS_DIR = CONTENT_DIR / "topics"
 app = FastAPI(
     title="MLP — Machine Learning Practice API",
     description="REST-API over de ML-samenvattingen (hoofdstukken en onderwerpen), in NL en EN.",
-    version="1.1.0",
+    version="1.2.0",
 )
 
 # Handig als je de API ook vanaf een andere poort/host wilt aanspreken.
@@ -99,7 +99,7 @@ def find_topic(topic_id: str, lang: str = "nl") -> dict:
 @app.get("/api/health")
 def health():
     """Gezondheidscheck — de frontend gebruikt dit om de API te detecteren."""
-    return {"status": "ok", "service": "mlp-api", "version": "1.1.0", "languages": ["nl", "en"]}
+    return {"status": "ok", "service": "mlp-api", "version": "1.2.0", "languages": ["nl", "en"]}
 
 
 @app.get("/api/index")

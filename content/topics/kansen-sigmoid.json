@@ -2,7 +2,7 @@
   "id": "kansen-sigmoid",
   "chapter": "ch3",
   "title": "Kansen & de sigmoid-functie",
-  "intro": "Tot nu toe deed logistic regression harde voorspellingen: deze klasse, of die. Maar onder de motorkap zit een prachtig mechanisme dat de raw model output omzet in een echte kans — en dat verklaart meteen wanneer het model \"zeker van zichzelf\" is.",
+  "intro": "Tot nu toe deed logistic regression harde voorspellingen: deze klasse, of die. Maar onder de motorkap zit een prachtig mechanisme dat de raw model output omzet in een echte kans — en dat verklaart meteen wanneer het model &quot;zeker van zichzelf&quot; is. Hier vind je de sigmoid-formule, wat <code>exp()</code> precies doet en waarom de S-curve overal opduikt: van logistic regression tot neurale netwerken.",
   "level": 2,
   "sections": [
     {
@@ -20,11 +20,11 @@
       ]
     },
     {
-      "title": "De sigmoid: van elke getal naar [0, 1]",
+      "title": "De sigmoid: van elk getal naar [0, 1]",
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Hoe worden die kansen berekend? Uit de <strong>raw model output</strong>, die zélf elk reëel getal kan zijn — terwijl kansen tussen 0 en 1 liggen. We hebben dus iets nodig dat de raw output \"samendrukt\" naar dat interval: de <strong>sigmoid-functie</strong>. Bekijk de curve: bij raw output nul is de kans 0,5 (precies op de grens); bij positieve raw output (we voorspelden de positieve klasse) nadert de kans van de positieve klasse 1; bij negatieve output nadert zij 0 — oftewel: groot vertrouwen in de negatieve klasse. Omdat de raw output groeit naarmate je verder van de grens zit, ben je daar ook zelfverzekerder. </p>"
+          "html": "<p> Hoe worden die kansen berekend? Uit de <strong>raw model output</strong> (de score \\( z = w \\cdot x + b \\) uit <a href=\"#/topic/logistic-regression\">de pipeline van logistic regression</a>), die z&eacute;lf elk re&euml;l getal kan zijn — terwijl kansen tussen 0 en 1 liggen. We hebben dus iets nodig dat de raw output &quot;samendrukt&quot; naar dat interval: de <strong>sigmoid-functie</strong>. Bekijk de curve hieronder en schuif mee: bij raw output nul is de kans 0,5 (precies op de grens); bij positieve raw output nadert de kans van de positieve klasse 1; bij negatieve output nadert zij 0 — oftewel: groot vertrouwen in de negatieve klasse. Omdat de raw output groeit naarmate je verder van de grens zit, ben je daar ook zelfverzekerder. </p>"
         },
         {
           "type": "formula",
@@ -35,13 +35,225 @@
         {
           "type": "plot",
           "title": "De sigmoid-functie",
-          "subtitle": "Beweeg over de curve: bij z = 0 is σ = 0,5 — precies op de beslisgrens.",
-          "xrange": [-6, 6],
-          "yrange": [-0.15, 1.15],
+          "subtitle": "Schuif met z: de gele stip loopt over de curve terwijl σ(z) en exp(−z) live worden herberekend. Bij z = 0 is σ = 0,5 — precies op de beslisgrens.",
+          "xrange": [
+            -6,
+            6
+          ],
+          "yrange": [
+            -0.15,
+            1.15
+          ],
           "xlabel": "raw model output z",
           "curves": [
-            { "expr": "1 / (1 + Math.exp(-x))", "label": "σ(z) = P(y=1)", "color": "green" }
+            {
+              "expr": "1 / (1 + Math.exp(-x))",
+              "label": "σ(z) = P(y=1)",
+              "color": "green"
+            }
+          ],
+          "sliders": [
+            {
+              "param": "z",
+              "min": -6,
+              "max": 6,
+              "step": 0.1,
+              "value": 1.2,
+              "label": "z (raw model output)"
+            }
+          ],
+          "markers": [
+            {
+              "x": "z",
+              "y": "1/(1+Math.exp(-z))",
+              "color": "yellow",
+              "label": "(z, σ(z))"
+            }
+          ],
+          "pointLegend": [
+            {
+              "label": "(z, σ(z)) — schuift mee",
+              "color": "yellow"
+            }
+          ],
+          "metrics": [
+            {
+              "label": "σ(z)",
+              "expr": "1/(1+Math.exp(-z))",
+              "decimals": 4
+            },
+            {
+              "label": "exp(−z)",
+              "expr": "Math.exp(-z)",
+              "decimals": 4
+            }
           ]
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Eigenschap",
+            "Wat het betekent"
+          ],
+          "rows": [
+            [
+              "<strong>σ(0) = 0,5</strong>",
+              "precies op de beslisgrens is de kans half"
+            ],
+            [
+              "<strong>σ(−z) = 1 − σ(z)</strong>",
+              "symmetrie: even ver links van de grens als rechts, maar omgekeerd"
+            ],
+            [
+              "<strong>0 &lt; σ(z) &lt; 1</strong>",
+              "nooit exact 0 of 1 — alleen maar dichterbij"
+            ],
+            [
+              "<strong>monotoon stijgend</strong>",
+              "grotere raw output geeft altijd een grotere kans"
+            ],
+            [
+              "<strong>S-vorm</strong>",
+              "traag starten, snel door het midden, verzadigen aan de uiteinden"
+            ]
+          ]
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p> Waarom zit de drempel op 0,5 en niet ergens anders? Omdat σ(z) &ge; 0,5 <em>precies</em> gelijk is aan z &ge; 0: de drempel zit verstopt in het teken van de raw output. Vandaar dat <code>predict()</code> bij logistic regression simpelweg kijkt of de score positief is. </p>"
+        }
+      ]
+    },
+    {
+      "title": "exp(): de motor onder de sigmoid",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> In de noemer van de sigmoid staat \\( e^{-z} \\) — en die <code>exp()</code> is meer dan een los magisch symbool. Het grondtal <strong>e</strong> is het <em>getal van Euler</em> (&plusmn;2,71828&hellip;) en <code>exp(z)</code> betekent niets anders dan <strong>e vermenigvuldigd met zichzelf z keer</strong>: \\( \\exp(1) = e \\), \\( \\exp(2) = e \\cdot e \\), \\( \\exp(0) = 1 \\). Waarom juist dit grondtal? Omdat e de natuurlijke basis van <em>continue groei</em> is: waar de toename ergens evenredig is met de huidige hoeveelheid (renta op renta, populatiegroei, afkoelen van koffie, radioactief verval), groeit of krimpt het vanzelf met e per tijdseenheid. Vandaar dat exp overal in de wetenschap opduikt. </p><p> Drie eigenschappen dragen de sigmoid: <strong>(1)</strong> \\( e^0 = 1 \\) — vandaar dat \\( \\sigma(0) = \\frac{1}{1+1} = 0{,}5 \\); <strong>(2)</strong> \\( \\exp(-z) = 1/\\exp(z) \\) — negatieve machten zijn gewoon de omgekeerde waarde; <strong>(3)</strong> \\( \\exp \\) groeit sneller dan elke polynoom en krimpt richting nul zonder nul te worden. In de sigmoid werkt \\( e^{-z} \\) dus als een <strong>rem</strong>: elke extra eenheid z vermenigvuldigt die rem met 1/e (&plusmn;0,37). Grote z &rarr; rem &asymp; 0 &rarr; \\( \\sigma \\approx 1/(1+0) = 1 \\). Negatieve z &rarr; rem explodeert (bij \\( z = -5 \\) is de rem al \\( e^5 \\approx 148 \\)) &rarr; \\( \\sigma \\approx 0 \\). </p>"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "raw output z",
+            "rem: exp(−z)",
+            "σ(z) = 1/(1 + exp(−z))"
+          ],
+          "rows": [
+            [
+              "−5",
+              "148,4132",
+              "0,0067"
+            ],
+            [
+              "−2",
+              "7,3891",
+              "0,1192"
+            ],
+            [
+              "−1",
+              "2,7183",
+              "0,2689"
+            ],
+            [
+              "<strong>0</strong>",
+              "<strong>1,0000</strong>",
+              "<strong>0,5000</strong>"
+            ],
+            [
+              "1",
+              "0,3679",
+              "0,7311"
+            ],
+            [
+              "2",
+              "0,1353",
+              "0,8808"
+            ],
+            [
+              "5",
+              "0,0067",
+              "0,9933"
+            ]
+          ]
+        },
+        {
+          "type": "text",
+          "html": "<p> Lees de tabel als een ritje langs de beslisgrens: links (negatieve score) is de rem groot en de kans klein; op de grens is de rem precies 1 en de kans 0,5; rechts klapt de rem dicht en nadert de kans 1. En let op de symmetrie: bij \\( z = 2 \\) is de rem 0,1353 en bij \\( z = -2 \\) precies het omgekeerde (7,3891) — daarom geldt \\( \\sigma(-z) = 1 - \\sigma(z) \\). </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "exp() verkennen met NumPy",
+          "runnable": true,
+          "source": "import numpy as np\n\nprint('e           :', round(np.e, 5), '   <- getal van Euler')\nprint('exp(0)      :', np.exp(0))\nprint('exp(1)      :', round(np.exp(1), 5), '   <- gelijk aan e zelf')\nprint('exp(-1)     :', round(np.exp(-1), 5))\nprint('1 / exp(1)  :', round(1/np.exp(1), 5), '   <- zelfde! exp(-z) = 1/exp(z)')\nprint()\nfor z in [-5, -2, 0, 2, 5]:\n    rem = np.exp(-z)\n    sigma = 1 / (1 + rem)\n    print(f'z = {z:>2}   exp(-z) = {rem:8.4f}   sigma = {sigma:.4f}')"
+        },
+        {
+          "type": "callout",
+          "kind": "tip",
+          "html": "<p> Waarom e en niet 10 of 2? e is de enige basis waarin de helling van \\( b^x \\) precies \\( b^x \\) zelf is. Daardoor is de afgeleide van de sigmoid opvallend netjes: \\( \\sigma'(z) = \\sigma(z)\\,(1 - \\sigma(z)) \\) — de afgeleide is uit de functiewaarde zelf te bouwen. D&eacute;&eacute;n reden waarom gradient descent op logistic regression wiskundig zo vloeiend verloopt. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Toepassingen van de sigmoid",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> De S-curve is niet uitgevonden voor machine learning — het is de universele vorm van <strong>alles wat traag start, versnelt en vervolgens verzadigt</strong>. Een kans die niet buiten [0, 1] kan, een populatie die niet oneindig kan groeien, een markt die niet iedereen tegelijk overneemt: telkens dezelfde sigmoid. Omgekeerd is dat ook de reden dat de functie z&oacute; geschikt is als vertaallaag van 'willekeurige score' naar 'kans'. </p>"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Toepassing",
+            "Wat de sigmoid daar doet"
+          ],
+          "rows": [
+            [
+              "<strong>Logistic regression</strong>",
+              "zet de raw model output om in een kans — de motor achter <code>predict_proba()</code> (dit hoofdstuk)"
+            ],
+            [
+              "<strong>Neurale netwerken</strong>",
+              "klassieke activatiefunctie van een neuron; in de outputlaag levert hij per node een kans. Het MLP-model (multilayer perceptron) is hier oorspronkelijk om opgebouwd"
+            ],
+            [
+              "<strong>tanh &amp; softmax</strong>",
+              "familieleden: tanh(z) = 2σ(2z) − 1 stuurt naar (−1, 1); softmax generaliseert naar meerdere klassen — zie <a href=\"#/topic/multiclass\">Multi-class</a>"
+            ],
+            [
+              "<strong>Kanskameratie &amp; kalibratie</strong>",
+              "dempt overzekerheid: extreme scores worden afgevlakt tot realistische, bruikbare kansen"
+            ],
+            [
+              "<strong>Biologie &amp; ecologie</strong>",
+              "logistische groei: populaties starten traag, versnellen en verzadigen op de draagkracht van hun omgeving"
+            ],
+            [
+              "<strong>Economie &amp; marketing</strong>",
+              "adoptiecurves van nieuwe technologie en producten volgen vrijwel altijd de S-vorm"
+            ],
+            [
+              "<strong>Elektronica &amp; signaalverwerking</strong>",
+              "perst signalen samen naar een begrensd bereik, bijvoorbeeld als gate of squashing-functie"
+            ]
+          ]
+        },
+        {
+          "type": "text",
+          "html": "<p> Voor de ML-wereld is de belangrijkste verwantschap die met <strong>tanh</strong> en <strong>softmax</strong>. Tanh is letterlijk dezelfde S-curve, gerekt naar (−1, 1) — handig als een neuron 'negatief' moet kunnen signaleren. Softmax is de meerklassen-generalisatie: deeld elke klasse een aandeel van het totaal toe (alle kansen sommen tot 1). Je kunt de verwantschap zelf controleren met de code hieronder. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "sigmoid-eigenschappen en de tanh-relatie",
+          "runnable": true,
+          "source": "import numpy as np\n\ndef sigmoid(z):\n    return 1 / (1 + np.exp(-z))\n\n# symmetrie: sigma(-z) = 1 - sigma(z)\nprint('sigma(-2)   :', round(sigmoid(-2), 4))\nprint('1 - sigma(2):', round(1 - sigmoid(2), 4), '   <- gelijk!')\nprint('sigma(0)    :', sigmoid(0), '   <- precies 0.5')\nprint()\n\n# tanh = gerekte sigmoid: tanh(z) = 2*sigma(2z) - 1\nfor z in [-1.5, 0.0, 1.3]:\n    print(f'z = {z:>4}: tanh(z) = {np.tanh(z):7.4f}   '\n          f'2*sigma(2z)-1 = {2*sigmoid(2*z)-1:7.4f}')"
+        },
+        {
+          "type": "callout",
+          "kind": "info",
+          "html": "<p> In moderne netwerken zijn op hidden-lagen reLU-varianten vaak sneller en populairder geworden, maar in de <em>outputlaag</em> bij binaire classificatie is de sigmoid tot op vandaag standaard — precies om dezelfde reden als bij logistic regression: hij is de netste vertaling van een score naar een kans. </p>"
         }
       ]
     },

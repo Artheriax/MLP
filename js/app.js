@@ -25,7 +25,9 @@ window.MLP = window.MLP || {};
   function parseHash() {
     const h = location.hash.replace(/^#\/?/, "");
     const parts = h.split("/").filter(Boolean);
-    if (parts[0] === "onderwerp" && parts[1]) {
+    /* accepteer zowel #/onderwerp/<id> (app-links) als #/topic/<id>
+       (cross-verwijzingen in de content) — beide routes renderen het onderwerp */
+    if ((parts[0] === "onderwerp" || parts[0] === "topic") && parts[1]) {
       return { name: "topic", id: decodeURIComponent(parts[1]) };
     }
     return { name: "home" };

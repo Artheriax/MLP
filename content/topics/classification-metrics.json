@@ -202,12 +202,12 @@
         },
         {
           "type": "text",
-          "html": "<p> Hieronder: logistische regressie met twee featurevariabelen (x1 horizontaal, x2 verticaal). De target heeft twee klassen: <span style=\"color:var(--green)\">klasse 1 (positief)</span> en <span style=\"color:var(--magenta)\">klasse 0 (negatief)</span>. De beslissingsgrens is \\( b_0 + b_1 x_1 + x_2 = 0 \\) — schuif met <strong>b0</strong> en <strong>b1</strong> en zie hoe de grens de ene foutsoort inruilt voor de andere. </p>"
+          "html": "<p> Hieronder: logistische regressie met twee featurevariabelen (x1 horizontaal, x2 verticaal). De target heeft twee klassen: <span style=\"color:var(--green)\">klasse 1 (positief)</span> en <span style=\"color:var(--magenta)\">klasse 0 (negatief)</span>. De beslissingsgrens is \\( b_0 + b_1 x_1 + x_2 = 0 \\) — schuif met <strong>b0</strong> en <strong>b1</strong> en zie hoe de grens de ene foutsoort inruilt voor de andere.  De <strong>live metrics</strong> onder elke plot — accuracy, precision, recall en F1 — worden bij elke sliderbeweging op de 24 punten herberekend: zie hoe elke verschuiving van de grens de vier maten herverdeelt.</p>"
         },
         {
           "type": "plot",
           "title": "Dataset A — lineair scheidbaar",
-          "subtitle": "De twee klassen liggen uit elkaar: er bestaat een rechte lijn die ze perfect scheidt. Zoek hem!",
+          "subtitle": "De twee klassen liggen uit elkaar: er bestaat een rechte lijn die ze perfect scheidt. Zoek hem — de chips worden groen zodra accuracy, precision, recall én F1 allemaal 1 zijn.",
           "xrange": [
             0,
             10
@@ -373,12 +373,37 @@
               "value": 1,
               "label": "b1"
             }
+          ],
+          "metrics": [
+            {
+              "label": "accuracy",
+              "expr": "(()=>{let ok=0;pts.forEach(p=>{const pos=(b0+b1*p.x+p.y)>0;const gt=p.color==='green';if(pos===gt)ok++});return ok/pts.length})()",
+              "decimals": 3,
+              "target": 1.0,
+              "dir": "max",
+              "tol": 0
+            },
+            {
+              "label": "precision",
+              "expr": "(()=>{let tp=0,fp=0;pts.forEach(p=>{const pos=(b0+b1*p.x+p.y)>0;const gt=p.color==='green';if(pos&&gt)tp++;if(pos&&!gt)fp++});return tp+fp?tp/(tp+fp):NaN})()",
+              "decimals": 3
+            },
+            {
+              "label": "recall",
+              "expr": "(()=>{let tp=0,fn=0;pts.forEach(p=>{const pos=(b0+b1*p.x+p.y)>0;const gt=p.color==='green';if(pos&&gt)tp++;if(!pos&&gt)fn++});return tp+fn?tp/(tp+fn):NaN})()",
+              "decimals": 3
+            },
+            {
+              "label": "F1",
+              "expr": "(()=>{let tp=0,fp=0,fn=0;pts.forEach(p=>{const pos=(b0+b1*p.x+p.y)>0;const gt=p.color==='green';if(pos&&gt)tp++;if(pos&&!gt)fp++;if(!pos&&gt)fn++});const P=tp+fp?tp/(tp+fp):0,R=tp+fn?tp/(tp+fn):0;return P+R?2*P*R/(P+R):0})()",
+              "decimals": 3
+            }
           ]
         },
         {
           "type": "plot",
           "title": "Dataset B — overlappende klassen",
-          "subtitle": "De wolken overlappen: geen enkele rechte lijn scheidt ze perfect. Elke grens is een afweging tussen fout-positieven en fout-negatieven.",
+          "subtitle": "De wolken overlappen: geen enkele rechte lijn scheidt ze perfect. Elke grens is een afweging tussen fout-positieven en fout-negatieven. Best haalbaar hier: accuracy 0,75 (precision 0,88 / recall 0,58) — schuif en zie hoe de metrics meebewegen.",
           "xrange": [
             0,
             10
@@ -543,6 +568,31 @@
               "step": 0.05,
               "value": 1,
               "label": "b1"
+            }
+          ],
+          "metrics": [
+            {
+              "label": "accuracy",
+              "expr": "(()=>{let ok=0;pts.forEach(p=>{const pos=(b0+b1*p.x+p.y)>0;const gt=p.color==='green';if(pos===gt)ok++});return ok/pts.length})()",
+              "decimals": 3,
+              "target": 0.75,
+              "dir": "max",
+              "tol": 0.02
+            },
+            {
+              "label": "precision",
+              "expr": "(()=>{let tp=0,fp=0;pts.forEach(p=>{const pos=(b0+b1*p.x+p.y)>0;const gt=p.color==='green';if(pos&&gt)tp++;if(pos&&!gt)fp++});return tp+fp?tp/(tp+fp):NaN})()",
+              "decimals": 3
+            },
+            {
+              "label": "recall",
+              "expr": "(()=>{let tp=0,fn=0;pts.forEach(p=>{const pos=(b0+b1*p.x+p.y)>0;const gt=p.color==='green';if(pos&&gt)tp++;if(!pos&&gt)fn++});return tp+fn?tp/(tp+fn):NaN})()",
+              "decimals": 3
+            },
+            {
+              "label": "F1",
+              "expr": "(()=>{let tp=0,fp=0,fn=0;pts.forEach(p=>{const pos=(b0+b1*p.x+p.y)>0;const gt=p.color==='green';if(pos&&gt)tp++;if(pos&&!gt)fp++;if(!pos&&gt)fn++});const P=tp+fp?tp/(tp+fp):0,R=tp+fn?tp/(tp+fn):0;return P+R?2*P*R/(P+R):0})()",
+              "decimals": 3
             }
           ]
         },

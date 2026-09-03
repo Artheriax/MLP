@@ -43,7 +43,7 @@
         {
           "type": "plot",
           "title": "Loss-landschap L(w) = w² met raaklijn",
-          "subtitle": "De raaklijn op punt p is de gradiënt: steil ver weg, bijna plat bij het minimum.",
+          "subtitle": "De raaklijn op punt p is de gradiënt: steil ver weg, bijna plat bij het minimum. De live metrics L(p) en de gradiënt lopen mee — in het minimum zijn ze allebei (vrijwel) nul.",
           "xrange": [
             -3,
             3
@@ -74,6 +74,38 @@
               "step": 0.1,
               "value": 2,
               "label": "p (positie)"
+            }
+          ],
+          "markers": [
+            {
+              "x": "p",
+              "y": "p*p",
+              "color": "magenta",
+              "label": "punt (p, L(p))"
+            }
+          ],
+          "pointLegend": [
+            {
+              "label": "punt w = p",
+              "color": "magenta"
+            }
+          ],
+          "metrics": [
+            {
+              "label": "L(p)",
+              "expr": "p*p",
+              "decimals": 2,
+              "target": 0,
+              "dir": "min",
+              "tol": 0.3
+            },
+            {
+              "label": "gradiënt = 2p",
+              "expr": "2*p",
+              "decimals": 2,
+              "target": 0,
+              "dir": "min",
+              "tol": 0.6
             }
           ]
         }

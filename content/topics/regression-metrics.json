@@ -2,7 +2,7 @@
   "id": "regression-metrics",
   "chapter": "ch5",
   "title": "Metrics bij regressie: MSE, RMSE, MAE & R²",
-  "intro": "Hoe meet je of een regressiemodel goed voorspelt? De vier standaardmaten — MSE, RMSE, MAE en R&sup2; — met formules, interpretatie, een compleet uitgewerkt voorbeeld over autoprijzen en interactieve plots die laten zien wat outliers met je metric doen.",
+  "intro": "Hoe meet je of een regressiemodel goed voorspelt? De vier standaardmaten — MSE, RMSE, MAE en R&sup2; — met formules, interpretatie, een compleet uitgewerkt voorbeeld over autoprijzen, de exacte formules voor de best-fit lijn (b1 en het snijpunt met de y-as b0) en interactieve plots met live metrics die laten zien wat outliers met je metric doen.",
   "level": 2,
   "sections": [
     {
@@ -213,16 +213,64 @@
       ]
     },
     {
+      "title": "De best-fit lijn analytisch: b1 en b0 berekenen",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Tot nu toe schoof je \\( b_0 \\) en \\( b_1 \\) met sliders in elkaar tot de fout klein werd. Maar voor enkelvoudige lineaire regressie \\( \\hat{y} = b_0 + b_1 x \\) hoef je helemaal niet te schuiven: er bestaan <strong>exacte formules</strong> die in &eacute;&eacute;n keer de beste waarden geven — de waarden die de MSE minimaliseren. <strong>b1</strong> is de richtingsco&euml;ffici&euml;nt (de helling van de lijn) en <strong>b0</strong> is het <strong>snijpunt met de y-as</strong>: de voorspelde waarde als \\( x = 0 \\). </p>"
+        },
+        {
+          "type": "formula",
+          "label": "richtingscoëfficiënt b1",
+          "latex": "b_1 \\;=\\; \\frac{\\displaystyle\\sum_{i=1}^{n} (x_i - \\bar{x})(y_i - \\bar{y})}{\\displaystyle\\sum_{i=1}^{n} (x_i - \\bar{x})^2}",
+          "caption": "Deelt 'hoeveel x en y samen bewegen' door 'hoeveel x zelf spreidt': de helling van de best-fit lijn."
+        },
+        {
+          "type": "formula",
+          "label": "snijpunt met de y-as b0",
+          "latex": "b_0 \\;=\\; \\bar{y} - b_1\\,\\bar{x}",
+          "caption": "De best-fit lijn loopt altijd door het zwaartepunt (x̄, ȳ) van de data — ken je b1, dan volgt b0 automatisch."
+        },
+        {
+          "type": "text",
+          "html": "<p> Hierbij is \\( \\bar{x} \\) het gemiddelde van alle x-waarden en \\( \\bar{y} \\) het gemiddelde van alle y-waarden. Lees de formule voor <strong>b1</strong> zo: de teller telt per punt op hoeveel x en y <em>samen</em> afwijken van hun gemiddelde (bewegen ze mee, dan is de teller groot; bewegen ze tegengesteld, dan is hij negatief). De noemer meet hoeveel de x-waarden zelf spreiden. Is de spreiding van x klein maar de samenbeweging groot, dan is de helling steil. De formule voor <strong>b0</strong> zorgt er daarna voor dat de lijn precies door het zwaartepunt \\( (\\bar{x}, \\bar{y}) \\) van de data loopt — schuif je in een interactieve plot de lijn door dat punt, dan verschuift de MSE meteen mee. </p><p> Waar komen deze formules vandaan? Zet de afgeleiden van de MSE naar \\( b_0 \\) en \\( b_1 \\) op nul — precies het punt waar het loss-landschap vlak wordt, zoals in <a href=\"#/topic/gradient-descent\">gradient descent</a> — en los het resultinge stelsel op. Voor de eenvoudige lijn bestaat dat ene minimum in gesloten vorm; <a href=\"#/topic/gradient-descent\">gradient descent</a> benadert dezelfde waarden iteratief, de formules hierboven geven ze in &eacute;&eacute;n keer. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "b1 en b0 berekenen met de formules (dataset A)",
+          "runnable": true,
+          "source": "import numpy as np\n\n# dataset A — dezelfde punten als de interactieve plot hieronder\nx = np.array([0.5, 1.19, 1.88, 2.58, 3.27, 3.96, 4.65, 5.35,\n              6.04, 6.73, 7.42, 8.12, 8.81, 9.5])\ny = np.array([3.08, 3.52, 5.83, 7.21, 6.72, 8.35, 10.45, 11.44,\n              12.86, 13.6, 15.88, 17.08, 17.9, 19.78])\n\n# gemiddelden\nx_gem = x.mean()\ny_gem = y.mean()\n\n# b1: samenbewegen van x en y, gedeeld door de spreiding van x\nb1 = np.sum((x - x_gem) * (y - y_gem)) / np.sum((x - x_gem)**2)\n\n# b0: snijpunt met de y-as — de lijn gaat door (x_gem, y_gem)\nb0 = y_gem - b1 * x_gem\n\nprint('b1 (helling)        :', b1)\nprint('b0 (y-snijpunt)     :', b0)\n\n# de MSE bij dit paar is de kleinst mogelijke\ny_hat = b0 + b1 * x\nprint('MSE bij (b0, b1)    :', round(np.mean((y - y_hat)**2), 4))\nprint('R2 bij (b0, b1)     :',\n      round(1 - np.sum((y-y_hat)**2)/np.sum((y-y_gem)**2), 4))"
+        },
+        {
+          "type": "text",
+          "html": "<p> Dit zijn exact de waarden die scikit-learn teruggeeft: <code>LinearRegression</code> stopt de helling in <code>coef_</code> en het y-snijpunt in <code>intercept_</code>. Controleer het gerust — de code hieronder draait in je browser en print beide kanten naast elkaar. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "controle met scikit-learn LinearRegression",
+          "runnable": true,
+          "source": "import numpy as np\nfrom sklearn.linear_model import LinearRegression\n\nx = np.array([0.5, 1.19, 1.88, 2.58, 3.27, 3.96, 4.65, 5.35,\n              6.04, 6.73, 7.42, 8.12, 8.81, 9.5])\ny = np.array([3.08, 3.52, 5.83, 7.21, 6.72, 8.35, 10.45, 11.44,\n              12.86, 13.6, 15.88, 17.08, 17.9, 19.78])\n\nmodel = LinearRegression().fit(x.reshape(-1, 1), y)\n\nprint('coef_      (b1):', model.coef_[0])\nprint('intercept_ (b0):', model.intercept_)\nprint('R2           :', round(model.score(x.reshape(-1, 1), y), 4))"
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p> Met <strong>meerdere features</strong> (zoals het autoprijs-voorbeeld: \\( b_0 + b_1 x_1 + b_2 x_2 + b_3 x_3 \\)) bestaat er geen korte somformule meer — dan lost de computer een stelsel vergelijkingen voor je op (of benadert hij het optimum met gradient descent). Voorloopt jouw model op &eacute;&eacute;n feature, dan zijn dit <em>de</em> twee formules die in &eacute;&eacute;n regel de antwoorden geven. </p>"
+        }
+      ]
+    },
+    {
       "title": "Verkennen: past de lijn op de data?",
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Hieronder zie je drie datasets met elk &eacute;&eacute;n featurevariabele en een lineair model \\( y_{pred} = b_0 + b_1 x \\), waarbij \\( b_0 \\) het y-snijpunt is en \\( b_1 \\) de richtingsco&euml;ffici&euml;nt. <strong>Schuif met de sliders</strong> en zie meteen wat een goede fit doet met de foutmaten: een lijn die door de punten loopt maakt MSE, RMSE en MAE klein en \\( R^2 \\) groot. </p>"
+          "html": "<p> Hieronder zie je drie datasets met elk &eacute;&eacute;n featurevariabele en een lineair model \\( y_{pred} = b_0 + b_1 x \\), waarbij \\( b_0 \\) het y-snijpunt is en \\( b_1 \\) de richtingsco&euml;ffici&euml;nt. <strong>Schuif met de sliders</strong>: elke plot heeft nu <strong>live metrics</strong> — terwijl je schuift worden de MSE en \\( R^2 \\) direct herberekend en licht de chip groen op zodra je het best haalbare resultaat nadert. Daag jezelf uit: bereken met de formules hierboven eerst zelf b1 en b0 van dataset A (b1 = 1.86, b0 = 1.68) en vind dat paar daarna terug met de sliders. </p>"
         },
         {
           "type": "plot",
           "title": "Dataset A — nette, lineaire data",
-          "subtitle": "Schuif b0 en b1 tot de lijn door de punten loopt. Best fit ongeveer: b1 ≈ 1.9, b0 ≈ 1.7.",
+          "subtitle": "Schuif b0 en b1 en zie MSE en R&sup2; <strong>live meebewegen</strong>. Analytisch optimum (formules hierboven): b1 = 1.86, b0 = 1.68 &rarr; MSE 0.27, R&sup2; 0.99 — de chips lichtten groen op zodra je dichtbij zit.",
           "xrange": [
             0,
             10
@@ -316,12 +364,30 @@
               "value": 1,
               "label": "b1 (richtingscoëf.)"
             }
+          ],
+          "metrics": [
+            {
+              "label": "MSE",
+              "expr": "pts.reduce((s,p)=>s+(p.y-(b0+b1*p.x))**2,0)/pts.length",
+              "decimals": 2,
+              "target": 0.27,
+              "dir": "min",
+              "tol": 0.03
+            },
+            {
+              "label": "R²",
+              "expr": "(()=>{const yb=pts.reduce((s,p)=>s+p.y,0)/pts.length;const sr=pts.reduce((s,p)=>s+(p.y-(b0+b1*p.x))**2,0);const st=pts.reduce((s,p)=>s+(p.y-yb)**2,0);return 1-sr/st})()",
+              "decimals": 3,
+              "target": 0.99,
+              "dir": "max",
+              "tol": 0.01
+            }
           ]
         },
         {
           "type": "plot",
           "title": "Dataset B — met één grote outlier",
-          "subtitle": "Eén punt wijkt ver af (één keer 24 terwijl de rest rond de lijn zit). Merk hoe de MSE-gedachte de lijn naar het punt toe trekt.",
+          "subtitle": "E&eacute;n punt wijkt ver af (24!). Best fit: b1 = 1.42, b0 = 5.19 &rarr; MSE 18.85. Merk in de live MSE hoe de kwadratische fout de lijn naar de outlier toe trekt.",
           "xrange": [
             0,
             10
@@ -421,12 +487,30 @@
               "value": 1,
               "label": "b1 (richtingscoëf.)"
             }
+          ],
+          "metrics": [
+            {
+              "label": "MSE",
+              "expr": "pts.reduce((s,p)=>s+(p.y-(b0+b1*p.x))**2,0)/pts.length",
+              "decimals": 2,
+              "target": 18.85,
+              "dir": "min",
+              "tol": 1.0
+            },
+            {
+              "label": "R²",
+              "expr": "(()=>{const yb=pts.reduce((s,p)=>s+p.y,0)/pts.length;const sr=pts.reduce((s,p)=>s+(p.y-(b0+b1*p.x))**2,0);const st=pts.reduce((s,p)=>s+(p.y-yb)**2,0);return 1-sr/st})()",
+              "decimals": 3,
+              "target": 0.45,
+              "dir": "max",
+              "tol": 0.02
+            }
           ]
         },
         {
           "type": "plot",
           "title": "Dataset C — kromme (kwadratische) data",
-          "subtitle": "Hoe je de lijn ook neerzet: een rechte lijn past niet op een kromme. R² blijft laag — pas het model aan (bijv. met x² als extra feature), niet alleen de lijn.",
+          "subtitle": "Hoe je de lijn ook neerzet: een rechte lijn past niet op een kromme. Beste rechte lijn: b1 = 1.98, b0 = &minus;1.83 &rarr; R&sup2; 0.82 — pas het <em>model</em> aan (bijv. x&sup2; als extra feature), niet alleen de lijn.",
           "xrange": [
             0,
             10
@@ -519,6 +603,24 @@
               "step": 0.05,
               "value": 1,
               "label": "b1 (richtingscoëf.)"
+            }
+          ],
+          "metrics": [
+            {
+              "label": "MSE",
+              "expr": "pts.reduce((s,p)=>s+(p.y-(b0+b1*p.x))**2,0)/pts.length",
+              "decimals": 2,
+              "target": 6.7,
+              "dir": "min",
+              "tol": 0.35
+            },
+            {
+              "label": "R²",
+              "expr": "(()=>{const yb=pts.reduce((s,p)=>s+p.y,0)/pts.length;const sr=pts.reduce((s,p)=>s+(p.y-(b0+b1*p.x))**2,0);const st=pts.reduce((s,p)=>s+(p.y-yb)**2,0);return 1-sr/st})()",
+              "decimals": 3,
+              "target": 0.82,
+              "dir": "max",
+              "tol": 0.02
             }
           ]
         },

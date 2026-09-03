@@ -1,0 +1,256 @@
+{
+  "id": "logistic-regression",
+  "chapter": "ch3",
+  "title": "Logistic regression: why it isn't actually a regression",
+  "intro": "The most confusing name in machine learning. In theory logistic regression is not a regression model but a classification method: the name refers to how the model is built, not to what it delivers. From the history of the name through the pipeline (line → probability → class) to why plain linear regression fails for classes — with an interactive comparison and live metrics.",
+  "level": 2,
+  "sections": [
+    {
+      "title": "A classifier with a confusing name",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Let's get straight to the point: <strong>despite its name, logistic regression is in theory not a regression model</strong>. A regression model predicts a <em>continuous number</em> — a price, a temperature, a quantity. Logistic regression predicts a <em>class</em>: spam or not spam, benign or malignant, churn or stay. That is classification, and in the machine learning family tree the method belongs with the classifiers, next to SVMs and decision trees. Scikit-learn reflects this: <code>LogisticRegression</code> has a <code>predict()</code> that hands out class labels (0/1 or names), not a number on a scale. </p>"
+        },
+        {
+          "type": "text",
+          "html": "<p> So where does the confusing name come from? From statistics. The method emerged in the 1940s and 50s (the term <em>logit</em> is due to Joseph Berkson, 1944; David Cox described the method in 1958 as 'the regression of binary data'). What is actually regressed is not the class itself but the <strong>log-odds</strong> — the logarithm of the probability ratio \\( \\log \\frac{P(y=1)}{P(y=0)} \\) — and that <em>is</em> a linear function of the features. In that strict statistical sense there is indeed a regression hiding <em>under the hood</em>. But the moment you flatten the outcome into a probability and snip it into a class label at a 0.5 threshold, the model behaves entirely as a classifier — and that is how the entire ML world uses it. </p>"
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p> Remember this for the exam and the interview: <strong>logistic regression = classification</strong>. The 'regression' in the name refers to <em>how</em> the model is trained (regressing the log-odds linearly onto the features), not to <em>what</em> it delivers (classes). </p>"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "",
+            "Linear regression",
+            "Logistic regression"
+          ],
+          "rows": [
+            [
+              "<strong>predicts</strong>",
+              "a continuous number",
+              "a class (via a probability)"
+            ],
+            [
+              "<strong>output range</strong>",
+              "entire real line (−∞ to +∞)",
+              "[0, 1] — probability, then a threshold"
+            ],
+            [
+              "<strong>type of problem</strong>",
+              "regression",
+              "classification"
+            ],
+            [
+              "<strong>loss during training</strong>",
+              "squared loss (MSE)",
+              "logistic loss (binary cross-entropy)"
+            ],
+            [
+              "<strong>scikit-learn</strong>",
+              "<code>LinearRegression</code>",
+              "<code>LogisticRegression</code>"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "title": "The pipeline: from line to probability to class",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> So how does such a classifier work? In four steps, all of whose building blocks you already know. <strong>(1)</strong> Compute a linear score — the raw model output \\( z = b_0 + b_1 x_1 + \\cdots + b_n x_n \\), exactly the dot product from <a href=\"#/topic/dot-products\">chapter 2</a> that <em>every</em> linear classifier uses. <strong>(2)</strong> Squeeze that score through the sigmoid, which compresses any real value into (0, 1): a <em>probability</em>. <strong>(3)</strong> Compare the probability with a threshold (usually 0.5): above → class 1, below → class 0. <strong>(4)</strong> During training the model minimises the logistic loss, which punishes 'wild' probabilities. </p>"
+        },
+        {
+          "type": "formula",
+          "label": "probability according to logistic regression",
+          "latex": "P(y = 1 \\mid x) \\;=\\; \\sigma(w \\cdot x + b) \\;=\\; \\frac{1}{1 + e^{-(w \\cdot x + b)}}",
+          "caption": "Linear score → sigmoid → probability. The 0.5 threshold then clips the probability into a class label."
+        },
+        {
+          "type": "text",
+          "html": "<p> In scikit-learn those steps lie exposed on the table: <code>decision_function()</code> gives the raw score \\( z \\) (step 1), <code>predict_proba()</code> the probability after the sigmoid (step 2) and <code>predict()</code> the final class label (step 3). The sigmoid itself and its properties — including what <code>exp()</code> actually does — are covered in depth in <a href=\"#/topic/kansen-sigmoid\">Probabilities &amp; the sigmoid function</a>; how the threshold redistributes precision and recall, in <a href=\"#/topic/classification-metrics\">Classification metrics</a>. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Why not just linear regression?",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Why the detour through the sigmoid — can't you just run linear regression on 0/1 labels? The plot below shows it. A straight line, fitted with least squares on the 0/1 labels, <strong>shoots below 0 and above 1</strong>: at small x it predicts probabilities like −0.19 and at large x probabilities like 1.19. Probabilities outside [0, 1] do not exist. Worse: a single training example with an extreme x-value has leverage and tilts the entire line, shifting your threshold (where the line crosses 0.5) uncontrollably. The sigmoid solves both problems: it squeezes every score into [0, 1] and <strong>saturates</strong> at the extremes — however extreme the score becomes, the probability only moves <em>closer</em> to 0 or 1, never beyond. </p>"
+        },
+        {
+          "type": "plot",
+          "title": "Lineaire regressie vs. het logistische model",
+          "subtitle": "Drag the <strong>steepness k</strong> and the <strong>threshold</strong>. The straight line (least squares on 0/1 labels) shoots below 0 and above 1; the sigmoid stays neatly inside [0, 1]. The live metrics show the predicted probability at x = 2 and x = 8.",
+          "xrange": [
+            0,
+            10
+          ],
+          "yrange": [
+            -0.3,
+            1.3
+          ],
+          "xlabel": "feature x",
+          "ylabel": "label / kans",
+          "points": [
+            {
+              "x": 1.2,
+              "y": 0.02,
+              "color": "magenta"
+            },
+            {
+              "x": 2.0,
+              "y": 0.02,
+              "color": "magenta"
+            },
+            {
+              "x": 2.9,
+              "y": 0.02,
+              "color": "magenta"
+            },
+            {
+              "x": 3.7,
+              "y": 0.02,
+              "color": "magenta"
+            },
+            {
+              "x": 4.3,
+              "y": 0.02,
+              "color": "magenta"
+            },
+            {
+              "x": 5.8,
+              "y": 0.98,
+              "color": "green"
+            },
+            {
+              "x": 6.6,
+              "y": 0.98,
+              "color": "green"
+            },
+            {
+              "x": 7.4,
+              "y": 0.98,
+              "color": "green"
+            },
+            {
+              "x": 8.2,
+              "y": 0.98,
+              "color": "green"
+            },
+            {
+              "x": 9.0,
+              "y": 0.98,
+              "color": "green"
+            }
+          ],
+          "pointLegend": [
+            {
+              "label": "class 0 (y = 0)",
+              "color": "magenta"
+            },
+            {
+              "label": "class 1 (y = 1)",
+              "color": "green"
+            },
+            {
+              "label": "boundary: σ = 0.5",
+              "color": "yellow"
+            }
+          ],
+          "curves": [
+            {
+              "expr": "-0.3986 + 0.1759*x",
+              "label": "linear regression on labels",
+              "color": "magenta"
+            },
+            {
+              "expr": "1/(1+Math.exp(-k*(x-drempel)))",
+              "label": "logistic model σ(k(x−threshold))",
+              "color": "cyan"
+            }
+          ],
+          "markers": [
+            {
+              "x": "drempel",
+              "y": "0.5",
+              "color": "yellow",
+              "label": "boundary: σ = 0.5"
+            }
+          ],
+          "metrics": [
+            {
+              "label": "P(y=1 | x=2)",
+              "expr": "1/(1+Math.exp(-k*(2-drempel)))",
+              "decimals": 3
+            },
+            {
+              "label": "P(y=1 | x=8)",
+              "expr": "1/(1+Math.exp(-k*(8-drempel)))",
+              "decimals": 3
+            }
+          ],
+          "sliders": [
+            {
+              "param": "k",
+              "min": 0.2,
+              "max": 6,
+              "step": 0.1,
+              "value": 1.5,
+              "label": "k (steepness = confidence)"
+            },
+            {
+              "param": "drempel",
+              "min": 3,
+              "max": 7,
+              "step": 0.1,
+              "value": 5,
+              "label": "threshold (σ = 0.5)"
+            }
+          ]
+        },
+        {
+          "type": "callout",
+          "kind": "tip",
+          "html": "<p> Try sliding <strong>k</strong>. A small k gives a gentle S-curve with probabilities near 0.5 — an uncertain, heavily regularisation-flavoured model. A large k gives a steep staircase: the model is 'sure of itself'. That is exactly the role of coefficient size you'll meet again in <a href=\"#/topic/kansen-sigmoid\">Probabilities &amp; sigmoid</a> and <a href=\"#/topic/regularisatie\">regularisation</a>: bigger coefficients ↔ more confidence. </p>"
+        }
+      ]
+    },
+    {
+      "title": "The proof in scikit-learn",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Still doubting its classification nature? Load a real dataset and look at what <code>predict()</code> hands you: a class label, not a number. The probabilities from <code>predict_proba()</code> sum to exactly 1 per sample — equally telling for a probability model, not a regression model. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "logistic regression is a classifier — see the output",
+          "runnable": true,
+          "source": "import numpy as np\nfrom sklearn.datasets import load_breast_cancer\nfrom sklearn.linear_model import LogisticRegression\n\nX, y = load_breast_cancer(return_X_y=True)\nmodel = LogisticRegression(max_iter=10000).fit(X, y)\n\ni = 5\nprint('predict()       :', model.predict([X[i]])[0],\n      '   <- a CLASS (0 or 1), not a number')\nprint('predict_proba() :', model.predict_proba([X[i]])[0].round(3),\n      '   <- probabilities, summing to 1')\nprint('decision_funct():', round(model.decision_function([X[i]])[0], 3),\n      '   <- raw score z (can be any value)')\n\n# the threshold clip itself:\nz = model.decision_function([X[i]])[0]\nsigma = 1 / (1 + np.exp(-z))\nprint('sigmoid(z)      :', round(sigma, 4),\n      '-> class', 1 if sigma >= 0.5 else 0)"
+        }
+      ]
+    },
+    {
+      "title": "How it learns: the logistic loss",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> During training the model wants its probabilities to be as 'correct' as possible: close to 1 for true class-1 examples, close to 0 for class 0. The loss enforcing this is the <strong>logistic loss</strong> — known outside ML as the binary cross-entropy. It punishes confident wrong predictions disproportionately: predict 0.01 while the answer is 1 and you pay −log(0.01) ≈ 4.6 for it; predict 0.99 and it costs almost nothing. The shape of that curve and its comparison with the SVM hinge loss are in <a href=\"#/topic/loss-diagrams\">Loss diagrams</a>; how to minimise such a loss with the gradient, in <a href=\"#/topic/gradient-descent\">gradient descent</a>. And whether the model may grow 'wild' or stays neatly bound is controlled by the hyperparameter C via <a href=\"#/topic/regularisatie\">regularisation</a>. </p>"
+        },
+        {
+          "type": "callout",
+          "kind": "info",
+          "html": "<p> Now everything clicks: the model is <em>linear</em> in the features (just like regression), the sigmoid turns it into <em>probabilities</em>, the loss is <em>logistic</em> — and the outcome is a <em>classifier</em>. The name only reveals the middle steps, not the destination. </p>"
+        }
+      ]
+    }
+  ]
+}

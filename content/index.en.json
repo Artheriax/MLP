@@ -1,9 +1,9 @@
 {
   "site": {
     "title": "MLP — Machine Learning, clearly summarised",
-    "description": "Machine Learning material, clearly summarised: from the first basic concepts to scikit-learn, loss functions, logistic regression, SVMs and evaluation metrics — with formulas, diagrams, code examples you can run in your browser, memory aids for every step and an FAQ with quick answers.",
-    "statFormulas": "±41",
-    "statCode": "29"
+    "description": "Machine Learning material, clearly summarised: from the first basic concepts to scikit-learn, loss functions, logistic regression, SVMs and evaluation metrics — with formulas, diagrams, interactive plots with live metrics, code examples you can run in your browser, memory aids for every step and a FAQ for quick answers.",
+    "statFormulas": "±45",
+    "statCode": "34"
   },
   "chapters": [
     {
@@ -28,7 +28,7 @@
       "id": "ch3",
       "name": "Logistic Regression",
       "accent": "green",
-      "description": "regularisation, probabilities and multi-class"
+      "description": "why it isn't a regression, regularisation, probabilities and multi-class"
     },
     {
       "id": "ch4",
@@ -148,6 +148,15 @@
       "level": 2,
       "file": "topics.en/gradient-descent.json",
       "keywords": "gradient descent, gradient, learning rate, eta, epoch, update rule, derivative, loss landscape, sgd, mini-batch, divergence, optimizer"
+    },
+    {
+      "id": "logistic-regression",
+      "chapter": "ch3",
+      "title": "Logistic regression: why it isn't actually a regression",
+      "summary": "In theory it is a classifier, not a regression model: where the confusing name comes from, the pipeline from line to probability to class, and why plain linear regression fails on 0/1 labels.",
+      "level": 2,
+      "file": "topics/logistic-regression.json",
+      "keywords": "logistic regression, classification, regression, name, logit, log odds, sigmoid, threshold, pipeline, predict_proba, predict, linear vs logistic"
     },
     {
       "id": "regularisatie",

@@ -15,6 +15,11 @@
         },
         {
           "type": "callout",
+          "kind": "key",
+          "html": "<p><strong>Waarom heet logistic regression &quot;regression&quot; als het classificeert?</strong></p><p>Door een historische naam. Onder de motorkap wordt de log-odds van de kans (de <em>logit</em>) lineair &quot;geregresseerd&quot; op de features — in die statistische zin zit er dus een regressie verscholen. Maar de uitkomst is een kans die bij een drempel van 0,5 tot een klasselabel wordt geknipt: in theorie en in de praktijk is het een <strong>classifier</strong>. Scikit-learn bevestigt dat: <code>predict()</code> geeft klassen terug, geen getallen. Het volledige verhaal staat in <a href=\"#/topic/logistic-regression\">Logistic regression: waarom het eigenlijk geen regressie is</a>. </p>"
+        },
+        {
+          "type": "callout",
           "kind": "info",
           "html": "<p><strong>Wat is het verschil tussen supervised, unsupervised en reinforcement learning?</strong></p><p><strong>Supervised learning</strong> leert van voorbeelden mét antwoorden: je hebt features <em>en</em> labels (X én y), en het model leert de relatie daartussen. <strong>Unsupervised learning</strong> heeft geen labels en zoekt zelf structuur in de data, zoals clusters (KMeans) of een compactere weergave (PCA). <strong>Reinforcement learning</strong> leert niet van gelabelde voorbeelden maar van beloningen: een agent probeert acties en krijgt te horen of die goed waren. Met twee vragen kies je de juiste familie: heb je labels bij je data? En komt de feedback per voorbeeld of pas na een reeks acties? Zie <em>De drie soorten machine learning</em>.</p>"
         },

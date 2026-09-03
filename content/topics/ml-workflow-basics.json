@@ -82,7 +82,7 @@
         {
           "type": "plot",
           "title": "Train- en testfout tegen modelcomplexiteit",
-          "subtitle": "De U-vorm van de testfout is het handelsmerk van overfitting. Schuif met de sliders.",
+          "subtitle": "De U-vorm van de testfout is het handelsmerk van overfitting. Schuif met de sliders — de live metrics volgen de laagste testfout en het gat tussen train- en testfout aan de rechterkant.",
           "xrange": [
             0,
             10
@@ -120,6 +120,18 @@
               "step": 0.25,
               "value": 3,
               "label": "complexiteit waar overfit begint"
+            }
+          ],
+          "metrics": [
+            {
+              "label": "laagste testfout",
+              "expr": "(()=>{let m=1e9;for(let i=0;i<=100;i++){const x=i/10;m=Math.min(m,0.85*Math.exp(-0.45*x)+0.1+ruis*Math.max(0,x-knik)*Math.max(0,x-knik)/8)}return m})()",
+              "decimals": 2
+            },
+            {
+              "label": "overfit-gat (x=10)",
+              "expr": "ruis*Math.max(0,10-knik)*Math.max(0,10-knik)/8",
+              "decimals": 2
             }
           ]
         },

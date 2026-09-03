@@ -15,6 +15,11 @@
         },
         {
           "type": "callout",
+          "kind": "key",
+          "html": "<p><strong>Why is logistic regression called &quot;regression&quot; if it classifies?</strong></p><p>Because of a historical name. Under the hood the log-odds of the probability (the <em>logit</em>) is linearly &quot;regressed&quot; onto the features — in that statistical sense a regression is hiding in there. But the outcome is a probability clipped into a class label at a 0.5 threshold: in theory and in practice it is a <strong>classifier</strong>. Scikit-learn confirms it: <code>predict()</code> returns classes, not numbers. The full story is in <a href=\"#/topic/logistic-regression\">Logistic regression: why it isn't actually a regression</a>. </p>"
+        },
+        {
+          "type": "callout",
           "kind": "info",
           "html": "<p><strong>What is the difference between supervised, unsupervised and reinforcement learning?</strong></p><p><strong>Supervised learning</strong> learns from examples <em>with</em> answers: you have features <em>and</em> labels (X and y), and the model learns the relationship between them. <strong>Unsupervised learning</strong> has no labels and looks for structure in the data itself, such as clusters (KMeans) or a more compact representation (PCA). <strong>Reinforcement learning</strong> does not learn from labelled examples but from rewards: an agent tries actions and is told whether they were good. Two questions pick the right family: do you have labels for your data? And does the feedback arrive per example, or only after a series of actions? See <em>The three types of machine learning</em>.</p>"
         },

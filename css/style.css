@@ -900,6 +900,71 @@ a:hover { color: #ffffff; }
   text-align: right;
 }
 
+/* ---------- Live metrics bij interactieve plots ---------- */
+
+.plot-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 0.75rem;
+}
+
+.plot-metric {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.3rem 0.7rem;
+  background: rgba(255, 255, 255, 0.028);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 0.78rem;
+  transition: border-color .25s ease, background .25s ease, box-shadow .25s ease;
+}
+
+.plot-metric .pm-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0.55;
+  flex: 0 0 auto;
+  animation: pm-pulse 2.2s ease-in-out infinite;
+}
+
+@keyframes pm-pulse {
+  0%, 100% { opacity: 0.3; transform: scale(0.85); }
+  50%      { opacity: 0.9; transform: scale(1.1); }
+}
+
+.plot-metric .pm-label {
+  color: var(--text-faint);
+  white-space: nowrap;
+}
+
+.plot-metric .pm-value {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--text);
+  min-width: 2.6em;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.plot-metric.good {
+  border-color: rgba(185, 246, 202, 0.55);
+  background: var(--green-soft);
+  box-shadow: 0 0 0 1px rgba(185, 246, 202, 0.12);
+}
+
+.plot-metric.good .pm-dot {
+  background: var(--green);
+  animation: none;
+  opacity: 1;
+}
+
+.plot-metric.good .pm-value { color: var(--green); }
+
+
 /* ---------- Code-velden ---------- */
 
 .code-field {

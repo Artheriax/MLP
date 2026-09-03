@@ -1,0 +1,256 @@
+{
+  "id": "logistic-regression",
+  "chapter": "ch3",
+  "title": "Logistic regression: waarom het eigenlijk geen regressie is",
+  "intro": "De meest verwarrende naam in machine learning. In theorie is logistic regression géén regressie-model maar een classificatiemethode: de naam verwijst naar hoe het model tot stand komt, niet naar wat het oplevert. Van naamgeschiedenis via de pipeline (lijn → kans → klasse) tot waarom gewone lineaire regressie niet deugt voor klassen — met een interactieve vergelijking en live metrics.",
+  "level": 2,
+  "sections": [
+    {
+      "title": "Een classifier met een verwarrende naam",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Laten we met de deur in huis vallen: <strong>logistic regression is ondanks zijn naam in theorie geen regressiemodel</strong>. Een regressiemodel voorspelt een <em>doorlopend getal</em> — een prijs, een temperatuur, een hoeveelheid. Logistic regression voorspelt een <em>klasse</em>: spam of geen spam, goedaardig of kwaadaardig, wel of niet churnen. Dat is classificatie, en in de familieboom van machine learning hoort de methode dan ook bij de classifiers, naast SVM's en decision trees. In scikit-learn zie je dat terug: <code>LogisticRegression</code> heeft een <code>predict()</code> die klasselabels uitstalt (0/1 of namen), niet een getal op een schaal. </p>"
+        },
+        {
+          "type": "text",
+          "html": "<p> Waar komt de verwarrende naam dan vandaan? Uit de statistiek. De methode ontstond in de jaren veertig en vijftig (de term <em>logit</em> is van Joseph Berkson, 1944; David Cox beschreef de methode in 1958 als 'de regressie van binaire data'). Wat er geregresseerd wordt, is niet de klasse zelf maar de <strong>log-odds</strong> — het logaritme van de kansverhouding \\( \\log \\frac{P(y=1)}{P(y=0)} \\) — en dat wél als een lineaire functie van de features. In die strikte, statistische zin is er dus een regressie te ontdekken <em>onder de motorkap</em>. Maar zodra je de uitkomst afvlakt naar een kans en met een drempel van 0,5 naar een klasselabel knipt, gedraagt het model zich volledig als classifier — en zo gebruikt de hele ML-wereld hem ook. </p>"
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p> Onthoud voor het tentamen en het gesprek: <strong>logistic regression = classificatie</strong>. De 'regression' in de naam slaat op <em>hoe</em> het model getraind wordt (de log-odds lineair regresseren op de features), niet op <em>wat</em> het oplevert (klassen). </p>"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "",
+            "Lineaire regressie",
+            "Logistic regression"
+          ],
+          "rows": [
+            [
+              "<strong>voorspelt</strong>",
+              "een doorlopend getal",
+              "een klasse (via een kans)"
+            ],
+            [
+              "<strong>output-bereik</strong>",
+              "hele reële as (−∞ tot +∞)",
+              "[0, 1] — kans, daarna drempel"
+            ],
+            [
+              "<strong>soort probleem</strong>",
+              "regressie",
+              "classificatie"
+            ],
+            [
+              "<strong>loss tijdens training</strong>",
+              "squared loss (MSE)",
+              "logistische loss (binaire cross-entropy)"
+            ],
+            [
+              "<strong>scikit-learn</strong>",
+              "<code>LinearRegression</code>",
+              "<code>LogisticRegression</code>"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "title": "De pipeline: van lijn naar kans naar klasse",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Hoe werkt zo'n classifier dan precies? In vier stappen, waarvan je de bouwstenen allemaal al kent. <strong>(1)</strong> Bereken een lineaire score — de raw model output \\( z = b_0 + b_1 x_1 + \\cdots + b_n x_n \\), precies het dot-product uit <a href=\"#/topic/dot-products\">hoofdstuk 2</a> dat élke lineaire classifier gebruikt. <strong>(2)</strong> Perst die score door de sigmoid, die elke reële waarde in (0, 1) samendrukt: een <em>kans</em>. <strong>(3)</strong> Vergelijk de kans met een drempel (meestal 0,5): boven de drempel → klasse 1, eronder → klasse 0. <strong>(4)</strong> Tijdens de training minimaliseert het model de logistische loss, die 'wilde' kansen afstraft. </p>"
+        },
+        {
+          "type": "formula",
+          "label": "kans volgens logistic regression",
+          "latex": "P(y = 1 \\mid x) \\;=\\; \\sigma(w \\cdot x + b) \\;=\\; \\frac{1}{1 + e^{-(w \\cdot x + b)}}",
+          "caption": "Lineaire score → sigmoid → kans. De drempel 0,5 knipt de kans daarna door naar een klasselabel."
+        },
+        {
+          "type": "text",
+          "html": "<p> In scikit-learn liggen die stappen bloot op tafel: <code>decision_function()</code> geeft de ruwe score \\( z \\) (stap 1), <code>predict_proba()</code> de kans na de sigmoid (stap 2) en <code>predict()</code> het uiteindelijke klasselabel (stap 3). De sigmoid zelf en zijn eigenschappen — inclusief wat <code>exp()</code> precies doet — staan uitgebreid in <a href=\"#/topic/kansen-sigmoid\">Kansen &amp; de sigmoid-functie</a>; hoe de drempel precision en recall herverdeelt, in <a href=\"#/topic/classification-metrics\">Metrics bij classificatie</a>. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Waarom niet gewoon lineaire regressie?",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Waarom die omweg via de sigmoid — kun je op 0/1-labels niet gewoon lineaire regressie loslaten? De plot hieronder laat het zien. Een rechte lijn, ge&iuml;t met least squares op de 0/1-labels, <strong>schiet onder 0 en boven 1</strong>: bij kleine x voorspelt hij kansen als −0,19 en bij grote x kansen als 1,19. Kansen buiten [0, 1] bestaan niet. Erger nog: &eacute;&eacute;n trainingsvoorbeeld met een extreme x-waarde heeft hefboomwerking en kantelt de hele lijn, zodat je drempel (waar de lijn 0,5 kruist) onhoudbaar verschuift. De sigmoid lost beide problemen op: ze perst elke score in [0, 1] en <strong>verzadigt</strong> aan de uiteinden — hoe extreem de score ook wordt, de kans komt alleen maar <em>dichter</em> bij 0 of 1, nooit er voorbij. </p>"
+        },
+        {
+          "type": "plot",
+          "title": "Lineaire regressie vs. het logistische model",
+          "subtitle": "Schuif met <strong>steilheid k</strong> en de <strong>drempel</strong>. De rechte lijn (least squares op 0/1-labels) schiet onder 0 en boven 1; de sigmoid blijft netjes in [0, 1]. De live metrics geven de voorspelde kans op x = 2 en x = 8.",
+          "xrange": [
+            0,
+            10
+          ],
+          "yrange": [
+            -0.3,
+            1.3
+          ],
+          "xlabel": "feature x",
+          "ylabel": "label / kans",
+          "points": [
+            {
+              "x": 1.2,
+              "y": 0.02,
+              "color": "magenta"
+            },
+            {
+              "x": 2.0,
+              "y": 0.02,
+              "color": "magenta"
+            },
+            {
+              "x": 2.9,
+              "y": 0.02,
+              "color": "magenta"
+            },
+            {
+              "x": 3.7,
+              "y": 0.02,
+              "color": "magenta"
+            },
+            {
+              "x": 4.3,
+              "y": 0.02,
+              "color": "magenta"
+            },
+            {
+              "x": 5.8,
+              "y": 0.98,
+              "color": "green"
+            },
+            {
+              "x": 6.6,
+              "y": 0.98,
+              "color": "green"
+            },
+            {
+              "x": 7.4,
+              "y": 0.98,
+              "color": "green"
+            },
+            {
+              "x": 8.2,
+              "y": 0.98,
+              "color": "green"
+            },
+            {
+              "x": 9.0,
+              "y": 0.98,
+              "color": "green"
+            }
+          ],
+          "pointLegend": [
+            {
+              "label": "klasse 0 (y = 0)",
+              "color": "magenta"
+            },
+            {
+              "label": "klasse 1 (y = 1)",
+              "color": "green"
+            },
+            {
+              "label": "grens: σ = 0.5",
+              "color": "yellow"
+            }
+          ],
+          "curves": [
+            {
+              "expr": "-0.3986 + 0.1759*x",
+              "label": "linear regression on labels",
+              "color": "magenta"
+            },
+            {
+              "expr": "1/(1+Math.exp(-k*(x-drempel)))",
+              "label": "logistic model σ(k(x−threshold))",
+              "color": "cyan"
+            }
+          ],
+          "markers": [
+            {
+              "x": "drempel",
+              "y": "0.5",
+              "color": "yellow",
+              "label": "boundary: σ = 0.5"
+            }
+          ],
+          "metrics": [
+            {
+              "label": "P(y=1 | x=2)",
+              "expr": "1/(1+Math.exp(-k*(2-drempel)))",
+              "decimals": 3
+            },
+            {
+              "label": "P(y=1 | x=8)",
+              "expr": "1/(1+Math.exp(-k*(8-drempel)))",
+              "decimals": 3
+            }
+          ],
+          "sliders": [
+            {
+              "param": "k",
+              "min": 0.2,
+              "max": 6,
+              "step": 0.1,
+              "value": 1.5,
+              "label": "k (steepness = confidence)"
+            },
+            {
+              "param": "drempel",
+              "min": 3,
+              "max": 7,
+              "step": 0.1,
+              "value": 5,
+              "label": "threshold (σ = 0.5)"
+            }
+          ]
+        },
+        {
+          "type": "callout",
+          "kind": "tip",
+          "html": "<p> Schuif <strong>k</strong> eens op. Kleine k geeft een flauwe S-curve met kansen rond 0,5 — een onzekere, zwaar geregelulariseerd aandoende model. Grote k geeft een steile trap: het model is 'zeker van zichzelf'. Dat is precies de rol van coëfficiëntgrootte die je in <a href=\"#/topic/kansen-sigmoid\">Kansen &amp; sigmoid</a> en <a href=\"#/topic/regularisatie\">regularisatie</a> terugziet: grotere coëfficiënten ↔ meer confidence. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Het bewijs in scikit-learn",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Twijfel je nog aan de classificatie-aard? Laad een echte dataset en kijk wat <code>predict()</code> uitstalt: een klasselabel, geen getal. De kansen van <code>predict_proba()</code> sommen per sample tot exact 1 — ook al tekenend voor een kansenmodel, niet voor een regressiemodel. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "logistic regression is een classifier — zie de output",
+          "runnable": true,
+          "source": "import numpy as np\nfrom sklearn.datasets import load_breast_cancer\nfrom sklearn.linear_model import LogisticRegression\n\nX, y = load_breast_cancer(return_X_y=True)\nmodel = LogisticRegression(max_iter=10000).fit(X, y)\n\ni = 5\nprint('predict()       :', model.predict([X[i]])[0],\n      '   <- een KLASSE (0 of 1), geen getal')\nprint('predict_proba() :', model.predict_proba([X[i]])[0].round(3),\n      '   <- kansen, sommen tot 1')\nprint('decision_funct():', round(model.decision_function([X[i]])[0], 3),\n      '   <- raw score z (kan elke waarde zijn)')\n\n# de drempel-knip zelf:\nz = model.decision_function([X[i]])[0]\nsigma = 1 / (1 + np.exp(-z))\nprint('sigmoid(z)      :', round(sigma, 4),\n      '-> klasse', 1 if sigma >= 0.5 else 0)"
+        }
+      ]
+    },
+    {
+      "title": "Hoe leert hij: de logistische loss",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Tijdens de training wil het model de kansen zo 'juist' mogelijk maken: dicht bij 1 voor echte klasse-1-voorbeelden, dicht bij 0 voor klasse-0. De loss die dat afdwingt is de <strong>logistische loss</strong> — buiten de ML beter bekend als de binaire cross-entropy. Zij straft verkeerde, zelfverzekerde voorspellingen onevenredig hard: voorspel je kans 0,01 terwijl het antwoord 1 is, dan betaal je daar −log(0,01) ≈ 4,6 voor; voorspel 0,99, en het kost vrijwel niets. De vorm van die curve en het vergelel met de hinge loss van SVM's staan in <a href=\"#/topic/loss-diagrams\">Loss-diagrammen</a>; hoe je zo'n loss minimaliseert met de gradiënt, in <a href=\"#/topic/gradient-descent\">gradient descent</a>. En of het model 'wild' mag groeien of netjes gebonden blijft, stuur je met de hyperparameter C via <a href=\"#/topic/regularisatie\">regularisatie</a>. </p>"
+        },
+        {
+          "type": "callout",
+          "kind": "info",
+          "html": "<p> Zo past alles op zijn plek: het model is <em>lineair</em> in de features (net als bij regressie), de sigmoid maakt er <em>kansen</em> van, de loss is <em>logistisch</em> — en de uitkomst is een <em>classifier</em>. De naam onthult alleen de middelste stappen, niet de bestemming. </p>"
+        }
+      ]
+    }
+  ]
+}

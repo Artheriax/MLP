@@ -10,13 +10,21 @@ Pyodide: CPython + scikit-learn in WebAssembly). Het hoofdstuk
 confusion-matrix-metrics, **gradient descent** legt uit hoe een model
 leert, en het hoofdstuk **FAQ** geeft korte, heldere antwoorden op de
 veelgestelde vragen — van classificatie vs. regressie tot de keuze van
-de juiste metric. De site is volledig **tweetalig: Nederlands en
-Engels** (schakelen met de NL/EN-knop rechtsboven).
+de juiste metric. Het onderwerp **Logistic regression: waarom het
+eigenlijk geen regressie is** ontrafelt de verwarrendste naam in ML,
+**Kansen & de sigmoid-functie** behandelt naast de sigmoid-formule ook
+`exp()` en de toepassingen van de S-curve, en **regression-metrics**
+bevat de gesloten formules voor **b1 (helling) en b0 (y-snijpunt)** van
+best-fit lijn. Interactieve plots hebben **live metrics** (MSE, R²,
+accuracy, precision/recall/F1 …) die realtime meebewegen met de
+sliders en groen oplichten bij de best haalbare fit. De site is
+volledig **tweetalig: Nederlands en Engels** (schakelen met de
+NL/EN-knop rechtsboven).
 
 - **Frontend**: pure HTML/CSS/JS — geen build-stap, geen framework
 - **Backend (optioneel, lokaal)**: FastAPI serveert de site én een REST-API over de content (NL + EN)
 - **Hosting**: 100% GitHub Pages-ready (statische bestanden)
-- **Talen**: NL (standaard) en EN — alle interface-teksten én alle 20 onderwerpen zijn vertaald
+- **Talen**: NL (standaard) en EN — alle interface-teksten én alle 21 onderwerpen zijn vertaald
 
 ---
 
@@ -132,6 +140,11 @@ lesstof toe te voegen:
         { "type": "plot",    "title": "Grafiek", "xrange": [-4, 4], "yrange": [0, 3],
           "curves": [{ "expr": "Math.max(0, 1-x)", "label": "hinge", "color": "magenta" }],
           "points": [{ "x": 1, "y": 2, "color": "green" }],
+          "markers": [{ "x": "p", "y": "p*p", "color": "yellow", "label": "punt" }],
+          "metrics": [
+            { "label": "MSE", "expr": "pts.reduce((s,q)=>s+(q.y-(b0+b1*q.x))**2,0)/pts.length",
+              "decimals": 2, "target": 0.27, "dir": "min", "tol": 0.03 }
+          ],
           "sliders": [
             { "param": "b0", "min": -5, "max": 10, "step": 0.1, "value": 2, "label": "b0" },
             { "param": "b1", "min": -1, "max": 3, "step": 0.05, "value": 1, "label": "b1" }
@@ -146,6 +159,9 @@ lesstof toe te voegen:
 
 - `expr` in een plot is een JS-expressie in `x` (en evt. de slider-parameters), bijv. `Math.exp(-gamma*x*x)` of `b0 + b1*x`.
 - Plots ondersteunen sinds v1.1 ook `points` (datapunten, met optionele kleur/label) en meerdere sliders (`sliders: [...]`); het oude enkele-`slider`-formaat werkt nog steeds.
+- **Live metrics** (v1.2): `metrics: [{ label, expr, decimals, target?, dir?, tol? }]` — de `expr` is een JS-expressie met de slider-parameters én `pts` (de ruwe datapunten). Bij elke sliderbeweging worden de waarden herberekend; met `target` + `dir` (`"min"`/`"max"`) licht de chip groen op zodra de metric in het doelbereik komt (gebruikt voor MSE/R², accuracy en de gradiënt).
+- **Markers** (v1.2): `markers: [{ x, y, color?, label? }]` — stippen die met de sliders meebewegen over de curve (bijv. het punt `(z, σ(z))` op de sigmoid of `(p, L(p))` in het loss-landschap).
+- Interne links in content werken met `#/onderwerp/<id>` én `#/topic/<id>` (beide renderen het onderwerp).
 - Code-blokken met `runnable: true` krijgen een **Uitvoeren**-knop: de code draait in de browser via Pyodide en de uitvoer verschijnt onder het veld. Pyodide onthoudt definities tussen code-velden (top-level functies blijven beschikbaar), dus een voorbeeld + vervolgcel werkt net als in Jupyter.
 - Zet `runnable: true` alleen als de code ook echt in Pyodide draait (numpy/scipy/sklearn uit de standaarddatasets werken prima; geen plots of externe bestanden).
 - Kleuren in plots/onderwerpen: `cyan`, `yellow`, `green`, `magenta`.
@@ -178,13 +194,13 @@ MLP/
 ├── js/
 │   ├── i18n.js           # tweetaligheid: alle UI-strings (NL/EN), taalkeuze + -opslag
 │   ├── content.js        # datalaag: FastAPI-API (?lang=) of statische JSON (NL/EN + fallback)
-│   ├── blocks.js         # renderers: tekst, formules (KaTeX), code-velden (uitvoeren + kopiëren), callouts, tabellen, plots (punten + sliders)
+│   ├── blocks.js         # renderers: tekst, formules (KaTeX), code-velden (uitvoeren + kopiëren), callouts, tabellen, plots (punten + sliders + markers + live metrics)
 │   ├── runner.js         # Pyodide-runner: code in de browser uitvoeren (lazy geladen)
 │   └── app.js            # router, homepage + tabel, zoekfilter, taalwissel, transitities
 ├── content/
 │   ├── index.json        # NL: hoofdstukken + onderwerpen-register
 │   ├── index.en.json     # EN: idem
-│   ├── topics/*.json     # NL: 20 onderwerpen (4 basis + 13 theorie incl. gradient descent + 2 metrics + FAQ)
+│   ├── topics/*.json     # NL: 21 onderwerpen (4 basis + logistic-regression-intro + theorie incl. gradient descent + 2 metrics + FAQ)
 │   └── topics.en/*.json  # EN: idem
 ├── main.py               # FastAPI: statische site + REST-API (NL/EN)
 ├── start.sh              # Mac/Linux: venv aanmaken + deps installeren + server starten

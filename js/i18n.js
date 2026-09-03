@@ -83,6 +83,7 @@ window.MLP = window.MLP || {};
       formula_fallback: "formule",
       plot_fallback: "grafiek",
       xlabel_fallback: "x",
+      plot_metrics_aria: "live metrics die meebewegen met de sliders",
       /* callouts */
       callout_info: "info",
       callout_tip: "tip",
@@ -180,6 +181,7 @@ window.MLP = window.MLP || {};
       formula_fallback: "formula",
       plot_fallback: "chart",
       xlabel_fallback: "x",
+      plot_metrics_aria: "live metrics that update as you drag the sliders",
       /* callouts */
       callout_info: "info",
       callout_tip: "tip",

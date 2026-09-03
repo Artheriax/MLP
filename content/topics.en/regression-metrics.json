@@ -2,7 +2,7 @@
   "id": "regression-metrics",
   "chapter": "ch5",
   "title": "Regression metrics: MSE, RMSE, MAE & R²",
-  "intro": "How do you measure whether a regression model predicts well? The four standard measures — MSE, RMSE, MAE and R&sup2; — with formulas, interpretation, a fully worked car-price example and interactive plots that show what outliers do to your metric.",
+  "intro": "How do you measure whether a regression model predicts well? The four standard measures — MSE, RMSE, MAE and R&sup2; — with formulas, interpretation, a fully worked car-price example, the exact closed-form formulas for the best-fit line (b1 and the y-intercept b0) and interactive plots with live metrics that show what outliers do to your metric.",
   "level": 2,
   "sections": [
     {
@@ -213,16 +213,64 @@
       ]
     },
     {
+      "title": "Computing the best-fit line analytically: b1 and b0",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> So far you nudged \\( b_0 \\) and \\( b_1 \\) with sliders until the error got small. But for simple linear regression \\( \\hat{y} = b_0 + b_1 x \\) you don't have to slide at all: there are <strong>exact closed-form formulas</strong> that give the best values in one go — the values that minimise the MSE. <strong>b1</strong> is the slope (direction coefficient) and <strong>b0</strong> is the <strong>y-intercept</strong>: the predicted value when \\( x = 0 \\). </p>"
+        },
+        {
+          "type": "formula",
+          "label": "slope b1",
+          "latex": "b_1 \\;=\\; \\frac{\\displaystyle\\sum_{i=1}^{n} (x_i - \\bar{x})(y_i - \\bar{y})}{\\displaystyle\\sum_{i=1}^{n} (x_i - \\bar{x})^2}",
+          "caption": "Divides 'how much x and y move together' by 'how much x spreads': the slope of the best-fit line."
+        },
+        {
+          "type": "formula",
+          "label": "y-intercept b0",
+          "latex": "b_0 \\;=\\; \\bar{y} - b_1\\,\\bar{x}",
+          "caption": "The best-fit line always passes through the centroid (x̄, ȳ) of the data — once you know b1, b0 follows automatically."
+        },
+        {
+          "type": "text",
+          "html": "<p> Here \\( \\bar{x} \\) is the mean of all x-values and \\( \\bar{y} \\) the mean of all y-values. Read the formula for <strong>b1</strong> like this: the numerator adds up, per point, how much x and y deviate from their means <em>together</em> (moving together makes it large; moving in opposite directions makes it negative). The denominator measures how much the x-values themselves spread. Small spread in x but strong co-movement gives a steep slope. The formula for <strong>b0</strong> then forces the line exactly through the centroid \\( (\\bar{x}, \\bar{y}) \\) — drag a line through that point in an interactive plot and watch the MSE respond immediately. </p><p> Where do these formulas come from? Set the derivatives of the MSE with respect to \\( b_0 \\) and \\( b_1 \\) to zero — exactly the point where the loss landscape flattens, as in <a href=\"#/topic/gradient-descent\">gradient descent</a> — and solve the resulting system. For a simple line that single minimum has a closed form; <a href=\"#/topic/gradient-descent\">gradient descent</a> approaches the same values iteratively, while the formulas above hand them to you in one shot. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "computing b1 and b0 with the formulas (dataset A)",
+          "runnable": true,
+          "source": "import numpy as np\n\n# dataset A — the same points as the interactive plot below\nx = np.array([0.5, 1.19, 1.88, 2.58, 3.27, 3.96, 4.65, 5.35,\n              6.04, 6.73, 7.42, 8.12, 8.81, 9.5])\ny = np.array([3.08, 3.52, 5.83, 7.21, 6.72, 8.35, 10.45, 11.44,\n              12.86, 13.6, 15.88, 17.08, 17.9, 19.78])\n\n# means\nx_mean = x.mean()\ny_mean = y.mean()\n\n# b1: co-movement of x and y, divided by the spread of x\nb1 = np.sum((x - x_mean) * (y - y_mean)) / np.sum((x - x_mean)**2)\n\n# b0: y-intercept — the line passes through (x_mean, y_mean)\nb0 = y_mean - b1 * x_mean\n\nprint('b1 (slope)          :', b1)\nprint('b0 (y-intercept)    :', b0)\n\n# the MSE at this pair is the smallest possible\ny_hat = b0 + b1 * x\nprint('MSE at (b0, b1)     :', round(np.mean((y - y_hat)**2), 4))\nprint('R2 at (b0, b1)      :',\n      round(1 - np.sum((y-y_hat)**2)/np.sum((y-y_mean)**2), 4))"
+        },
+        {
+          "type": "text",
+          "html": "<p> These are exactly the values scikit-learn returns: <code>LinearRegression</code> stores the slope in <code>coef_</code> and the y-intercept in <code>intercept_</code>. Go ahead and check — the code below runs in your browser and prints both side by side. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "checking against scikit-learn LinearRegression",
+          "runnable": true,
+          "source": "import numpy as np\nfrom sklearn.linear_model import LinearRegression\n\nx = np.array([0.5, 1.19, 1.88, 2.58, 3.27, 3.96, 4.65, 5.35,\n              6.04, 6.73, 7.42, 8.12, 8.81, 9.5])\ny = np.array([3.08, 3.52, 5.83, 7.21, 6.72, 8.35, 10.45, 11.44,\n              12.86, 13.6, 15.88, 17.08, 17.9, 19.78])\n\nmodel = LinearRegression().fit(x.reshape(-1, 1), y)\n\nprint('coef_      (b1):', model.coef_[0])\nprint('intercept_ (b0):', model.intercept_)\nprint('R2           :', round(model.score(x.reshape(-1, 1), y), 4))"
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p> With <strong>multiple features</strong> (like the car-price example: \\( b_0 + b_1 x_1 + b_2 x_2 + b_3 x_3 \\)) there is no short summation formula anymore — the computer then solves a system of equations for you (or approaches the optimum with gradient descent). If your model uses a single feature, these two formulas are <em>the</em> one-liner answers. </p>"
+        }
+      ]
+    },
+    {
       "title": "Exploring: does the line fit the data?",
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Below you see three datasets, each with one feature variable and a linear model \\( y_{pred} = b_0 + b_1 x \\), where \\( b_0 \\) is the intercept and \\( b_1 \\) the slope. <strong>Move the sliders</strong> and see immediately what a good fit does to the error measures: a line that runs through the points makes MSE, RMSE and MAE small and \\( R^2 \\) large. </p>"
+          "html": "<p> Below are three datasets, each with one feature variable and a linear model \\( y_{pred} = b_0 + b_1 x \\), where \\( b_0 \\) is the y-intercept and \\( b_1 \\) the slope. <strong>Drag the sliders</strong>: every plot now has <strong>live metrics</strong> — as you drag, the MSE and \\( R^2 \\) are recomputed instantly and the chip lights up green once you approach the best achievable fit. Challenge yourself: first compute b1 and b0 of dataset A with the formulas above (b1 = 1.86, b0 = 1.68), then find that same pair with the sliders. </p>"
         },
         {
           "type": "plot",
           "title": "Dataset A — clean, linear data",
-          "subtitle": "Slide b0 and b1 until the line runs through the points. Best fit roughly: b1 ≈ 1.9, b0 ≈ 1.7.",
+          "subtitle": "Drag b0 and b1 and watch the MSE and R&sup2; <strong>update live</strong>. Analytical optimum (formulas above): b1 = 1.86, b0 = 1.68 &rarr; MSE 0.27, R&sup2; 0.99 — the chips light up green as you get close.",
           "xrange": [
             0,
             10
@@ -316,12 +364,30 @@
               "value": 1,
               "label": "b1 (slope)"
             }
+          ],
+          "metrics": [
+            {
+              "label": "MSE",
+              "expr": "pts.reduce((s,p)=>s+(p.y-(b0+b1*p.x))**2,0)/pts.length",
+              "decimals": 2,
+              "target": 0.27,
+              "dir": "min",
+              "tol": 0.03
+            },
+            {
+              "label": "R²",
+              "expr": "(()=>{const yb=pts.reduce((s,p)=>s+p.y,0)/pts.length;const sr=pts.reduce((s,p)=>s+(p.y-(b0+b1*p.x))**2,0);const st=pts.reduce((s,p)=>s+(p.y-yb)**2,0);return 1-sr/st})()",
+              "decimals": 3,
+              "target": 0.99,
+              "dir": "max",
+              "tol": 0.01
+            }
           ]
         },
         {
           "type": "plot",
           "title": "Dataset B — with one large outlier",
-          "subtitle": "One point deviates far (24 while the rest sits around the line). Notice how the MSE idea pulls the line towards that point.",
+          "subtitle": "One point is far off (24!). Best fit: b1 = 1.42, b0 = 5.19 &rarr; MSE 18.85. Watch the live MSE show how the squared error pulls the line towards the outlier.",
           "xrange": [
             0,
             10
@@ -421,12 +487,30 @@
               "value": 1,
               "label": "b1 (slope)"
             }
+          ],
+          "metrics": [
+            {
+              "label": "MSE",
+              "expr": "pts.reduce((s,p)=>s+(p.y-(b0+b1*p.x))**2,0)/pts.length",
+              "decimals": 2,
+              "target": 18.85,
+              "dir": "min",
+              "tol": 1.0
+            },
+            {
+              "label": "R²",
+              "expr": "(()=>{const yb=pts.reduce((s,p)=>s+p.y,0)/pts.length;const sr=pts.reduce((s,p)=>s+(p.y-(b0+b1*p.x))**2,0);const st=pts.reduce((s,p)=>s+(p.y-yb)**2,0);return 1-sr/st})()",
+              "decimals": 3,
+              "target": 0.45,
+              "dir": "max",
+              "tol": 0.02
+            }
           ]
         },
         {
           "type": "plot",
           "title": "Dataset C — curved (quadratic) data",
-          "subtitle": "However you place the line: a straight line never fits a curve. R² stays low — adapt the model (e.g. add x² as a feature) instead of just the line.",
+          "subtitle": "However you place the line: a straight line cannot fit a curve. Best straight line: b1 = 1.98, b0 = &minus;1.83 &rarr; R&sup2; 0.82 — change the <em>model</em> (e.g. add x&sup2; as a feature), not just the line.",
           "xrange": [
             0,
             10
@@ -519,6 +603,24 @@
               "step": 0.05,
               "value": 1,
               "label": "b1 (slope)"
+            }
+          ],
+          "metrics": [
+            {
+              "label": "MSE",
+              "expr": "pts.reduce((s,p)=>s+(p.y-(b0+b1*p.x))**2,0)/pts.length",
+              "decimals": 2,
+              "target": 6.7,
+              "dir": "min",
+              "tol": 0.35
+            },
+            {
+              "label": "R²",
+              "expr": "(()=>{const yb=pts.reduce((s,p)=>s+p.y,0)/pts.length;const sr=pts.reduce((s,p)=>s+(p.y-(b0+b1*p.x))**2,0);const st=pts.reduce((s,p)=>s+(p.y-yb)**2,0);return 1-sr/st})()",
+              "decimals": 3,
+              "target": 0.82,
+              "dir": "max",
+              "tol": 0.02
             }
           ]
         },

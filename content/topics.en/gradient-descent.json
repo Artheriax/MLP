@@ -43,7 +43,7 @@
         {
           "type": "plot",
           "title": "Loss landscape L(w) = w² with tangent",
-          "subtitle": "The tangent at point p is the gradient: steep far away, almost flat near the minimum.",
+          "subtitle": "The tangent at point p is the gradient: steep far away, nearly flat at the minimum. The live metrics L(p) and the gradient follow along — at the minimum both are (nearly) zero.",
           "xrange": [
             -3,
             3
@@ -74,6 +74,38 @@
               "step": 0.1,
               "value": 2,
               "label": "p (position)"
+            }
+          ],
+          "markers": [
+            {
+              "x": "p",
+              "y": "p*p",
+              "color": "magenta",
+              "label": "point (p, L(p))"
+            }
+          ],
+          "pointLegend": [
+            {
+              "label": "point w = p",
+              "color": "magenta"
+            }
+          ],
+          "metrics": [
+            {
+              "label": "L(p)",
+              "expr": "p*p",
+              "decimals": 2,
+              "target": 0,
+              "dir": "min",
+              "tol": 0.3
+            },
+            {
+              "label": "gradient = 2p",
+              "expr": "2*p",
+              "decimals": 2,
+              "target": 0,
+              "dir": "min",
+              "tol": 0.6
             }
           ]
         }
