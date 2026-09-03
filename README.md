@@ -1,6 +1,8 @@
 # MLP — Machine Learning Practice
 
-Een donkere, modulaire studiewebsite met samenvattingen van de cursus
+Een strakke, modulaire studiewebsite in **schone wiki-stijl**
+(geïnspireerd op GitHub wiki: rustige typografie, zijbalk-navigatie
+— geen afleidende franje) met samenvattingen van de cursus
 **Logistic Regression & SVM's met scikit-learn** — van de **eerste
 basisbegrippen** (wat is ML, soorten leren, data & workflow) tot de
 classifiers — inclusief formules, interactieve diagrammen en
@@ -17,8 +19,23 @@ eigenlijk geen regressie is** ontrafelt de verwarrendste naam in ML,
 bevat de gesloten formules voor **b1 (helling) en b0 (y-snijpunt)** van
 best-fit lijn. Interactieve plots hebben **live metrics** (MSE, R²,
 accuracy, precision/recall/F1 …) die realtime meebewegen met de
-sliders en groen oplichten bij de best haalbare fit. De site is
-volledig **tweetalig: Nederlands en Engels** (schakelen met de
+sliders en groen oplichten bij de best haalbare fit.
+
+**Thema & typografie**: de site heeft een **dark- en een light mode**
+(schakelen met de zon/maan-knop rechtsboven, keuze wordt onthouden).
+Donker is de default — de originele stijl: achtergrond `#161616` met
+**pastel-accenten** (cyan, geel, light green, magenta). In de lichte
+modus is de achtergrond wit met zwarte tekst en iets verdiepte
+pastel-tinten voor leesbaarheid. Het lettertype is **Lexend**
+(oogvriendelijk, via Google Fonts met nette systeem-fallback). De
+**navigatie** loopt via een vaste **inklapbare zijbalk** met
+**uitklapbare hoofdstukken** (klik op een hoofdstuk om de sub-topics
+te zien; de stand wordt onthouden en het hoofdstuk van het actieve
+onderwerp klapt vanzelf open). De **zoekbalk doorzoekt de volledige
+inhoud** van alle sub-topics — teksten, formules, code en tabellen —
+en toont resultaten met een gemarkeerd snippet (sneltoets: `/`);
+op mobiel klapt de zijbalk open via het menu-icoon. De site is
+volledig **tweetalig: Nederlands (default) en Engels** (schakelen met
 NL/EN-knop rechtsboven).
 
 - **Frontend**: pure HTML/CSS/JS — geen build-stap, geen framework
@@ -107,15 +124,27 @@ lesstof toe te voegen:
 3. (optioneel, voor de Engelse versie) maak `content/topics.en/<id>.json` aan
    en voeg de regel ook toe aan `content/index.en.json` — ontbreekt de
    EN-variant, dan valt de site automatisch terug op de NL-versie.
-4. Klaar — de tabel, navigatie, zoeken en paging werken automatisch.
+4. Klaar — de zijbalk, startpagina, zoeken en paging werken automatisch.
 
 ### Tweetaligheid (i18n)
 
 - De taal staat in `js/i18n.js` (UI-strings) + de content-mappen:
   `content/topics/` (NL) en `content/topics.en/` (EN).
-- De keuze wordt onthouden in `localStorage` (sleutel `mlp-lang`); zonder
-  voorkeur kiest de site op basis van de browsertaal.
+- De keuze wordt onthouden in `localStorage` (sleutel `mlp-lang`);
+  **zonder opgeslagen voorkeur is Nederlands de default** — de
+  browsertaal telt niet (EN is de secundaire optie via de schakelaar).
 - In de API-modus vraag je de Engelse versie op met `?lang=en`.
+
+### Thema (dark/light)
+
+- De schakelaar staat rechtsboven (zon/maan-icoon); donker is de
+  default (`#161616` + pastel-accenten).
+- De keuze wordt onthouden in `localStorage` (sleutel `mlp-theme`).
+- Alle kleuren — ook die van plots, formule-accents en
+  syntax-highlighting — lopen via CSS-variabelen en wisselen dus
+  automatisch mee.
+- Zijbalk-standen: `mlp-sidebar-collapsed` (hele zijbalk) en
+  `mlp-nav-open` (welke hoofdstukken open staan).
 
 ### Schema van een onderwerp
 
@@ -189,14 +218,15 @@ waarheid. Zonder `lang`-parameter krijg je de NL-versie.
 
 ```
 MLP/
-├── index.html            # enige HTML-pagina (SPA met hash-routering #/onderwerp/<id> + NL/EN-schakelaar)
-├── css/style.css         # volledig ontwerp (#161616 · wit · pastel-accenten)
+├── index.html            # enige HTML-pagina (SPA met hash-routering #/onderwerp/<id> + NL/EN + theme-schakelaar)
+├── css/style.css         # volledig ontwerp (dark + light · pastel-accenten · Lexend · inklapbare zijbalk)
 ├── js/
-│   ├── i18n.js           # tweetaligheid: alle UI-strings (NL/EN), taalkeuze + -opslag
+│   ├── i18n.js           # tweetaligheid: alle UI-strings (NL/EN), NL-default, taalkeuze + -opslag
+│   ├── theme.js          # dark/light-schakelaar (localStorage + thema-knop)
 │   ├── content.js        # datalaag: FastAPI-API (?lang=) of statische JSON (NL/EN + fallback)
-│   ├── blocks.js         # renderers: tekst, formules (KaTeX), code-velden (uitvoeren + kopiëren), callouts, tabellen, plots (punten + sliders + markers + live metrics)
+│   ├── blocks.js         # renderers: tekst, formules (KaTeX), code-velden (uitvoeren + kopiëren), callouts, tabellen, plots (punten + sliders + markers + live metrics, thema-onafhankelijk)
 │   ├── runner.js         # Pyodide-runner: code in de browser uitvoeren (lazy geladen)
-│   └── app.js            # router, homepage + tabel, zoekfilter, taalwissel, transitities
+│   └── app.js            # router, zijbalk (uitklapbare hoofdstukken + inklapbaar), inhoud-zoekopdracht, startpagina, taalwissel
 ├── content/
 │   ├── index.json        # NL: hoofdstukken + onderwerpen-register
 │   ├── index.en.json     # EN: idem
@@ -210,9 +240,11 @@ MLP/
 └── README.md             # dit bestand
 ```
 
-**Externe libraries (via CDN, dus internet nodig):** Google Fonts (typografie),
-KaTeX (formules), highlight.js (syntax-kleuring) en Pyodide (code-uitvoering).
-Zonder internet werkt de site nog steeds — formules/code tonen dan platte tekst.
+**Externe libraries (via CDN, dus internet nodig):** KaTeX (formules),
+highlight.js (syntax-kleuring), Pyodide (code-uitvoering) en Google
+Fonts (**Lexend**). Zonder internet werkt de site nog steeds — de
+typografie valt dan netjes terug op systeemfonts en formules/code
+tonen platte tekst.
 
 **Waarom geen framework?** De opdracht vraagt om een HTML-site die op GitHub
 Pages moet draaien (statisch). Met een pure frontend is er geen build-stap,

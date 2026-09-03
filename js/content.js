@@ -31,12 +31,16 @@ window.MLP = window.MLP || {};
     return node;
   };
 
-  /* pastel-kleuren (synchroniseer met css/style.css) */
+  /* kleuren per naam — verwijzen naar de CSS-variabelen van het
+     thema (css/style.css), zodat curven, punten en accenten
+     automatisch meewisselen tussen dark en light.
+     Let op: deze waarden worden via inline style gezet (blokken/
+     legendes) — CSS-variabelen werken daar, in SVG-attributen niet. */
   const COLORS = {
-    cyan: "#7FDBDA",
-    yellow: "#F9E79F",
-    green: "#A9DFBF",
-    magenta: "#F5B7B1",
+    cyan: "var(--cyan)",
+    yellow: "var(--yellow)",
+    green: "var(--green)",
+    magenta: "var(--magenta)",
   };
 
   MLP.util = { $, $$, escapeHtml, el, COLORS };

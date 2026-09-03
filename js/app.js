@@ -1,7 +1,11 @@
 /* ============================================================
    MLP — app.js
-   Hash-router + views: home (hero + onderwerpen-tabel) en
-   onderwerppagina. Koppelt alles aan elkaar.
+   Hash-router + views. Nieuw in deze versie:
+   - zijbalk met UITKLAPBARE hoofdstukken (topics → sub-topics),
+     inclusief herinnerde stand en auto-open van het actieve hoofdstuk
+   - de hele zijbalk is inklapbaar (desktop + mobiele drawer)
+   - de zoekbalk doorzoekt de volledige inhoud van alle sub-topics
+     (tekst, formules, code, tabellen) met snippets + markeerlicht
    Alle zichtbare teksten komen uit js/i18n.js (NL/EN).
    ============================================================ */
 
@@ -10,7 +14,7 @@ window.MLP = window.MLP || {};
 (function (MLP) {
   "use strict";
 
-  const { $, $$, el, escapeHtml, COLORS } = MLP.util;
+  const { $, $$, el, escapeHtml } = MLP.util;
   const t = (k) => MLP.i18n.t(k);
   const tf = (k, v) => MLP.i18n.tf(k, v);
   const LEVELS = () => MLP.i18n.LEVELS[MLP.i18n.lang()];
@@ -42,29 +46,458 @@ window.MLP = window.MLP || {};
 
     window.scrollTo({ top: 0, behavior: "auto" });
 
+    await ensureSidebar();
+
     if (r.name === "topic") {
       await renderTopic(r.id);
     } else {
       await renderHome();
     }
-    updateNav(r);
-    observeReveals();
-  }
-
-  function updateNav(r) {
-    $$("[data-nav]").forEach((a) => a.classList.toggle("active", r.name === "home"));
-    $$("[data-nav]").forEach((a) => (a.textContent = t("nav_topics")));
+    updateSidebarActive(r);
   }
 
   /* ============================================================
-     Home — hero + onderwerpen-tabel
+     Sidebar — hoofdstukken (uitklapbaar) + onderwerpen
+     ============================================================ */
+
+  let sidebarBuilt = false;
+  const NAV_KEY = "mlp-nav-open";
+  const SB_KEY = "mlp-sidebar-collapsed";
+
+  function loadNavOpen() {
+    try {
+      const raw = localStorage.getItem(NAV_KEY);
+      if (raw) return JSON.parse(raw);
+    } catch (e) {
+      /* corrupte waarde negeren */
+    }
+    return null; /* null = eerste bezoek: alleen het eerste hoofdstuk open */
+  }
+
+  function saveNavOpen(ids) {
+    try {
+      localStorage.setItem(NAV_KEY, JSON.stringify(ids));
+    } catch (e) {
+      /* voorkeur onthouden is optioneel */
+    }
+  }
+
+  function navOpenIds() {
+    return $$(".nav-section")
+      .filter((s) => !s.classList.contains("collapsed"))
+      .map((s) => s.dataset.chapter);
+  }
+
+  function setChapterOpen(sec, open, persist) {
+    sec.classList.toggle("collapsed", !open);
+    const btn = $(".nav-chapter", sec);
+    if (btn) btn.setAttribute("aria-expanded", open ? "true" : "false");
+    if (persist) saveNavOpen(navOpenIds());
+  }
+
+  function toggleChapter(sec) {
+    setChapterOpen(sec, sec.classList.contains("collapsed"), true);
+  }
+
+  async function ensureSidebar() {
+    if (sidebarBuilt) return;
+    let index;
+    try {
+      index = await MLP.data.getIndex();
+    } catch (err) {
+      return; /* fout wordt getoond door de view-render */
+    }
+    buildSidebar(index);
+    sidebarBuilt = true;
+    applySidebarFilter();
+    /* zoekindex (volledige inhoud) op de achtergrond bouwen */
+    buildSearchIndex();
+  }
+
+  function buildSidebar(index) {
+    const nav = document.getElementById("sidebarNav");
+    nav.innerHTML = "";
+
+    const home = el("a", "nav-home", escapeHtml(t("nav_home")));
+    home.href = "#/";
+    home.dataset.nav = "home";
+    nav.appendChild(home);
+
+    const chapters = index.chapters || [];
+    (index.topics || []).forEach((tp) => {
+      const ch = chapters.find((c) => c.id === tp.chapter);
+      if (ch) tp._chapterName = ch.name;
+    });
+
+    const storedOpen = loadNavOpen();
+
+    chapters.forEach((ch, ci) => {
+      const topics = (index.topics || []).filter((tp) => tp.chapter === ch.id);
+      if (!topics.length) return;
+
+      const sec = el("div", "nav-section");
+      sec.dataset.chapter = ch.id;
+
+      /* hoofdstuk-knop: klapt de sub-topics open/dicht */
+      const head = el("button", "nav-chapter");
+      head.type = "button";
+      head.setAttribute("aria-expanded", "true");
+      head.setAttribute("aria-controls", "navlist-" + ch.id);
+      head.innerHTML =
+        '<svg class="chev" viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5.5 4L10 8l-4.5 4"/></svg>' +
+        '<span class="nav-chapter-name">' + escapeHtml(ch.name) + "</span>" +
+        '<span class="nav-count">' + topics.length + "</span>";
+      head.addEventListener("click", () => toggleChapter(sec));
+      sec.appendChild(head);
+
+      const wrap = el("div", "nav-list-wrap");
+      wrap.id = "navlist-" + ch.id;
+      const list = el("div", "nav-list");
+      topics.forEach((tp) => {
+        const a = el("a", "nav-link", escapeHtml(tp.title));
+        a.href = "#/onderwerp/" + encodeURIComponent(tp.id);
+        a.dataset.topic = tp.id;
+        a.dataset.search = (
+          tp.title + " " + (tp.summary || "") + " " + (tp.keywords || "") + " " + (ch.name || "")
+        ).toLowerCase();
+        list.appendChild(a);
+      });
+      wrap.appendChild(list);
+      sec.appendChild(wrap);
+
+      /* beginstand: opgeslagen voorkeur, anders alleen het eerste
+         hoofdstuk open (nodigt uit om uit te klappen) */
+      const open = storedOpen ? storedOpen.indexOf(ch.id) !== -1 : ci === 0;
+      setChapterOpen(sec, open, false);
+
+      nav.appendChild(sec);
+    });
+  }
+
+  function updateSidebarActive(r) {
+    $$(".nav-link, .nav-home").forEach((a) => {
+      const isHome = a.dataset.nav === "home" && r.name === "home";
+      const isTopic = a.dataset.topic && a.dataset.topic === r.id;
+      a.classList.toggle("active", isHome || isTopic);
+      /* het hoofdstuk van het actieve onderwerp klapt vanzelf open */
+      if (isTopic) {
+        const sec = a.closest(".nav-section");
+        if (sec && sec.classList.contains("collapsed")) setChapterOpen(sec, true, true);
+      }
+    });
+  }
+
+  /* ============================================================
+     Zijbalk inklappen — desktop (breedte 0) + mobiel (drawer)
+     ============================================================ */
+
+  function setSidebarCollapsed(collapsed) {
+    document.body.classList.toggle("sb-collapsed", collapsed);
+    try {
+      localStorage.setItem(SB_KEY, collapsed ? "1" : "0");
+    } catch (e) {
+      /* voorkeur onthouden is optioneel */
+    }
+  }
+
+  function initMenu() {
+    const btn = document.getElementById("menuToggle");
+    const sb = document.getElementById("sidebar");
+    const bd = document.getElementById("sidebarBackdrop");
+    if (!btn || !sb || !bd) return;
+
+    const mq = window.matchMedia("(max-width: 920px)");
+    const isMobile = () => mq.matches;
+
+    const closeDrawer = () => {
+      sb.classList.remove("open");
+      bd.hidden = true;
+      btn.setAttribute("aria-expanded", "false");
+      document.body.classList.remove("nav-open");
+    };
+    const openDrawer = () => {
+      sb.classList.add("open");
+      bd.hidden = false;
+      btn.setAttribute("aria-expanded", "true");
+      document.body.classList.add("nav-open");
+    };
+
+    btn.addEventListener("click", () => {
+      if (isMobile()) {
+        if (sb.classList.contains("open")) closeDrawer();
+        else openDrawer();
+      } else {
+        setSidebarCollapsed(!document.body.classList.contains("sb-collapsed"));
+      }
+    });
+    bd.addEventListener("click", closeDrawer);
+    sb.addEventListener("click", (ev) => {
+      if (ev.target.closest("a")) closeDrawer();
+    });
+    window.addEventListener("keydown", (ev) => {
+      if (ev.key === "Escape" && sb.classList.contains("open")) closeDrawer();
+    });
+
+    /* beginstand (desktop): eerder ingeklapt? */
+    if (!isMobile()) {
+      try {
+        if (localStorage.getItem(SB_KEY) === "1") document.body.classList.add("sb-collapsed");
+      } catch (e) {
+        /* negeer */
+      }
+    }
+
+    /* bij formaatwissel (desktop ↔ mobiel) de juiste modus herstellen */
+    const onMq = () => {
+      closeDrawer();
+      if (isMobile()) {
+        document.body.classList.remove("sb-collapsed");
+      } else {
+        try {
+          document.body.classList.toggle("sb-collapsed", localStorage.getItem(SB_KEY) === "1");
+        } catch (e) {
+          /* negeer */
+        }
+      }
+    };
+    if (mq.addEventListener) mq.addEventListener("change", onMq);
+    else if (mq.addListener) mq.addListener(onMq);
+  }
+
+  /* ============================================================
+     Zoeken — doorzoekt titels ÉN de volledige inhoud van alle
+     sub-topics (tekst, formules, code, tabellen, plotlabels).
+     De inhoudsindex wordt na het opstarten op de achtergrond
+     gebouwd; tot die tijd zoekt de balk op titel/samenvatting.
+     ============================================================ */
+
+  let searchIndex = null; /* null = nog aan het laden */
+  let searchIndexBuilding = false;
+  let searchTimer = null;
+
+  function stripHtml(html) {
+    const d = document.createElement("div");
+    d.innerHTML = html || "";
+    return (d.textContent || "").replace(/\s+/g, " ");
+  }
+
+  /* alle doorzoekbare tekst van één onderwerp verzamelen */
+  function topicSearchText(topic, tp) {
+    const parts = [
+      topic.title || tp.title || "",
+      tp.summary || topic.summary || "",
+      tp.keywords || topic.keywords || "",
+      topic.intro || "",
+      tp._chapterName || "",
+    ];
+    (topic.sections || []).forEach((sec) => {
+      if (sec.title) parts.push(sec.title);
+      (sec.blocks || []).forEach((b) => {
+        if (b.type === "text" || b.type === "callout") parts.push(stripHtml(b.html));
+        else if (b.type === "formula") parts.push(b.label || "", b.latex || "", b.caption || "");
+        else if (b.type === "code") parts.push(b.caption || "", b.source || "");
+        else if (b.type === "table") {
+          parts.push((b.headers || []).join(" "));
+          (b.rows || []).forEach((r) => parts.push((r || []).join(" ")));
+        } else if (b.type === "plot") {
+          parts.push(b.title || "", b.subtitle || "");
+          (b.curves || []).forEach((c) => parts.push(c.label || ""));
+          (b.points || []).forEach((p) => parts.push(p.label || ""));
+          (b.sliders || (b.slider ? [b.slider] : [])).forEach((s) => parts.push(s.label || ""));
+          (b.metrics || []).forEach((m) => parts.push(m.label || ""));
+        }
+      });
+    });
+    return parts.filter(Boolean).join(" ").replace(/\s+/g, " ").trim();
+  }
+
+  function buildSearchIndex() {
+    if (searchIndex || searchIndexBuilding) return;
+    searchIndexBuilding = true;
+
+    (async () => {
+      const index = await MLP.data.getIndex();
+      const chapters = index.chapters || [];
+      const chapterName = {};
+      chapters.forEach((c) => (chapterName[c.id] = c.name));
+
+      const entries = await Promise.all(
+        (index.topics || []).map(async (tp) => {
+          let text =
+            tp.title + " " + (tp.summary || "") + " " + (tp.keywords || "") + " " + (chapterName[tp.chapter] || "");
+          try {
+            const topic = await MLP.data.getTopic(tp.id);
+            text = topicSearchText(topic, {
+              title: tp.title,
+              summary: tp.summary,
+              keywords: tp.keywords,
+              _chapterName: chapterName[tp.chapter] || "",
+            });
+          } catch (e) {
+            /* onderwerp niet beschikbaar → val terug op de index-tekst */
+          }
+          return {
+            id: tp.id,
+            title: tp.title,
+            chapter: chapterName[tp.chapter] || "",
+            plain: text,
+            lower: text.toLowerCase(),
+          };
+        })
+      );
+
+      searchIndex = entries;
+      searchIndexBuilding = false;
+      /* filter opnieuw toepassen: nu met de volledige inhoud */
+      applySidebarFilter();
+    })().catch(() => {
+      searchIndexBuilding = false;
+    });
+  }
+
+  /* snippet rond de eerste treffer, met alle zoektermen gemarkeerd */
+  function snippetText(entry, terms) {
+    const text = entry.plain || "";
+    if (!text) return "";
+    const lower = entry.lower || text.toLowerCase();
+
+    let idx = -1;
+    for (const term of terms) {
+      const i = lower.indexOf(term);
+      if (i !== -1) {
+        idx = i;
+        break;
+      }
+    }
+    if (idx === -1) return "";
+
+    const PAD = 46;
+    let start = Math.max(0, idx - PAD);
+    if (start > 0) {
+      const sp = text.indexOf(" ", start);
+      if (sp !== -1 && sp < idx) start = sp + 1;
+    }
+    let end = Math.min(text.length, idx + 110);
+    if (end < text.length) {
+      const sp = text.lastIndexOf(" ", end);
+      if (sp !== -1 && sp > idx) end = sp;
+    }
+
+    const snippet =
+      (start > 0 ? "\u2026 " : "") + text.slice(start, end) + (end < text.length ? " \u2026" : "");
+
+    let safe = escapeHtml(snippet);
+    terms.forEach((term) => {
+      if (!term) return;
+      const rx = new RegExp("(" + term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + ")", "gi");
+      safe = safe.replace(rx, "<mark>$1</mark>");
+    });
+    return safe;
+  }
+
+  function applySidebarFilter() {
+    const input = document.getElementById("sidebarSearch");
+    const sidebar = document.getElementById("sidebar");
+    const status = document.getElementById("searchStatus");
+    const results = document.getElementById("searchResults");
+    if (!input || !sidebar || !status || !results) return;
+
+    const q = (input.value || "").trim().toLowerCase();
+
+    if (!q) {
+      sidebar.classList.remove("searching");
+      status.hidden = true;
+      results.innerHTML = "";
+      return;
+    }
+
+    sidebar.classList.add("searching");
+
+    const terms = q.split(/\s+/).filter(Boolean);
+
+    /* volledige inhoud indien beschikbaar, anders titel/samenvatting */
+    let entries;
+    if (searchIndex) {
+      entries = searchIndex.map((e) => ({ id: e.id, title: e.title, chapter: e.chapter, plain: e.plain, lower: e.lower }));
+    } else {
+      entries = $$(".nav-link").map((a) => ({
+        id: a.dataset.topic,
+        title: a.textContent,
+        chapter: "",
+        plain: "",
+        lower: a.dataset.search || "",
+      }));
+    }
+
+    const hits = entries.filter((e) => terms.every((term) => e.lower.indexOf(term) !== -1));
+
+    status.hidden = false;
+    if (!hits.length) {
+      status.textContent = t("empty_row");
+      results.innerHTML = "";
+      return;
+    }
+    status.textContent = tf("search_results", { n: hits.length }) + (searchIndex ? "" : " \u00b7 " + t("search_indexing"));
+
+    results.innerHTML = "";
+    hits.slice(0, 30).forEach((h) => {
+      const a = el("a", "sr-item");
+      a.href = "#/onderwerp/" + encodeURIComponent(h.id);
+      a.appendChild(el("span", "sr-title", escapeHtml(h.title)));
+      if (h.chapter) a.appendChild(el("span", "sr-chapter", escapeHtml(h.chapter)));
+      const snippet = h.plain ? snippetText(h, terms) : "";
+      if (snippet) a.appendChild(el("span", "sr-snippet", snippet));
+      results.appendChild(a);
+    });
+  }
+
+  function initSidebarSearch() {
+    const input = document.getElementById("sidebarSearch");
+    if (!input) return;
+    input.value = "";
+
+    input.addEventListener("input", () => {
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(applySidebarFilter, 130);
+    });
+
+    input.addEventListener("keydown", (ev) => {
+      if (ev.key === "Escape" && input.value) {
+        input.value = "";
+        applySidebarFilter();
+        input.blur();
+      }
+    });
+
+    /* "/" springt naar het zoekveld (wiki-sneltoets) */
+    window.addEventListener("keydown", (ev) => {
+      if (ev.key !== "/" || ev.ctrlKey || ev.metaKey || ev.altKey) return;
+      const active = document.activeElement;
+      const tag = active ? active.tagName : "";
+      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || (active && active.isContentEditable)) return;
+      ev.preventDefault();
+      /* zijbalk even tonen als die verborgen is */
+      if (window.matchMedia("(max-width: 920px)").matches) {
+        const sb = document.getElementById("sidebar");
+        const btn = document.getElementById("menuToggle");
+        if (sb && btn && !sb.classList.contains("open")) btn.click();
+      } else if (document.body.classList.contains("sb-collapsed")) {
+        setSidebarCollapsed(false);
+      }
+      input.focus();
+      input.select();
+    });
+  }
+
+  /* ============================================================
+     Home — wiki-achtige startpagina
      ============================================================ */
 
   let homeBuilt = false;
   /* Cache als ÉCHT element, niet als DocumentFragment: een fragment
      raakt leeg zodra het ge-append wordt (de kinderen verhuizen), waardoor
      de homepage bij terugkeer leeg bleek. Een element houdt zijn kinderen
-     én event-listeners (zoeken, chips, rij-kliks) gewoon vast. */
+     gewoon vast. */
   let homeDom = null;
 
   async function renderHome() {
@@ -92,209 +525,42 @@ window.MLP = window.MLP || {};
     const frag = document.createDocumentFragment();
     const site = index.site || {};
 
-    /* ---------- Hero ---------- */
-    const hero = el("section", "hero");
-    hero.innerHTML =
-      '<p class="hero-eyebrow">' + escapeHtml(t("hero_eyebrow")) + "</p>" +
-      "<h1>" + t("hero_title") + "</h1>" +
-      '<p class="hero-lede">' +
-      escapeHtml(site.description || t("hero_lede_fallback")) +
-      "</p>" +
-      '<div class="hero-actions">' +
-      '<a class="btn btn-primary" href="#onderwerpen">' + escapeHtml(t("hero_cta")) +
-      '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M8 2v11M3.5 8.5L8 13l4.5-4.5"/></svg></a>' +
-      '<span class="hero-hint">' +
-      tf("hero_hint", { ch: (index.chapters || []).length, n: (index.topics || []).length }) +
-      "</span>" +
-      "</div>";
-
-    /* stats */
-    const nTopics = (index.topics || []).length;
-    const nChapters = (index.chapters || []).length;
-    const stats = el("div", "hero-stats");
-    const statDefs = [
-      { v: String(nChapters), l: t("stat_chapters"), c: "c-cyan" },
-      { v: String(nTopics), l: t("stat_topics"), c: "c-green" },
-      { v: site.statFormulas || "±39", l: t("stat_formulas"), c: "c-yellow" },
-      { v: site.statCode || "28", l: t("stat_code"), c: "c-magenta" },
-    ];
-    statDefs.forEach((s) => {
-      stats.appendChild(el("div", "stat", '<span class="stat-value ' + s.c + '">' + s.v + '</span><span class="stat-label">' + escapeHtml(s.l) + "</span>"));
-    });
-    hero.appendChild(stats);
-    frag.appendChild(hero);
-
-    /* ---------- Onderwerpen-sectie ---------- */
-    const section = el("section");
-    section.id = "onderwerpen";
-    section.appendChild(
+    frag.appendChild(el("h1", null, escapeHtml(t("home_title"))));
+    frag.appendChild(el("p", "home-lede", escapeHtml(site.description || t("home_lede_fallback"))));
+    frag.appendChild(
       el(
-        "div",
-        "section-head",
-        '<h2><span class="kicker">' + escapeHtml(t("section_kicker")) + "</span> " + escapeHtml(t("section_title")) + "</h2>" +
-          "<p>" + escapeHtml(t("section_lede")) + "</p>"
+        "p",
+        "home-meta",
+        escapeHtml(
+          tf("home_meta", {
+            ch: (index.chapters || []).length,
+            n: (index.topics || []).length,
+          })
+        )
       )
     );
 
-    /* filters */
-    const filterBar = el("div", "filter-bar");
-    const searchWrap = el(
-      "div",
-      "search-wrap",
-      '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>'
-    );
-    const search = document.createElement("input");
-    search.type = "search";
-    search.id = "searchInput";
-    search.placeholder = t("search_placeholder");
-    search.setAttribute("aria-label", t("search_aria"));
-    searchWrap.appendChild(search);
-    filterBar.appendChild(searchWrap);
+    (index.chapters || []).forEach((ch) => {
+      const topics = (index.topics || []).filter((tp) => tp.chapter === ch.id);
+      if (!topics.length) return;
 
-    const chipRow = el("div", "chip-row");
-    chipRow.setAttribute("role", "group");
-    chipRow.setAttribute("aria-label", t("chips_aria"));
-    const chapters = index.chapters || [];
-    const chips = [];
-    const mkChip = (label, dot, chapterId) => {
-      const chip = el("button", "chip", '<span class="dot" style="--dot:' + dot + '"></span>' + label);
-      chip.type = "button";
-      chip.setAttribute("aria-pressed", "false");
-      if (chapterId) chip.dataset.chapter = chapterId;
-      chip.addEventListener("click", () => {
-        chips.forEach((c) => c.setAttribute("aria-pressed", "false"));
-        chip.setAttribute("aria-pressed", "true");
-        applyFilter();
-      });
-      chips.push(chip);
-      chipRow.appendChild(chip);
-      return chip;
-    };
-    mkChip(escapeHtml(t("chip_all")), "rgba(255,255,255,0.85)", null);
-    chapters.forEach((ch) => mkChip(escapeHtml(ch.name), "var(--" + ch.accent + ")", ch.id));
-
-    filterBar.appendChild(chipRow);
-    section.appendChild(filterBar);
-
-    /* ---------- Tabel ---------- */
-    const shell = el("div", "table-shell");
-    const table = el("table", "topic-table");
-    const thead = el(
-      "thead",
-      null,
-      "<tr><th>" + escapeHtml(t("th_chapter")) + "</th><th>" + escapeHtml(t("th_topic")) + "</th><th>" +
-        escapeHtml(t("th_learn")) + "</th><th>" + escapeHtml(t("th_level")) + "</th></tr>"
-    );
-    table.appendChild(thead);
-    const tbody = el("tbody");
-    const chapterById = {};
-    chapters.forEach((ch) => (chapterById[ch.id] = ch));
-
-    let i = 0;
-    let currentChapter = null;
-    (index.topics || []).forEach((tp) => {
-      const ch = chapterById[tp.chapter] || { name: "Overig", accent: "cyan", id: "x" };
-      if (ch.id !== currentChapter) {
-        currentChapter = ch.id;
-        const groupRow = el("tr", "chapter-row");
-        const td = el(
-          "td",
-          null,
-          '<span class="chapter-chip" style="--accent: var(--' + ch.accent + ')"><span class="dot"></span>' +
-            escapeHtml(ch.name) +
-            (ch.description ? '<span class="chapter-desc">' + escapeHtml(ch.description) + "</span>" : "") +
-            "</span>"
-        );
-        td.colSpan = 4;
-        groupRow.appendChild(td);
-        tbody.appendChild(groupRow);
+      const section = el("section", "home-chapter");
+      section.appendChild(el("h2", null, escapeHtml(ch.name)));
+      if (ch.description) {
+        section.appendChild(el("p", "chapter-desc", escapeHtml(ch.description)));
       }
 
-      const row = el("tr", "topic-row");
-      row.tabIndex = 0;
-      row.setAttribute("role", "link");
-      row.dataset.topic = tp.id;
-      row.dataset.chapter = tp.chapter;
-      row.dataset.search = (tp.title + " " + (tp.summary || "") + " " + (tp.keywords || "") + " " + (ch.name || "")).toLowerCase();
-      row.setAttribute("aria-label", tf("row_aria", { title: tp.title }));
-      row.style.setProperty("--accent", "var(--" + ch.accent + ")");
-      row.style.setProperty("--i", i);
-
-      const level = tp.level || 1;
-      const dots =
-        '<span class="level-dots">' +
-        [1, 2, 3].map((n) => '<i class="' + (n <= level ? "on" : "") + '"></i>').join("") +
-        '</span><span class="level-label">' + (LEVELS()[level] || "") + "</span>";
-
-      row.innerHTML =
-        "<td></td>" +
-        '<td class="td-main"><span class="td-title">' +
-        escapeHtml(tp.title) +
-        '<span class="arrow" aria-hidden="true"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 8h11M9 3.5L13.5 8 9 12.5"/></svg></span></span></td>' +
-        '<td class="td-summary">' +
-        escapeHtml(tp.summary || "") +
-        "</td>" +
-        '<td class="td-level">' +
-        dots +
-        "</td>";
-
-      const go = () => {
-        location.hash = "#/onderwerp/" + encodeURIComponent(tp.id);
-      };
-      row.addEventListener("click", go);
-      row.addEventListener("keydown", (ev) => {
-        if (ev.key === "Enter" || ev.key === " ") {
-          ev.preventDefault();
-          go();
-        }
+      const ul = el("ul", "home-list");
+      topics.forEach((tp) => {
+        const li = el("li");
+        const a = el("a", null, escapeHtml(tp.title));
+        a.href = "#/onderwerp/" + encodeURIComponent(tp.id);
+        li.appendChild(a);
+        ul.appendChild(li);
       });
-      tbody.appendChild(row);
-      i++;
+      section.appendChild(ul);
+      frag.appendChild(section);
     });
-
-    table.appendChild(tbody);
-    shell.appendChild(table);
-    section.appendChild(shell);
-    frag.appendChild(section);
-
-    /* ---------- Zoeken / filteren ---------- */
-    function applyFilter() {
-      const q = (search.value || "").trim().toLowerCase();
-      const activeChip = chips.find((c) => c.getAttribute("aria-pressed") === "true");
-      const activeChapter = activeChip && activeChip.dataset.chapter;
-      let visible = 0;
-      $$(".topic-row", tbody).forEach((row) => {
-        const okQ = !q || (row.dataset.search || "").indexOf(q) !== -1;
-        const okC = !activeChapter || row.dataset.chapter === activeChapter;
-        const show = okQ && okC;
-        row.style.display = show ? "" : "none";
-        if (show) visible++;
-      });
-      /* hoofdstukgroepen verbergen als al hun rijen weg zijn */
-      $$(".chapter-row", tbody).forEach((groupRow) => {
-        let any = false;
-        let next = groupRow.nextElementSibling;
-        while (next && next.classList.contains("topic-row")) {
-          if (next.style.display !== "none") any = true;
-          next = next.nextElementSibling;
-        }
-        groupRow.style.display = any ? "" : "none";
-      });
-      let emptyRow = $(".empty-row", tbody);
-      if (visible === 0) {
-        if (!emptyRow) {
-          emptyRow = el("tr", "empty-row");
-          emptyRow.appendChild(el("td", null, escapeHtml(t("empty_row"))));
-          emptyRow.firstChild.colSpan = 4;
-          tbody.appendChild(emptyRow);
-        }
-        emptyRow.style.display = "";
-      } else if (emptyRow) {
-        emptyRow.style.display = "none";
-      }
-    }
-
-    search.addEventListener("input", applyFilter);
 
     return frag;
   }
@@ -345,23 +611,21 @@ window.MLP = window.MLP || {};
     const crumb = el(
       "a",
       "crumb",
-      '<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M10 2.5L4.5 8l5.5 5.5"/></svg> ' +
-        escapeHtml(t("crumb_all")) +
+      escapeHtml(t("crumb_all")) +
         ' <span class="sep">/</span> ' +
         escapeHtml(chapter.name)
     );
     crumb.href = "#/";
     head.appendChild(crumb);
-    head.appendChild(el("div", "topic-chapter", '<span class="dot" style="width:8px;height:8px;border-radius:50%;background:var(--accent);display:inline-block"></span> ' + escapeHtml(chapter.name)));
     head.appendChild(el("h1", "topic-title", escapeHtml(topic.title)));
 
     const words = countWords(topic);
     const minutes = Math.max(1, Math.round(words / 190));
     const meta = el("div", "topic-meta");
     meta.innerHTML =
-      '<span class="m">' + (LEVELS()[topic.level || 1] || t("meta_level_fallback")) + "</span>" +
-      '<span class="m">' + escapeHtml(tf("meta_minutes", { n: minutes })) + "</span>" +
-      '<span class="m">' + escapeHtml(tf("meta_sections", { n: (topic.sections || []).length })) + "</span>";
+      "<span>" + (LEVELS()[topic.level || 1] || t("meta_level_fallback")) + "</span>" +
+      "<span>" + escapeHtml(tf("meta_minutes", { n: minutes })) + "</span>" +
+      "<span>" + escapeHtml(tf("meta_sections", { n: (topic.sections || []).length })) + "</span>";
     head.appendChild(meta);
 
     if (topic.intro) head.appendChild(el("p", "topic-intro", topic.intro));
@@ -383,7 +647,7 @@ window.MLP = window.MLP || {};
         a.href = "#/onderwerp/" + encodeURIComponent(prev.id);
         pager.appendChild(a);
       } else {
-        pager.appendChild(el("span"));
+        pager.appendChild(el("span", "spacer"));
       }
       if (next) {
         const a = el("a", "next", '<span class="dir">' + escapeHtml(t("pager_next")) + '</span><span class="pg-title">' + escapeHtml(next.title) + "</span>");
@@ -393,7 +657,6 @@ window.MLP = window.MLP || {};
       frag.appendChild(pager);
     }
 
-    /* weergave met zachte transitie */
     const v = view();
     v.innerHTML = "";
     v.appendChild(frag);
@@ -452,46 +715,6 @@ window.MLP = window.MLP || {};
   }
 
   /* ============================================================
-     Reveals & voortgangsbalk
-     ============================================================ */
-
-  let observer = null;
-
-  function observeReveals() {
-    if (!("IntersectionObserver" in window)) {
-      $$(".reveal").forEach((n) => n.classList.add("visible"));
-      return;
-    }
-    if (!observer) {
-      observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add("visible");
-              observer.unobserve(entry.target);
-            }
-          });
-        },
-        { rootMargin: "0px 0px -8% 0px", threshold: 0.05 }
-      );
-    }
-    $$(".reveal:not(.visible)").forEach((n) => observer.observe(n));
-  }
-
-  function initProgress() {
-    const bar = document.getElementById("progressBar");
-    if (!bar) return;
-    const update = () => {
-      const doc = document.documentElement;
-      const max = doc.scrollHeight - doc.clientHeight;
-      const pct = max > 0 ? (doc.scrollTop / max) * 100 : 0;
-      bar.style.width = pct + "%";
-    };
-    window.addEventListener("scroll", update, { passive: true });
-    update();
-  }
-
-  /* ============================================================
      Taalwissel
      ============================================================ */
 
@@ -517,6 +740,16 @@ window.MLP = window.MLP || {};
       MLP.data.clearCache();
       homeBuilt = false;
       homeDom = null;
+      sidebarBuilt = false;
+      const nav = document.getElementById("sidebarNav");
+      if (nav) nav.innerHTML = "";
+
+      /* zoekindex opnieuw opbouwen in de nieuwe taal */
+      searchIndex = null;
+      searchIndexBuilding = false;
+      const results = document.getElementById("searchResults");
+      if (results) results.innerHTML = "";
+
       currentRoute = null;
       updateLangToggle();
       route();
@@ -536,7 +769,8 @@ window.MLP = window.MLP || {};
   function boot() {
     if (booted) return; /* bescherming tegen dubbel opstarten (defer + DOMContentLoaded) */
     booted = true;
-    initProgress();
+    initMenu();
+    initSidebarSearch();
     initLangToggle();
     route();
   }

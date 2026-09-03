@@ -1,9 +1,10 @@
 /* ============================================================
    MLP — i18n.js
-   Tweilingige interface (NL standaard · EN beschikbaar).
+   Tweilingige interface (NL standaard · EN secundair).
    - t(key) geeft de string in de actieve taal
    - setLang(lang) wisselt van taal en vuurt "mlp:langchange"
-   - keuze wordt onthouden in localStorage ("mlp-lang")
+   - keuze wordt onthouden in localStorage ("mlp-lang");
+     zonder opgeslagen voorkeur is Nederlands de default
    ============================================================ */
 
 window.MLP = window.MLP || {};
@@ -21,39 +22,24 @@ window.MLP = window.MLP || {};
       doc_description:
         "Machine Learning stof helder samengevat: van de basis tot scikit-learn, loss functions, logistic regression en SVM's — met formules, voorbeelden en uitvoerbare code.",
       /* navigatie */
-      nav_topics: "Onderwerpen",
+      nav_home: "Startpagina",
       brand_sub: "machine\u00a0learning\u00a0Practice",
       lang_switch_to: "Schakel over naar het Engels",
       lang_current: "Nederlands",
-      /* hero */
-      hero_eyebrow: "machine learning \u00b7 van basis tot classifier",
-      hero_title: 'Machine Learning stof, <span class="grad">helder samengevat</span>.',
-      hero_lede_fallback:
+      /* startpagina */
+      home_title: "Machine Learning, helder samengevat",
+      home_lede_fallback:
         "Van de eerste basisbegrippen tot logistic regression en support vector machines met scikit-learn: " +
         "de theorie in begrijpelijke stukjes, met formules, voorbeelden en code die je direct in je browser kunt draaien.",
-      hero_cta: "Bekijk de onderwerpen",
-      hero_hint: "{ch} hoofdstukken \u00b7 {n} onderwerpen \u00b7 formules &amp; code",
-      stat_chapters: "hoofdstukken",
-      stat_topics: "onderwerpen",
-      stat_formulas: "formules & diagrammen",
-      stat_code: "code-voorbeelden",
-      /* home-sectie */
-      section_kicker: "01",
-      section_title: "Kies een onderwerp",
-      section_lede:
-        "Klik op een rij in de tabel om de samenvatting te openen. " +
-        "Filter op hoofdstuk of zoek op trefwoord \u2014 elk onderwerp bevat theorie, formules, code en geheugensteuntjes.",
-      search_placeholder: "Zoek in onderwerpen\u2026 (bijv. \u2018kernel\u2019 of \u2018regularisatie\u2019)",
-      search_aria: "Zoek in onderwerpen",
-      chips_aria: "Filter op hoofdstuk",
-      chip_all: "Alle",
-      /* tabel */
-      th_chapter: "Hoofdstuk",
-      th_topic: "Onderwerp",
-      th_learn: "Wat leer je",
-      th_level: "Niveau",
-      row_aria: "Open onderwerp: {title}",
-      empty_row: "Geen onderwerpen gevonden \u2014 probeer een andere zoekterm.",
+      home_meta: "{ch} hoofdstukken \u00b7 {n} onderwerpen \u00b7 formules & uitvoerbare code",
+      sidebar_search_placeholder: "Zoek in inhoud\u2026",
+      sidebar_search_aria: "Zoek in onderwerpen en hun inhoud",
+      menu_aria: "Zijbalk openen of sluiten",
+      empty_row: "Geen onderwerpen gevonden \u2014 probeer een ander zoekwoord.",
+      search_results: "{n} resultaten",
+      search_indexing: "Inhoud doorzoeken\u2026",
+      theme_to_light: "Schakel naar licht thema",
+      theme_to_dark: "Schakel naar donker thema",
       /* niveaus */
       level_1: "Basis",
       level_2: "Verdieping",
@@ -119,39 +105,24 @@ window.MLP = window.MLP || {};
         "Machine Learning material, clearly summarised: from the basics to scikit-learn, loss functions, logistic regression and SVMs — " +
         "with formulas, examples and runnable code.",
       /* navigatie */
-      nav_topics: "Topics",
+      nav_home: "Home",
       brand_sub: "machine\u00a0learning\u00a0Practice",
       lang_switch_to: "Switch to Dutch",
       lang_current: "English",
-      /* hero */
-      hero_eyebrow: "machine learning \u00b7 from basics to classifiers",
-      hero_title: 'Machine Learning, <span class="grad">clearly summarised</span>.',
-      hero_lede_fallback:
+      /* home */
+      home_title: "Machine Learning, clearly summarised",
+      home_lede_fallback:
         "From the first basic concepts to logistic regression and support vector machines with scikit-learn: " +
         "the theory in understandable chunks, with formulas, examples and code you can run right in your browser.",
-      hero_cta: "Browse the topics",
-      hero_hint: "{ch} chapters \u00b7 {n} topics \u00b7 formulas &amp; code",
-      stat_chapters: "chapters",
-      stat_topics: "topics",
-      stat_formulas: "formulas & diagrams",
-      stat_code: "code examples",
-      /* home-sectie */
-      section_kicker: "01",
-      section_title: "Pick a topic",
-      section_lede:
-        "Click a row in the table to open the summary. " +
-        "Filter by chapter or search by keyword \u2014 every topic covers theory, formulas, code and memory aids.",
-      search_placeholder: "Search topics\u2026 (e.g. \u2018kernel\u2019 or \u2018regularisation\u2019)",
-      search_aria: "Search topics",
-      chips_aria: "Filter by chapter",
-      chip_all: "All",
-      /* tabel */
-      th_chapter: "Chapter",
-      th_topic: "Topic",
-      th_learn: "What you\u2019ll learn",
-      th_level: "Level",
-      row_aria: "Open topic: {title}",
-      empty_row: "No topics found \u2014 try a different search term.",
+      home_meta: "{ch} chapters \u00b7 {n} topics \u00b7 formulas & runnable code",
+      sidebar_search_placeholder: "Search content\u2026",
+      sidebar_search_aria: "Search topics and their content",
+      menu_aria: "Open or close sidebar",
+      empty_row: "No topics found \u2014 try another search term.",
+      search_results: "{n} results",
+      search_indexing: "Indexing content\u2026",
+      theme_to_light: "Switch to light theme",
+      theme_to_dark: "Switch to dark theme",
       /* niveaus */
       level_1: "Basic",
       level_2: "Intermediate",
@@ -217,6 +188,8 @@ window.MLP = window.MLP || {};
     en: { 1: STRINGS.en.level_1, 2: STRINGS.en.level_2, 3: STRINGS.en.level_3 },
   };
 
+  /* NL is de default: alleen een expliciet opgeslagen voorkeur
+     of de taal-schakelaar wijzigt dat (de browser-taal telt niet). */
   function detectLang() {
     try {
       var stored = localStorage.getItem(STORAGE_KEY);
@@ -224,8 +197,7 @@ window.MLP = window.MLP || {};
     } catch (e) {
       /* localStorage kan geblokkeerd zijn */
     }
-    var nav = (navigator.language || (navigator.languages && navigator.languages[0]) || "nl").toLowerCase();
-    return nav.indexOf("en") === 0 ? "en" : "nl";
+    return "nl";
   }
 
   var lang = detectLang();
@@ -267,6 +239,13 @@ window.MLP = window.MLP || {};
     if (meta) meta.setAttribute("content", t("doc_description"));
     var sub = document.querySelector(".brand-sub");
     if (sub) sub.textContent = t("brand_sub");
+    var search = document.getElementById("sidebarSearch");
+    if (search) {
+      search.placeholder = t("sidebar_search_placeholder");
+      search.setAttribute("aria-label", t("sidebar_search_aria"));
+    }
+    var menu = document.getElementById("menuToggle");
+    if (menu) menu.setAttribute("aria-label", t("menu_aria"));
   }
 
   MLP.i18n = {

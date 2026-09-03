@@ -5,13 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MLP — Machine Learning samengevat</title>
   <meta name="description" content="Machine Learning stof helder samengevat: van de basis tot scikit-learn, loss functions, logistic regression en SVM's — met formules, voorbeelden en uitvoerbare code.">
-  <meta name="color-scheme" content="dark">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%237FDBDA'/%3E%3Cstop offset='.5' stop-color='%23B9F6CA'/%3E%3Cstop offset='1' stop-color='%23F6A5C0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='%23161616'/%3E%3Crect x='4' y='4' width='56' height='56' rx='11' fill='none' stroke='url(%23g)' stroke-width='4'/%3E%3Ctext x='32' y='42' font-family='monospace' font-size='26' font-weight='700' fill='url(%23g)' text-anchor='middle'%3EML%3C/text%3E%3C/svg%3E">
+  <meta name="color-scheme" content="dark light">
+  <meta name="theme-color" content="#161616">
 
-  <!-- Fonts -->
+  <!-- Thema vóór het eerste paint zetten (voorkomt kleurflits) -->
+  <script>
+    (function () {
+      var theme = "dark"; /* zoals het origineel: donker + pastel */
+      try {
+        var stored = localStorage.getItem("mlp-theme");
+        if (stored === "light" || stored === "dark") theme = stored;
+      } catch (e) { /* localStorage geblokkeerd → donker */ }
+      document.documentElement.setAttribute("data-theme", theme);
+    })();
+  </script>
+
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23161616' stroke='%23303030'/%3E%3Ctext x='32' y='42' font-family='Lexend, Arial, sans-serif' font-size='23' font-weight='700' fill='%237FDBDA' text-anchor='middle'%3EML%3C/text%3E%3C/svg%3E">
+
+  <!-- Lexend: rustig, oogvriendelijk font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@300..700&display=swap">
 
   <!-- KaTeX voor formules -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous">
@@ -19,46 +33,57 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <div class="progress-bar" id="progressBar" aria-hidden="true"></div>
-
-  <!-- Zachte pastel-achtergrondgloed -->
-  <div class="bg-glow" aria-hidden="true">
-    <span class="glow glow-cyan"></span>
-    <span class="glow glow-magenta"></span>
-    <span class="glow glow-green"></span>
-    <span class="glow glow-yellow"></span>
-  </div>
-
   <header class="topbar">
-    <div class="container topbar-inner">
+    <div class="topbar-inner">
+      <button type="button" class="menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="sidebar">
+        <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2 3.5h12M2 8h12M2 12.5h12"/></svg>
+        <span class="visually-hidden">Menu</span>
+      </button>
       <a class="brand" href="#/" aria-label="MLP — naar startpagina">
-        <span class="brand-mark" aria-hidden="true">ML</span>
         <span class="brand-name">MLP</span>
-        <span class="brand-sub">machine&nbsp;learning&nbsp;Practice</span>
+        <span class="brand-sub">machine&nbsp;learning&nbsp;practice</span>
       </a>
-      <nav class="topnav" aria-label="Hoofdnavigatie">
-        <a href="#/" data-nav="home">Onderwerpen</a>
+      <div class="topbar-actions">
+        <button type="button" class="icon-btn" id="themeToggle" aria-label="Schakel naar licht thema" title="Schakel naar licht thema">
+          <svg class="icon-moon" viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M13.8 10A6.1 6.1 0 0 1 6 2.2 6.1 6.1 0 1 0 13.8 10z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="8" cy="8" r="3.1"/><path d="M8 1.3v1.7M8 13v1.7M1.3 8H3M13 8h1.7M3.3 3.3l1.2 1.2M11.5 11.5l1.2 1.2M12.7 3.3l-1.2 1.2M4.5 11.5l-1.2 1.2"/></svg>
+        </button>
         <button type="button" class="lang-toggle" id="langToggle" aria-label="Switch to English" title="Switch to English">EN</button>
-      </nav>
+      </div>
     </div>
   </header>
 
-  <main id="app" class="container" tabindex="-1">
-    <!--wordt gevuld door js/app.js-->
-    <noscript>
-      <section class="noscript-card">
-        <h2>JavaScript staat uit</h2>
-        <p>Deze site rendert haar inhoud met JavaScript. Zet JavaScript aan om de samenvattingen te lezen.</p>
-      </section>
-    </noscript>
-    <div id="view" class="view"></div>
-  </main>
+  <div class="layout" id="layout">
+    <div class="sidebar-backdrop" id="sidebarBackdrop" hidden></div>
+
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-scroll">
+        <div class="sidebar-search">
+          <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5L14 14"/></svg>
+          <input type="search" id="sidebarSearch" placeholder="Zoek in inhoud…" aria-label="Zoek in onderwerpen en inhoud" autocomplete="off">
+          <kbd class="search-kbd" aria-hidden="true">/</kbd>
+        </div>
+        <div class="search-status" id="searchStatus" hidden></div>
+        <div class="search-results" id="searchResults" aria-live="polite"></div>
+        <nav class="sidebar-nav" id="sidebarNav" aria-label="Onderwerpen">
+          <!--wordt gevuld door js/app.js-->
+        </nav>
+      </div>
+    </aside>
+
+    <main class="content" id="app" tabindex="-1">
+      <noscript>
+        <section class="noscript-card">
+          <h2>JavaScript staat uit</h2>
+          <p>Deze site rendert haar inhoud met JavaScript. Zet JavaScript aan om de samenvattingen te lezen.</p>
+        </section>
+      </noscript>
+      <div id="view" class="view"></div>
+    </main>
+  </div>
 
   <footer class="site-footer">
-    <div class="container footer-inner">
-      <span class="footer-brand">MLP · Machine Learning samenvattingen</span>
-      <span class="footer-meta">van basis tot gevorderd · scikit-learn · formules &amp; uitvoerbare code</span>
-    </div>
+    <span class="footer-text">MLP · Machine Learning samenvattingen · formules &amp; uitvoerbare code</span>
   </footer>
 
   <!-- Libraries (CDN, vallen netjes terug op platte tekst zonder internet) -->
@@ -68,6 +93,7 @@
 
   <!-- App -->
   <script defer src="js/i18n.js"></script>
+  <script defer src="js/theme.js"></script>
   <script defer src="js/content.js"></script>
   <script defer src="js/blocks.js"></script>
   <script defer src="js/runner.js"></script>

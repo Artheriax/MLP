@@ -309,8 +309,8 @@ window.MLP = window.MLP || {};
       const sx = (x) => PAD.l + ((x - xr[0]) / (xr[1] - xr[0])) * (W - PAD.l - PAD.r);
       const sy = (y) => H - PAD.b - ((y - yr[0]) / (yr[1] - yr[0])) * (H - PAD.t - PAD.b);
 
-      /* raster */
-      const gridG = svgNode("g", { stroke: "rgba(255,255,255,0.06)", "stroke-width": 1 });
+      /* raster — kleur via CSS-klasse, volgt het thema */
+      const gridG = svgNode("g", { class: "plot-grid", "stroke-width": 1 });
       const niceStep = (range) => {
         const raw = range / 6;
         const pow = Math.pow(10, Math.floor(Math.log10(raw)));
@@ -332,7 +332,7 @@ window.MLP = window.MLP || {};
       svg.appendChild(gridG);
 
       /* assen */
-      const axisAttrs = { stroke: "rgba(255,255,255,0.35)", "stroke-width": 1.4 };
+      const axisAttrs = { class: "plot-axis" };
       if (yr[0] <= 0 && yr[1] >= 0) {
         svg.appendChild(svgNode("line", Object.assign({ x1: PAD.l, y1: sy(0), x2: W - PAD.r, y2: sy(0) }, axisAttrs)));
       }
@@ -340,8 +340,8 @@ window.MLP = window.MLP || {};
         svg.appendChild(svgNode("line", Object.assign({ x1: sx(0), y1: PAD.t, x2: sx(0), y2: H - PAD.b }, axisAttrs)));
       }
 
-      /* ticklabels */
-      const tickAttrs = { fill: "rgba(255,255,255,0.45)", "font-size": 11, "font-family": "JetBrains Mono, monospace" };
+      /* ticklabels — vulkleur via CSS-klasse (thema) */
+      const tickAttrs = { class: "plot-tick", "font-size": 11, "font-family": "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" };
       for (let gx = Math.ceil(xr[0] / xstep) * xstep; gx <= xr[1] + 1e-9; gx += xstep) {
         const tk = svgNode("text", Object.assign({ x: sx(gx), y: H - PAD.b + 18, "text-anchor": "middle" }, tickAttrs));
         tk.textContent = fmt(gx);
@@ -354,7 +354,7 @@ window.MLP = window.MLP || {};
       }
 
       /* asnamen */
-      const xa = svgNode("text", Object.assign({ x: W - PAD.r, y: H - PAD.b + 34, "text-anchor": "end", fill: "rgba(255,255,255,0.5)", "font-size": 11, "font-family": "Inter, sans-serif" }, {}));
+      const xa = svgNode("text", Object.assign({ x: W - PAD.r, y: H - PAD.b + 34, "text-anchor": "end", class: "plot-tick", "font-size": 11, "font-family": "Lexend, -apple-system, Segoe UI, sans-serif" }, {}));
       xa.textContent = spec.xlabel || t("xlabel_fallback");
       svg.appendChild(xa);
 
@@ -376,9 +376,11 @@ window.MLP = window.MLP || {};
           pen = true;
         }
         if (d) {
-          svg.appendChild(
-            svgNode("path", { d: d, fill: "none", stroke: c.color, "stroke-width": 2.4, "stroke-linecap": "round", "stroke-linejoin": "round" })
-          );
+          /* stroke via inline style: CSS-variabelen (thema) werken
+             in styles, niet in SVG-attributen */
+          const path = svgNode("path", { d: d, fill: "none", "stroke-width": 2.4, "stroke-linecap": "round", "stroke-linejoin": "round" });
+          path.style.stroke = c.color;
+          svg.appendChild(path);
         }
       });
 
@@ -399,10 +401,10 @@ window.MLP = window.MLP || {};
             cx: sx(mx).toFixed(1),
             cy: sy(my).toFixed(1),
             r: 5.5,
-            fill: COLORS[mk.color] || mk.color || "#ffffff",
-            stroke: "rgba(22,22,22,0.9)",
-            "stroke-width": 1.4,
           });
+          dot.style.fill = COLORS[mk.color] || mk.color || "var(--cyan)";
+          dot.style.stroke = "var(--plot-point-ring)";
+          dot.style.strokeWidth = "1.4";
           if (mk.label) {
             const tt = svgNode("title", {});
             tt.textContent = mk.label + " (" + +mx.toFixed(2) + ", " + +my.toFixed(2) + ")";
@@ -422,10 +424,10 @@ window.MLP = window.MLP || {};
           cx: sx(p.x).toFixed(1),
           cy: sy(p.y).toFixed(1),
           r: 4.2,
-          fill: p.color,
-          stroke: "rgba(22,22,22,0.9)",
-          "stroke-width": 1.2,
         });
+        c.style.fill = p.color;
+        c.style.stroke = "var(--plot-point-ring)";
+        c.style.strokeWidth = "1.2";
         if (p.label) {
           const title = svgNode("title", {});
           title.textContent = p.label + " (" + +p.x.toFixed(2) + ", " + +p.y.toFixed(2) + ")";
@@ -435,7 +437,7 @@ window.MLP = window.MLP || {};
       });
 
       /* crosshair + hover */
-      const cross = svgNode("line", { x1: 0, y1: PAD.t, x2: 0, y2: H - PAD.b, stroke: "rgba(255,255,255,0.25)", "stroke-dasharray": "4 4", "stroke-width": 1, opacity: 0 });
+      const cross = svgNode("line", { class: "plot-cross", x1: 0, y1: PAD.t, x2: 0, y2: H - PAD.b, opacity: 0 });
       svg.appendChild(cross);
 
       const overlay = svgNode("rect", { x: PAD.l, y: PAD.t, width: W - PAD.l - PAD.r, height: H - PAD.t - PAD.b, fill: "transparent" });
@@ -649,17 +651,11 @@ window.MLP = window.MLP || {};
   }
 
   function renderSection(section, index, ctx) {
-    const sec = el("section", "topic-section reveal");
-    const h2 = el("h2");
-    h2.appendChild(el("span", "sec-num", String(index + 1).padStart(2, "0")));
-    h2.appendChild(document.createTextNode(section.title || ""));
-    sec.appendChild(h2);
+    const sec = el("section", "topic-section");
+    sec.appendChild(el("h2", null, escapeHtml(section.title || "")));
     (section.blocks || []).forEach((block) => {
       const node = renderBlock(block, ctx);
-      if (node) {
-        node.classList.add("reveal");
-        sec.appendChild(node);
-      }
+      if (node) sec.appendChild(node);
     });
     return sec;
   }
