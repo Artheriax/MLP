@@ -2,7 +2,7 @@
   "id": "faq",
   "chapter": "ch6",
   "title": "Veelgestelde vragen (FAQ)",
-  "intro": "Dertien korte, heldere antwoorden op de vragen die het vaakst langskomen — van het verschil tussen classificatie en regressie tot de keuze van de juiste metric. Elke vraag verwijst door naar het onderwerp waar de stof uitgebreid en met voorbeelden staat, zodat je vanuit deze ene pagina de hele site kunt navigeren.",
+  "intro": "Zestien korte, heldere antwoorden op de vragen die het vaakst langskomen — van het verschil tussen classificatie en regressie tot de keuze van de juiste metric. Elke vraag verwijst door naar het onderwerp waar de stof uitgebreid en met voorbeelden staat, zodat je vanuit deze ene pagina de hele site kunt navigeren.",
   "level": 1,
   "sections": [
     {
@@ -37,6 +37,16 @@
           "type": "callout",
           "kind": "warning",
           "html": "<p><strong>Waarom moet ik train- en testdata splitsen?</strong></p><p>Een model dat op dezelfde data wordt beoordeeld als waarop het is getraind, kan de antwoorden gewoon hebben <em>onthouden</em> — een hoge score zegt dan niets over nieuwe, ongeziene data. De testset speelt de rol van ‘nieuwe data’: die gebruik je pas aan het einde, één keer, om te meten hoe goed het model generaliseert. De klassieke fout is <em>data leakage</em>: informatie uit de testset lekt in de training, bijvoorbeeld door een scaler of encoder op ál je data te fitten in plaats van alleen op de traindata. Split dus eerst, en fit transformaties uitsluitend op de traindata. Zie <em>Data, features &amp; labels</em> en <em>De ML-workflow van begin tot eind</em>.</p>"
+        },
+        {
+          "type": "callout",
+          "kind": "info",
+          "html": "<p><strong>Wat is cross-validation en wanneer heb ik het nodig?</strong></p><p>Eén train/test-split is een gok: welke samples in de testset belanden, hangt af van de random seed, en de score kan makkelijk enkele procenten schuiven. <strong>Cross-validation</strong> (CV) herhaalt de split meerdere keren en middelt: verdeel je data in k folds (vaak k = 5 of 10), train k keer op alle-maar-één fold, en rapporteer het gemiddelde. In scikit-learn is dat <code>cross_val_score(model, X, y, cv=5)</code>. CV is essentieel zodra je hyperparameters tunet (gebruik <code>GridSearchCV</code>) — de testset blijft dan braaf bewaard voor de échte eindbeoordeling. Belangrijk: staat er preprocessing in je pipeline (zoals <code>StandardScaler</code>)? Gebruik dan altijd een <code>Pipeline</code>, anders lekt test-info in je train-fold. Zie <a href=\"#/topic/cross-validation\">Cross-validation: betrouwbaar je model beoordelen</a>.</p>"
+        },
+        {
+          "type": "callout",
+          "kind": "tip",
+          "html": "<p><strong>Hoe bouw ik logistic regression zelf, zonder scikit-learn?</strong></p><p>Met vijf regels: een sigmoid <code>1/(1+np.exp(-z))</code>, een bias-kolom, gewichten op nul, en in elke epoch <code>y_hat = sigmoid(Xb @ w)</code>, <code>grad = Xb.T @ (y_hat - y) / n</code>, <code>w -= lr * grad</code>. De gradiënt is het matrix-product <code>(1/n)·Xᵀ(ŷ−y)</code> — de factor <code>(ŷ−y)</code> is de voorspelfout. Voeg <code>predict_proba</code> en <code>predict</code> toe en je hebt een werkende classifier die op de borstkankerdataset binnen een procent van scikit-learn scoort. Met een loopje eromheen train je één classifier per klasse en heb je multi-class one-vs-rest. Zie <a href=\"#/topic/logistic-regression-function\">Logistic regression zelf bouwen: van sigmoid tot classifier</a> voor de volledige uitwerking, inclusief de afleiding van de gradiënt en een vergelijking met scikit-learn.</p>"
         },
         {
           "type": "callout",

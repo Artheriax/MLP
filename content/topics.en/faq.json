@@ -2,7 +2,7 @@
   "id": "faq",
   "chapter": "ch6",
   "title": "Frequently asked questions (FAQ)",
-  "intro": "Thirteen short, clear answers to the most frequently asked questions — from the difference between classification and regression to picking the right metric. Every question points to the topic where the material is covered in depth with examples, so from this single page you can navigate the whole site.",
+  "intro": "Sixteen short, clear answers to the most frequently asked questions — from the difference between classification and regression to picking the right metric. Every question points to the topic where the material is covered in depth with examples, so from this single page you can navigate the whole site.",
   "level": 1,
   "sections": [
     {
@@ -37,6 +37,16 @@
           "type": "callout",
           "kind": "warning",
           "html": "<p><strong>Why do I have to split train and test data?</strong></p><p>A model evaluated on the same data it was trained on may simply have <em>memorised</em> the answers — a high score then says nothing about new, unseen data. The test set plays the role of ‘new data’: you use it only once, at the end, to measure how well the model generalises. The classic mistake is <em>data leakage</em>: information from the test set leaks into training, for instance by fitting a scaler or encoder on <em>all</em> your data instead of only the training data. So split first, and fit transformations exclusively on the training data. See <em>Data, features &amp; labels</em> and <em>The ML workflow from start to finish</em>.</p>"
+        },
+        {
+          "type": "callout",
+          "kind": "info",
+          "html": "<p><strong>What is cross-validation and when do I need it?</strong></p><p>A single train/test split is a gamble: which samples end up in the test set depends on the random seed, and the score can easily shift by a few percent. <strong>Cross-validation</strong> (CV) repeats the split multiple times and averages: divide your data into k folds (usually k = 5 or 10), train k times on all-but-one fold, and report the mean. In scikit-learn that's <code>cross_val_score(model, X, y, cv=5)</code>. CV is essential as soon as you tune hyperparameters (use <code>GridSearchCV</code>) — the test set then stays pristine for the real final evaluation. Important: if your pipeline includes preprocessing (such as <code>StandardScaler</code>), always use a <code>Pipeline</code>, otherwise test info leaks into your train fold. See <a href=\"#/topic/cross-validation\">Cross-validation: judging your model reliably</a>.</p>"
+        },
+        {
+          "type": "callout",
+          "kind": "tip",
+          "html": "<p><strong>How do I build logistic regression myself, without scikit-learn?</strong></p><p>Five lines do it: a sigmoid <code>1/(1+np.exp(-z))</code>, a bias column, weights to zero, and each epoch <code>y_hat = sigmoid(Xb @ w)</code>, <code>grad = Xb.T @ (y_hat - y) / n</code>, <code>w -= lr * grad</code>. The gradient is the matrix product <code>(1/n)·Xᵀ(ŷ−y)</code> — the factor <code>(ŷ−y)</code> is the prediction error. Add <code>predict_proba</code> and <code>predict</code> and you have a working classifier that on the breast cancer dataset scores within a percent of scikit-learn. Wrap a loop around it, train one classifier per class, and you have multi-class one-vs-rest. See <a href=\"#/topic/logistic-regression-function\">Building logistic regression yourself: from sigmoid to classifier</a> for the full treatment, including the gradient derivation and a comparison with scikit-learn.</p>"
         },
         {
           "type": "callout",

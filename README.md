@@ -41,7 +41,7 @@ NL/EN-knop rechtsboven).
 - **Frontend**: pure HTML/CSS/JS — geen build-stap, geen framework
 - **Backend (optioneel, lokaal)**: FastAPI serveert de site én een REST-API over de content (NL + EN)
 - **Hosting**: 100% GitHub Pages-ready (statische bestanden)
-- **Talen**: NL (standaard) en EN — alle interface-teksten én alle 21 onderwerpen zijn vertaald
+- **Talen**: NL (standaard) en EN — alle interface-teksten én alle 23 onderwerpen zijn vertaald
 
 ---
 
@@ -230,7 +230,7 @@ MLP/
 ├── content/
 │   ├── index.json        # NL: hoofdstukken + onderwerpen-register
 │   ├── index.en.json     # EN: idem
-│   ├── topics/*.json     # NL: 21 onderwerpen (4 basis + logistic-regression-intro + theorie incl. gradient descent + 2 metrics + FAQ)
+│   ├── topics/*.json     # NL: 23 onderwerpen (4 basis + logistic-regression-intro + theorie incl. gradient descent + 3 metrics/CV + LR zelf bouwen + FAQ)
 │   └── topics.en/*.json  # EN: idem
 ├── main.py               # FastAPI: statische site + REST-API (NL/EN)
 ├── start.sh              # Mac/Linux: venv aanmaken + deps installeren + server starten

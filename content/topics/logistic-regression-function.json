@@ -1,0 +1,283 @@
+{
+  "id": "logistic-regression-function",
+  "chapter": "ch3",
+  "title": "Logistic regression zelf bouwen: van sigmoid tot classifier",
+  "intro": "Scikit-learn's LogisticRegression is een black box: je roept fit en hij werkt. Begrijp je pas echt als je hem zelf bouwt — en dat valt mee: een sigmoid, een binaire cross-entropy-loss, de gradiënt ervan, en een paar regels gradient descent. In dit onderwerp bouwen we de hele classifier op in pure NumPy: een losse functie logistic_regression(X, y) die de coëfficiënten leert, plus predict_proba en predict. Tot slot vergelijken we de uitkomst met scikit-learn en breiden we de functie uit naar multi-class via one-vs-rest.",
+  "level": 3,
+  "sections": [
+    {
+      "title": "Waarom zelf bouwen?",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Scikit-learn's <code>LogisticRegression</code> roep je aan met &eacute;&eacute;n regel en hij werkt — maar wat gebeurt er eigenlijk binnen? In de vorige onderwerpen zag je de theorie: de <a href=\"#/topic/logistic-regression\">pipeline van lijn naar kans naar klasse</a>, de <a href=\"#/topic/kansen-sigmoid\">sigmoid</a>, de <a href=\"#/topic/regularisatie\">regularisatie via C</a> en de <a href=\"#/topic/gradient-descent\">update-regel van gradient descent</a>. Hier zetten we die theorie om in code: &eacute;&eacute;n samenhangende functie die het allemaal doet. </p>"
+        },
+        {
+          "type": "text",
+          "html": "<p> Dat oefenen loont. Wie ooit zelf een logistic regression heeft gebouwd, snapt meteen waarom je features moet <strong>schalen</strong> (de gradiëntstap is dan in elke richting even groot), waarom de <strong>learning rate</strong> een knop is die je moet afstellen, en waarom <code>scipy.optimize.minimize</code> of scikit-learn's interne solver <em>veel</em> effici&euml;nter zijn dan gewone gradient descent. En wie de gradiënt van de loss eenmaal met de hand heeft afgeleid, vergeet hem nooit meer — inclusief waar de factor \\( (\\hat{y}_i - y_i) \\) vandaan komt. </p>"
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p> Ons einddoel: &eacute;&eacute;n losse functie <code>logistic_regression(X, y, lr, n_iter)</code> die de coëfficiënten \\( w \\) leert via gradient descent op de binaire cross-entropy, plus de helpers <code>predict_proba(X, w)</code> en <code>predict(X, w)</code>. Geen scikit-learn, alleen NumPy. </p>"
+        }
+      ]
+    },
+    {
+      "title": "De bouwstenen: sigmoid en binaire cross-entropy",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Twee functies vormen de fundering. De <strong>sigmoid</strong> perst elke re&euml;le score \\( z \\) in het interval (0, 1) en maakt er dus een kans van. De <strong>binaire cross-entropy (BCE)</strong> meet hoe ver een voorspelde kans van de echte label af ligt — dezelfde loss die je kent uit <a href=\"#/topic/classification-metrics\">Metrics bij classificatie</a>, daar bekeken als beoordelingsmaat; hier is hij het <em>leersignaal</em> dat we gaan minimaliseren. </p>"
+        },
+        {
+          "type": "formula",
+          "label": "sigmoid",
+          "latex": "\\sigma(z) \\;=\\; \\frac{1}{1 + e^{-z}}, \\qquad z \\in \\mathbb{R}, \\quad \\sigma(z) \\in (0, 1)",
+          "caption": "Perst elke reële score in (0, 1). Glad, monotoon stijgend, en differentieerbaar — alles wat je voor gradient descent nodig hebt."
+        },
+        {
+          "type": "formula",
+          "label": "binaire cross-entropy (gemiddeld over n samples)",
+          "latex": "L(w) \\;=\\; -\\frac{1}{n}\\sum_{i=1}^{n} \\Bigl[\\, y_i \\log \\hat{y}_i \\;+\\; (1 - y_i)\\, \\log(1 - \\hat{y}_i) \\,\\Bigr], \\qquad \\hat{y}_i = \\sigma(w \\cdot x_i)",
+          "caption": "De loss die we minimaliseren. y ∈ {0, 1}; ŷ ∈ (0, 1). De factor 1/n maakt het een gemiddelde, zodat de gradiënt niet groter wordt naarmate je meer data hebt."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "sigmoid en BCE in pure NumPy",
+          "runnable": true,
+          "source": "import numpy as np\n\ndef sigmoid(z):\n    # numeriek stabiele variant: splits positief/negatief\n    return np.where(z >= 0, 1 / (1 + np.exp(-z)),\n                    np.exp(z) / (1 + np.exp(z)))\n\ndef bce_loss(y_true, y_pred):\n    # clip voorkomt log(0); BCE is ongedefinieerd bij exact 0 of 1\n    eps = 1e-15\n    p = np.clip(y_pred, eps, 1 - eps)\n    return -np.mean(y_true * np.log(p) + (1 - y_true) * np.log(1 - p))\n\n# saniteitcheck\nprint('sigma(0)    :', sigmoid(0.0))           # 0.5\nprint('sigma(2)    :', round(sigmoid(2.0), 4))   # ~0.8808\nprint('sigma(-2)   :', round(sigmoid(-2.0), 4))  # ~0.1192\n\n# goede voorspellingen → lage loss\ny = np.array([1.0, 0.0, 1.0, 0.0])\nprint('BCE (goed)  :', round(bce_loss(y, np.array([0.9, 0.1, 0.8, 0.2])), 4))\nprint('BCE (slecht):', round(bce_loss(y, np.array([0.1, 0.9, 0.2, 0.8])), 4))"
+        },
+        {
+          "type": "callout",
+          "kind": "tip",
+          "html": "<p> De <em>numeriek stabiele</em> sigmoid telt twee takken: voor \\( z \\geq 0 \\) de gewone vorm, voor \\( z &lt; 0 \\) een equivalent herschreven vorm die <code>np.exp(large_positive)</code> (overflow) vermijdt. In de praktijk hoef je dit zelden zelf te schrijven — scikit-learn doet het intern — maar als je zelf een grote \\( z \\) tegenkomt met <code>RuntimeWarning: overflow</code>, weet je waar het vandaan komt. </p>"
+        }
+      ]
+    },
+    {
+      "title": "De gradiënt van BCE: waar de factor (ŷ − y) vandaan komt",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Om gradient descent te kunnen draaien hebben we de <strong>afgeleide van de loss naar de gewichten</strong> nodig. De afleiding is een mooie oefening in kettingregel; het eindresultaat is verrassend simpel en intutief: </p>"
+        },
+        {
+          "type": "formula",
+          "label": "gradiënt van BCE ten opzichte van het gewicht w_j",
+          "latex": "\\frac{\\partial L}{\\partial w_j} \\;=\\; \\frac{1}{n}\\sum_{i=1}^{n} \\bigl(\\, \\hat{y}_i - y_i \\,\\bigr)\\, x_{i,j}",
+          "caption": "Per gewicht w_j: het gemiddelde over alle samples van (voorspelde kans − echte label) × featurewaarde. Compact in matrixvorm: ∇L = (1/n) · Xᵀ(ŷ − y)."
+        },
+        {
+          "type": "text",
+          "html": "<p> Lees de factor \\( (\\hat{y}_i - y_i) \\) als de <strong>voorspelfout</strong>. Klopt de voorspelling helemaal (\\( \\hat{y}_i = y_i \\)), dan is de bijdrage aan de gradiënt nul — er is niets te leren aan dat sample. Zit het ernaast, dan trekt het sample de gewichten mee. De vectorvorm <code>(1/n) * X.T @ (y_hat - y)</code> is precies wat we in de functie hieronder gebruiken; het is kort, effici&euml;nt, en exact wat scikit-learn intern ook uitrekent (zij het met een elegantere solver dan gewone gradient descent). </p>"
+        },
+        {
+          "type": "callout",
+          "kind": "info",
+          "html": "<p> De afleiding in drie stappen: <strong>(1)</strong> schrijf BCE per sample als \\( -[y \\log \\sigma(z) + (1-y)\\log(1 - \\sigma(z))] \\) met \\( z = w \\cdot x \\); <strong>(2)</strong> gebruik \\( \\sigma'(z) = \\sigma(z)(1 - \\sigma(z)) \\) en de kettingregel; <strong>(3)</strong> alles valt prachtig weg en er blijft \\( (\\sigma(z) - y)\\, x \\) over. Het feit dat de afgeleide van de log-functie en de afgeleide van de sigmoid <em>elkaar precies opheffen</em> is de reden waarom BCE zo'n geliefde loss is voor classificatie — de gradiënt blijft netjes en numeriek stabiel. </p>"
+        }
+      ]
+    },
+    {
+      "title": "De functie: logistic_regression in pure NumPy",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Hier is de hele classifier. De functie <code>logistic_regression</code> accepteert een 2D-featurematrix <code>X</code> en een 1D-labelvector <code>y</code>, initialiseert de gewichten op nul, en draait <code>n_iter</code> keer de update-regel uit <a href=\"#/topic/gradient-descent\">gradient descent</a>: bereken voorspellingen, bereken de gradiënt, schuif de gewichten een stapje tegen de gradiënt in. Naast de hoofdfunctie definiëren we <code>predict_proba</code> (kansen) en <code>predict</code> (harde labels via een drempel van 0,5) — precies dezelfde interface als scikit-learn. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "de losse functie: fit, predict_proba en predict",
+          "runnable": true,
+          "source": "import numpy as np\n\ndef sigmoid(z):\n    return np.where(z >= 0, 1 / (1 + np.exp(-z)),\n                    np.exp(z) / (1 + np.exp(z)))\n\ndef logistic_regression(X, y, lr=0.1, n_iter=2000):\n    \"\"\"Train logistic regression met gradient descent.\n\n    X : (n, d) featurematrix\n    y : (n,)   labelvector met waarden 0 of 1\n    lr : learning rate eta\n    n_iter : aantal epochs\n    Returns: w met shape (d + 1,) — de bias zit in w[0].\n    \"\"\"\n    X = np.asarray(X, dtype=float)\n    y = np.asarray(y, dtype=float)\n    n, d = X.shape\n\n    # bias-kolom (allemaal enen) vooraan plakken\n    Xb = np.hstack([np.ones((n, 1)), X])\n    w = np.zeros(d + 1)\n\n    for _ in range(n_iter):\n        y_hat = sigmoid(Xb @ w)              # voorspellingen\n        grad  = Xb.T @ (y_hat - y) / n       # gradiënt: (1/n) X^T (y_hat - y)\n        w    -= lr * grad                    # update-regel\n    return w\n\ndef predict_proba(X, w):\n    X = np.asarray(X, dtype=float)\n    Xb = np.hstack([np.ones((X.shape[0], 1)), X])\n    return sigmoid(Xb @ w)\n\ndef predict(X, w, threshold=0.5):\n    return (predict_proba(X, w) >= threshold).astype(int)\n\n# kleine test op synthetische data\nX = np.array([[0.0, 0.0], [0.0, 1.0], [1.0, 0.0], [1.0, 1.0],\n              [2.0, 2.0], [3.0, 3.0], [2.5, 2.5], [3.0, 2.0]])\ny = np.array([0, 0, 0, 0, 1, 1, 1, 1])\n\nw = logistic_regression(X, y, lr=0.5, n_iter=2000)\nprint('gewichten w      :', w.round(3))\nprint('kansen predict   :', predict_proba(X, w).round(3))\nprint('labels predict   :', predict(X, w))\nprint('echte labels     :', y)"
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p> Tel de regels: de hele trainingslus is <strong>vijf regels</strong>. Bias-kolom erbij, gewichten op nul, en in elke epoch: voorspellen, gradiënt berekenen, gewichten bijwerken. De wiskunde uit de vorige sectie vertaalt zich direct naar <code>Xb.T @ (y_hat - y) / n</code> — één matrix-vector-product en je hebt de gradiënt voor <em>alle</em> gewichten tegelijk. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Vergelijken met scikit-learn",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Werkt het ook op echte data? Hieronder draaien we dezelfde functie op de borstkankerdataset (569 samples, 30 features) en vergelijken we de accuraatheid en coëfficiënten met <code>scikit-learn</code>'s <code>LogisticRegression</code>. Om de vergelijking eerlijk te maken, zetten we scikit-learn's regularisatie uit (<code>C=1e6</code>) — onze functie heeft namelijk geen regularisatie. Let ook op de <code>StandardScaler</code>: zonder schalen heeft gradient descent veel meer epochs nodig, omdat de features enorm verschillen in schaal (de ene kolom loopt van 0 tot 0,1, de andere van 0 tot 4000). </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "from scratch vs. scikit-learn op breast cancer",
+          "runnable": true,
+          "source": "from sklearn.datasets import load_breast_cancer\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.preprocessing import StandardScaler\n\nX, y = load_breast_cancer(return_X_y=True)\nX_tr, X_te, y_tr, y_te = train_test_split(\n    X, y, test_size=0.25, random_state=42)\n\nscaler = StandardScaler().fit(X_tr)\nX_tr_s = scaler.transform(X_tr)\nX_te_s = scaler.transform(X_te)\n\n# onze eigen implementatie\nw = logistic_regression(X_tr_s, y_tr, lr=0.5, n_iter=5000)\nmy_acc = (predict(X_te_s, w) == y_te).mean()\n\n# scikit-learn, regularisatie uit (C heel groot)\nsk = LogisticRegression(C=1e6, max_iter=5000).fit(X_tr_s, y_tr)\nsk_acc = sk.score(X_te_s, y_te)\n\nprint(f\"from scratch : {my_acc:.3f}\")\nprint(f\"scikit-learn : {sk_acc:.3f}\")\nprint(f\"\\ncoefs (scr)  : {w[1:5].round(3)}\")\nprint(f\"coefs (skl)  : {sk.coef_[0][:4].round(3)}\")\nprint(f\"intercept    : scratch={w[0]:.3f}  sklearn={sk.intercept_[0]:.3f}\")"
+        },
+        {
+          "type": "text",
+          "html": "<p> De accuraatheid van onze vijf-regel-functie ligt typisch binnen een procent van scikit-learn — op deze dataset komen ze vrijwel overeen. De coëfficiënten wijken iets af omdat scikit-learn een veel geavanceerdere solver gebruikt (LBFGS, een quasi-Newton-methode) die met minder iteraties en hogere precisie convergeert dan gewone gradient descent. Onze implementatie is dus niet <em>beter</em> dan scikit-learn, maar ze doen in essentie hetzelfde: minimaliseren van BCE. </p>"
+        },
+        {
+          "type": "callout",
+          "kind": "tip",
+          "html": "<p> In de praktijk blijf je scikit-learn gebruiken — sneller, stabieler, met regularisatie ingebouwd. Maar nu je weet wat er <em>in</em> die <code>fit</code> gebeurt, begrijp je ook waarom de hyperparameters van scikit-learn (<code>C</code>, <code>solver</code>, <code>max_iter</code>) doen wat ze doen. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Trainingscurve in beeld",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Hoe snel de loss daalt hangt af van de <strong>learning rate</strong>. Te klein en je hebt duizenden epochs nodig om ergens te komen; te groot en de update-regel schiet voorbij het minimum, de loss explodeert en het model <em>divergeert</em>. De plot hieronder laat twee trainingscurves zien: &eacute;&eacute;n bij een gezonde learning rate, en &eacute;&eacute;n bij de huidige (instelbare) learning rate. Schuif maar eens richting \\( \\eta = 2 \\) — dan slaat de oranje curve omhoog. </p>"
+        },
+        {
+          "type": "plot",
+          "title": "Trainingscurve: BCE-loss tegen het aantal epochs",
+          "subtitle": "Bij een goede learning rate (η ≈ 0.3) daalt de loss exponentieel naar een bodem. Maak je η te groot, dan schieten de updates voorbij het minimum en de loss explodeert — het model divergeert.",
+          "xrange": [0, 200],
+          "yrange": [0, 1.0],
+          "xlabel": "epoch  →",
+          "ylabel": "BCE loss",
+          "curves": [
+            {
+              "expr": "0.7*Math.exp(-0.04*x) + 0.04",
+              "label": "goede lr (η = 0.3)",
+              "color": "green"
+            },
+            {
+              "expr": "0.7*Math.exp(-0.04*x) + 0.04 + Math.max(0, lr-0.5)*Math.max(0, x-30)*0.012",
+              "label": "huidige lr",
+              "color": "magenta"
+            }
+          ],
+          "sliders": [
+            {
+              "param": "lr",
+              "min": 0.05,
+              "max": 2.0,
+              "step": 0.05,
+              "value": 0.3,
+              "label": "learning rate η"
+            }
+          ],
+          "markers": [
+            {
+              "x": "200",
+              "y": "0.7*Math.exp(-0.04*200) + 0.04",
+              "color": "green",
+              "label": "goede lr, epoch 200"
+            },
+            {
+              "x": "200",
+              "y": "0.7*Math.exp(-0.04*200) + 0.04 + Math.max(0, lr-0.5)*Math.max(0, 200-30)*0.012",
+              "color": "magenta",
+              "label": "huidige lr, epoch 200"
+            }
+          ],
+          "metrics": [
+            {
+              "label": "loss na 200 epochs (goed)",
+              "expr": "0.7*Math.exp(-0.04*200) + 0.04",
+              "decimals": 3,
+              "target": 0.05,
+              "dir": "min",
+              "tol": 0.01
+            },
+            {
+              "label": "loss na 200 epochs (huidig)",
+              "expr": "0.7*Math.exp(-0.04*200) + 0.04 + Math.max(0, lr-0.5)*Math.max(0, 200-30)*0.012",
+              "decimals": 3
+            },
+            {
+              "label": "geconvergeerd?",
+              "expr": "(0.7*Math.exp(-0.04*200) + 0.04 + Math.max(0, lr-0.5)*Math.max(0, 200-30)*0.012) < 0.1 ? 'ja' : 'nee — divergeert'",
+              "decimals": 0
+            }
+          ]
+        },
+        {
+          "type": "callout",
+          "kind": "warning",
+          "html": "<p> De vuistregel voor de learning rate: <strong>klein genoeg dat de loss monotoon daalt, groot genoeg dat je niet 100.000 epochs nodig hebt</strong>. In de praktijk vind je hem door uit te proberen (bijv. 0.001, 0.01, 0.1, 0.3, 1.0) of via een adaptive solver zoals Adam. Scikit-learn's <code>LogisticRegression</code> gebruikt standaard <code>LBFGS</code>, die de stapgrootte <em>automatisch</em> afstelt — vandaar dat je daar bijna nooit over de learning rate hoeft na te denken. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Multi-class via one-vs-rest",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Onze functie is binair: hij leert &eacute;&eacute;n lijn die twee klassen scheidt. Voor <strong>3 of meer klassen</strong> is de simpelste uitbreiding <strong>one-vs-rest (OVR)</strong>: train voor elke klasse een aparte binaire classifier die \"deze klasse versus alle anderen\" leert. Bij voorspellen kies je de klasse waarvan de classifier de hoogste kans geeft. Dit is precies wat scikit-learn doet als je <code>multi_class='ovr'</code> kiest — zie <a href=\"#/topic/multiclass\">Multi-class</a> voor de theorie. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "multi-class OVR: train één classifier per klasse",
+          "runnable": true,
+          "source": "from sklearn.datasets import load_iris\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.preprocessing import StandardScaler\n\ndef logistic_regression_ovr(X, y, lr=0.5, n_iter=3000):\n    classes = np.unique(y)\n    models = {}\n    for c in classes:\n        # binaire label: deze klasse vs. alle anderen\n        y_bin = (y == c).astype(int)\n        models[c] = logistic_regression(X, y_bin, lr=lr, n_iter=n_iter)\n    return models\n\ndef predict_ovr(X, models):\n    # kolom per klasse: hoogste kans wint\n    classes = np.array(list(models.keys()))\n    probs = np.column_stack(\n        [predict_proba(X, w) for w in models.values()])\n    return classes[probs.argmax(axis=1)]\n\nX, y = load_iris(return_X_y=True)\nX_tr, X_te, y_tr, y_te = train_test_split(\n    X, y, test_size=0.25, random_state=42)\nsc = StandardScaler().fit(X_tr)\n\nmodels = logistic_regression_ovr(sc.transform(X_tr), y_tr)\nacc = (predict_ovr(sc.transform(X_te), models) == y_te).mean()\nprint(f\"OVR from scratch: {acc:.3f}\")"
+        },
+        {
+          "type": "callout",
+          "kind": "info",
+          "html": "<p> De uitbreiding is letterlijk een <em>loopje</em> om de bestaande functie heen: train <code>k</code> keer een binaire classifier (met telkens een andere \"positieve\" klasse), bewaar alle gewichtvectoren, en kies bij voorspellen de klasse met de hoogste kans. Precies dezelfde structuur als scikit-learn's OVR-modus — alleen zetten wij hem hier met de hand op. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Samenvatting en beperkingen",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Wat we gebouwd hebben is het hart van logistic regression: een lineaire score, een sigmoid, BCE als loss, en de gradiënt in matrixvorm. Dat is het hele verhaal. Maar onze implementatie heeft ook beperkingen vergeleken met scikit-learn: </p>"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "",
+            "Onze functie",
+            "scikit-learn"
+          ],
+          "rows": [
+            [
+              "<strong>solver</strong>",
+              "gewone gradient descent",
+              "LBFGS (quasi-Newton) — sneller en stabieler"
+            ],
+            [
+              "<strong>regularisatie</strong>",
+              "geen (gewichten kunnen onbeperkt groeien)",
+              "L2 standaard, L1 optioneel via penalty="
+            ],
+            [
+              "<strong>learning rate</strong>",
+              "handmatig afstellen",
+              "automatisch (door de solver)"
+            ],
+            [
+              "<strong>multi-class</strong>",
+              "OVR met de hand",
+              "OVR of multinomial (softmax)"
+            ],
+            [
+              "<strong>schaalgevoelig</strong>",
+              "ja — features moeten eerst geschaald",
+              "ja (voor regelmatige solvers) — gebruik Pipeline"
+            ]
+          ]
+        },
+        {
+          "type": "callout",
+          "kind": "tip",
+          "html": "<p> <strong>Wanneer bouw je zelf, wanneer gebruik je scikit-learn?</strong> Zelf bouwen is voor het leren — &eacute;&eacute;n keer doen, en je snapt het voor altijd. In produktie en voor experimenten gebruik je scikit-learn: sneller, stabieler, met regularisatie ingebouwd. De enige situatie waarin zelf bouwen echt lonend is, is als je een <em>speciale</em> variant nodig hebt die scikit-learn niet biedt — een aangepaste loss, een eigen update-regel, of integratie in een groter systeem. </p>"
+        },
+        {
+          "type": "text",
+          "html": "<p> Verder lezen: de theorie achter de pipeline (lijn → kans → klasse) staat in <a href=\"#/topic/logistic-regression\">Logistic regression: waarom het eigenlijk geen regressie is</a>, de sigmoid uitgebreid in <a href=\"#/topic/kansen-sigmoid\">Kansen &amp; de sigmoid-functie</a>, regularisatie (de ontbrekende knop in onze functie) in <a href=\"#/topic/regularisatie\">Regularisatie: de hyperparameter C, L1 en L2</a>, en de update-regel die we gebruikten in <a href=\"#/topic/gradient-descent\">Gradient descent: hoe leert een model?</a>. </p>"
+        }
+      ]
+    }
+  ]
+}

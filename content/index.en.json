@@ -2,8 +2,8 @@
   "site": {
     "title": "MLP — Machine Learning, clearly summarised",
     "description": "Machine Learning material, clearly summarised: from the first basic concepts to scikit-learn, loss functions, logistic regression, SVMs and evaluation metrics — with formulas, diagrams, interactive plots with live metrics, code examples you can run in your browser, memory aids for every step and a FAQ for quick answers.",
-    "statFormulas": "±45",
-    "statCode": "34"
+    "statFormulas": "±49",
+    "statCode": "46"
   },
   "chapters": [
     {
@@ -28,7 +28,7 @@
       "id": "ch3",
       "name": "Logistic Regression",
       "accent": "green",
-      "description": "why it isn't a regression, regularisation, probabilities and multi-class"
+      "description": "why it isn't a regression, regularisation, probabilities, multi-class and building it yourself"
     },
     {
       "id": "ch4",
@@ -40,7 +40,7 @@
       "id": "ch5",
       "name": "Evaluation & metrics",
       "accent": "cyan",
-      "description": "judging models: metrics for regression and classification"
+      "description": "judging models: metrics for regression and classification, and reliable estimation with cross-validation"
     },
     {
       "id": "ch6",
@@ -186,6 +186,15 @@
       "keywords": "multi-class, one-vs-rest, ovr, multinomial, softmax, cross entropy, coefficients"
     },
     {
+      "id": "logistic-regression-function",
+      "chapter": "ch3",
+      "title": "Building logistic regression yourself: from sigmoid to classifier",
+      "summary": "Scikit-learn is a black box — build it yourself and you get it. One standalone function logistic_regression(X, y) in pure NumPy: sigmoid, BCE loss, the gradient (1/n)·Xᵀ(ŷ−y), and a few lines of gradient descent. Includes predict_proba, predict, multi-class OVR and a comparison with scikit-learn.",
+      "level": 3,
+      "file": "topics.en/logistic-regression-function.json",
+      "keywords": "logistic regression from scratch, numpy, sigmoid, bce, binary cross entropy, gradient descent, learning rate, predict_proba, predict, bias, one vs rest, ovr, scratch, implementation"
+    },
+    {
       "id": "support-vectors",
       "chapter": "ch4",
       "title": "Support vectors & the margin",
@@ -231,13 +240,22 @@
       "keywords": "metrics, evaluation, confusion matrix, accuracy, precision, recall, f1, bce, cross entropy, threshold, imbalanced classes, decision boundary"
     },
     {
+      "id": "cross-validation",
+      "chapter": "ch5",
+      "title": "Cross-validation: judging your model reliably",
+      "summary": "A single train/test split is a gamble; k-fold CV averages k splits into a more stable estimate. With cross_val_score, StratifiedKFold, LeaveOneOut, the choice of k, GridSearchCV and Pipelines to prevent data leakage.",
+      "level": 2,
+      "file": "topics.en/cross-validation.json",
+      "keywords": "cross validation, k-fold, stratifiedkfold, leave one out, loocv, shufflesplit, gridsearchcv, pipeline, data leakage, hyperparameters, bias, variance, cross_val_score"
+    },
+    {
       "id": "faq",
       "chapter": "ch6",
       "title": "Frequently asked questions (FAQ)",
-      "summary": "Thirteen short, clear answers: classification vs. regression, train/test splits, overfitting, gradient descent, C, kernels, scaling, probabilities and the right metric — with pointers to the matching topic.",
+      "summary": "Sixteen short, clear answers: classification vs. regression, train/test splits, cross-validation, building logistic regression yourself, overfitting, gradient descent, C, kernels, scaling, probabilities and the right metric — with pointers to the matching topic.",
       "level": 1,
       "file": "topics.en/faq.json",
-      "keywords": "faq, frequently asked questions, questions, answers, classification, regression, supervised, unsupervised, x, y, train test split, leakage, overfitting, underfitting, gradient descent, loss, regularisation, c, svm, logistic regression, kernel, rbf, scaling, standardscaler, predict_proba, sigmoid, accuracy, precision, recall, f1, mse, rmse, mae, r2, metrics"
+      "keywords": "faq, frequently asked questions, questions, answers, classification, regression, supervised, unsupervised, x, y, train test split, leakage, overfitting, underfitting, gradient descent, loss, regularisation, c, svm, logistic regression, kernel, rbf, scaling, standardscaler, predict_proba, sigmoid, accuracy, precision, recall, f1, mse, rmse, mae, r2, metrics, cross validation, cross_val_score, gridsearchcv, pipeline, k-fold, stratified, from scratch, numpy, bce, learning rate"
     }
   ]
 }

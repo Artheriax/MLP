@@ -1,0 +1,336 @@
+{
+  "id": "cross-validation",
+  "chapter": "ch5",
+  "title": "Cross-validation: judging your model reliably",
+  "intro": "A single train/test split is a gamble: the score depends on which samples happen to land in the test set. Cross-validation divides your data into k chunks (folds), trains k times on all-but-one, and averages the scores — a much more stable estimate of how well your model generalises. This topic: why CV, how it works in scikit-learn with cross_val_score, which variants exist (Stratified, Leave-One-Out, ShuffleSplit), how to choose k, and how to tune hyperparameters with GridSearchCV without cheating on the test set.",
+  "level": 2,
+  "sections": [
+    {
+      "title": "The problem with a single train/test split",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> In <a href=\"#/topic/ml-workflow-basics\">the ML workflow</a> you learned the dogma: <strong>split your data into a train and a test set</strong>, fit the model on the train data and evaluate it once on the test set. That is correct — but it has a weak spot. Which samples exactly end up in the test set depends on the <em>random seed</em> of <code>train_test_split</code>. A single split is therefore a single sample from a fairly noisy distribution: change the seed and your score can easily shift by a few percent. </p>"
+        },
+        {
+          "type": "text",
+          "html": "<p> Feel that noise directly: below we run <em>exactly the same model</em> (LogisticRegression on the iris dataset) with ten different seeds. Each time 25% of the data is held out as the test set — only the <em>split</em> differs. Look at the spread in the output: this is the uncertainty that a single score hides. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "same split, ten different seeds — feel the noise",
+          "runnable": true,
+          "source": "from sklearn.datasets import load_iris\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.model_selection import train_test_split\nimport numpy as np\n\nX, y = load_iris(return_X_y=True)\n\nscores = []\nfor seed in range(10):\n    X_tr, X_te, y_tr, y_te = train_test_split(\n        X, y, test_size=0.25, random_state=seed)\n    s = LogisticRegression(max_iter=1000).fit(X_tr, y_tr).score(X_te, y_te)\n    scores.append(s)\n    print(f\"seed={seed}:  test-accuracy = {s:.3f}\")\n\nprint(f\"\\nmean    : {np.mean(scores):.3f}\")\nprint(f\"std     : {np.std(scores):.3f}\")\nprint(f\"spread  : {min(scores):.3f} — {max(scores):.3f}\")"
+        },
+        {
+          "type": "callout",
+          "kind": "warning",
+          "html": "<p> A single split = one sample from a noisy distribution. If you report a single number, you claim a precision you don't have. Cross-validation fixes exactly this by repeating the split multiple times and averaging. </p>"
+        }
+      ]
+    },
+    {
+      "title": "k-fold cross-validation: the standard recipe",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> The standard solution is called <strong>k-fold cross-validation</strong>. The idea: split your data into <strong>k roughly equal chunks</strong> (the <em>folds</em>) and repeat the same ritual k times: <strong>train on k&minus;1 folds and evaluate on the remaining fold</strong>. Each sample therefore appears in a test fold exactly once and in a train fold k&minus;1 times. The final CV score is the <strong>mean of the k fold scores</strong>. </p>"
+        },
+        {
+          "type": "formula",
+          "label": "k-fold CV score",
+          "latex": "\\text{CV-score} \\;=\\; \\frac{1}{k}\\sum_{i=1}^{k} \\text{score}_i, \\qquad \\text{where}\\;\\, \\text{score}_i = \\text{score of the model trained on all folds except fold } i",
+          "caption": "The CV score is the mean of the k fold scores — a single number, but based on k different train/test splits."
+        },
+        {
+          "type": "text",
+          "html": "<p> In scikit-learn this is almost a one-liner: <code>cross_val_score</code> does everything for you. You pass the model, the features and the target, plus <code>cv=k</code> for the number of folds. You get back an array with the k fold scores, and you take the mean. Note: <code>cross_val_score</code> <strong>does not modify the model</strong> and <strong>does not return a trained model</strong>; its only purpose is a fair estimate of the generalisation score. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "5-fold CV with cross_val_score",
+          "runnable": true,
+          "source": "from sklearn.datasets import load_iris\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.model_selection import cross_val_score\nimport numpy as np\n\nX, y = load_iris(return_X_y=True)\nmodel = LogisticRegression(max_iter=1000)\n\nscores = cross_val_score(model, X, y, cv=5)\n\nprint(f\"5-fold scores per fold : {np.round(scores, 3)}\")\nprint(f\"mean CV score          : {scores.mean():.3f}\")\nprint(f\"std across folds       : {scores.std():.3f}\")"
+        },
+        {
+          "type": "callout",
+          "kind": "tip",
+          "html": "<p> Compare the spread above with that of the ten seeds in the previous section: the std across five folds is typically smaller than the std across ten single splits, because each fold score is already trained on 80% of the data. <strong>k = 5 or k = 10</strong> are the standard choices — large enough for a stable mean, small enough to keep it affordable. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Variants: Stratified, Leave-One-Out and ShuffleSplit",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> The <code>cv=k</code> shortcut in <code>cross_val_score</code> picks the right strategy automatically: for <strong>classification</strong> it uses <code>StratifiedKFold</code> (each fold preserves the class ratio of the whole dataset), for <strong>regression</strong> plain <code>KFold</code>. Sometimes you want more control — then you pass an explicit splitter object to <code>cv=</code>. Three variants you should know: </p>"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Variant",
+            "How it works",
+            "When to use it"
+          ],
+          "rows": [
+            [
+              "<strong>KFold</strong>",
+              "splits the data into k contiguous blocks (or shuffled)",
+              "regression, or classification with balanced classes"
+            ],
+            [
+              "<strong>StratifiedKFold</strong>",
+              "same, but each fold preserves the class ratio",
+              "classification — especially with imbalanced classes"
+            ],
+            [
+              "<strong>LeaveOneOut</strong>",
+              "k = n: each fold is exactly one sample (LOOCV)",
+              "small datasets (n &lt; 100); slow on large data"
+            ],
+            [
+              "<strong>ShuffleSplit</strong>",
+              "takes k random train/test splits; folds may overlap",
+              "large data, or when you want fold size independent of k"
+            ]
+          ]
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "KFold vs. StratifiedKFold vs. LeaveOneOut on iris",
+          "runnable": true,
+          "source": "from sklearn.datasets import load_iris\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.model_selection import (KFold, StratifiedKFold,\n                                     LeaveOneOut, cross_val_score)\nimport numpy as np\n\nX, y = load_iris(return_X_y=True)\nmodel = LogisticRegression(max_iter=1000)\n\n# plain KFold (shuffle on, otherwise iris classes sit in blocks)\nkf   = KFold(n_splits=5, shuffle=True, random_state=0)\nskf  = StratifiedKFold(n_splits=5, shuffle=True, random_state=0)\nloo  = LeaveOneOut()                       # k = n = 150\n\nfor name, cv in [('KFold', kf), ('StratifiedKFold', skf), ('LOOCV', loo)]:\n    s = cross_val_score(model, X, y, cv=cv)\n    print(f\"{name:<18}: {s.mean():.3f}  ± {s.std():.3f}  ({len(s)} folds)\")"
+        },
+        {
+          "type": "callout",
+          "kind": "warning",
+          "html": "<p> For <strong>classification</strong> always use <code>StratifiedKFold</code> — even when your classes are reasonably balanced. Suppose you have 5% positives and you use plain KFold without shuffle: a fold may randomly contain <em>no positives at all</em>, and the model fit fails or the fold score is meaningless. Stratification prevents that. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Choosing k: bias versus variance",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> How do you choose <strong>k</strong>? The choice is a trade-off between two forces that pull in opposite directions. <strong>Bias</strong>: each fold trains on \\( \\frac{k-1}{k} \\) of your data. With a larger k the folds use more data, so the model fit in each fold is closer to the fit on the <em>full</em> dataset — the CV estimate becomes less biased. In the extreme case <em>k = n</em> (Leave-One-Out) each fold trains on n&minus;1 samples: maximal training data, minimal bias. </p> <p> <strong>Variance</strong>: with larger k the train folds overlap more — at LOOCV two arbitrary folds share n&minus;2 of the n samples. That strong correlation between fold scores makes the mean <em>more</em> variable, not less, despite averaging over more numbers. At the same time each individual fold score is also somewhat more noise-sensitive because the test fold is just one sample. The net effect: with very large k the variance of the CV estimate rises slightly. </p>"
+        },
+        {
+          "type": "formula",
+          "label": "MSE of the CV estimate",
+          "latex": "\\text{MSE}_{\\text{CV}} \\;=\\; \\underbrace{\\text{bias}^2}_{\\text{decreases with } k} \\;+\\; \\underbrace{\\text{variance}}_{\\text{rises slightly with } k}",
+          "caption": "The error in your CV estimate compared to the true generalisation score. Bias and variance pull in opposite directions — hence an optimum around k = 5 or 10."
+        },
+        {
+          "type": "text",
+          "html": "<p> The result is a U-shape that flattens out: very small k gives high bias (little training data per fold), very large k gives higher variance (correlation between folds). In between lies a broad flat region — and the standard choices <strong>k = 5</strong> and <strong>k = 10</strong> sit right there. Drag the noise sensitivity in the plot below and see how the MSE at k = 5 and k = 10 stays nearly the same, while extreme k values do worse. </p>"
+        },
+        {
+          "type": "plot",
+          "title": "Bias–variance of the CV estimate against the number of folds k",
+          "subtitle": "More folds = less bias (each fold trains on more data), but slightly more variance (folds overlap more and become correlated). The MSE of the estimate (bias² + variance) drops and then flattens — hence k = 5 or k = 10 as the standard choice.",
+          "xrange": [2, 20],
+          "yrange": [0, 0.13],
+          "xlabel": "number of folds k  →",
+          "curves": [
+            {
+              "expr": "0.18*Math.exp(-0.30*x) + 0.005",
+              "label": "bias²",
+              "color": "magenta"
+            },
+            {
+              "expr": "0.005 + 0.00012*ruis*(x-2)*(x-2)",
+              "label": "variance",
+              "color": "yellow"
+            },
+            {
+              "expr": "(0.18*Math.exp(-0.30*x) + 0.005) + (0.005 + 0.00012*ruis*(x-2)*(x-2))",
+              "label": "MSE = bias² + variance",
+              "color": "cyan"
+            }
+          ],
+          "sliders": [
+            {
+              "param": "ruis",
+              "min": 0.5,
+              "max": 2,
+              "step": 0.05,
+              "value": 1,
+              "label": "noise sensitivity of the data"
+            }
+          ],
+          "metrics": [
+            {
+              "label": "MSE at k=5",
+              "expr": "(0.18*Math.exp(-0.30*5) + 0.005) + (0.005 + 0.00012*ruis*(5-2)*(5-2))",
+              "decimals": 4
+            },
+            {
+              "label": "MSE at k=10",
+              "expr": "(0.18*Math.exp(-0.30*10) + 0.005) + (0.005 + 0.00012*ruis*(10-2)*(10-2))",
+              "decimals": 4
+            },
+            {
+              "label": "MSE at k=20 (LOOCV-like)",
+              "expr": "(0.18*Math.exp(-0.30*20) + 0.005) + (0.005 + 0.00012*ruis*(20-2)*(20-2))",
+              "decimals": 4
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "headers": [
+            "",
+            "small k (e.g. 3)",
+            "k = 5 or 10",
+            "large k (LOOCV)"
+          ],
+          "rows": [
+            [
+              "bias",
+              "high (little training data per fold)",
+              "reasonably low",
+              "minimal"
+            ],
+            [
+              "variance",
+              "low (folds independent)",
+              "reasonably low",
+              "slightly higher (folds correlated)"
+            ],
+            [
+              "compute cost",
+              "k fits",
+              "k fits",
+              "n fits — slow on large datasets"
+            ],
+            [
+              "verdict",
+              "too little data per fold",
+              "sweet spot",
+              "only for small n"
+            ]
+          ]
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p> <strong>Rule of thumb:</strong> k = 5 for a quick first read, k = 10 if you want a slightly more precise estimate. LOOCV (<em>k = n</em>) you reserve for small datasets (n &lt; 100), where every sample counts. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Tuning hyperparameters with GridSearchCV",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Cross-validation is not just for <em>reporting</em> a fair score — it's also the engine behind <strong>hyperparameter tuning</strong>. If you try different values of <code>C</code> (see <a href=\"#/topic/regularisatie\">Regularisation</a>) on a single test set, you inevitably pick the C that happened to do best on <em>that</em> test set — and that is secretly overfitting again, this time on the test set rather than on the train set. The fix: tune hyperparameters with CV on the <strong>training data</strong>, and keep the test set pristine for the final evaluation. </p>"
+        },
+        {
+          "type": "text",
+          "html": "<p> Scikit-learn automates this with <code>GridSearchCV</code>. You pass a <code>param_grid</code> (a dict with the hyperparameter names and the values to try) and <code>cv=k</code>. For each candidate value scikit-learn runs k-fold CV on the training data, averages the scores, and keeps track of the best combination. <code>.best_params_</code> gives the winner; <code>.best_score_</code> the corresponding CV score; and <code>.score(X_test, y_test)</code> evaluates the winning model one more time on the test set — the real generalisation score. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "Tuning C with 5-fold CV via GridSearchCV",
+          "runnable": true,
+          "source": "from sklearn.datasets import load_breast_cancer\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.model_selection import GridSearchCV, train_test_split\nfrom sklearn.preprocessing import StandardScaler\nfrom sklearn.pipeline import make_pipeline\n\nX, y = load_breast_cancer(return_X_y=True)\nX_train, X_test, y_train, y_test = train_test_split(\n    X, y, test_size=0.25, random_state=42)\n\n# pipeline = scaling + logistic regression (see next section)\npipe = make_pipeline(StandardScaler(),\n                     LogisticRegression(max_iter=5000))\n\n# tune C via 5-fold CV on the TRAINING set\nparam_grid = {'logisticregression__C': [0.001, 0.01, 0.1, 1, 10, 100, 1000]}\ngrid = GridSearchCV(pipe, param_grid, cv=5)\ngrid.fit(X_train, y_train)\n\nprint(f\"best C         : {grid.best_params_['logisticregression__C']}\")\nprint(f\"best CV score  : {grid.best_score_:.3f}\")\nprint(f\"score on test  : {grid.score(X_test, y_test):.3f}\")"
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p> The test set is your <strong>final exam</strong>: you don't touch it during tuning. Tuning happens with CV on the training data; only once you have chosen the best hyperparameters may the model face the test data. Only then do you know whether you actually improved generalisation, or just optimised the CV scores. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Pipelines: prevent data leakage",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> A subtle but persistent trap lurks in CV with preprocessing. <code>StandardScaler</code>, <code>PCA</code>, <code>SelectKBest</code> — all are transformations that must first be <em>fitted</em> on data before they can transform. Fit such a transformation on <strong>the entire dataset</strong> and then apply CV, and information from the test fold leaks into the train fold: the scaler knows the mean and standard deviation of the test fold, and those are hidden inside the scaled features. The result: an overly optimistic CV score that is not achievable in practice. </p>"
+        },
+        {
+          "type": "text",
+          "html": "<p> The remedy is a <strong>Pipeline</strong>: an object that couples the preprocessing step and the model into a single whole. Pass a Pipeline to <code>cross_val_score</code> or <code>GridSearchCV</code> and scikit-learn runs the scaler fit <em>inside each fold separately</em> on only the train fold, then uses it to transform both the train and test folds. No leakage. <code>make_pipeline</code> is the quickest way to build one. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "WRONG: fit scaler on all data → leakage",
+          "runnable": true,
+          "source": "from sklearn.datasets import load_breast_cancer\nfrom sklearn.preprocessing import StandardScaler\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.model_selection import cross_val_score\n\nX, y = load_breast_cancer(return_X_y=True)\n\n# WRONG: fit scaler on ALL data → test-fold info leaks into train-fold\nX_leak = StandardScaler().fit_transform(X)\nscores_leak = cross_val_score(\n    LogisticRegression(max_iter=5000), X_leak, y, cv=5)\n\nprint(f\"WITH leakage    : {scores_leak.mean():.3f} ± {scores_leak.std():.3f}\")"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "RIGHT: Pipeline fits the scaler per fold on the train fold only",
+          "runnable": true,
+          "source": "from sklearn.datasets import load_breast_cancer\nfrom sklearn.preprocessing import StandardScaler\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.pipeline import make_pipeline\nfrom sklearn.model_selection import cross_val_score\n\nX, y = load_breast_cancer(return_X_y=True)\n\n# RIGHT: pipeline fits the scaler fresh in each fold, only on the train-fold\npipe = make_pipeline(StandardScaler(),\n                     LogisticRegression(max_iter=5000))\nscores_clean = cross_val_score(pipe, X, y, cv=5)\n\nprint(f\"without leakage : {scores_clean.mean():.3f} ± {scores_clean.std():.3f}\")"
+        },
+        {
+          "type": "callout",
+          "kind": "warning",
+          "html": "<p> The difference between the two runs above is small — on the breast cancer dataset the preprocessing is benign enough to leak very little. With more aggressive transformations (PCA, feature selection, imputation) the leakage can be dramatic: a model that appears to score 100% on CV but fails badly in production. <strong>So always use a Pipeline</strong> whenever any preprocessing is involved — also with <code>GridSearchCV</code>. Then you're always safe. </p>"
+        },
+        {
+          "type": "callout",
+          "kind": "tip",
+          "html": "<p> The hyperparameter names in your <code>param_grid</code> follow Pipeline syntax: <code>'&lt;stepname&gt;__&lt;hyperparameter&gt;'</code>. With <code>make_pipeline</code> the step name is the lowercased class name — hence <code>'logisticregression__C'</code> in the <code>GridSearchCV</code> section above. If you build the Pipeline with the explicit <code>Pipeline([('my_model', LogisticRegression())])</code> form, the parameter is <code>'my_model__C'</code>. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Summary: when to choose what?",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Cross-validation looks like a simple recipe, but the details determine whether you get fair scores. The table below bundles the choices you make in practice — from the number of folds to whether you need a Pipeline. </p>"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Question",
+            "Answer"
+          ],
+          "rows": [
+            [
+              "How many folds?",
+              "<strong>k = 5</strong> for speed, <strong>k = 10</strong> for slightly more precision, <strong>LOOCV</strong> when n &lt; 100"
+            ],
+            [
+              "Classification or regression?",
+              "Classification → <code>StratifiedKFold</code> (default via <code>cv=k</code>); regression → plain <code>KFold</code>"
+            ],
+            [
+              "Do I have preprocessing?",
+              "Yes → always use a <code>Pipeline</code>, otherwise you leak test info into your train fold"
+            ],
+            [
+              "Tuning hyperparameters?",
+              "Use <code>GridSearchCV</code> (or <code>RandomizedSearchCV</code>) with CV on the training data — don't touch the test set"
+            ],
+            [
+              "When do I report the final score?",
+              "Once, on the test set, after tuning. Measuring it multiple times is also a form of leakage"
+            ]
+          ]
+        },
+        {
+          "type": "callout",
+          "kind": "tip",
+          "html": "<p> <strong>Checklist before you report a CV score:</strong> </p> <ul> <li>Is the test set kept pristine and untouched during tuning?</li> <li>Is all preprocessing in a <code>Pipeline</code>, so it's refit per fold?</li> <li>For classification, are you using <code>StratifiedKFold</code> (default with <code>cv=k</code>)?</li> <li>Is <code>k</code> reasonable — 5 or 10, not 2 and not n?</li> <li>Do you report both the mean score <em>and</em> the std across folds?</li> </ul>"
+        },
+        {
+          "type": "text",
+          "html": "<p> Further reading: the metric that your CV score yields depends on your task — for regression that's <a href=\"#/topic/regression-metrics\">MSE, RMSE, MAE &amp; R²</a>, for classification <a href=\"#/topic/classification-metrics\">accuracy, precision, recall &amp; F1</a>. Which metric you pass to <code>cross_val_score</code> and <code>GridSearchCV</code> (via <code>scoring=</code>) determines what gets averaged. </p>"
+        }
+      ]
+    }
+  ]
+}
