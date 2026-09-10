@@ -598,11 +598,21 @@ window.MLP = window.MLP || {};
     return wrap;
   }
 
+  /* Iconen per callout-type (inline SVG, past bij elke maat) */
+  const CALLOUT_ICONS = {
+    info: '<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="8" cy="8" r="6.6"/><path d="M8 7.4v4"/><circle cx="8" cy="5" r="0.6" fill="currentColor" stroke="none"/></svg>',
+    tip: '<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M9 1.5 3.5 9H7l-1 5.5L11.5 7H8l1-5.5z"/></svg>',
+    warning: '<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M8 2 1.8 13h12.4L8 2z"/><path d="M8 6.4v3"/><circle cx="8" cy="11.4" r="0.6" fill="currentColor" stroke="none"/></svg>',
+    key: '<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="8" cy="8" r="6.6"/><path d="M8 4.7v6.6M5.8 6.4h3.3"/></svg>',
+  };
+
   function renderCalloutBlock(block, ctx) {
-    const wrap = el("div", "callout block");
+    const kind = block.kind || "info";
+    const wrap = el("div", "callout callout-kind block " + kind);
     wrap.style.setProperty("--accent", accentColorOf(ctx));
-    const tagText = t("callout_" + (block.kind || "info"));
-    wrap.appendChild(el("span", "callout-tag", escapeHtml(tagText)));
+    const tagText = t("callout_" + kind);
+    const icon = CALLOUT_ICONS[kind] || CALLOUT_ICONS.info;
+    wrap.appendChild(el("span", "callout-tag", icon + escapeHtml(tagText)));
     wrap.appendChild(el("div", "callout-body", block.html || ""));
     return wrap;
   }
@@ -613,13 +623,21 @@ window.MLP = window.MLP || {};
     const table = el("table", "data-table");
     const thead = el("thead");
     const trh = el("tr");
-    (block.headers || []).forEach((h) => trh.appendChild(el("th", null, String(h))));
+    (block.headers || []).forEach((h) => {
+      const th = el("th", null, String(h));
+      th.setAttribute("scope", "col");
+      trh.appendChild(th);
+    });
     thead.appendChild(trh);
     table.appendChild(thead);
     const tbody = el("tbody");
     (block.rows || []).forEach((r) => {
       const tr = el("tr");
-      (r || []).forEach((cell) => tr.appendChild(el("td", null, String(cell))));
+      (r || []).forEach((cell, ci) => {
+        const td = el("td", null, String(cell));
+        if (ci === 0) td.setAttribute("scope", "row");
+        tr.appendChild(td);
+      });
       tbody.appendChild(tr);
     });
     table.appendChild(tbody);
@@ -652,7 +670,11 @@ window.MLP = window.MLP || {};
 
   function renderSection(section, index, ctx) {
     const sec = el("section", "topic-section");
-    sec.appendChild(el("h2", null, escapeHtml(section.title || "")));
+    sec.id = "sec-" + (index + 1);
+    const h2 = el("h2");
+    h2.appendChild(el("span", "sec-num", String(index + 1).padStart(2, "0")));
+    h2.appendChild(el("span", "sec-title", escapeHtml(section.title || "")));
+    sec.appendChild(h2);
     (section.blocks || []).forEach((block) => {
       const node = renderBlock(block, ctx);
       if (node) sec.appendChild(node);

@@ -3,6 +3,12 @@
   "chapter": "ch0",
   "title": "De ML-workflow van begin tot eind",
   "intro": "Van ruwe vraag naar werkend model: de acht stappen van een ML-project, under- en overfitting interactief in beeld, en het fit–predict–score-drietal dat in heel scikit-learn hetzelfde klinkt.",
+  "keyPoints": [
+    "De acht stappen: <em>vraag → data → splitsen → features klaarzetten → model kiezen → fitten → evalueren → afstemmen</em>.",
+    "Het scikit-learn-drietal: <code>fit()</code> traint, <code>predict()</code> voorspelt, <code>score()</code> evalueert.",
+    "<strong>Underfitting</strong> = te simpel (slecht overal); <strong>overfitting</strong> = onthouden (goede trainscore, slechte testscore).",
+    "Begin altijd met een simpele <strong>basislijn</strong> voordat je complexere modellen probeert."
+  ],
   "level": 1,
   "sections": [
     {

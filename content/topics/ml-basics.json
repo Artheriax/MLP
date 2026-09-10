@@ -3,6 +3,12 @@
   "chapter": "ch0",
   "title": "Wat is machine learning?",
   "intro": "Wat machine learning is, hoe het verschilt van gewoon programmeren, wanneer je het wel en niet inzet — en waarom generaliseren het kernbegrip is.",
+  "keyPoints": [
+    "Traditioneel programmeren: <strong>jij</strong> schrijft de regels. Machine learning: de computer <strong>leert</strong> de regels uit voorbeelden (data + antwoorden).",
+    "De definitie: een programma leert van ervaring <em>E</em> voor taak <em>T</em>, gemeten met prestatiemaat <em>P</em>, als zijn prestatie op <em>T</em> verbetert.",
+    "Gebruik ML bij <strong>complexe patronen, veel data en veranderende omgeving</strong>; gebruik gewone code bij simpele, uitlegbare regels.",
+    "Leren = <strong>generaliseren</strong>: goed presteren op nieuwe, onbekende data — niet trainingsdata uit je hoofd leren."
+  ],
   "level": 1,
   "sections": [
     {

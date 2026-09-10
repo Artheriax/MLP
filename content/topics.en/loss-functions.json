@@ -3,6 +3,12 @@
   "chapter": "ch2",
   "title": "Loss functions: why fitting is really optimising",
   "intro": "Much of machine learning revolves around one thing: minimising a loss. Once you understand this perspective you see connections between models, pick up new models faster and can tune them to your own problem.",
+  "keyPoints": [
+    "A <strong>loss</strong> is a penalty score: how wrong is <em>this one</em> prediction?",
+    "<strong>Squared loss</strong> (quadratic error) is the default for regression.",
+    "<strong>0-1 loss</strong> counts mistakes but is not smooth → impossible to optimise nicely.",
+    "Fitting = <strong>minimising total loss</strong>, e.g. with <code>scipy.optimize.minimize</code>."
+  ],
   "level": 2,
   "sections": [
     {
@@ -20,10 +26,22 @@
         },
         {
           "type": "table",
-          "headers": ["Concept", "Role", "Question it answers"],
+          "headers": [
+            "Concept",
+            "Role",
+            "Question it answers"
+          ],
           "rows": [
-            ["Loss", "fitting", "\"which parameters make the error on the training data small?\""],
-            ["Score", "evaluating", "\"how well does the model perform on (new) data?\""]
+            [
+              "Loss",
+              "fitting",
+              "\"which parameters make the error on the training data small?\""
+            ],
+            [
+              "Score",
+              "evaluating",
+              "\"how well does the model perform on (new) data?\""
+            ]
           ]
         }
       ]

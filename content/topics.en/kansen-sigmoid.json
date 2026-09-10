@@ -3,6 +3,12 @@
   "chapter": "ch3",
   "title": "Probabilities & the sigmoid function",
   "intro": "So far logistic regression made hard predictions: this class, or that. But under the hood a mechanism turns the raw model output into a genuine probability — and that immediately explains when the model is &quot;sure of itself&quot;. Here you'll find the sigmoid formula, what <code>exp()</code> actually does, and why the S-curve pops up everywhere: from logistic regression to neural networks.",
+  "keyPoints": [
+    "The sigmoid <strong>σ(z) = 1 / (1 + e<sup>−z</sup>)</strong> squeezes any score into [0,1].",
+    "<code>predict_proba()</code> = sigmoid(<code>decision_function()</code>): probabilities are raw scores through the S-curve.",
+    "The 0.5 threshold sits exactly at <strong>z = 0</strong>; moving it changes precision/recall.",
+    "<code>exp()</code> is the engine under the sigmoid — the same S-curve returns in softmax and BCE."
+  ],
   "level": 2,
   "sections": [
     {

@@ -3,6 +3,12 @@
   "chapter": "ch4",
   "title": "Support vectors & the margin",
   "intro": "The secret of SVMs: the majority of your training data can be thrown away without the model changing. The few examples that <em>do</em> matter are called support vectors — and they also explain why kernel SVMs are so fast.",
+  "keyPoints": [
+    "An SVM looks for the boundary with the <strong>largest margin</strong> between the classes.",
+    "Only the <strong>support vectors</strong> (closest to the boundary) drive the fit — the other points can go.",
+    "<strong>Hinge loss + L2 penalty</strong> = exactly the max-margin solution.",
+    "The <strong>margin</strong> is the distance from the boundary to the nearest points; larger = more breathing room."
+  ],
   "level": 2,
   "sections": [
     {
@@ -37,7 +43,7 @@
         {
           "type": "callout",
           "kind": "key",
-          "html": "<p> Remove a <strong>non</strong>-support vector \u2192 the model does not change. Remove a <strong>support vector</strong> \u2192 the model <em>does</em> change. Support vectors are literally the examples that \"carry\" the model. </p>"
+          "html": "<p> Remove a <strong>non</strong>-support vector → the model does not change. Remove a <strong>support vector</strong> → the model <em>does</em> change. Support vectors are literally the examples that \"carry\" the model. </p>"
         }
       ]
     },
@@ -52,7 +58,7 @@
           "type": "formula",
           "label": "margin",
           "latex": "\\text{margin} \\;=\\; \\frac{2}{\\lVert w \\rVert_2}",
-          "caption": "The width of the buffer zone around the decision boundary. Maximising the margin = minimising \u2016w\u2016 — hence the L2 penalty."
+          "caption": "The width of the buffer zone around the decision boundary. Maximising the margin = minimising ‖w‖ — hence the L2 penalty."
         },
         {
           "type": "callout",

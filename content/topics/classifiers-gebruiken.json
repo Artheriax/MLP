@@ -3,6 +3,12 @@
   "chapter": "ch1",
   "title": "LogisticRegression, LinearSVC & SVC gebruiken",
   "intro": "De drie classifiers uit de cursus delen exact dezelfde fit/predict/score-syntax. Het verschil zit onder de motorkap: welke loss er geoptimaliseerd wordt en of de beslisgrens lineair is. Hier zie je ze alle drie aan het werk.",
+  "keyPoints": [
+    "<code>LogisticRegression</code>, <code>LinearSVC</code> en <code>SVC</code> delen dezelfde fit/predict-interface — wisselen kost één regel.",
+    "<code>predict_proba()</code> geeft kansen (confidence); <code>predict()</code> geeft de definitieve klasse.",
+    "<strong>C</strong> is de belangrijkste hyperparameter: klein C = meer regularisatie = simpeler model.",
+    "Herken overfitting aan een groot gat tussen train- en testscore."
+  ],
   "level": 1,
   "sections": [
     {
@@ -42,11 +48,31 @@
         },
         {
           "type": "table",
-          "headers": ["Model", "Import", "Beslisgrens", "Karakter"],
+          "headers": [
+            "Model",
+            "Import",
+            "Beslisgrens",
+            "Karakter"
+          ],
           "rows": [
-            ["LogisticRegression", "<code>sklearn.linear_model</code>", "lineair", "kansen als bonus (predict_proba)"],
-            ["LinearSVC", "<code>sklearn.svm</code>", "lineair", "snelle lineaire SVM"],
-            ["SVC", "<code>sklearn.svm</code>", "standaard niet-lineair", "kernels mogelijk (hoofdstuk 4)"]
+            [
+              "LogisticRegression",
+              "<code>sklearn.linear_model</code>",
+              "lineair",
+              "kansen als bonus (predict_proba)"
+            ],
+            [
+              "LinearSVC",
+              "<code>sklearn.svm</code>",
+              "lineair",
+              "snelle lineaire SVM"
+            ],
+            [
+              "SVC",
+              "<code>sklearn.svm</code>",
+              "standaard niet-lineair",
+              "kernels mogelijk (hoofdstuk 4)"
+            ]
           ]
         }
       ]

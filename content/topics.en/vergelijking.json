@@ -3,6 +3,12 @@
   "chapter": "ch4",
   "title": "LR vs. SVM & the SGDClassifier",
   "intro": "When do you choose logistic regression and when an SVM? Plus the SGDClassifier, which shows that these models differ only in their loss function.",
+  "keyPoints": [
+    "Large data or need probabilities → <strong>logistic regression</strong>; clear margin on little data → <strong>SVM</strong>.",
+    "Key hyperparameters: <strong>C</strong> (both), <strong>penalty</strong> (LR), <strong>gamma</strong> (RBF-SVM).",
+    "<code>SGDClassifier</code> proves the insight: LR and SVM are the same model — <strong>only the loss differs</strong> (log vs. hinge).",
+    "Scale features before SVMs, and use a <code>Pipeline</code> to prevent leakage."
+  ],
   "level": 3,
   "sections": [
     {
@@ -14,14 +20,42 @@
         },
         {
           "type": "table",
-          "headers": ["Aspect", "Logistic Regression", "SVM"],
+          "headers": [
+            "Aspect",
+            "Logistic Regression",
+            "SVM"
+          ],
           "rows": [
-            ["Type", "linear classifier", "linear classifier (hinge + L2)"],
-            ["Kernels", "possible, but less common", "common — fast with few support vectors"],
-            ["Probabilities", "natural (predict_proba)", "possible, but less obvious"],
-            ["Multi-class", "OvR or multinomial/softmax", "usually (OvR-like) strategies"],
-            ["What influences the fit?", "all training points", "only the support vectors"],
-            ["Character", "probabilities & confidence", "margins & robust to redundant data"]
+            [
+              "Type",
+              "linear classifier",
+              "linear classifier (hinge + L2)"
+            ],
+            [
+              "Kernels",
+              "possible, but less common",
+              "common — fast with few support vectors"
+            ],
+            [
+              "Probabilities",
+              "natural (predict_proba)",
+              "possible, but less obvious"
+            ],
+            [
+              "Multi-class",
+              "OvR or multinomial/softmax",
+              "usually (OvR-like) strategies"
+            ],
+            [
+              "What influences the fit?",
+              "all training points",
+              "only the support vectors"
+            ],
+            [
+              "Character",
+              "probabilities & confidence",
+              "margins & robust to redundant data"
+            ]
           ]
         }
       ]
@@ -31,11 +65,27 @@
       "blocks": [
         {
           "type": "table",
-          "headers": ["Class", "Import", "Key hyperparameters"],
+          "headers": [
+            "Class",
+            "Import",
+            "Key hyperparameters"
+          ],
           "rows": [
-            ["LogisticRegression", "<code>sklearn.linear_model</code>", "<code>C</code> (small = more regularisation) \u00b7 <code>penalty</code> (<code>l2</code>/<code>l1</code>) \u00b7 multi-class approach"],
-            ["LinearSVC", "<code>sklearn.svm</code>", "<code>C</code> — fast linear SVM"],
-            ["SVC", "<code>sklearn.svm</code>", "<code>C</code> \u00b7 <code>kernel</code> (<code>rbf</code>, <code>linear</code>, \u2026) \u00b7 <code>gamma</code> (RBF only: small = smooth)"]
+            [
+              "LogisticRegression",
+              "<code>sklearn.linear_model</code>",
+              "<code>C</code> (small = more regularisation) · <code>penalty</code> (<code>l2</code>/<code>l1</code>) · multi-class approach"
+            ],
+            [
+              "LinearSVC",
+              "<code>sklearn.svm</code>",
+              "<code>C</code> — fast linear SVM"
+            ],
+            [
+              "SVC",
+              "<code>sklearn.svm</code>",
+              "<code>C</code> · <code>kernel</code> (<code>rbf</code>, <code>linear</code>, …) · <code>gamma</code> (RBF only: small = smooth)"
+            ]
           ]
         },
         {

@@ -3,6 +3,12 @@
   "chapter": "ch3",
   "title": "Kansen & de sigmoid-functie",
   "intro": "Tot nu toe deed logistic regression harde voorspellingen: deze klasse, of die. Maar onder de motorkap zet een mechanisme de raw model output om in een echte kans — en dat verklaart meteen wanneer het model &quot;zeker van zichzelf&quot; is. Hier vind je de sigmoid-formule, wat <code>exp()</code> precies doet en waarom de S-curve overal opduikt: van logistic regression tot neurale netwerken.",
+  "keyPoints": [
+    "De sigmoid <strong>σ(z) = 1 / (1 + e<sup>−z</sup>)</strong> perst elke score in [0,1].",
+    "<code>predict_proba()</code> = sigmoid(<code>decision_function()</code>): kansen zijn raw scores door de S-curve.",
+    "De drempel 0,5 ligt precies op <strong>z = 0</strong>; verschuiven van de drempel verandert precision/recall.",
+    "<code>exp()</code> is de motor onder de sigmoid — dezelfde S-cuur duikt op in softmax en BCE."
+  ],
   "level": 2,
   "sections": [
     {

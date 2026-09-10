@@ -3,6 +3,12 @@
   "chapter": "ch3",
   "title": "Regularisatie: de hyperparameter C, L1 en L2",
   "intro": "Regularisatie is je belangrijkste wapen tegen overfitting: je straft grote coëfficiënten, waardoor het model \"voorzichtiger\" wordt. In scikit-learn stuur je dit met één hyperparameter: C.",
+  "keyPoints": [
+    "Regularisatie <strong>bestraft grote coëfficiënten</strong> → simpeler model dat beter generaliseert.",
+    "<strong>C is de omgekeerde sterkte</strong>: klein C = sterke regularisatie, groot C = bijna geen.",
+    "<strong>L2</strong> (kwadraten) is de standaard; <strong>L1</strong> (absolute waarden) kan coëfficiënten exact nul maken → feature selection.",
+    "<strong>Schaal je features</strong> vóór regularisatie, anders is de straf oneerlijk verdeeld."
+  ],
   "level": 2,
   "sections": [
     {
@@ -63,12 +69,32 @@
         },
         {
           "type": "table",
-          "headers": ["", "L1 (lasso)", "L2 (ridge)"],
+          "headers": [
+            "",
+            "L1 (lasso)",
+            "L2 (ridge)"
+          ],
           "rows": [
-            ["Strafterm", "\\( \\sum \\lvert w_j \\rvert \\)", "\\( \\sum w_j^2 \\)"],
-            ["Effect op coëfficiënten", "velen worden <strong>exact nul</strong>", "allemaal kleiner"],
-            ["Feature selection", "ingebouwd", "nee"],
-            ["Extra", "let op de <code>solver</code> (bijv. <code>liblinear</code>)", "default solver werkt"]
+            [
+              "Strafterm",
+              "\\( \\sum \\lvert w_j \\rvert \\)",
+              "\\( \\sum w_j^2 \\)"
+            ],
+            [
+              "Effect op coëfficiënten",
+              "velen worden <strong>exact nul</strong>",
+              "allemaal kleiner"
+            ],
+            [
+              "Feature selection",
+              "ingebouwd",
+              "nee"
+            ],
+            [
+              "Extra",
+              "let op de <code>solver</code> (bijv. <code>liblinear</code>)",
+              "default solver werkt"
+            ]
           ]
         },
         {

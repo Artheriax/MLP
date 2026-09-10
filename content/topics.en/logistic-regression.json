@@ -3,6 +3,12 @@
   "chapter": "ch3",
   "title": "Logistic regression: why it isn't actually a regression",
   "intro": "In theory logistic regression is not a regression model but a classification method: the name refers to how the model is trained, not to what it delivers. The pipeline (line → probability → class), why plain linear regression fails for classes and how the logistic loss trains the model — with an interactive comparison and live metrics.",
+  "keyPoints": [
+    "Logistic regression is a <strong>classifier</strong> — the 'regression' name is historical (the logit model).",
+    "The pipeline: <strong>line → sigmoid → probability → threshold 0.5 → class</strong>.",
+    "Linear regression is wrong for 0/1 labels: predictions leave [0,1] and are not probabilities.",
+    "The model learns via <strong>logistic loss</strong> (binary cross-entropy), not MSE."
+  ],
   "level": 2,
   "sections": [
     {

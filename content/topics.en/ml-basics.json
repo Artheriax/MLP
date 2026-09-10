@@ -3,6 +3,12 @@
   "chapter": "ch0",
   "title": "What is machine learning?",
   "intro": "What machine learning actually is, how it differs from ordinary programming, when you should and should not use it — and why generalising is the core concept.",
+  "keyPoints": [
+    "Traditional programming: <strong>you</strong> write the rules. Machine learning: the computer <strong>learns</strong> the rules from examples (data + answers).",
+    "The definition: a program learns from experience <em>E</em> on task <em>T</em>, measured by performance <em>P</em>, if its performance on <em>T</em> improves.",
+    "Use ML for <strong>complex patterns, lots of data and a changing environment</strong>; use plain code for simple, explainable rules.",
+    "Learning = <strong>generalising</strong>: performing well on new, unseen data — not memorising training data."
+  ],
   "level": 1,
   "sections": [
     {

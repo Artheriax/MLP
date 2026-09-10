@@ -3,6 +3,12 @@
   "chapter": "ch4",
   "title": "Support vectors & de margin",
   "intro": "Het geheim van SVM's: het merendeel van je trainingsdata mag weg zonder dat het model verandert. De paar voorbeelden die er wél toe doen, heten support vectors — en ze verklaren ook waarom kernel-SVM's zo snel zijn.",
+  "keyPoints": [
+    "Een SVM zoekt de grens met de <strong>grootste margin</strong> tussen de klassen.",
+    "Alleen de <strong>support vectors</strong> (dichtst bij de grens) sturen de fit — andere punten mag je weggooien.",
+    "<strong>Hinge loss + L2-straf</strong> = precies de max-margin-oplossing.",
+    "De <strong>margin</strong> is de afstand van de grens tot de dichtstbijzijnde punten; groter = ruimer ademruimte."
+  ],
   "level": 2,
   "sections": [
     {

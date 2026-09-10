@@ -3,6 +3,12 @@
   "chapter": "ch5",
   "title": "Metrics bij regressie: MSE, RMSE, MAE & R²",
   "intro": "Hoe meet je of een regressiemodel goed voorspelt? De vier standaardmaten — MSE, RMSE, MAE en R&sup2; — met formules, interpretatie, een compleet uitgewerkt voorbeeld over autoprijzen, de exacte formules voor de best-fit lijn (b1 en het snijpunt met de y-as b0) en interactieve plots met live metrics die laten zien wat outliers met je metric doen.",
+  "keyPoints": [
+    "<strong>MSE</strong> = gemiddelde kwadratische fout; <strong>RMSE</strong> = de wortel daaruit, in dezelfde eenheid als y.",
+    "<strong>MAE</strong> is robuust tegen outliers; MSE/RMSE straffen grote fouten <em>extra</em> hard.",
+    "<strong>R²</strong> = verklaarde variantie: 1 = perfect, 0 = niet beter dan het gemiddelde voorspellen.",
+    "De best-fit lijn analytisch: <strong>b1</strong> = Σ(x−x̄)(y−ȳ) / Σ(x−x̄)² en <strong>b0</strong> = ȳ − b1·x̄."
+  ],
   "level": 2,
   "sections": [
     {

@@ -3,6 +3,12 @@
   "chapter": "ch1",
   "title": "Lineaire decision boundaries & vocabulaire",
   "intro": "Wat betekent het eigenlijk dat een classifier \"lineair\" is? Alles draait om de decision boundary: het grensvlak tussen de gebieden waarin het model de ene dan wel de andere klasse voorspelt.",
+  "keyPoints": [
+    "De <strong>decision boundary</strong> is de grens waarop het model van klasse wisselt.",
+    "Lineair scheidbare data: een <strong>rechte lijn</strong> (hyperplane) scheidt de klassen perfect.",
+    "In 3+ dimensies heet de grens een <strong>hyperplane</strong> — wiskundig nog steeds 'lineair'.",
+    "De coëfficiënten bepalen de <em>richting</em> van de grens, de intercept de <em>positie</em>."
+  ],
   "level": 1,
   "sections": [
     {
@@ -45,13 +51,31 @@
       "blocks": [
         {
           "type": "table",
-          "headers": ["Begrip", "Betekenis"],
+          "headers": [
+            "Begrip",
+            "Betekenis"
+          ],
           "rows": [
-            ["Classificatie", "supervised learning waarbij de y-waarden categorieën zijn (tegenovergestelde: regressie, met doorlopende waarden)"],
-            ["Decision boundary", "het grensvlak tussen gebieden met verschillende voorspelde klassen"],
-            ["Lineaire classifier", "een model dat een lineaire (rechte) beslisgrens leert"],
-            ["Lineair scheidbaar", "een dataset die perfect door één lineaire grens gescheiden kan worden"],
-            ["Hyperplane", "de generalisatie van een lijn/vlak naar hogere dimensies"]
+            [
+              "Classificatie",
+              "supervised learning waarbij de y-waarden categorieën zijn (tegenovergestelde: regressie, met doorlopende waarden)"
+            ],
+            [
+              "Decision boundary",
+              "het grensvlak tussen gebieden met verschillende voorspelde klassen"
+            ],
+            [
+              "Lineaire classifier",
+              "een model dat een lineaire (rechte) beslisgrens leert"
+            ],
+            [
+              "Lineair scheidbaar",
+              "een dataset die perfect door één lineaire grens gescheiden kan worden"
+            ],
+            [
+              "Hyperplane",
+              "de generalisatie van een lijn/vlak naar hogere dimensies"
+            ]
           ]
         },
         {

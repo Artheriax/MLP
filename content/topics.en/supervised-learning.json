@@ -3,6 +3,12 @@
   "chapter": "ch1",
   "title": "Supervised learning & the standard workflow",
   "intro": "What supervised learning actually is and which fixed steps you always follow in scikit-learn — loss functions, regularisation and kernels build on this pattern.",
+  "keyPoints": [
+    "Supervised learning = learning from <strong>labelled examples</strong> (X with y).",
+    "<strong>Regression</strong> predicts a number, <strong>classification</strong> a category.",
+    "The fixed scikit-learn order: import → instantiate → <code>fit</code> → <code>predict</code> → <code>score</code>.",
+    "Trust only the <strong>test score</strong> — the train score says nothing about new data."
+  ],
   "level": 1,
   "sections": [
     {

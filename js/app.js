@@ -38,11 +38,19 @@ window.MLP = window.MLP || {};
   }
 
   let currentRoute = null;
+  let tocSpy = null;
 
   async function route() {
     const r = parseHash();
     if (currentRoute && currentRoute.name === r.name && currentRoute.id === r.id) return;
     currentRoute = r;
+
+    /* opruimen van de vorige view (scroll-spy loskoppelen e.d.) */
+    if (tocSpy) {
+      tocSpy.disconnect();
+      tocSpy = null;
+    }
+    view().classList.remove("has-toc");
 
     window.scrollTo({ top: 0, behavior: "auto" });
 
@@ -137,6 +145,7 @@ window.MLP = window.MLP || {};
 
       const sec = el("div", "nav-section");
       sec.dataset.chapter = ch.id;
+      sec.style.setProperty("--nc", "var(--" + (ch.accent || "cyan") + ")");
 
       /* hoofdstuk-knop: klapt de sub-topics open/dicht */
       const head = el("button", "nav-chapter");
@@ -144,9 +153,9 @@ window.MLP = window.MLP || {};
       head.setAttribute("aria-expanded", "true");
       head.setAttribute("aria-controls", "navlist-" + ch.id);
       head.innerHTML =
-        '<svg class="chev" viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5.5 4L10 8l-4.5 4"/></svg>' +
+        '<span class="nc-num">' + (ci + 1) + "</span>" +
         '<span class="nav-chapter-name">' + escapeHtml(ch.name) + "</span>" +
-        '<span class="nav-count">' + topics.length + "</span>";
+        '<svg class="chev" viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5.5 4L10 8l-4.5 4"/></svg>';
       head.addEventListener("click", () => toggleChapter(sec));
       sec.appendChild(head);
 
@@ -524,43 +533,65 @@ window.MLP = window.MLP || {};
   function buildHomeDom(index) {
     const frag = document.createDocumentFragment();
     const site = index.site || {};
+    const chapters = index.chapters || [];
+    const topics = index.topics || [];
 
-    frag.appendChild(el("h1", null, escapeHtml(t("home_title"))));
-    frag.appendChild(el("p", "home-lede", escapeHtml(site.description || t("home_lede_fallback"))));
-    frag.appendChild(
-      el(
-        "p",
-        "home-meta",
-        escapeHtml(
-          tf("home_meta", {
-            ch: (index.chapters || []).length,
-            n: (index.topics || []).length,
-          })
-        )
-      )
-    );
+    /* hero */
+    const headEl = el("header", "home-head");
+    headEl.appendChild(el("h1", "home-title", escapeHtml(t("home_title"))));
+    headEl.appendChild(el("p", "home-lede", escapeHtml(site.description || t("home_lede_fallback"))));
 
-    (index.chapters || []).forEach((ch) => {
-      const topics = (index.topics || []).filter((tp) => tp.chapter === ch.id);
-      if (!topics.length) return;
+    const stats = el("div", "home-stats");
+    [
+      { n: chapters.length, label: t("stat_chapters") },
+      { n: topics.length, label: t("stat_topics") },
+      { n: site.statFormulas || null, label: t("stat_formulas") },
+      { n: site.statCode || null, label: t("stat_code") },
+    ].forEach((c) => {
+      if (c.n == null) return;
+      stats.appendChild(
+        el("span", "stat-chip", "<strong>" + escapeHtml(String(c.n)) + "</strong>" + escapeHtml(String(c.label)))
+      );
+    });
+    headEl.appendChild(stats);
+    frag.appendChild(headEl);
 
-      const section = el("section", "home-chapter");
-      section.appendChild(el("h2", null, escapeHtml(ch.name)));
+    /* hoofdstukkaarten */
+    const grid = el("div", "home-chapters");
+    chapters.forEach((ch, ci) => {
+      const ctopics = topics.filter((tp) => tp.chapter === ch.id);
+      if (!ctopics.length) return;
+
+      const card = el("section", "home-chapter");
+      card.style.setProperty("--accent", "var(--" + (ch.accent || "cyan") + ")");
+
+      const headCard = el("div", "cc-head");
+      headCard.appendChild(
+        el("div", "cc-kicker", "<span>" + String(ci + 1).padStart(2, "0") + '</span><span class="cc-rule"></span>')
+      );
+      headCard.appendChild(el("h2", null, escapeHtml(ch.name)));
       if (ch.description) {
-        section.appendChild(el("p", "chapter-desc", escapeHtml(ch.description)));
+        headCard.appendChild(el("p", "chapter-desc", escapeHtml(ch.description)));
       }
+      card.appendChild(headCard);
 
       const ul = el("ul", "home-list");
-      topics.forEach((tp) => {
+      ctopics.forEach((tp) => {
         const li = el("li");
-        const a = el("a", null, escapeHtml(tp.title));
+        const a = el(
+          "a",
+          null,
+          '<span class="hl-title">' + escapeHtml(tp.title) + "</span>" +
+            '<span class="lvl l' + (tp.level || 1) + '">' + escapeHtml(LEVELS()[tp.level || 1] || "") + "</span>"
+        );
         a.href = "#/onderwerp/" + encodeURIComponent(tp.id);
         li.appendChild(a);
         ul.appendChild(li);
       });
-      section.appendChild(ul);
-      frag.appendChild(section);
+      card.appendChild(ul);
+      grid.appendChild(card);
     });
+    frag.appendChild(grid);
 
     return frag;
   }
@@ -568,6 +599,73 @@ window.MLP = window.MLP || {};
   /* ============================================================
      Onderwerppagina
      ============================================================ */
+
+  /* kernpunten-box (uit content: topic.keyPoints) */
+  function buildKeypoints(topic) {
+    if (!Array.isArray(topic.keyPoints) || !topic.keyPoints.length) return null;
+    const box = el("aside", "keypoints");
+    const icon =
+      '<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M2.5 8.5l3.5 3.5 7-8"/></svg>';
+    box.appendChild(el("div", "kp-title", icon + escapeHtml(t("keypoints_title"))));
+    const ul = el("ul", "kp-list");
+    topic.keyPoints.forEach((kp) => ul.appendChild(el("li", null, kp)));
+    box.appendChild(ul);
+    return box;
+  }
+
+  /* "op deze pagina" — TOC uit de sectietitels */
+  function buildToc(sections) {
+    if (!sections || sections.length < 3) return null;
+    const slot = el("div", "toc-slot");
+    const nav = el("nav", "toc");
+    nav.setAttribute("aria-label", t("toc_title"));
+    nav.appendChild(
+      el("div", "toc-title", escapeHtml(t("toc_title")) + '<span class="toc-rule"></span>')
+    );
+    const ul = el("ul", "toc-list");
+    sections.forEach((sec, i) => {
+      const li = el("li");
+      const a = el(
+        "a",
+        "toc-link",
+        '<span class="tn">' + String(i + 1).padStart(2, "0") + "</span>" + escapeHtml(sec.title || "")
+      );
+      a.href = "#sec-" + (i + 1);
+      a.dataset.target = "sec-" + (i + 1);
+      li.appendChild(a);
+      ul.appendChild(li);
+    });
+    nav.appendChild(ul);
+    slot.appendChild(nav);
+    return slot;
+  }
+
+  /* scroll-spy: markeert in de TOC waar de lezer is */
+  function initTocSpy() {
+    const links = $$(".toc-link");
+    const sections = $$(".topic-section");
+    if (!links.length || !sections.length) return;
+
+    const setActive = (id) => {
+      links.forEach((a) => a.classList.toggle("active", a.dataset.target === id));
+    };
+
+    if (!("IntersectionObserver" in window)) {
+      setActive(sections[0].id);
+      return;
+    }
+
+    tocSpy = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((en) => {
+          if (en.isIntersecting) setActive(en.target.id);
+        });
+      },
+      { rootMargin: "-80px 0px -66% 0px", threshold: 0 }
+    );
+    sections.forEach((s) => tocSpy.observe(s));
+    setActive(sections[0].id);
+  }
 
   async function renderTopic(id) {
     let topic;
@@ -587,6 +685,7 @@ window.MLP = window.MLP || {};
     const chapterById = {};
     (index.chapters || []).forEach((ch) => (chapterById[ch.id] = ch));
     const chapter = chapterById[topic.chapter] || { name: "Overig", accent: "cyan" };
+    const chapterIdx = (index.chapters || []).findIndex((c) => c.id === topic.chapter);
     const ctx = {
       accent: chapter.accent,
       accentMap: {
@@ -606,37 +705,50 @@ window.MLP = window.MLP || {};
     const main = el("article", "topic");
     main.style.setProperty("--accent", "var(--" + chapter.accent + ")");
 
-    /* kop */
+    /* kop: hoofdstuk-kicker · titel · meta-chips · intro · kernpunten */
     const head = el("header", "topic-head");
-    const crumb = el(
+    const kicker = el(
       "a",
-      "crumb",
-      escapeHtml(t("crumb_all")) +
-        ' <span class="sep">/</span> ' +
-        escapeHtml(chapter.name)
+      "topic-kicker",
+      '<span class="tk-num">' + (chapterIdx >= 0 ? String(chapterIdx + 1) : "·") + "</span>" +
+        '<span class="tk-name">' + escapeHtml(chapter.name) + "</span>"
     );
-    crumb.href = "#/";
-    head.appendChild(crumb);
+    kicker.href = "#/";
+    kicker.title = t("crumb_all");
+    head.appendChild(kicker);
     head.appendChild(el("h1", "topic-title", escapeHtml(topic.title)));
 
     const words = countWords(topic);
     const minutes = Math.max(1, Math.round(words / 190));
     const meta = el("div", "topic-meta");
     meta.innerHTML =
-      "<span>" + (LEVELS()[topic.level || 1] || t("meta_level_fallback")) + "</span>" +
-      "<span>" + escapeHtml(tf("meta_minutes", { n: minutes })) + "</span>" +
-      "<span>" + escapeHtml(tf("meta_sections", { n: (topic.sections || []).length })) + "</span>";
+      '<span class="chip level-' + (topic.level || 1) + '"><span class="dot" aria-hidden="true"></span>' +
+        escapeHtml(LEVELS()[topic.level || 1] || t("meta_level_fallback")) +
+      "</span>" +
+      '<span class="chip">' + escapeHtml(tf("meta_minutes", { n: minutes })) + "</span>" +
+      '<span class="chip">' + escapeHtml(tf("meta_sections", { n: (topic.sections || []).length })) + "</span>";
     head.appendChild(meta);
 
     if (topic.intro) head.appendChild(el("p", "topic-intro", topic.intro));
-    frag.appendChild(head);
+
+    const kp = buildKeypoints(topic);
+    if (kp) head.appendChild(kp);
+
+    main.appendChild(head);
+
+    /* inhoudsopgave ("op deze pagina") */
+    const toc = buildToc(topic.sections);
+    if (toc) {
+      main.appendChild(toc);
+      view().classList.add("has-toc");
+    }
 
     /* secties */
     const body = el("div", "topic-body");
     (topic.sections || []).forEach((sec, i) => {
       body.appendChild(MLP.blocks.renderSection(sec, i, ctx));
     });
-    frag.appendChild(body);
+    main.appendChild(body);
 
     /* pager */
     if (prev || next) {
@@ -654,9 +766,10 @@ window.MLP = window.MLP || {};
         a.href = "#/onderwerp/" + encodeURIComponent(next.id);
         pager.appendChild(a);
       }
-      frag.appendChild(pager);
+      main.appendChild(pager);
     }
 
+    frag.appendChild(main);
     const v = view();
     v.innerHTML = "";
     v.appendChild(frag);
@@ -670,13 +783,14 @@ window.MLP = window.MLP || {};
             { left: "\\(", right: "\\)", display: false },
           ],
           throwOnError: false,
-          ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code", "option"],
+          ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code", "option", "kbd"],
         });
       } catch (e) {
         /* formules zijn optioneel */
       }
     }
 
+    initTocSpy();
     app().focus({ preventScroll: true });
   }
 

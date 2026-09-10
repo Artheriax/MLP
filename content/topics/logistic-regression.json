@@ -3,6 +3,12 @@
   "chapter": "ch3",
   "title": "Logistic regression: waarom het eigenlijk geen regressie is",
   "intro": "In theorie is logistic regression géén regressiemodel maar een classificatiemethode: de naam verwijst naar hoe het model getraind wordt, niet naar wat het oplevert. De pipeline (lijn → kans → klasse), waarom gewone lineaire regressie niet deugt voor klassen en hoe de logistische loss het model traint — met een interactieve vergelijking en live metrics.",
+  "keyPoints": [
+    "Logistic regression is een <strong>classifier</strong> — de naam 'regressie' is historisch (het logit-model).",
+    "De pipeline: <strong>lijn → sigmoid → kans → drempel 0,5 → klasse</strong>.",
+    "Lineaire regressie deugt niet voor 0/1-labels: voorspelt buiten [0,1] en geeft geen kansen.",
+    "Het model leert via de <strong>logistische loss</strong> (binaire cross-entropy), niet via MSE."
+  ],
   "level": 2,
   "sections": [
     {

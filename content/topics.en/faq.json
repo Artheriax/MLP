@@ -3,6 +3,11 @@
   "chapter": "ch6",
   "title": "Frequently asked questions (FAQ)",
   "intro": "Sixteen short, clear answers to the most frequently asked questions — from the difference between classification and regression to picking the right metric. Every question points to the topic where the material is covered in depth with examples, so from this single page you can navigate the whole site.",
+  "keyPoints": [
+    "Sixteen short answers, grouped by theme: <strong>basics → learning → choosing → judging</strong>.",
+    "Each answer fits in a few sentences; the link below it points to the full topic.",
+    "Use the <strong>search bar</strong> (shortcut <kbd>/</kbd>) to jump straight to a concept."
+  ],
   "level": 1,
   "sections": [
     {

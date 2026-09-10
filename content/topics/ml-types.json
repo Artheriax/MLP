@@ -3,6 +3,12 @@
   "chapter": "ch0",
   "title": "De drie soorten machine learning",
   "intro": "Supervised, unsupervised of reinforcement? De drie families van machine learning, wat voor data elk nodig heeft, welke taken erbij horen — en hoe je met twee vragen weet welke familie jouw probleem is.",
+  "keyPoints": [
+    "<strong>Supervised learning</strong>: leren met labels — classificatie (categorie) en regressie (getal). De focus van deze cursus.",
+    "<strong>Unsupervised learning</strong>: structuur vinden zonder labels — clustering, PCA, anomaliedetectie.",
+    "<strong>Reinforcement learning</strong>: leren door trial-and-error met beloningen (geen vaste labels).",
+    "Twee vragen bepalen de familie: <em>heb je labels?</em> en <em>voorspel je een getal of een categorie?</em>"
+  ],
   "level": 1,
   "sections": [
     {

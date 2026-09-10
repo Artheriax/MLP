@@ -3,6 +3,13 @@
   "chapter": "ch5",
   "title": "Classification metrics: confusion matrix, precision & recall",
   "intro": "How do you judge a classifier? The confusion matrix as the foundation, accuracy and why it can mislead, precision and recall with concrete scenarios, the F1-score — and binary cross-entropy as the training objective, all with code that runs in the browser.",
+  "keyPoints": [
+    "Everything starts with the <strong>confusion matrix</strong>: TP, FP, FN and TN.",
+    "<strong>Accuracy</strong> can mislead on imbalanced classes — 99% accurate may mean 'always the majority'.",
+    "<strong>Precision</strong>: of my positive predictions, how many were right? <strong>Recall</strong>: of the true positives, how many did I find?",
+    "<strong>F1</strong> = the harmonic mean of precision and recall; <strong>BCE</strong> is the loss the model minimises in training.",
+    "Moving the <strong>threshold</strong> shifts the balance between precision and recall."
+  ],
   "level": 2,
   "sections": [
     {

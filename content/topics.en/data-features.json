@@ -3,6 +3,12 @@
   "chapter": "ch0",
   "title": "Data, features & labels",
   "intro": "The language of ML data: rows are samples, columns are features, and the column you predict is the target. What X and y look like in scikit-learn, which kinds of features exist — and why splitting into train and test is non-negotiable.",
+  "keyPoints": [
+    "Rows = <strong>samples</strong>, columns = <strong>features</strong>; the target column is <strong>y</strong>, the rest is <strong>X</strong>.",
+    "Numeric features go straight into the model; categorical features need encoding first (e.g. one-hot).",
+    "In scikit-learn, X is a 2D array (n&nbsp;×&nbsp;features) and y is a 1D array.",
+    "The <strong>train/test split</strong> is sacred: only evaluate on data the model has never seen."
+  ],
   "level": 1,
   "sections": [
     {

@@ -3,6 +3,12 @@
   "chapter": "ch0",
   "title": "Data, features & labels",
   "intro": "De taal van ML-data: rijen zijn samples, kolommen zijn features, en de kolom die je voorspelt is de target. Hoe X en y er in scikit-learn uitzien, welke soorten features er bestaan — en waarom train/test-splitsen niet onderhandelbaar is.",
+  "keyPoints": [
+    "Rijen = <strong>samples</strong>, kolommen = <strong>features</strong>; de doelkolom is <strong>y</strong>, de rest is <strong>X</strong>.",
+    "Numerieke features gaan direct in het model; categorische features moet je eerst omzetten (o.a. one-hot).",
+    "In scikit-learn is X een 2D-array (n&nbsp;×&nbsp;features) en y een 1D-array.",
+    "De <strong>train/test-split</strong> is heilig: evalueer alleen op data die het model niet zag."
+  ],
   "level": 1,
   "sections": [
     {

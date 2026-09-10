@@ -3,6 +3,12 @@
   "chapter": "ch0",
   "title": "The ML workflow from start to finish",
   "intro": "From raw question to working model: the eight steps of an ML project, under- and overfitting shown interactively, and the fit–predict–score trio that sounds the same across all of scikit-learn.",
+  "keyPoints": [
+    "The eight steps: <em>question → data → split → prepare features → pick model → fit → evaluate → tune</em>.",
+    "The scikit-learn trio: <code>fit()</code> trains, <code>predict()</code> predicts, <code>score()</code> evaluates.",
+    "<strong>Underfitting</strong> = too simple (bad everywhere); <strong>overfitting</strong> = memorising (great train score, poor test score).",
+    "Always start with a simple <strong>baseline</strong> before trying more complex models."
+  ],
   "level": 1,
   "sections": [
     {

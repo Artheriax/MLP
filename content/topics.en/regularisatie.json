@@ -3,6 +3,12 @@
   "chapter": "ch3",
   "title": "Regularisation: the hyperparameter C, L1 and L2",
   "intro": "Regularisation is your most important weapon against overfitting: you penalise large coefficients, which makes the model more \"cautious\". In scikit-learn you steer this with a single hyperparameter: C.",
+  "keyPoints": [
+    "Regularisation <strong>penalises large coefficients</strong> → simpler model that generalises better.",
+    "<strong>C is the inverse strength</strong>: small C = strong regularisation, large C = almost none.",
+    "<strong>L2</strong> (squares) is the default; <strong>L1</strong> (absolute values) can zero out coefficients → feature selection.",
+    "<strong>Scale your features</strong> before regularising, otherwise the penalty is unfairly distributed."
+  ],
   "level": 2,
   "sections": [
     {
@@ -16,7 +22,7 @@
           "type": "formula",
           "label": "regularised optimisation problem",
           "latex": "\\min_{w,\\,b}\\; \\sum_{i=1}^{n} L\\bigl(y_i,\\, f(x_i)\\bigr) \\;+\\; \\lambda\\, R(w), \\qquad C \\;=\\; \\frac{1}{\\lambda}",
-          "caption": "The loss plus a penalty term on the coefficients; C is the inverse strength \u03bb."
+          "caption": "The loss plus a penalty term on the coefficients; C is the inverse strength λ."
         },
         {
           "type": "formula",
@@ -63,12 +69,32 @@
         },
         {
           "type": "table",
-          "headers": ["", "L1 (lasso)", "L2 (ridge)"],
+          "headers": [
+            "",
+            "L1 (lasso)",
+            "L2 (ridge)"
+          ],
           "rows": [
-            ["Penalty term", "\\( \\sum \\lvert w_j \\rvert \\)", "\\( \\sum w_j^2 \\)"],
-            ["Effect on coefficients", "many become <strong>exactly zero</strong>", "all of them shrink"],
-            ["Feature selection", "built in", "no"],
-            ["Extra", "mind the <code>solver</code> (e.g. <code>liblinear</code>)", "default solver works"]
+            [
+              "Penalty term",
+              "\\( \\sum \\lvert w_j \\rvert \\)",
+              "\\( \\sum w_j^2 \\)"
+            ],
+            [
+              "Effect on coefficients",
+              "many become <strong>exactly zero</strong>",
+              "all of them shrink"
+            ],
+            [
+              "Feature selection",
+              "built in",
+              "no"
+            ],
+            [
+              "Extra",
+              "mind the <code>solver</code> (e.g. <code>liblinear</code>)",
+              "default solver works"
+            ]
           ]
         },
         {

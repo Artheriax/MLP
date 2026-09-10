@@ -21,6 +21,15 @@ best-fit lijn. Interactieve plots hebben **live metrics** (MSE, R²,
 accuracy, precision/recall/F1 …) die realtime meebewegen met de
 sliders en groen oplichten bij de best haalbare fit.
 
+**Leesbaarheid voorop (v2-redesign)**: de leestekst staat op **17 px
+met ruime regelafstand** in een **smalle kolom (~66 tekens)** — het
+comfortabelste leesmaat voor studiestof. Elk onderwerp opent met een
+**Kernpunten-box** (de 3–5 dingen die je moet onthouden) en een
+**"Op deze pagina"-overzicht** met scroll-spy dat meeloopt terwijl je
+leest (op brede schermen als vaste balk naast de tekst). Secties zijn
+genummerd (01, 02 …), callouts hebben iconen, tabellen hebben luchtige
+cellen met zebra-strepen en formules staan in rustige kaarten.
+
 **Thema & typografie**: de site heeft een **dark- en een light mode**
 (schakelen met de zon/maan-knop rechtsboven, keuze wordt onthouden).
 Donker is de default — de originele stijl: achtergrond `#161616` met
@@ -29,12 +38,12 @@ modus is de achtergrond wit met zwarte tekst en iets verdiepte
 pastel-tinten voor leesbaarheid. Het lettertype is **Lexend**
 (oogvriendelijk, via Google Fonts met nette systeem-fallback). De
 **navigatie** loopt via een vaste **inklapbare zijbalk** met
-**uitklapbare hoofdstukken** (klik op een hoofdstuk om de sub-topics
-te zien; de stand wordt onthouden en het hoofdstuk van het actieve
-onderwerp klapt vanzelf open). De **zoekbalk doorzoekt de volledige
-inhoud** van alle sub-topics — teksten, formules, code en tabellen —
-en toont resultaten met een gemarkeerd snippet (sneltoets: `/`);
-op mobiel klapt de zijbalk open via het menu-icoon. De site is
+**uitklapbare, genummerde hoofdstukken** (klik op een hoofdstuk om de
+sub-topics te zien; de stand wordt onthouden en het hoofdstuk van het
+actieve onderwerp klapt vanzelf open). De **zoekbalk doorzoekt de
+volledige inhoud** van alle sub-topics — teksten, formules, code en
+tabellen — en toont resultaten met een gemarkeerd snippet (sneltoets:
+`/`); op mobiel klapt de zijbalk open via het menu-icoon. De site is
 volledig **tweetalig: Nederlands (default) en Engels** (schakelen met
 NL/EN-knop rechtsboven).
 
@@ -155,6 +164,10 @@ lesstof toe te voegen:
   "chapter": "ch1",               // verwijst naar chapters[] in index.json
   "title": "Titel van het onderwerp",
   "intro": "Korte inleiding bovenaan de pagina.",
+  "keyPoints": [                  // optioneel: Kernpunten-box onder de intro
+    "De <strong>belangrijkste</strong> kern van dit onderwerp.",
+    "Nog een punt dat je moet onthouden (HTML mag)."
+  ],
   "level": 1,                     // 1 = Basis · 2 = Verdieping · 3 = Gevorderd
   "sections": [
     {

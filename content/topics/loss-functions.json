@@ -3,6 +3,12 @@
   "chapter": "ch2",
   "title": "Loss functies: waarom fitten eigenlijk optimaliseren is",
   "intro": "Veel machine learning draait om één ding: een loss minimaliseren. Begrijp je dit perspectief, dan zie je verbanden tussen modellen, pak je nieuwe modellen sneller op en kun je ze afstemmen op jouw probleem.",
+  "keyPoints": [
+    "Een <strong>loss</strong> is een strafscore: hoe fout is déze ene voorspelling?",
+    "<strong>Squared loss</strong> (kwadratische fout) is de standaard bij regressie.",
+    "<strong>0-1 loss</strong> telt fouten, maar is niet glad → onmogelijk netjes te optimaliseren.",
+    "Fitten = de <strong>totale loss minimaliseren</strong>, o.a. met <code>scipy.optimize.minimize</code>."
+  ],
   "level": 2,
   "sections": [
     {
@@ -20,10 +26,22 @@
         },
         {
           "type": "table",
-          "headers": ["Begrip", "Rol", "Vraag die het beantwoordt"],
+          "headers": [
+            "Begrip",
+            "Rol",
+            "Vraag die het beantwoordt"
+          ],
           "rows": [
-            ["Loss", "fitten", "\"welke parameters maken de fout op de trainingsdata klein?\""],
-            ["Score", "evalueren", "\"hoe goed presteert het model op (nieuwe) data?\""]
+            [
+              "Loss",
+              "fitten",
+              "\"welke parameters maken de fout op de trainingsdata klein?\""
+            ],
+            [
+              "Score",
+              "evalueren",
+              "\"hoe goed presteert het model op (nieuwe) data?\""
+            ]
           ]
         }
       ]

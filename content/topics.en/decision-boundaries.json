@@ -3,6 +3,12 @@
   "chapter": "ch1",
   "title": "Linear decision boundaries & vocabulary",
   "intro": "What does it actually mean for a classifier to be \"linear\"? Everything revolves around the decision boundary: the surface separating the regions in which the model predicts one class or the other.",
+  "keyPoints": [
+    "The <strong>decision boundary</strong> is the border where the model switches class.",
+    "Linearly separable data: a <strong>straight line</strong> (hyperplane) separates the classes perfectly.",
+    "In 3+ dimensions the border is a <strong>hyperplane</strong> — mathematically still 'linear'.",
+    "The coefficients set the boundary's <em>direction</em>; the intercept shifts its <em>position</em>."
+  ],
   "level": 1,
   "sections": [
     {
@@ -16,7 +22,7 @@
           "type": "formula",
           "label": "hyperplane",
           "latex": "w_1 x_1 + w_2 x_2 + b = 0",
-          "caption": "The linear decision boundary in 2D: a line. When the model computes a positive value on one side it predicts class +1, otherwise class \u22121."
+          "caption": "The linear decision boundary in 2D: a line. When the model computes a positive value on one side it predicts class +1, otherwise class −1."
         },
         {
           "type": "text",
@@ -45,13 +51,31 @@
       "blocks": [
         {
           "type": "table",
-          "headers": ["Concept", "Meaning"],
+          "headers": [
+            "Concept",
+            "Meaning"
+          ],
           "rows": [
-            ["Classification", "supervised learning where the y values are categories (opposite: regression, with continuous values)"],
-            ["Decision boundary", "the surface between regions with different predicted classes"],
-            ["Linear classifier", "a model that learns a linear (straight) decision boundary"],
-            ["Linearly separable", "a dataset that can be separated perfectly by a single linear boundary"],
-            ["Hyperplane", "the generalisation of a line/plane to higher dimensions"]
+            [
+              "Classification",
+              "supervised learning where the y values are categories (opposite: regression, with continuous values)"
+            ],
+            [
+              "Decision boundary",
+              "the surface between regions with different predicted classes"
+            ],
+            [
+              "Linear classifier",
+              "a model that learns a linear (straight) decision boundary"
+            ],
+            [
+              "Linearly separable",
+              "a dataset that can be separated perfectly by a single linear boundary"
+            ],
+            [
+              "Hyperplane",
+              "the generalisation of a line/plane to higher dimensions"
+            ]
           ]
         },
         {

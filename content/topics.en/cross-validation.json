@@ -3,6 +3,12 @@
   "chapter": "ch5",
   "title": "Cross-validation: judging your model reliably",
   "intro": "A single train/test split is a gamble: the score depends on which samples happen to land in the test set. Cross-validation divides your data into k chunks (folds), trains k times on all-but-one, and averages the scores — a much more stable estimate of how well your model generalises. This topic: why CV, how it works in scikit-learn with cross_val_score, which variants exist (Stratified, Leave-One-Out, ShuffleSplit), how to choose k, and how to tune hyperparameters with GridSearchCV without cheating on the test set.",
+  "keyPoints": [
+    "A single train/test split is a <strong>gamble</strong>: the score depends on the random split.",
+    "<strong>k-fold CV</strong>: k alternating splits — the mean is a far more stable estimate.",
+    "<strong>StratifiedKFold</strong> keeps class ratios equal; Leave-One-Out = k = n (expensive).",
+    "Combine <strong>GridSearchCV + Pipeline</strong>: tune hyperparameters without data leakage."
+  ],
   "level": 2,
   "sections": [
     {
@@ -133,8 +139,14 @@
           "type": "plot",
           "title": "Bias–variance of the CV estimate against the number of folds k",
           "subtitle": "More folds = less bias (each fold trains on more data), but slightly more variance (folds overlap more and become correlated). The MSE of the estimate (bias² + variance) drops and then flattens — hence k = 5 or k = 10 as the standard choice.",
-          "xrange": [2, 20],
-          "yrange": [0, 0.13],
+          "xrange": [
+            2,
+            20
+          ],
+          "yrange": [
+            0,
+            0.13
+          ],
           "xlabel": "number of folds k  →",
           "curves": [
             {

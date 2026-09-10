@@ -3,6 +3,12 @@
   "chapter": "ch2",
   "title": "Gradient descent: hoe leert een model?",
   "intro": "Minimaliseren van de loss klinkt mooi — maar hoe vindt het model het minimum? Gradient descent: de update-regel, de learning rate, en een complete simulatie die je in de browser kunt draaien.",
+  "keyPoints": [
+    "De <strong>gradiënt</strong> wijst recht omhoog in het loss-landschap — dus stap je de andere kant op.",
+    "Update-regel: <code>w ← w − η·∇L</code>, herhaald tot de loss nauwelijks nog daalt.",
+    "De <strong>learning rate η</strong> is kritisch: te groot → divergeren; te klein → eindeloos traag.",
+    "Varianten: <strong>batch</strong> (alle data), <strong>mini-batch</strong> (deel), <strong>SGD</strong> (per sample)."
+  ],
   "level": 2,
   "sections": [
     {

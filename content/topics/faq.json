@@ -3,6 +3,11 @@
   "chapter": "ch6",
   "title": "Veelgestelde vragen (FAQ)",
   "intro": "Zestien korte, heldere antwoorden op de vragen die het vaakst langskomen — van het verschil tussen classificatie en regressie tot de keuze van de juiste metric. Elke vraag verwijst door naar het onderwerp waar de stof uitgebreid en met voorbeelden staat, zodat je vanuit deze ene pagina de hele site kunt navigeren.",
+  "keyPoints": [
+    "Zestien korte antwoorden, geordend per thema: <strong>basis → leren → kiezen → beoordelen</strong>.",
+    "Elk antwoord past in een paar zinnen; de link eronder verwijst naar het volledige onderwerp.",
+    "Gebruik de <strong>zoekbalk</strong> (sneltoets <kbd>/</kbd>) om direct op een begrip te zoeken."
+  ],
   "level": 1,
   "sections": [
     {

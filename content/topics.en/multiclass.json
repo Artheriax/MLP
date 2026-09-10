@@ -3,6 +3,12 @@
   "chapter": "ch3",
   "title": "Multi-class: one-vs-rest & softmax",
   "intro": "More than two classes? scikit-learn handles that automatically — but there is a choice happening behind the scenes: separate binary classifiers per class (one-vs-rest), or one joint model with a softmax loss. The consequences are small but understandable.",
+  "keyPoints": [
+    "Multi-class = <strong>3+ classes</strong>. Two strategies: one-vs-rest and multinomial (softmax).",
+    "<strong>OvR</strong>: one binary classifier per class ('this class or not'); highest score wins.",
+    "<strong>Softmax</strong>: one joint model; k scores → a probability distribution summing to 1.",
+    "Both strategies give coefficients with <strong>one row per class</strong>."
+  ],
   "level": 2,
   "sections": [
     {
@@ -50,12 +56,32 @@
         },
         {
           "type": "table",
-          "headers": ["", "One-vs-rest", "Multinomial (softmax)"],
+          "headers": [
+            "",
+            "One-vs-rest",
+            "Multinomial (softmax)"
+          ],
           "rows": [
-            ["Fitting", "one binary classifier per class", "once, with an adapted loss"],
-            ["Predicting", "largest raw model output", "largest softmax probability"],
-            ["Advantage", "reuses the binary implementation", "loss is closer to accuracy — sometimes a better score"],
-            ["Common in", "SVMs and related strategies", "neural networks; default with lbfgs"]
+            [
+              "Fitting",
+              "one binary classifier per class",
+              "once, with an adapted loss"
+            ],
+            [
+              "Predicting",
+              "largest raw model output",
+              "largest softmax probability"
+            ],
+            [
+              "Advantage",
+              "reuses the binary implementation",
+              "loss is closer to accuracy — sometimes a better score"
+            ],
+            [
+              "Common in",
+              "SVMs and related strategies",
+              "neural networks; default with lbfgs"
+            ]
           ]
         }
       ]
@@ -65,7 +91,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> In the binary case you had one coefficient per feature plus one intercept. For 3 classes with OvR you have <strong>3 whole binary classifiers</strong>: so one coefficient per feature <em>per class</em>, and one intercept per class. On the wine dataset (13 features), <code>coef_</code> is therefore a 3\u00d713 array. The multinomial version learns <strong>exactly as many</strong> parameters (also 3\u00d713) — the approach differs, but broadly the parameters have the same interpretations. </p>"
+          "html": "<p> In the binary case you had one coefficient per feature plus one intercept. For 3 classes with OvR you have <strong>3 whole binary classifiers</strong>: so one coefficient per feature <em>per class</em>, and one intercept per class. On the wine dataset (13 features), <code>coef_</code> is therefore a 3×13 array. The multinomial version learns <strong>exactly as many</strong> parameters (also 3×13) — the approach differs, but broadly the parameters have the same interpretations. </p>"
         },
         {
           "type": "code",

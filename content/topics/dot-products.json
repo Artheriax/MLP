@@ -3,6 +3,12 @@
   "chapter": "ch2",
   "title": "Dot products & de voorspellingsvergelijking",
   "intro": "Dit hoofdstuk is het wiskundige fundament van de cursus. Met één ingrediënt — het dot-product — kun je exact beschrijven hoe élke lineaire classifier voorspelt. Wie deze vergelijking snapt, snapt logistic regression én SVM's tegelijk.",
+  "keyPoints": [
+    "Het dot-product <strong>x·w + b</strong> is de <em>raw model output</em>: de score vóór de drempel.",
+    "In NumPy: <code>X @ coef_.T + intercept_</code> — dat is letterlijk wat <code>decision_function()</code> doet.",
+    "Elke lineaire classifier (LR, SVM) gebruikt <strong>exact dezelfde</strong> voorspellingsvergelijking.",
+    "Het <strong>teken</strong> van de raw output kiest de klasse: positief → klasse 1, negatief → klasse 0."
+  ],
   "level": 2,
   "sections": [
     {

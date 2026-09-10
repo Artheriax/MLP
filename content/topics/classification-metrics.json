@@ -3,6 +3,13 @@
   "chapter": "ch5",
   "title": "Metrics bij classificatie: confusion matrix, precision & recall",
   "intro": "Hoe beoordeel je een classifier? De confusion matrix als fundament, accuracy en waarom die kan misleiden, precision en recall met concrete scenario's, de F1-score — en de binaire cross-entropy als trainingsdoel, alles met code die in de browser draait.",
+  "keyPoints": [
+    "Alles start met de <strong>confusion matrix</strong>: TP, FP, FN en TN.",
+    "<strong>Accuracy</strong> kan misleiden bij scheve klassen — 99% accuraat kan 'altijd de meerderheid' betekenen.",
+    "<strong>Precision</strong>: hoeveel van mijn positieve voorspellingen klopten? <strong>Recall</strong>: hoeveel echte positieven vond ik?",
+    "<strong>F1</strong> = het harmonisch gemiddelde van precision en recall; <strong>BCE</strong> is de loss die het model tijdens training minimaliseert.",
+    "De <strong>threshold</strong> verschuiven verplaatst de balans tussen precision en recall."
+  ],
   "level": 2,
   "sections": [
     {

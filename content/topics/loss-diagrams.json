@@ -3,6 +3,12 @@
   "chapter": "ch2",
   "title": "Loss-diagrammen: logistic loss vs. hinge loss",
   "intro": "Waarschijnlijk het meest conceptuele onderwerp van de cursus — maar als je dit beeld eenmaal snapt, weet je exact wát logistic regression en SVM's zijn, en waarom ze zich anders gedragen. De grafieken hieronder zijn interactief: beweeg je muis eroverheen.",
+  "keyPoints": [
+    "Een loss-diagram zet de loss uit tegen de <strong>raw model output</strong> (positief = goed voorspeld).",
+    "Squared loss <strong>mislukt</strong> voor classificatie: correcte, zekere voorspellingen raken alsnog bestraft.",
+    "<strong>Logistic loss</strong> en <strong>hinge loss</strong> zijn de twee werkpaarden: glad, optimaliseerbaar en streng bij fouten.",
+    "De <strong>vorm</strong> van de curve stuurt het leerproces: glad = gradiënten, schouder = marge."
+  ],
   "level": 2,
   "sections": [
     {
@@ -16,10 +22,20 @@
           "type": "plot",
           "title": "De 0-1 loss van één voorbeeld (y = +1)",
           "subtitle": "Links (negatieve raw output): fout → loss 1. Rechts: goed → loss 0.",
-          "xrange": [-4, 4],
-          "yrange": [-0.3, 2],
+          "xrange": [
+            -4,
+            4
+          ],
+          "yrange": [
+            -0.3,
+            2
+          ],
           "curves": [
-            { "expr": "(x < 0 ? 1 : 0)", "label": "0-1 loss", "color": "yellow" }
+            {
+              "expr": "(x < 0 ? 1 : 0)",
+              "label": "0-1 loss",
+              "color": "yellow"
+            }
           ]
         }
       ]
@@ -35,10 +51,20 @@
           "type": "plot",
           "title": "Squared loss t.o.v. de raw model output (y = 1)",
           "subtitle": "De rechterarm stijgt — correcte, zelfverzekerde voorspellingen worden gestraft.",
-          "xrange": [-4, 4],
-          "yrange": [-0.5, 4],
+          "xrange": [
+            -4,
+            4
+          ],
+          "yrange": [
+            -0.5,
+            4
+          ],
           "curves": [
-            { "expr": "(x - 1) * (x - 1)", "label": "(x − 1)²", "color": "cyan" }
+            {
+              "expr": "(x - 1) * (x - 1)",
+              "label": "(x − 1)²",
+              "color": "cyan"
+            }
           ]
         }
       ]
@@ -54,12 +80,30 @@
           "type": "plot",
           "title": "Alle drie de classificatie-losses bij elkaar",
           "subtitle": "Beweeg over de grafiek om exacte waarden af te lezen.",
-          "xrange": [-4, 4],
-          "yrange": [-0.4, 5],
+          "xrange": [
+            -4,
+            4
+          ],
+          "yrange": [
+            -0.4,
+            5
+          ],
           "curves": [
-            { "expr": "(x < 0 ? 1 : 0)", "label": "0-1 loss", "color": "yellow" },
-            { "expr": "Math.log(1 + Math.exp(-x))", "label": "logistic loss", "color": "cyan" },
-            { "expr": "Math.max(0, 1 - x)", "label": "hinge loss", "color": "magenta" }
+            {
+              "expr": "(x < 0 ? 1 : 0)",
+              "label": "0-1 loss",
+              "color": "yellow"
+            },
+            {
+              "expr": "Math.log(1 + Math.exp(-x))",
+              "label": "logistic loss",
+              "color": "cyan"
+            },
+            {
+              "expr": "Math.max(0, 1 - x)",
+              "label": "hinge loss",
+              "color": "magenta"
+            }
           ]
         },
         {

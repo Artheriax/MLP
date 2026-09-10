@@ -3,6 +3,12 @@
   "chapter": "ch5",
   "title": "Regression metrics: MSE, RMSE, MAE & R²",
   "intro": "How do you measure whether a regression model predicts well? The four standard measures — MSE, RMSE, MAE and R&sup2; — with formulas, interpretation, a fully worked car-price example, the exact closed-form formulas for the best-fit line (b1 and the y-intercept b0) and interactive plots with live metrics that show what outliers do to your metric.",
+  "keyPoints": [
+    "<strong>MSE</strong> = mean squared error; <strong>RMSE</strong> = its square root, in y's own units.",
+    "<strong>MAE</strong> is robust to outliers; MSE/RMSE punish large mistakes <em>extra</em> hard.",
+    "<strong>R²</strong> = explained variance: 1 = perfect, 0 = no better than predicting the mean.",
+    "The best-fit line analytically: <strong>b1</strong> = Σ(x−x̄)(y−ȳ) / Σ(x−x̄)² and <strong>b0</strong> = ȳ − b1·x̄."
+  ],
   "level": 2,
   "sections": [
     {

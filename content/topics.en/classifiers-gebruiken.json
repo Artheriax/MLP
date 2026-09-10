@@ -3,6 +3,12 @@
   "chapter": "ch1",
   "title": "Using LogisticRegression, LinearSVC & SVC",
   "intro": "The three classifiers from the course share exactly the same fit/predict/score syntax. The difference is under the hood: which loss is optimised and whether the decision boundary is linear. Here you see all three at work.",
+  "keyPoints": [
+    "<code>LogisticRegression</code>, <code>LinearSVC</code> and <code>SVC</code> share the same fit/predict interface — switching costs one line.",
+    "<code>predict_proba()</code> gives probabilities (confidence); <code>predict()</code> gives the final class.",
+    "<strong>C</strong> is the key hyperparameter: small C = more regularisation = simpler model.",
+    "Spot overfitting by a large gap between train and test score."
+  ],
   "level": 1,
   "sections": [
     {
@@ -42,11 +48,31 @@
         },
         {
           "type": "table",
-          "headers": ["Model", "Import", "Decision boundary", "Character"],
+          "headers": [
+            "Model",
+            "Import",
+            "Decision boundary",
+            "Character"
+          ],
           "rows": [
-            ["LogisticRegression", "<code>sklearn.linear_model</code>", "linear", "probabilities as a bonus (predict_proba)"],
-            ["LinearSVC", "<code>sklearn.svm</code>", "linear", "fast linear SVM"],
-            ["SVC", "<code>sklearn.svm</code>", "non-linear by default", "kernels possible (chapter 4)"]
+            [
+              "LogisticRegression",
+              "<code>sklearn.linear_model</code>",
+              "linear",
+              "probabilities as a bonus (predict_proba)"
+            ],
+            [
+              "LinearSVC",
+              "<code>sklearn.svm</code>",
+              "linear",
+              "fast linear SVM"
+            ],
+            [
+              "SVC",
+              "<code>sklearn.svm</code>",
+              "non-linear by default",
+              "kernels possible (chapter 4)"
+            ]
           ]
         }
       ]

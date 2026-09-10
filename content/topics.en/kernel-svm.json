@@ -3,6 +3,12 @@
   "chapter": "ch4",
   "title": "Kernel SVMs: non-linear boundaries",
   "intro": "How do you fit a non-linear decision boundary with a linear model? The answer is surprisingly simple: change the space in which you are linear. Kernels do exactly that — and the RBF kernel is the default choice.",
+  "keyPoints": [
+    "Non-linear data? <strong>Transform the features</strong> until they become linearly separable.",
+    "The <strong>kernel trick</strong> computes transformed similarities without doing the transformation explicitly.",
+    "RBF kernel: <strong>small gamma → smooth boundary</strong>; large gamma → bumpy blobs (overfitting risk).",
+    "Rule of thumb: <strong>linear</strong> with many features (e.g. text), <strong>RBF</strong> with few features with structure."
+  ],
   "level": 3,
   "sections": [
     {
@@ -43,19 +49,36 @@
           "type": "formula",
           "label": "RBF kernel",
           "latex": "K(x, x') \\;=\\; e^{-\\,\\gamma\\, \\lVert x - x' \\rVert^2}",
-          "caption": "small gamma = slow decay = smooth boundary \u00b7 large gamma = fast decay = complex boundary."
+          "caption": "small gamma = slow decay = smooth boundary · large gamma = fast decay = complex boundary."
         },
         {
           "type": "plot",
           "title": "The influence of gamma on the kernel shape",
           "subtitle": "Drag the slider: the larger gamma, the \"peakier\" the kernel — and the more complex the decision boundary.",
-          "xrange": [-3, 3],
-          "yrange": [-0.05, 1.1],
+          "xrange": [
+            -3,
+            3
+          ],
+          "yrange": [
+            -0.05,
+            1.1
+          ],
           "xlabel": "distance to support vector",
           "curves": [
-            { "expr": "Math.exp(-gamma * x * x)", "label": "K(x, 0)", "color": "magenta" }
+            {
+              "expr": "Math.exp(-gamma * x * x)",
+              "label": "K(x, 0)",
+              "color": "magenta"
+            }
           ],
-          "slider": { "param": "gamma", "min": 0.1, "max": 5, "step": 0.1, "value": 1, "label": "\u03b3 (gamma)" }
+          "slider": {
+            "param": "gamma",
+            "min": 0.1,
+            "max": 5,
+            "step": 0.1,
+            "value": 1,
+            "label": "γ (gamma)"
+          }
         },
         {
           "type": "text",
@@ -71,7 +94,7 @@
         {
           "type": "callout",
           "kind": "warning",
-          "html": "<p> Small gamma \u2192 simpler, smoother boundaries (less complexity). Large gamma \u2192 more complex boundaries. Together with C this determines how strong your overfitting risk is — always experiment with train <em>and</em> test! </p>"
+          "html": "<p> Small gamma → simpler, smoother boundaries (less complexity). Large gamma → more complex boundaries. Together with C this determines how strong your overfitting risk is — always experiment with train <em>and</em> test! </p>"
         }
       ]
     }

@@ -3,6 +3,12 @@
   "chapter": "ch5",
   "title": "Cross-validation: betrouwbaar je model beoordelen",
   "intro": "Eén train/test-split is een gok: de score hangt af van welke samples toevallig in de testset belanden. Cross-validation verdeelt je data in k stukken (folds), traint k keer op alle-maar-één, en middelt de scores — een veel stabielere schatting van hoe goed je model generaliseert. In dit onderwerp: waarom CV, hoe het werkt in scikit-learn met cross_val_score, welke varianten er zijn (Stratified, Leave-One-Out, ShuffleSplit), hoe je k kiest, en hoe je met GridSearchCV hyperparameters tunet zonder de testset te belazeren.",
+  "keyPoints": [
+    "Eén train/test-split is een <strong>gok</strong>: de score hangt af van de willekeurige split.",
+    "<strong>k-fold CV</strong>: k wisselende splits — het gemiddelde is een veel stabielere schatting.",
+    "<strong>StratifiedKFold</strong> houdt de klassenverhouding gelijk; Leave-One-Out = k = n (duur).",
+    "Combineer <strong>GridSearchCV + Pipeline</strong>: hyperparameters tunen zonder data leakage."
+  ],
   "level": 2,
   "sections": [
     {
@@ -133,8 +139,14 @@
           "type": "plot",
           "title": "Bias–variantie van de CV-schatting tegen het aantal folds k",
           "subtitle": "Meer folds = minder bias (elke fold traint op meer data), maar iets meer variantie (folds overlappen meer en worden gecorreleerd). De MSE van de schatting (bias² + variantie) daalt en vlakt af — vandaar dat k = 5 of k = 10 de standaardkeuze is.",
-          "xrange": [2, 20],
-          "yrange": [0, 0.13],
+          "xrange": [
+            2,
+            20
+          ],
+          "yrange": [
+            0,
+            0.13
+          ],
           "xlabel": "aantal folds k  →",
           "curves": [
             {

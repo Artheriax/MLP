@@ -3,6 +3,12 @@
   "chapter": "ch2",
   "title": "Gradient descent: how does a model learn?",
   "intro": "Minimising the loss sounds nice — but how does the model find the minimum? Gradient descent: the update rule, the learning rate, and a complete simulation you can run in the browser.",
+  "keyPoints": [
+    "The <strong>gradient</strong> points straight uphill in the loss landscape — so step the other way.",
+    "Update rule: <code>w ← w − η·∇L</code>, repeated until the loss barely decreases.",
+    "The <strong>learning rate η</strong> is critical: too large → divergence; too small → endlessly slow.",
+    "Variants: <strong>batch</strong> (all data), <strong>mini-batch</strong> (subset), <strong>SGD</strong> (per sample)."
+  ],
   "level": 2,
   "sections": [
     {

@@ -3,6 +3,12 @@
   "chapter": "ch2",
   "title": "Dot products & the prediction equation",
   "intro": "This chapter is the mathematical foundation of the course. With a single ingredient — the dot product — you can describe exactly how <em>every</em> linear classifier makes predictions. Whoever understands this equation understands logistic regression and SVMs at the same time.",
+  "keyPoints": [
+    "The dot product <strong>x·w + b</strong> is the <em>raw model output</em>: the score before thresholding.",
+    "In NumPy: <code>X @ coef_.T + intercept_</code> — literally what <code>decision_function()</code> does.",
+    "Every linear classifier (LR, SVM) uses <strong>exactly the same</strong> prediction equation.",
+    "The <strong>sign</strong> of the raw output picks the class: positive → class 1, negative → class 0."
+  ],
   "level": 2,
   "sections": [
     {
@@ -10,7 +16,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> The <strong>dot product</strong> (inner product) of two vectors is: multiply them element-wise and add everything up. With <code>x = [0, 1, 2]</code> and <code>y = [3, 4, 5]</code> you get 0\u00d73 = 0, 1\u00d74 = 4 and 2\u00d75 = 10, together \\( 0 + 4 + 10 = 14 \\). In Python (recent versions) you use the <code>@</code> operator for this: <code>x @ y</code>. You can think of the dot product as <em>multiplication in higher dimensions</em>, since x and y are arrays of values. </p>"
+          "html": "<p> The <strong>dot product</strong> (inner product) of two vectors is: multiply them element-wise and add everything up. With <code>x = [0, 1, 2]</code> and <code>y = [3, 4, 5]</code> you get 0×3 = 0, 1×4 = 4 and 2×5 = 10, together \\( 0 + 4 + 10 = 14 \\). In Python (recent versions) you use the <code>@</code> operator for this: <code>x @ y</code>. You can think of the dot product as <em>multiplication in higher dimensions</em>, since x and y are arrays of values. </p>"
         },
         {
           "type": "formula",
@@ -32,7 +38,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Now the heart of the course. A linear classifier predicts in two steps. First it computes the <strong>raw model output</strong>: the dot product of the coefficients (the learned <code>coef_</code>) with the features, plus the intercept (the learned <code>intercept_</code>). Then it only looks at the <strong>sign</strong>: positive \u2192 the positive class, negative \u2192 the negative class. </p> <p> Crucial insight: <em>this pattern is identical for logistic regression and linear SVMs</em>. In scikit-learn terms: different <code>fit</code> functions, the same <code>predict</code> function. The difference between the models therefore lies entirely in how they are <em>fitted</em> — those are the loss functions, later in this chapter. </p>"
+          "html": "<p> Now the heart of the course. A linear classifier predicts in two steps. First it computes the <strong>raw model output</strong>: the dot product of the coefficients (the learned <code>coef_</code>) with the features, plus the intercept (the learned <code>intercept_</code>). Then it only looks at the <strong>sign</strong>: positive → the positive class, negative → the negative class. </p> <p> Crucial insight: <em>this pattern is identical for logistic regression and linear SVMs</em>. In scikit-learn terms: different <code>fit</code> functions, the same <code>predict</code> function. The difference between the models therefore lies entirely in how they are <em>fitted</em> — those are the loss functions, later in this chapter. </p>"
         },
         {
           "type": "formula",
@@ -44,7 +50,7 @@
           "type": "formula",
           "label": "prediction",
           "latex": "\\hat{y} \\;=\\; \\operatorname{sign}\\!\\left( w \\cdot x + b \\right)",
-          "caption": "Positive \u2192 positive class, negative \u2192 negative class (scikit-learn translates this into the class names of your data)."
+          "caption": "Positive → positive class, negative → negative class (scikit-learn translates this into the class names of your data)."
         },
         {
           "type": "code",

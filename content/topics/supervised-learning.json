@@ -3,6 +3,12 @@
   "chapter": "ch1",
   "title": "Supervised learning & de standaard-workflow",
   "intro": "Wat supervised learning precies is en welke vaste stappen je in scikit-learn altijd doorloopt — loss functies, regularisatie en kernels bouwen voort op dit patroon.",
+  "keyPoints": [
+    "Supervised learning = leren van <strong>gelabelde voorbeelden</strong> (X met y).",
+    "<strong>Regressie</strong> voorspelt een getal, <strong>classificatie</strong> een categorie.",
+    "De vaste scikit-learn-volgorde: import → instantiate → <code>fit</code> → <code>predict</code> → <code>score</code>.",
+    "Vertrouw alleen de <strong>testscore</strong> — de trainscore zegt niets over nieuwe data."
+  ],
   "level": 1,
   "sections": [
     {

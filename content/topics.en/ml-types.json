@@ -3,6 +3,12 @@
   "chapter": "ch0",
   "title": "The three types of machine learning",
   "intro": "Supervised, unsupervised or reinforcement? The three families of machine learning, what data each of them needs, which tasks belong to them — and how two questions tell you which family your problem is.",
+  "keyPoints": [
+    "<strong>Supervised learning</strong>: learning with labels — classification (category) and regression (number). This course's focus.",
+    "<strong>Unsupervised learning</strong>: finding structure without labels — clustering, PCA, anomaly detection.",
+    "<strong>Reinforcement learning</strong>: learning by trial-and-error with rewards (no fixed labels).",
+    "Two questions pick the family: <em>do you have labels?</em> and <em>are you predicting a number or a category?</em>"
+  ],
   "level": 1,
   "sections": [
     {

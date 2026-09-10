@@ -3,6 +3,12 @@
   "chapter": "ch3",
   "title": "Building logistic regression yourself: from sigmoid to classifier",
   "intro": "Scikit-learn's LogisticRegression is a black box: you call fit and it works. You only really understand it once you've built one — and that's not so hard: a sigmoid, a binary cross-entropy loss, its gradient, and a few lines of gradient descent. In this topic we build the whole classifier in pure NumPy: a standalone function logistic_regression(X, y) that learns the coefficients, plus predict_proba and predict. Finally we compare the result with scikit-learn and extend the function to multi-class via one-vs-rest.",
+  "keyPoints": [
+    "Building it yourself = cracking the black box: <strong>sigmoid + BCE + gradient + updates</strong>.",
+    "The BCE gradient: <strong>(1/n)·Xᵀ(ŷ − y)</strong> — elegant shape, blazing fast with NumPy.",
+    "About <strong>20 lines of NumPy</strong> suffice for a full classifier with <code>predict_proba</code>.",
+    "Multi-class via <strong>one-vs-rest</strong>: train one binary model per class."
+  ],
   "level": 3,
   "sections": [
     {
@@ -47,7 +53,7 @@
           "language": "python",
           "caption": "sigmoid and BCE in pure NumPy",
           "runnable": true,
-          "source": "import numpy as np\n\ndef sigmoid(z):\n    # numerically stable variant: split positive/negative\n    return np.where(z >= 0, 1 / (1 + np.exp(-z)),\n                    np.exp(z) / (1 + np.exp(z)))\n\ndef bce_loss(y_true, y_pred):\n    # clip prevents log(0); BCE is undefined at exactly 0 or 1\n    eps = 1e-15\n    p = np.clip(y_pred, eps, 1 - eps)\n    return -np.mean(y_true * np.log(p) + (1 - y_true) * np.log(1 - p))\n\n# sanity check\nprint('sigma(0)    :', sigmoid(0.0))           # 0.5\nprint('sigma(2)    :', round(sigmoid(2.0), 4))   # ~0.8808\nprint('sigma(-2)   :', round(sigmoid(-2.0), 4))  # ~0.1192\n\n# good predictions → low loss\ny = np.array([1.0, 0.0, 1.0, 0.0])\nprint('BCE (good)  :', round(bce_loss(y, np.array([0.9, 0.1, 0.8, 0.2])), 4))\nprint('BCE (bad)   :', round(bce_loss(y, np.array([0.1, 0.9, 0.2, 0.8])), 4))"
+          "source": "import numpy as np\n\ndef sigmoid(z):\n    # numerically stable variant: split positive/negative\n    return np.where(z >= 0, 1 / (1 + np.exp(-z)),\n                    np.exp(z) / (1 + np.exp(z)))\n\ndef bce_loss(y_true, y_pred):\n    # clip prevents log(0); BCE is undefined at exactly 0 or 1\n    eps = 1e-15\n    p = np.clip(y_pred, eps, 1 - eps)\n    return -np.mean(y_true * np.log(p) + (1 - y_true) * np.log(1 - p))\n\n# sanity check\nprint('sigma(0)    :', sigmoid(0.0))           # 0.5\nprint('sigma(2)    :', round(float(sigmoid(2.0)), 4))   # ~0.8808\nprint('sigma(-2)   :', round(float(sigmoid(-2.0)), 4))  # ~0.1192\n\n# good predictions → low loss\ny = np.array([1.0, 0.0, 1.0, 0.0])\nprint('BCE (good)  :', round(float(bce_loss(y, np.array([0.9, 0.1, 0.8, 0.2]))), 4))\nprint('BCE (bad)   :', round(float(bce_loss(y, np.array([0.1, 0.9, 0.2, 0.8]))), 4))"
         },
         {
           "type": "callout",
@@ -137,8 +143,14 @@
           "type": "plot",
           "title": "Training curve: BCE loss against the number of epochs",
           "subtitle": "At a good learning rate (η ≈ 0.3) the loss drops exponentially to a floor. Make η too large and the updates overshoot the minimum and the loss explodes — the model diverges.",
-          "xrange": [0, 200],
-          "yrange": [0, 1.0],
+          "xrange": [
+            0,
+            200
+          ],
+          "yrange": [
+            0,
+            1.0
+          ],
           "xlabel": "epoch  →",
           "ylabel": "BCE loss",
           "curves": [

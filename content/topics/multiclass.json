@@ -3,6 +3,12 @@
   "chapter": "ch3",
   "title": "Multi-class: one-vs-rest & softmax",
   "intro": "Meer dan twee klassen? scikit-learn regelt dat automatisch — maar er zit een keuze achter de schermen: losse binaire classifiers per klasse (one-vs-rest), of één gezamenlijk model met een softmax-loss. De gevolgen zijn klein maar begrijpelijk.",
+  "keyPoints": [
+    "Multi-class = <strong>3+ klassen</strong>. Twee strategieën: one-vs-rest en multinomial (softmax).",
+    "<strong>OvR</strong>: per klasse één binaire classifier ('deze klasse of niet'); hoogste score wint.",
+    "<strong>Softmax</strong>: één gezamenlijk model; k scores → kansverdeling die samen 1 optelt.",
+    "Beide strategieën geven coëfficiënten met <strong>één rij per klasse</strong>."
+  ],
   "level": 2,
   "sections": [
     {
@@ -50,12 +56,32 @@
         },
         {
           "type": "table",
-          "headers": ["", "One-vs-rest", "Multinomial (softmax)"],
+          "headers": [
+            "",
+            "One-vs-rest",
+            "Multinomial (softmax)"
+          ],
           "rows": [
-            ["Fitten", "per klasse één binaire classifier", "één keer, met aangepaste loss"],
-            ["Voorspellen", "grootste raw model output", "grootste softmax-kans"],
-            ["Voordeel", "hergebruik binaire implementatie", "loss staat dichter bij accuracy — soms betere score"],
-            ["Gebruikelijk bij", "SVM's en aanverwante strategieën", "neural networks; standaard bij lbfgs"]
+            [
+              "Fitten",
+              "per klasse één binaire classifier",
+              "één keer, met aangepaste loss"
+            ],
+            [
+              "Voorspellen",
+              "grootste raw model output",
+              "grootste softmax-kans"
+            ],
+            [
+              "Voordeel",
+              "hergebruik binaire implementatie",
+              "loss staat dichter bij accuracy — soms betere score"
+            ],
+            [
+              "Gebruikelijk bij",
+              "SVM's en aanverwante strategieën",
+              "neural networks; standaard bij lbfgs"
+            ]
           ]
         }
       ]

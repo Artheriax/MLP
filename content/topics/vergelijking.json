@@ -3,6 +3,12 @@
   "chapter": "ch4",
   "title": "LR vs. SVM & de SGDClassifier",
   "intro": "Wanneer kies je logistic regression en wanneer een SVM? Plus de SGDClassifier, die laat zien dat deze modellen alleen in hun loss functie verschillen.",
+  "keyPoints": [
+    "Grote data of kansen nodig → <strong>logistic regression</strong>; heldere marge op weinig data → <strong>SVM</strong>.",
+    "Belangrijkste hyperparameters: <strong>C</strong> (beide), <strong>penalty</strong> (LR), <strong>gamma</strong> (RBF-SVM).",
+    "<code>SGDClassifier</code> bewijst het inzicht: LR en SVM zijn hetzelfde model — <strong>alleen de loss verschilt</strong> (log vs. hinge).",
+    "Schaal features vóór SVM's, en gebruik een <code>Pipeline</code> om leakage te voorkomen."
+  ],
   "level": 3,
   "sections": [
     {
@@ -14,14 +20,42 @@
         },
         {
           "type": "table",
-          "headers": ["Aspect", "Logistic Regression", "SVM"],
+          "headers": [
+            "Aspect",
+            "Logistic Regression",
+            "SVM"
+          ],
           "rows": [
-            ["Type", "lineaire classifier", "lineaire classifier (hinge + L2)"],
-            ["Kernels", "kan, maar minder gebruikelijk", "gebruikelijk — snel bij weinig support vectors"],
-            ["Kansen", "natuurlijk (predict_proba)", "mogelijk, maar minder vanzelfsprekend"],
-            ["Multi-class", "OvR of multinomial/softmax", "meestal (OvR-achtige) strategieën"],
-            ["Wat beïnvloedt de fit?", "alle trainingspunten", "alleen de support vectors"],
-            ["Karakter", "kansen & confidence", "marges & robuust tegen overbodige data"]
+            [
+              "Type",
+              "lineaire classifier",
+              "lineaire classifier (hinge + L2)"
+            ],
+            [
+              "Kernels",
+              "kan, maar minder gebruikelijk",
+              "gebruikelijk — snel bij weinig support vectors"
+            ],
+            [
+              "Kansen",
+              "natuurlijk (predict_proba)",
+              "mogelijk, maar minder vanzelfsprekend"
+            ],
+            [
+              "Multi-class",
+              "OvR of multinomial/softmax",
+              "meestal (OvR-achtige) strategieën"
+            ],
+            [
+              "Wat beïnvloedt de fit?",
+              "alle trainingspunten",
+              "alleen de support vectors"
+            ],
+            [
+              "Karakter",
+              "kansen & confidence",
+              "marges & robuust tegen overbodige data"
+            ]
           ]
         }
       ]
@@ -31,11 +65,27 @@
       "blocks": [
         {
           "type": "table",
-          "headers": ["Klasse", "Import", "Belangrijkste hyperparameters"],
+          "headers": [
+            "Klasse",
+            "Import",
+            "Belangrijkste hyperparameters"
+          ],
           "rows": [
-            ["LogisticRegression", "<code>sklearn.linear_model</code>", "<code>C</code> (klein = meer regularisatie) · <code>penalty</code> (<code>l2</code>/<code>l1</code>) · multi-class-aanpak"],
-            ["LinearSVC", "<code>sklearn.svm</code>", "<code>C</code> — snelle lineaire SVM"],
-            ["SVC", "<code>sklearn.svm</code>", "<code>C</code> · <code>kernel</code> (<code>rbf</code>, <code>linear</code>, …) · <code>gamma</code> (alleen RBF: klein = glad)"]
+            [
+              "LogisticRegression",
+              "<code>sklearn.linear_model</code>",
+              "<code>C</code> (klein = meer regularisatie) · <code>penalty</code> (<code>l2</code>/<code>l1</code>) · multi-class-aanpak"
+            ],
+            [
+              "LinearSVC",
+              "<code>sklearn.svm</code>",
+              "<code>C</code> — snelle lineaire SVM"
+            ],
+            [
+              "SVC",
+              "<code>sklearn.svm</code>",
+              "<code>C</code> · <code>kernel</code> (<code>rbf</code>, <code>linear</code>, …) · <code>gamma</code> (alleen RBF: klein = glad)"
+            ]
           ]
         },
         {
