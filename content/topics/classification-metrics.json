@@ -1,6 +1,6 @@
 {
   "id": "classification-metrics",
-  "chapter": "ch5",
+  "chapter": "ch6",
   "title": "Metrics bij classificatie: confusion matrix, precision & recall",
   "intro": "Hoe beoordeel je een classifier? De confusion matrix als fundament, accuracy en waarom die kan misleiden, precision en recall met concrete scenario's, de F1-score — en de binaire cross-entropy als trainingsdoel, alles met code die in de browser draait.",
   "keyPoints": [

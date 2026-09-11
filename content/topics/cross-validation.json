@@ -1,6 +1,6 @@
 {
   "id": "cross-validation",
-  "chapter": "ch5",
+  "chapter": "ch6",
   "title": "Cross-validation: betrouwbaar je model beoordelen",
   "intro": "Eén train/test-split is een gok: de score hangt af van welke samples toevallig in de testset belanden. Cross-validation verdeelt je data in k stukken (folds), traint k keer op alle-maar-één, en middelt de scores — een veel stabielere schatting van hoe goed je model generaliseert. In dit onderwerp: waarom CV, hoe het werkt in scikit-learn met cross_val_score, welke varianten er zijn (Stratified, Leave-One-Out, ShuffleSplit), hoe je k kiest, en hoe je met GridSearchCV hyperparameters tunet zonder de testset te belazeren.",
   "keyPoints": [

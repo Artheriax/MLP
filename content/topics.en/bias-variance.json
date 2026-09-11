@@ -1,0 +1,341 @@
+{
+  "id": "bias-variance",
+  "chapter": "ch5",
+  "title": "Bias-variance tradeoff: the framework behind under- and overfitting",
+  "intro": "Under- and overfitting are not two separate ailments but two ends of one trade-off: simplicity (bias) versus sensitivity (variance). This topic explains the mathematical decomposition, lets you drag the U-curve yourself, and actually measures bias and variance in a simulation.",
+  "keyPoints": [
+    "A model's expected error decomposes into <strong>three sources</strong>: bias² (systematically off), variance (fickle across training sets) and irreducible noise σ².",
+    "<strong>Underfitting = high bias</strong> (train and test both poor); <strong>overfitting = high variance</strong> (train perfect, test poor).",
+    "The <strong>total error is a U-curve</strong> in model complexity: too simple on the left, too fickle on the right, and the optimum sits exactly in the valley.",
+    "Every knob shifts the balance: <code>max_depth</code>, <code>C</code>, regularisation, k in kNN, more data — and <strong>ensembles average variance away</strong>."
+  ],
+  "level": 2,
+  "sections": [
+    {
+      "title": "Three sources of error",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Why does your model make mistakes? The bias-variance decomposition splits the expected error into three <em>independent</em> sources. Fix a point \\( x \\), a true function \\( f \\), and a model \\( \\hat{f} \\) trained on a random training set (so \\( \\hat{f} \\) is itself a <em>random variable</em> — different training set, different fit). Then: </p>"
+        },
+        {
+          "type": "formula",
+          "label": "bias-variance decomposition",
+          "latex": "\\mathbb{E}\\!\\left[(y - \\hat{f}(x))^2\\right] \\;=\\; \\underbrace{\\left(\\mathbb{E}[\\hat{f}(x)] - f(x)\\right)^2}_{\\text{bias}^2} \\;+\\; \\underbrace{\\mathbb{E}\\!\\left[\\left(\\hat{f}(x) - \\mathbb{E}[\\hat{f}(x)]\\right)^2\\right]}_{\\text{variance}} \\;+\\; \\underbrace{\\sigma^2}_{\\text{noise}}",
+          "caption": "The expected squared error at a point, taken over all possible training sets. Bias measures the systematic deviation, variance the spread between fits, σ² the noise in the data itself."
+        },
+        {
+          "type": "text",
+          "html": "<p> <strong>Bias</strong> is the systematic error: averaged over all possible training sets the prediction is off — the model simply <em>does not understand the pattern</em> (a straight line through a sine stays wrong everywhere). <strong>Variance</strong> is the fickleness: how much the prediction changes when you merely swap the training set. A model with many degrees of freedom can bend towards <em>every</em> training set — handy for hiding training error, disastrous when the training set contains noise. <strong>Irreducible noise</strong> \\( \\sigma^2 \\) finally lives in the data itself (measurement errors, hidden factors) and no model can remove it — the floor under your error. </p>"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Error source",
+            "Question it answers",
+            "Signature"
+          ],
+          "rows": [
+            [
+              "<strong>bias²</strong>",
+              "is my model on average off target?",
+              "systematic, repeats on every training set"
+            ],
+            [
+              "<strong>variance</strong>",
+              "how much does the fit change across training sets?",
+              "unpredictable, grows with model complexity"
+            ],
+            [
+              "<strong>σ² noise</strong>",
+              "how much noise is in the data itself?",
+              "cannot be lowered — the absolute floor"
+            ]
+          ]
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p> The classic analogy: an <strong>archer on a target</strong>. Bias is where the group sits <em>on average</em> (far from the bullseye = high bias); variance is how far apart the shots <em>scatter</em> (widely spread = high variance). Irreducible noise is the wind, which every archer must reckon with. A good archer shoots a tight group in the centre: low bias and low variance. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Under- and overfitting, revisited",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> In the topic <em>The ML workflow</em> you saw under- and overfitting as train/test curves. The decomposition now gives them a precise meaning. A model with <strong>high bias</strong> is too simple for the pattern: it scores poorly on train <em>and</em> test, with the two scores close together — adding capacity helps (more features, a deeper tree, less regularisation). A model with <strong>high variance</strong> is too sensitive: the train score is (nearly) perfect, the test score collapses — the <em>gap</em> between the two is the diagnosis. </p>"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Symptom",
+            "Diagnosis",
+            "Treatment"
+          ],
+          "rows": [
+            [
+              "poor train, poor test, small gap",
+              "high bias (underfitting)",
+              "more complexity, more features, higher C, deeper"
+            ],
+            [
+              "perfect train, poor test, large gap",
+              "high variance (overfitting)",
+              "regularise, limit depth, more data"
+            ],
+            [
+              "train and test both good",
+              "at the optimum",
+              "hold it; do not tune more than needed"
+            ],
+            [
+              "test better than train",
+              "rare — check the split",
+              "re-check the split and data leakage"
+            ]
+          ]
+        },
+        {
+          "type": "callout",
+          "kind": "info",
+          "html": "<p> Examples of the bias-variance dialogue on this site: <code>C</code> in logistic regression and SVMs (<em>Regularisation</em>) shrinks coefficients — bias up, variance down; <code>max_depth</code> in trees (<em>Decision trees</em>) does exactly the same via the depth of the step function (<em>Regression trees</em>); and the choice of <em>k</em> in k-fold cross-validation shifts the bias/variance of the <em>estimate itself</em>. </p>"
+        }
+      ]
+    },
+    {
+      "title": "The U-curve: complexity shifts the balance",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Put model complexity on the horizontal axis and the three error sources on the vertical. Bias² falls: more complexity means more capacity to capture the pattern. Variance rises: more degrees of freedom means more room to absorb noise. The sum — plus the fixed noise floor — is a <strong>U-curve</strong> with an optimum in the valley. Drag the slider and hunt for the minimum: </p>"
+        },
+        {
+          "type": "plot",
+          "title": "The bias-variance U-curve",
+          "subtitle": "Drag the complexity slider from the left (too simple, bias dominates) to the right (too fickle, variance dominates) — the total error is optimal only in the valley (c ≈ 4.8), where it lights up green.",
+          "xrange": [
+            0,
+            10
+          ],
+          "yrange": [
+            0,
+            1.05
+          ],
+          "xlabel": "model complexity (e.g. tree depth, polynomial degree)",
+          "ylabel": "expected error",
+          "curves": [
+            {
+              "expr": "Math.exp(-0.55*x)",
+              "label": "bias² (systematische fout)",
+              "color": "cyan"
+            },
+            {
+              "expr": "0.015*Math.exp(0.4*x)",
+              "label": "variantie (gevoeligheid)",
+              "color": "yellow"
+            },
+            {
+              "expr": "0.08",
+              "label": "irreducibele ruis σ²",
+              "color": "magenta"
+            },
+            {
+              "expr": "Math.exp(-0.55*x) + 0.015*Math.exp(0.4*x) + 0.08",
+              "label": "totale verwachte fout",
+              "color": "green"
+            }
+          ],
+          "sliders": [
+            {
+              "param": "c",
+              "min": 0,
+              "max": 10,
+              "step": 0.1,
+              "value": 1.2,
+              "label": "modelcomplexiteit"
+            }
+          ],
+          "markers": [
+            {
+              "x": "c",
+              "y": "Math.exp(-0.55*c)",
+              "color": "cyan",
+              "label": "bias² op c"
+            },
+            {
+              "x": "c",
+              "y": "0.015*Math.exp(0.4*c)",
+              "color": "yellow",
+              "label": "variantie op c"
+            },
+            {
+              "x": "c",
+              "y": "Math.exp(-0.55*c) + 0.015*Math.exp(0.4*c) + 0.08",
+              "color": "green",
+              "label": "totale fout op c"
+            }
+          ],
+          "metrics": [
+            {
+              "label": "bias²",
+              "expr": "Math.exp(-0.55*c)",
+              "decimals": 3
+            },
+            {
+              "label": "variantie",
+              "expr": "0.015*Math.exp(0.4*c)",
+              "decimals": 3
+            },
+            {
+              "label": "totale fout",
+              "expr": "Math.exp(-0.55*c) + 0.015*Math.exp(0.4*c) + 0.08",
+              "decimals": 3,
+              "target": 0.253,
+              "dir": "min",
+              "tol": 0.035
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "html": "<p> Two footnotes to this canonical picture. First, the axis is <em>ordinal</em>, not a physical unit: “complexity” is whatever your model scales — tree depth, polynomial degree, parameter count, 1/C. Second, the valley is broader than the curve suggests: in practice you may sit on the <em>left</em> of the optimum, because a slightly too simple model is robust, interpretable and often generalises <em>better</em> than the exact optimum in your single split. “Rather too simple than exactly right” is a healthy working attitude, not laziness. </p>"
+        },
+        {
+          "type": "callout",
+          "kind": "tip",
+          "html": "<p> The curve also explains why <strong>more data lowers variance but not bias</strong>: with larger training sets the fickleness of the fit averages out (the yellow curve drops), but a wrong model stays systematically off (the cyan curve does not move). If your model has high bias, more data will not help — the model itself must change. </p>"
+        }
+      ]
+    },
+    {
+      "title": "The knobs on your dashboard",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Everything you have seen in this course in hyperparameters and design choices is ultimately a bias-variance knob. The overview: </p>"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Knob",
+            "Bias",
+            "Variance",
+            "Where on this site"
+          ],
+          "rows": [
+            [
+              "<code>max_depth</code> up (deeper tree)",
+              "down",
+              "up",
+              "<em>Decision trees</em> &amp; <em>Regression trees</em>"
+            ],
+            [
+              "<code>min_samples_leaf</code> up",
+              "up",
+              "down",
+              "<em>Decision trees</em>"
+            ],
+            [
+              "<code>C</code> up (less regularisation)",
+              "down",
+              "up",
+              "<em>Regularisation</em>"
+            ],
+            [
+              "stronger L1/L2 penalty",
+              "up",
+              "down",
+              "<em>Regularisation</em>"
+            ],
+            [
+              "gamma up (SVM kernel)",
+              "down",
+              "up",
+              "<em>Kernel SVMs</em>"
+            ],
+            [
+              "add more features",
+              "down",
+              "up",
+              "<em>Data, features &amp; labels</em>"
+            ],
+            [
+              "<strong>more training data</strong>",
+              "unchanged",
+              "down",
+              "— (not a knob, still the best medicine)"
+            ],
+            [
+              "<strong>ensembling</strong> (random forest)",
+              "unchanged",
+              "strongly down",
+              "out of scope — but now understandable"
+            ]
+          ]
+        },
+        {
+          "type": "callout",
+          "kind": "warning",
+          "html": "<p> The knobs are <strong>not independent</strong>: more data plus a larger model can work out better than either alone; regularisation works poorly on unscaled features (see <em>Regularisation</em>); and an ensemble of underfitted trees only averages away the <em>variance</em> — the bias remains. Treat the table as a map, not an autopilot: the final call always rests on <em>measured</em> validation scores. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Actually measuring bias and variance: the simulation",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> The decomposition sounds abstract, but you can compute it <em>literally</em>: generate many training sets from the same true function, fit a model on each, and inspect the spread of predictions per point. Below: the truth is \\( \\sin(2\\pi x) \\) with noise, and we predict at \\( x = 0{,}25 \\) (the peak) with polynomials of degree 1, 3 and 9 — 200 times on freshly random training sets: </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "measuring the bias-variance decomposition with NumPy",
+          "runnable": true,
+          "source": "import numpy as np\n\nrng = np.random.default_rng(0)\nf = lambda x: np.sin(2 * np.pi * x)   # true function\nx_eval, truth = 0.25, f(0.25)          # measurement point: the peak\n\ndegrees = (1, 3, 9)\npreds = {g: [] for g in degrees}\nfor _ in range(200):                  # 200 random training sets\n    x = rng.uniform(0, 1, 25)\n    y = f(x) + rng.normal(0, 0.35, 25)\n    for g in degrees:\n        c = np.polyfit(x, y, g)\n        preds[g].append(np.polyval(c, x_eval))\n\nprint('truth f(0.25) =', round(truth, 3))\nprint()\nprint('degree |    bias   | variance | bias2+var')\nfor g in degrees:\n    v = np.array(preds[g])\n    b = v.mean() - truth\n    print(f'{g:6d} | {b:9.3f} | {v.var():9.3f} | {b**2 + v.var():10.3f}')"
+        },
+        {
+          "type": "text",
+          "html": "<p> Read the table as the three archers. <strong>Degree 1</strong>: the straight line cannot reach the peak — sizeable bias, small variance (every line resembles every other). <strong>Degree 9</strong>: nine degrees of freedom — the fit whips along with the noise of every training set and the predictions at \\( x = 0{,}25 \\) scatter in all directions: bias near zero, variance large. <strong>Degree 3</strong> captures the bend without chasing the noise: the smallest sum. That is the U-curve from the interactive plot, now with real numbers. </p>"
+        },
+        {
+          "type": "callout",
+          "kind": "tip",
+          "html": "<p> Try setting <code>x_eval</code> to 0.5 (where the truth is 0) or raising the noise from 0.35 to 0.7 and re-running the cell: high noise mainly inflates the variance of the flexible models, while the bias of degree 1 stays untouched. Simulations like these are the cheapest way to build bias-variance <em>intuition</em> — you watch the mathematics move. </p>"
+        }
+      ]
+    },
+    {
+      "title": "In practice: finding the valley",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> In reality you do not know the true function, so you cannot measure bias and variance directly. What you do have is the proxy from the diagnosis table: <strong>train versus validation/test score</strong>, and the most robust way to determine it is cross-validation (see <em>Cross-validation</em>). The code below scans <code>max_depth</code> for the breast-cancer dataset and lets the U-curve appear in the output: </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "finding the max_depth optimum with cross-validation",
+          "runnable": true,
+          "source": "from sklearn.datasets import load_breast_cancer\nfrom sklearn.model_selection import cross_val_score\nfrom sklearn.tree import DecisionTreeClassifier\n\nX, y = load_breast_cancer(return_X_y=True)\nprint('max_depth | mean CV accuracy (5-fold)')\nfor d in (1, 2, 3, 5, 8, None):\n    tree = DecisionTreeClassifier(max_depth=d, random_state=0)\n    scores = cross_val_score(tree, X, y, cv=5)\n    print(f'{str(d):9s} | {scores.mean():.3f}')"
+        },
+        {
+          "type": "text",
+          "html": "<p> The typical picture here: accuracy jumps between depth 1 and 2 (0.900 → 0.928) and then slides back slightly towards 0.916 — deeper trees buy no extra generalisation, only more degrees of freedom. Note: this is the <em>practical</em> version of the U-curve — less smooth than the idealised picture, because every score itself carries noise (more on that below). In production you pick, from the plateau, preferably the <em>simplest</em> model: same score, fewer degrees of freedom, better interpretability. </p>"
+        },
+        {
+          "type": "callout",
+          "kind": "info",
+          "html": "<p> Do not mix up these terms: the <strong>bias/variance of your model</strong> (this topic) is about generalising to new data; the <strong>bias/variance of the CV estimate</strong> (in <em>Cross-validation</em>) is about how accurately your <em>measurement</em> of generalisation approximates the truth. Both are called a trade-off, but they are different sliders: the first you tune with hyperparameters, the second with the choice of k. </p>"
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p> The big picture in one breath: <strong>underfitting is bias, overfitting is variance, and everything you tune moves you along the U-curve</strong>. Trees are the illustrative example — <code>max_depth</code> is the bias-variance knob in its purest form — while regularisation, kernels and even the choice of k follow the same track. Once you know this decomposition, you never look at a train-test gap the same way again. </p>"
+        }
+      ]
+    }
+  ]
+}

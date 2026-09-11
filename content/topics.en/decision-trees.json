@@ -1,0 +1,348 @@
+{
+  "id": "decision-trees",
+  "chapter": "ch5",
+  "title": "Decision trees: classification with questions",
+  "intro": "A decision tree sorts data with yes/no questions. No formulas, no coefficients — just questions like “is income below $2,500?”. That makes trees the most interpretable model in scikit-learn, and at the same time the textbook example of overfitting when you let them grow unchecked.",
+  "keyPoints": [
+    "A tree splits the data with <strong>yes/no questions</strong> (feature + threshold) until its leaves are pure: each leaf predicts one class.",
+    "Each split picks the <strong>feature + threshold that reduces impurity the most</strong> — measured with Gini or entropy.",
+    "Trees need <strong>no scaling</strong> and capture <strong>non-linear patterns</strong> — but without a brake they grow themselves into overfitting.",
+    "Brakes: <strong>max_depth</strong>, <strong>min_samples_split</strong> and <strong>min_samples_leaf</strong> — see the topic <em>Bias-variance tradeoff</em>."
+  ],
+  "level": 2,
+  "sections": [
+    {
+      "title": "How a tree thinks",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> A <strong>decision tree</strong> classifies by sorting data with questions. Every <em>internal node</em> asks one question of the form “is feature \\( x_j \\) smaller than threshold \\( t \\)?”, and the two answers (“yes” left, “no” right) lead to the next question. At the bottom sit the <strong>leaves</strong>: there the final verdict falls — the majority class of the training samples in that leaf. </p>"
+        },
+        {
+          "type": "text",
+          "html": "<p> For a loan application the tree might read: <em>“is income $2,500 or higher?”</em> — yes → <em>“is debt below $500?”</em> — yes → leaf <strong>approved</strong>. A new application falls from top to bottom and ends up in exactly one leaf. You can literally explain that path to a customer — with logistic regression (a weighted sum of features) it already feels far more abstract, and with an RBF SVM it is practically impossible. </p>"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "",
+            "Linear models (LR, LinearSVC)",
+            "Decision tree"
+          ],
+          "rows": [
+            [
+              "<strong>prediction</strong>",
+              "weighted sum \\( w \\cdot x + b \\)",
+              "walk through if/else questions"
+            ],
+            [
+              "<strong>decision boundary</strong>",
+              "one straight line (hyperplane)",
+              "staircase-shaped, line per piece"
+            ],
+            [
+              "<strong>scaling needed?</strong>",
+              "yes (C is scale-sensitive)",
+              "no — thresholds rescale along"
+            ],
+            [
+              "<strong>non-linear?</strong>",
+              "only with kernels",
+              "naturally, via depth"
+            ],
+            [
+              "<strong>interpretability</strong>",
+              "limited (coefficients)",
+              "very strong (rule by rule)"
+            ]
+          ]
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p> The tree predicts with <strong>axis-aligned splits</strong>: every question cuts along one feature axis (“below \\( t \\)?”). The decision boundary is therefore a <strong>composition of straight lines</strong> — non-linear as a whole, but built from simple pieces. See the topic <em>Linear decision boundaries</em> for the contrast with the single straight line.</p>"
+        }
+      ]
+    },
+    {
+      "title": "Splitting: where do you cut the data?",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> The central building block is the <strong>split</strong>: pick one feature \\( x_j \\) and one threshold \\( t \\), and divide the samples into two groups — \\( x_j \\le t \\) left and \\( x_j > t \\) right. scikit-learn effectively tries every (feature, threshold) combination and keeps the split that lays the two groups apart most <em>cleanly</em>: one side mostly positives, the other mostly negatives. </p>"
+        },
+        {
+          "type": "text",
+          "html": "<p> That search is <strong>greedy</strong> and <strong>top-down</strong> (the CART algorithm): start at the root with all data, pick the single best split, apply the same step to both halves, and so on. “Greedy” means each split picks only what is best <em>now</em>, without lookahead — the tree cannot come back on an earlier choice. In practice that works surprisingly well. </p>"
+        },
+        {
+          "type": "text",
+          "html": "<p> Quick demo with eight samples and two features (<em>income</em> and <em>age</em>): at the root, 3 approved (✓) and 5 rejected (✗) applications are mixed. </p>"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Split",
+            "left",
+            "right",
+            "effect"
+          ],
+          "rows": [
+            [
+              "<em>none</em> (root)",
+              "—",
+              "3✓ / 5✗ mixed",
+              "starting point"
+            ],
+            [
+              "income ≤ 2500",
+              "1✓ / 5✗",
+              "2✓ / 0✗",
+              "right already pure ✓"
+            ],
+            [
+              "income ≤ 2500, then age ≤ 35 (left)",
+              "0✓ / 2✗",
+              "1✓ / 3✗",
+              "better, left still impure"
+            ]
+          ]
+        },
+        {
+          "type": "callout",
+          "kind": "info",
+          "html": "<p> Note that one split rarely suffices: after “income ≤ 2500” the left side still mixes ✓ and ✗. So the tree <em>grows</em>: every impure child gets its own new split, with a different feature or threshold — until every leaf is pure or a stopping condition (depth, minimum samples) kicks in. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Measuring purity: Gini and entropy",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> “Pure” needs to be <em>measurable</em>. Suppose the fraction of positives in a node is \\( p \\) (and \\( 1-p \\) negatives). There are two standard impurity measures — both 0 for a pure node (\\( p = 0 \\) or \\( p = 1 \\)) and maximal for a 50/50 mix: </p>"
+        },
+        {
+          "type": "formula",
+          "label": "Gini impurity",
+          "latex": "G(p) \\;=\\; 1 - p^2 - (1-p)^2 \\;=\\; 2\\,p\\,(1-p)",
+          "caption": "The probability that two random samples from the node have different classes. Max 0.5 at p = 0.5 — the scikit-learn default."
+        },
+        {
+          "type": "formula",
+          "label": "Entropy",
+          "latex": "H(p) \\;=\\; -p \\log_2 p - (1-p) \\log_2 (1-p)",
+          "caption": "The ‘chaos’ in bits; max 1 at p = 0.5. Virtually identical in shape to Gini — in practice the choice hardly matters."
+        },
+        {
+          "type": "plot",
+          "title": "Gini and entropy as a function of p",
+          "subtitle": "Drag the slider: at p = 0 or 1 the node is pure (both measures 0), at p = 0.5 the mixture is maximal. The live metrics follow along.",
+          "xrange": [
+            0,
+            1
+          ],
+          "yrange": [
+            0,
+            1.1
+          ],
+          "xlabel": "fraction of positives p",
+          "ylabel": "impurity",
+          "curves": [
+            {
+              "expr": "2*x*(1-x)",
+              "label": "Gini 2p(1−p)",
+              "color": "cyan"
+            },
+            {
+              "expr": "(x <= 1e-9 || x >= 1-1e-9) ? 0 : -(x*Math.log2(x) + (1-x)*Math.log2(1-x))",
+              "label": "entropy H(p)",
+              "color": "yellow"
+            }
+          ],
+          "sliders": [
+            {
+              "param": "p",
+              "min": 0,
+              "max": 1,
+              "step": 0.01,
+              "value": 0.5,
+              "label": "p (fraction ✓)"
+            }
+          ],
+          "markers": [
+            {
+              "x": "p",
+              "y": "2*p*(1-p)",
+              "color": "magenta",
+              "label": "Gini at p"
+            },
+            {
+              "x": "p",
+              "y": "(p <= 1e-9 || p >= 1-1e-9) ? 0 : -(p*Math.log2(p) + (1-p)*Math.log2(1-p))",
+              "color": "green",
+              "label": "entropy at p"
+            }
+          ],
+          "metrics": [
+            {
+              "label": "Gini 2p(1−p)",
+              "expr": "2*p*(1-p)",
+              "decimals": 3,
+              "target": 0,
+              "dir": "min",
+              "tol": 0.02
+            },
+            {
+              "label": "entropy H(p)",
+              "expr": "(p <= 1e-9 || p >= 1-1e-9) ? 0 : -(p*Math.log2(p) + (1-p)*Math.log2(1-p))",
+              "decimals": 3
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "html": "<p> So how does the tree pick the <em>best</em> split? It looks for the split that <strong>minimises the weighted average impurity of the children</strong> — or equivalently, the one that reduces impurity the most (the <em>information gain</em>). “Weighted” is essential: a split that puts 99% of the samples into one pure child and 1% into one very dirty child need not beat a split that cleans up both halves substantially. </p>"
+        },
+        {
+          "type": "text",
+          "html": "<p> Worked out for the split “income ≤ 2500” from the demo (\\( p \\) = fraction ✓ per group). The root has \\( p = 3/8 = 0{,}375 \\), so \\( G = 2 \\cdot 0{,}375 \\cdot 0{,}625 = 0{,}469 \\). The left child has \\( n_L = 6 \\) with \\( p_L = 1/6 \\): \\( G_L = 2 \\cdot \\tfrac{1}{6} \\cdot \\tfrac{5}{6} = 0{,}278 \\). The right child has \\( n_R = 2 \\) with \\( p_R = 1 \\): pure, \\( G_R = 0 \\). The weighted child impurity is \\( \\tfrac{6}{8} \\cdot 0{,}278 + \\tfrac{2}{8} \\cdot 0 = 0{,}208 \\) — a hefty drop from 0.469. </p>"
+        },
+        {
+          "type": "callout",
+          "kind": "tip",
+          "html": "<p> In scikit-learn you pick the measure with <code>criterion</code>: <code>DecisionTreeClassifier(criterion=&quot;gini&quot;)</code> or <code>criterion=&quot;entropy&quot;</code>. Gini is the default. In practice both yield virtually the same trees — the thresholds they settle on lie so close together that it is not worth agonising over. </p>"
+        }
+      ]
+    },
+    {
+      "title": "When does the tree stop? The overfit trap",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Growing without limit is dangerous. A tree that continues until <em>every leaf is pure</em> always reaches 100% training accuracy — because eventually each leaf holds exactly one sample, which it of course predicts correctly. But that is no longer learning, that is <strong>memorising the training data</strong>: exactly the overfitting from the topic <em>What is machine learning?</em>, now in its most extreme form. </p>"
+        },
+        {
+          "type": "text",
+          "html": "<p> scikit-learn therefore ships stopping brakes — called <strong>pre-pruning</strong>, because they trim the tree <em>during</em> growth: </p>"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Hyperparameter",
+            "What it brakes",
+            "Effect"
+          ],
+          "rows": [
+            [
+              "<code>max_depth</code>",
+              "the number of questions below the root",
+              "shallow tree → coarse, robust rules"
+            ],
+            [
+              "<code>min_samples_split</code>",
+              "a node with fewer samples will not split",
+              "no micro-splits on single points"
+            ],
+            [
+              "<code>min_samples_leaf</code>",
+              "every leaf keeps at least n samples",
+              "prediction is a majority over enough data"
+            ],
+            [
+              "<code>max_leaf_nodes</code>",
+              "the total number of leaves",
+              "a hard cap on model size"
+            ]
+          ]
+        },
+        {
+          "type": "callout",
+          "kind": "warning",
+          "html": "<p> The brakes shift the balance between <strong>bias</strong> (too flat → systematically off target) and <strong>variance</strong> (too deep → different training set, different tree). How to explain and tune that balance is the topic <em>Bias-variance tradeoff</em> — for trees, <code>max_depth</code> is the textbook knob. </p>"
+        }
+      ]
+    },
+    {
+      "title": "DecisionTreeClassifier in scikit-learn",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> The workflow is exactly the standard trio from the topic <em>Supervised learning</em>: <code>fit</code>, <code>predict</code>, <code>score</code>. No scaler, no pipeline needed — thresholds are scale-independent. The example below trains one unrestricted tree and one braked tree on the breast-cancer dataset and compares train and test scores: </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "unrestricted vs. pruned tree on breast_cancer",
+          "runnable": true,
+          "source": "from sklearn.datasets import load_breast_cancer\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.tree import DecisionTreeClassifier\n\nX, y = load_breast_cancer(return_X_y=True)\nX_tr, X_te, y_tr, y_te = train_test_split(\n    X, y, test_size=0.25, random_state=42)\n\n# 1) tree without a brake: grows until every leaf is pure\ntree_free = DecisionTreeClassifier(random_state=42)\ntree_free.fit(X_tr, y_tr)\n\n# 2) tree with a brake: at most 3 questions deep\ntree_pruned = DecisionTreeClassifier(max_depth=3, random_state=42)\ntree_pruned.fit(X_tr, y_tr)\n\nprint('unrestricted: train', round(tree_free.score(X_tr, y_tr), 3),\n      '| test', round(tree_free.score(X_te, y_te), 3))\nprint('max_depth=3 : train', round(tree_pruned.score(X_tr, y_tr), 3),\n      '| test', round(tree_pruned.score(X_te, y_te), 3))\nprint('leaves:', tree_free.get_n_leaves(), 'vs',\n      tree_pruned.get_n_leaves())"
+        },
+        {
+          "type": "text",
+          "html": "<p> The typical picture: the unrestricted tree sits at <strong>100% training accuracy</strong> and loses almost five percentage points on the test set — a classic <em>variance</em> signal. The pruned tree scores slightly lower on train but here better on test (0.958 vs 0.951), with half the number of leaves (8 vs 16). That is the bias-variance balance in one line of output. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "reading the tree as human rules",
+          "runnable": true,
+          "source": "from sklearn.datasets import load_breast_cancer\nfrom sklearn.tree import DecisionTreeClassifier, export_text\n\ndata = load_breast_cancer()\ntree = DecisionTreeClassifier(max_depth=2, random_state=0).fit(\n    data.data, data.target)\n\n# the first two questions of the tree, with the class per leaf\nprint(export_text(tree, feature_names=data.feature_names,\n                  max_depth=2))"
+        },
+        {
+          "type": "callout",
+          "kind": "tip",
+          "html": "<p> <code>export_text</code> shows the tree as rules — exactly the form you can put in front of a domain expert (“does it make sense that these two measurements almost settle the whole decision?”). For a genuine <em>why</em> discussion this is gold; no other model in scikit-learn is this transparent. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Strengths and weaknesses in one table",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> When do you pick a tree, and when rather logistic regression or an SVM? The honest trade-off: </p>"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Aspect",
+            "Tree strength",
+            "Tree weakness"
+          ],
+          "rows": [
+            [
+              "interpretability",
+              "rules you can read aloud",
+              "—"
+            ],
+            [
+              "preprocessing",
+              "no scaling needed",
+              "categorical features need dummies first"
+            ],
+            [
+              "non-linearity",
+              "naturally, via depth",
+              "boundary becomes staircase-shaped and blocky"
+            ],
+            [
+              "stability",
+              "—",
+              "small data change → very different tree (high variance)"
+            ],
+            [
+              "solo performance",
+              "strong on tabular data",
+              "a single tree usually loses to ensembles (random forest)"
+            ]
+          ]
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p> The <strong>big weakness — high variance</strong> — is at the same time the door to what follows: many random, slightly different trees <em>average away</em> that noise (random forests, outside the scope of this course). First the fundamental framework: the topic <em>Bias-variance tradeoff</em> shows why “a single tree is fickle” and “the average of many trees is not” are two sides of the same mathematics. </p>"
+        }
+      ]
+    }
+  ]
+}

@@ -1,9 +1,9 @@
 {
   "site": {
     "title": "MLP — Machine Learning, clearly summarised",
-    "description": "Machine Learning material, clearly summarised: from the first basic concepts to scikit-learn, loss functions, logistic regression, SVMs and evaluation metrics — with formulas, diagrams, interactive plots with live metrics, code examples you can run in your browser, memory aids for every step and a FAQ for quick answers.",
-    "statFormulas": "±49",
-    "statCode": "46"
+    "description": "Machine Learning material, clearly summarised: from the first basic concepts to scikit-learn, loss functions, logistic regression, SVMs, decision trees and evaluation metrics — with formulas, diagrams, interactive plots with live metrics, code examples you can run in the browser, memory hooks for every step and an FAQ with quick answers.",
+    "statFormulas": "±45",
+    "statCode": "51"
   },
   "chapters": [
     {
@@ -38,12 +38,18 @@
     },
     {
       "id": "ch5",
+      "name": "Decision trees & bias-variance",
+      "accent": "green",
+      "description": "decision and regression trees, and the framework that explains under- and overfitting"
+    },
+    {
+      "id": "ch6",
       "name": "Evaluation & metrics",
       "accent": "cyan",
       "description": "judging models: metrics for regression and classification, and reliable estimation with cross-validation"
     },
     {
-      "id": "ch6",
+      "id": "ch7",
       "name": "FAQ",
       "accent": "green",
       "description": "quick answers to the most common questions"
@@ -222,8 +228,44 @@
       "keywords": "comparison, choice, pros cons, sgdclassifier, alpha, hinge, log_loss, cheat sheet"
     },
     {
-      "id": "regression-metrics",
+      "id": "decision-trees",
       "chapter": "ch5",
+      "title": "Decision trees: classification with questions",
+      "summary": "The decision tree as an if/else machine: splits with feature and threshold, purity measured with Gini and entropy, the overfit trap and the brakes (max_depth, min_samples_leaf) — with an interactive plot of both impurity curves.",
+      "level": 2,
+      "file": "topics.en/decision-trees.json",
+      "keywords": "decision tree, gini, entropy, information gain, split, threshold, leaf, root, cart, greedy, decisiontreeclassifier, max_depth, min_samples_leaf, min_samples_split, max_leaf_nodes, export_text, pre pruning, classification, interpretability, impurity"
+    },
+    {
+      "id": "gini-entropy",
+      "chapter": "ch5",
+      "title": "Gini index & entropy: measuring impurity",
+      "summary": "The two impurity measures behind tree splits, all the way down: Gini as the odds that two draws differ, entropy as uncertainty in bits, the near-equivalence Gini ≤ H/2 in an interactive (entropy, Gini) plot with three class counters, the information-gain formula with a worked example, and an honest gini-vs-entropy decision table.",
+      "level": 2,
+      "file": "topics.en/gini-entropy.json",
+      "keywords": "gini, gini index, gini impurity, entropy, impurity, information gain, bits, log2, shannon, nats, split criterion, criterion, cart, id3, c4.5, gain ratio, class distribution, majority, decision tree, uncertainty, information theory, weighted, children"
+    },
+    {
+      "id": "regression-trees",
+      "chapter": "ch5",
+      "title": "Regression trees: predicting numbers with leaves",
+      "summary": "The same tree idea for regression: every leaf predicts the mean of its training samples, splits choose on weighted MSE and the prediction becomes a step function — drag split points and leaf means yourself in the interactive plot with live MSE.",
+      "level": 2,
+      "file": "topics.en/regression-trees.json",
+      "keywords": "regression tree, decisiontreeregressor, leaf mean, weighted mse, split cost, step function, piecewise constant, split point, extrapolation, max_depth, r2, apartments, prices"
+    },
+    {
+      "id": "bias-variance",
+      "chapter": "ch5",
+      "title": "Bias-variance tradeoff: the framework behind under- and overfitting",
+      "summary": "The expected error as bias² + variance + noise: the full decomposition, the U-curve in model complexity you can drag yourself, the knobs that shift the balance (max_depth, C, k, more data) and a NumPy simulation that actually measures bias and variance.",
+      "level": 2,
+      "file": "topics.en/bias-variance.json",
+      "keywords": "bias, variance, bias-variance tradeoff, decomposition, irreducible noise, underfitting, overfitting, model complexity, u-curve, generalisation, sweet spot, ensembles, random forest, more data, polyfit, simulation"
+    },
+    {
+      "id": "regression-metrics",
+      "chapter": "ch6",
       "title": "Regression metrics: MSE, RMSE, MAE & R²",
       "summary": "How do you measure the quality of a regression model? MSE, RMSE, MAE and R² — formulas, interpretation, a worked car-price example and interactive plots with outliers.",
       "level": 2,
@@ -232,7 +274,7 @@
     },
     {
       "id": "classification-metrics",
-      "chapter": "ch5",
+      "chapter": "ch6",
       "title": "Classification metrics: confusion matrix, precision & recall",
       "summary": "The confusion matrix as the foundation; accuracy and why it misleads with imbalanced classes; precision, recall and F1 with concrete scenarios — and binary cross-entropy as the training objective.",
       "level": 2,
@@ -241,7 +283,7 @@
     },
     {
       "id": "cross-validation",
-      "chapter": "ch5",
+      "chapter": "ch6",
       "title": "Cross-validation: judging your model reliably",
       "summary": "A single train/test split is a gamble; k-fold CV averages k splits into a more stable estimate. With cross_val_score, StratifiedKFold, LeaveOneOut, the choice of k, GridSearchCV and Pipelines to prevent data leakage.",
       "level": 2,
@@ -250,7 +292,7 @@
     },
     {
       "id": "faq",
-      "chapter": "ch6",
+      "chapter": "ch7",
       "title": "Frequently asked questions (FAQ)",
       "summary": "Sixteen short, clear answers: classification vs. regression, train/test splits, cross-validation, building logistic regression yourself, overfitting, gradient descent, C, kernels, scaling, probabilities and the right metric — with pointers to the matching topic.",
       "level": 1,

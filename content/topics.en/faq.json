@@ -1,6 +1,6 @@
 {
   "id": "faq",
-  "chapter": "ch6",
+  "chapter": "ch7",
   "title": "Frequently asked questions (FAQ)",
   "intro": "Sixteen short, clear answers to the most frequently asked questions — from the difference between classification and regression to picking the right metric. Every question points to the topic where the material is covered in depth with examples, so from this single page you can navigate the whole site.",
   "keyPoints": [
@@ -67,6 +67,11 @@
           "type": "callout",
           "kind": "key",
           "html": "<p><strong>What does regularisation do and what does the hyperparameter C mean?</strong></p><p>Regularisation adds a <strong>penalty for large coefficients</strong> to the loss. This forces the model to stay simple, which fights overfitting: a model with extreme weights may fit the training data perfectly but generalises badly. <code>C</code> is the dial that controls the strength, though it works <em>backwards</em>: a <strong>large C</strong> means little penalty (a complex model), a <strong>small C</strong> means a strong penalty (a simple model). Turn C down too far and the model underfits instead. See <em>Regularisation: the hyperparameter C, L1 and L2</em>.</p>"
+        },
+        {
+          "type": "callout",
+          "kind": "info",
+          "html": "<p><strong>What exactly are bias and variance — and how do they relate to overfitting?</strong></p><p><strong>Bias</strong> is the systematic error: your model does not grasp the pattern, full stop (underfitting — poor train and test). <strong>Variance</strong> is the fickleness: swap the training set and the fit jumps all over the place (overfitting — perfect train, poor test). The expected error is bias² + variance + noise, and complexity shifts the balance: a deeper tree or a higher C lowers bias and raises variance. See <em>Bias-variance tradeoff</em>.</p>"
         }
       ]
     },
@@ -87,6 +92,16 @@
           "type": "callout",
           "kind": "tip",
           "html": "<p><strong>Why should I scale my features?</strong></p><p>Many models are <strong>sensitive to the scale</strong> of the features. KNN works with distances, SVMs with margins and gradient methods with step sizes: one feature with values in the thousands can completely dominate all the others. With <code>StandardScaler</code> you turn every column into mean 0 and spread 1, so all features carry equal weight. Important: fit the scaler on the <em>training data</em> and then use it to transform the test data. Tree models, on the other hand, are insensitive to scaling. See <em>Data, features &amp; labels</em>.</p>"
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p><strong>When do I choose a decision tree over a linear model?</strong></p><p>Pick a tree when <strong>interpretability</strong> matters (you can read the rules aloud), when your data naturally <strong>jumps in thresholds</strong>, or when you cannot be bothered with scaling — trees are insensitive to it. Pick a linear model (LR, LinearSVC) when the pattern is globally smooth/linear and you want a stable, small model: a single tree is fickle (high variance), certainly without a <code>max_depth</code> brake. See <em>Decision trees</em> and <em>Bias-variance tradeoff</em>.</p>"
+        },
+        {
+          "type": "callout",
+          "kind": "info",
+          "html": "<p><strong>Should I pick Gini or entropy for my decision tree?</strong></p><p>Hardly ever a real choice: Gini and entropy are strongly correlated (Gini ≤ H/2, equal at 50/50) and pick nearly the same splits. Gini is the cheap default (CART, no logarithms); entropy belongs to ID3/C4.5 and measures in bits. At the end the trees differ at most in shape (different leaf counts), not in score. See <em>Gini index &amp; entropy</em>.</p>"
         }
       ]
     },
@@ -118,6 +133,11 @@
           "type": "callout",
           "kind": "info",
           "html": "<p><strong>Which metric do I use for regression?</strong></p><p>The four standard metrics each tell you something different about the same predictions. <strong>MSE</strong> penalises large errors quadratically and is exactly the loss that linear regression optimises; <strong>RMSE</strong> is its square root and lives in the same unit as your target; <strong>MAE</strong> is the mean absolute error and is less sensitive to outliers; <strong>R²</strong> compares your model with a dumb baseline (always predicting the mean) and answers: how much better than that baseline are you? If your data has large outliers, MAE says more than RMSE. See <em>Regression metrics: MSE, RMSE, MAE &amp; R²</em> for formulas, interpretation and a worked example.</p>"
+        },
+        {
+          "type": "callout",
+          "kind": "warning",
+          "html": "<p><strong>Why does my regression tree predict the same price for 200 m² as for 114 m²?</strong></p><p>Because a regression leaf predicts a <strong>constant mean</strong> and trees <strong>cannot extrapolate</strong>: outside the training range the tree simply repeats its highest leaf. If you need trends beyond the seen range, you need a model with an actual slope (linear regression). See <em>Regression trees</em>.</p>"
         }
       ]
     }

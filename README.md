@@ -8,6 +8,13 @@ basisbegrippen** (wat is ML, soorten leren, data & workflow) tot de
 classifiers — inclusief formules, interactieve diagrammen en
 code-voorbeelden die je **direct in je browser kunt uitvoeren** (via
 Pyodide: CPython + scikit-learn in WebAssembly). Het hoofdstuk
+**Decision trees & bias-variance** behandelt beslisbomen voor
+classificatie (splits, `max_depth`) én regressie
+(bladgemiddelden, trapfuncties, extrapolatie), plus een verdieping
+over **Gini & entropy** — onzuiverheid meten, informatiewinst, de
+relatie Gini ≤ H/2 en wanneer welke maat — plus de
+**bias-variance-decompositie** met een sleepbare U-curve en een
+NumPy-simulatie die bias en variantie echt meet. Het hoofdstuk
 **Evaluatie & metrics** behandelt MSE, RMSE, MAE, R² en de
 confusion-matrix-metrics, **gradient descent** legt uit hoe een model
 leert, en het hoofdstuk **FAQ** geeft korte, heldere antwoorden op de
@@ -50,7 +57,7 @@ NL/EN-knop rechtsboven).
 - **Frontend**: pure HTML/CSS/JS — geen build-stap, geen framework
 - **Backend (optioneel, lokaal)**: FastAPI serveert de site én een REST-API over de content (NL + EN)
 - **Hosting**: 100% GitHub Pages-ready (statische bestanden)
-- **Talen**: NL (standaard) en EN — alle interface-teksten én alle 23 onderwerpen zijn vertaald
+- **Talen**: NL (standaard) en EN — alle interface-teksten én alle 27 onderwerpen zijn vertaald
 
 ---
 
@@ -243,7 +250,7 @@ MLP/
 ├── content/
 │   ├── index.json        # NL: hoofdstukken + onderwerpen-register
 │   ├── index.en.json     # EN: idem
-│   ├── topics/*.json     # NL: 23 onderwerpen (4 basis + logistic-regression-intro + theorie incl. gradient descent + 3 metrics/CV + LR zelf bouwen + FAQ)
+│   ├── topics/*.json     # NL: 27 onderwerpen (4 basis + logistic-regression-intro + theorie incl. gradient descent + 4 bomen/gini/bias-variance + 3 metrics/CV + LR zelf bouwen + FAQ)
 │   └── topics.en/*.json  # EN: idem
 ├── main.py               # FastAPI: statische site + REST-API (NL/EN)
 ├── start.sh              # Mac/Linux: venv aanmaken + deps installeren + server starten

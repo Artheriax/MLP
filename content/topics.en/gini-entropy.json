@@ -1,0 +1,400 @@
+{
+  "id": "gini-entropy",
+  "chapter": "ch5",
+  "title": "Gini index & entropy: measuring impurity",
+  "intro": "In the topic Decision trees you met them briefly as the yardstick behind every split: Gini and entropy. This topic takes the measures out of the tree and looks at them up close — what the numbers really mean (a probability, a number of bits), how to compute them by hand, how the tree uses them in the information gain, and why choosing between the two almost never matters in practice.",
+  "keyPoints": [
+    "Impurity compresses “how mixed is this node” into <strong>one number</strong>: 0 = every sample the same class, maximal = a perfectly uniform mix. Gini and entropy are the two standard measures.",
+    "<strong>Gini</strong> = 1 − Σ p<sub>k</sub>² — literally the probability that two random samples from the node have <em>different</em> classes; ceiling 1 − 1/K.",
+    "<strong>Entropy</strong> = −Σ p<sub>k</sub> log₂ p<sub>k</sub> — the uncertainty about the class of a random sample, in <strong>bits</strong>; ceiling log₂ K.",
+    "The best split has the highest <strong>information gain</strong>: parent impurity minus the <em>weighted</em> child impurity — the number the greedy tree maximises.",
+    "The measures are strongly correlated (<strong>Gini ≤ H/2</strong>, equal at 50/50): they pick virtually the same splits. Gini is the fast default, entropy the ID3/C4.5 classic in bits."
+  ],
+  "level": 2,
+  "sections": [
+    {
+      "title": "Why one number for purity?",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> A tree builds itself split by split, and at every junction the same question comes up: <em>which (feature, threshold) combination separates the data most cleanly?</em> “Cleanly” means: mostly one class on the left, mostly the other on the right. But “mostly” is not a number — and an algorithm can only compare numbers. That is why every splitting strategy needs one <strong>impurity measure</strong>: a function that gives every group of samples a single score, with 0 for “perfectly pure” and higher for “more mixed”. The split with the cleanest <em>weighted</em> combination of children wins. </p>"
+        },
+        {
+          "type": "text",
+          "html": "<p> Any usable measure shares three properties. It is <strong>zero when the node is pure</strong>: all samples the same class, no argument left. It is <strong>maximal for a uniform mix</strong>: every class equally frequent — the greatest possible uncertainty about what a random sample will turn out to be. And it is <strong>symmetric in the classes</strong>: a node with 80% ✓ is exactly as impure as one with 20% ✓ — only the mixing ratio counts, not which class happens to hold the majority. Within that frame many measures are possible; two of them dominate practice completely. </p>"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Node (two classes)",
+            "Mixture",
+            "What the measure must do"
+          ],
+          "rows": [
+            [
+              "10 ✓ / 0 ✗",
+              "pure",
+              "give exactly 0"
+            ],
+            [
+              "8 ✓ / 2 ✗",
+              "lightly mixed",
+              "be small"
+            ],
+            [
+              "6 ✓ / 4 ✗",
+              "heavily mixed",
+              "be large"
+            ],
+            [
+              "5 ✓ / 5 ✗",
+              "perfect mix",
+              "reach its maximum"
+            ]
+          ]
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p> The two measures you meet everywhere: the <strong>Gini index</strong> — the scikit-learn default, inherited from the CART algorithm — and <strong>entropy</strong>, from Shannon's information theory, used by the classic ID3/C4.5 trees. This topic treats them side by side: first get to know each on its own merits, then see how strongly they resemble each other, and finally why the choice between them rarely changes anything. The trees themselves — splits, brakes, code — live in <em>Decision trees</em>. </p>"
+        }
+      ]
+    },
+    {
+      "title": "The Gini index: the odds of two draws",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> The Gini index (in tree context usually called <em>Gini impurity</em>) is the most literal measure. Draw <strong>two random samples from the node</strong>, with replacement. The probability that those two samples have <em>different</em> classes is exactly the Gini of that node. A pure node always yields two identical ones: probability 0. A 50/50 mix lets the draws clash half of the time: 0.5. That is really all you need to remember — the formula follows straight from this game. </p>"
+        },
+        {
+          "type": "formula",
+          "label": "Gini impurity",
+          "latex": "G \\;=\\; 1 \\;-\\; \\sum_{k=1}^{K} p_k^{\\,2}",
+          "caption": "p<sub>k</sub> is the fraction of samples of class k in the node; K is the number of classes. For two classes the formula reduces to 2p(1−p): the parabola from the plot in <em>Decision trees</em>."
+        },
+        {
+          "type": "text",
+          "html": "<p> Worked out for a node with three classes — a sentiment classification with 50% <em>buy</em>, 30% <em>hold</em> and 20% <em>sell</em>: \\( G = 1 - (0.5^2 + 0.3^2 + 0.2^2) = 1 - 0.38 = 0.62 \\). Check via the drawing game: \\( 1 - (0.5 \\cdot 0.5 + 0.3 \\cdot 0.3 + 0.2 \\cdot 0.2) \\) — literally the same sum, because “both draws land on class k” has probability \\( p_k^2 \\). The more classes, the higher the ceiling: a uniform mix over K classes sits at the maximum \\( 1 - \\tfrac{1}{K} \\) — 0.5 for two classes, 0.667 for three. </p>"
+        },
+        {
+          "type": "text",
+          "html": "<p> Arithmetically Gini is the cheaper of the two: only squares, no logarithms. On a single node that feels like nothing, but a tree on real data evaluates <em>every</em> feature against <em>every</em> candidate threshold — thousands of candidate splits, each with impurity computations in the parent and both children. There the log() of entropy did count. For that efficiency — and because it barely changes the chosen splits — Gini is the default in CART and scikit-learn. </p>"
+        },
+        {
+          "type": "callout",
+          "kind": "info",
+          "html": "<p> Naming confusion pre-empted: the <em>Gini index</em> from economics — income inequality, 0 = perfectly equal — is a distant relative (the same squares idea) but a different formula on a different scale. In a machine learning context “Gini” almost always means the impurity version. And note: the measure says nothing about <em>which</em> class wins — 80% ✓ and 80% ✗ score identically (0.32). Purity is about mixture, not direction. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Entropy: uncertainty in bits",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Entropy comes from Shannon's information theory (1948) and measures uncertainty in <strong>bits</strong>. Thought experiment: someone draws a sample from the node, and you may only ask yes/no questions to guess its class. The minimal <em>average</em> number of questions the smartest possible strategy needs — that is the entropy of the node. A pure node: zero questions, the class is certain. A 50/50 mix: exactly one question that eliminates half, so 1 bit. Every question that halves the options exactly delivers one bit — hence the base-2 logarithm. </p>"
+        },
+        {
+          "type": "formula",
+          "label": "Entropy",
+          "latex": "H \\;=\\; -\\,\\sum_{k=1}^{K} p_k \\log_2 p_k",
+          "caption": "In bits, because the base is 2. Convention: 0·log 0 = 0 — an absent class contributes nothing. Maximum log<sub>2</sub> K at a uniform mix: 1 bit for two classes, 1.585 for three."
+        },
+        {
+          "type": "text",
+          "html": "<p> The same sentiment node (50/30/20): \\( H = -(0.5 \\log_2 0.5 + 0.3 \\log_2 0.3 + 0.2 \\log_2 0.2) = 0.5 + 0.521 + 0.464 = 1.485 \\) bits. The question game filled in: the optimal strategy asks “buy?” first (an exact 50/50 split) and only on “no” asks “hold?”. Expected number of questions: \\( 0.5 \\cdot 1 + 0.5 \\cdot 2 = 1.5 \\) — and the entropy 1.485 is the sharp lower bound no strategy can beat. That is the precise meaning of “uncertainty in bits”. </p>"
+        },
+        {
+          "type": "text",
+          "html": "<p> Mind the scale: H = 1.485 versus G = 0.62 for the same node. Not a problem — the tree compares candidate splits always within the <em>same</em> measure, so scale and unit cancel out; only the <em>order</em> the measure imposes on splits matters. One real difference: the ceiling. Gini tops out at \\( 1 - 1/K < 1 \\) no matter how many classes you have, while entropy keeps climbing to \\( \\log_2 K \\) and grows without bound with the number of classes — twelve equal classes: 3.585 bits. </p>"
+        },
+        {
+          "type": "callout",
+          "kind": "tip",
+          "html": "<p> Three rules of thumb you will meet along the way. First: \\( -\\log_2 p \\) is positive for \\( p < 1 \\), so the minus sign in front of the sum makes every term \\( -p_k \\log_2 p_k \\) positive. Second: every halving of p costs one extra bit — \\( \\log_2 \\tfrac{1}{4} = -2 \\) and \\( \\log_2 \\tfrac{1}{8} = -3 \\). Third: base 2 gives bits; the natural logarithm gives <em>nats</em> — the same curve, just a different unit (1 bit ≈ 0.693 nats). </p>"
+        }
+      ]
+    },
+    {
+      "title": "The two measures side by side: Gini ≈ H/2",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Plot both measures against the mixing ratio and the curves almost coincide: the entropy curve has exactly the bell shape of the Gini parabola, only roughly twice as tall. That is structural, not coincidence: for <em>every</em> class distribution \\( G \\le H/2 \\), with equality precisely at the uniform two-class mix (p = 0.5). For skewed distributions and for three or more classes Gini drops further below one half — but the <em>order</em> in which both measures rank candidate splits stays virtually the same. </p>"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "p (fraction ✓)",
+            "Gini 2p(1−p)",
+            "entropy H(p)",
+            "H/2"
+          ],
+          "rows": [
+            [
+              "0.1",
+              "0.180",
+              "0.469",
+              "0.234"
+            ],
+            [
+              "0.25",
+              "0.375",
+              "0.811",
+              "0.406"
+            ],
+            [
+              "0.5",
+              "0.500",
+              "1.000",
+              "0.500"
+            ]
+          ]
+        },
+        {
+          "type": "text",
+          "html": "<p> At p = 0.5 Gini and H/2 coincide exactly (both 0.5); away from it the difference grows to at most about 0.05 — and since the tree only compares orderings, that difference is meaningless. The plot below shows the relation in full: every dot is one class distribution, entropy horizontally and Gini vertically. </p>"
+        },
+        {
+          "type": "plot",
+          "title": "The (entropy, Gini) plane",
+          "subtitle": "Every dot is one class distribution: entropy horizontally, Gini vertically. The magenta dots are binary nodes (p = 0.1 … 0.5); your green dot follows the three class counters A/B/C. Set one counter to 0 and you drop exactly onto the binary arc; make them equal (e.g. 4/4/4) and you slide to the uniform maximum — still just below the line. Keep at least one counter above zero.",
+          "xrange": [
+            0,
+            1.6
+          ],
+          "yrange": [
+            0,
+            0.8
+          ],
+          "xlabel": "entropy H (bits)",
+          "ylabel": "Gini",
+          "curves": [
+            {
+              "expr": "x/2",
+              "label": "Gini = H/2 (reference line)",
+              "color": "cyan"
+            }
+          ],
+          "points": [
+            {
+              "x": 0.469,
+              "y": 0.18,
+              "color": "magenta"
+            },
+            {
+              "x": 0.722,
+              "y": 0.32,
+              "color": "magenta"
+            },
+            {
+              "x": 0.881,
+              "y": 0.42,
+              "color": "magenta"
+            },
+            {
+              "x": 0.971,
+              "y": 0.48,
+              "color": "magenta"
+            },
+            {
+              "x": 1.0,
+              "y": 0.5,
+              "color": "magenta"
+            }
+          ],
+          "pointLegend": [
+            {
+              "color": "magenta",
+              "label": "binary nodes (p = 0.1 … 0.5)"
+            }
+          ],
+          "sliders": [
+            {
+              "param": "a",
+              "min": 0,
+              "max": 10,
+              "step": 1,
+              "value": 5,
+              "label": "class A"
+            },
+            {
+              "param": "b",
+              "min": 0,
+              "max": 10,
+              "step": 1,
+              "value": 3,
+              "label": "class B"
+            },
+            {
+              "param": "c",
+              "min": 0,
+              "max": 10,
+              "step": 1,
+              "value": 2,
+              "label": "class C"
+            }
+          ],
+          "markers": [
+            {
+              "x": "(a+b+c) <= 0 ? NaN : Math.log2((a+b+c)) - ((a>1e-9? a*Math.log2(a):0) + (b>1e-9? b*Math.log2(b):0) + (c>1e-9? c*Math.log2(c):0)) / (a+b+c)",
+              "y": "1 - (a*a + b*b + c*c) / ((a+b+c)*(a+b+c))",
+              "color": "green",
+              "label": "your distribution"
+            }
+          ],
+          "metrics": [
+            {
+              "label": "Gini",
+              "expr": "1 - (a*a + b*b + c*c) / ((a+b+c)*(a+b+c))",
+              "decimals": 3
+            },
+            {
+              "label": "entropy H",
+              "expr": "(a+b+c) <= 0 ? NaN : Math.log2((a+b+c)) - ((a>1e-9? a*Math.log2(a):0) + (b>1e-9? b*Math.log2(b):0) + (c>1e-9? c*Math.log2(c):0)) / (a+b+c)",
+              "decimals": 3
+            },
+            {
+              "label": "H/2",
+              "expr": "((a+b+c) <= 0 ? NaN : Math.log2((a+b+c)) - ((a>1e-9? a*Math.log2(a):0) + (b>1e-9? b*Math.log2(b):0) + (c>1e-9? c*Math.log2(c):0)) / (a+b+c)) / 2",
+              "decimals": 3
+            },
+            {
+              "label": "Gini − H/2",
+              "expr": "1 - (a*a + b*b + c*c) / ((a+b+c)*(a+b+c)) - ((a+b+c) <= 0 ? NaN : Math.log2((a+b+c)) - ((a>1e-9? a*Math.log2(a):0) + (b>1e-9? b*Math.log2(b):0) + (c>1e-9? c*Math.log2(c):0)) / (a+b+c)) / 2",
+              "decimals": 3
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "html": "<p> The magenta dots together form a thin arc that undershoots the reference line by a hair and touches it exactly at the 50/50 mix — at the top, on (1.0, 0.5). Play with the counters: at (5, 3, 2), the sentiment example, your dot sits at (1.485, 0.62). Set one counter to zero and the dot falls <em>exactly</em> back onto the binary arc — an absent class makes a three-class node effectively binary. Make the counters equal (4/4/4) and it slides to the uniform maximum (1.585, 0.667): further from the line than ever, and still below it. </p>"
+        },
+        {
+          "type": "callout",
+          "kind": "info",
+          "html": "<p> Why two measures at all, if one would suffice? History. Entropy (Shannon, 1948) came first and entered the tree world through ID3 (1986) and C4.5; Gini joined in 1984 with Breiman's CART as an arithmetically faster alternative. Both families appear in textbooks and tutorials, so you must be able to read both. Choosing between them is almost never necessary — as the next section argues. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Information gain: scoring a split",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Now the number the tree actually maximises. The parent node has a fixed impurity; a candidate split divides its samples over (usually two) children. The <strong>information gain</strong> is the drop in <em>weighted</em> average impurity — and because the parent is fixed within one split comparison, “highest gain” is exactly the same as “lowest weighted child impurity”. Two phrasings, one choice. </p>"
+        },
+        {
+          "type": "formula",
+          "label": "Information gain",
+          "latex": "IG \\;=\\; I(\\text{parent}) \\;-\\; \\sum_{j} \\frac{n_j}{n}\\, I(\\text{child}_j)",
+          "caption": "I is the chosen measure (Gini or entropy); n<sub>j</sub> is the number of samples in child j and n the total in the parent. The fraction weights each child by its size."
+        },
+        {
+          "type": "text",
+          "html": "<p> Concretely: a node with 20 samples — 12 ✓ and 8 ✗ (p = 0.6) — and a candidate split that leaves 2 ✓ / 6 ✗ (p = 0.25) on the left and 10 ✓ / 2 ✗ (p = 0.833) on the right. With Gini: the parent \\( 2 \\cdot 0.6 \\cdot 0.4 = 0.480 \\); children \\( G_L = 0.375 \\) and \\( G_R = 0.278 \\), weighted \\( \\tfrac{8}{20} \\cdot 0.375 + \\tfrac{12}{20} \\cdot 0.278 = 0.317 \\); gain \\( 0.480 - 0.317 = 0.163 \\). With entropy: parent \\( H(0.6) = 0.971 \\); children 0.811 and 0.650, weighted \\( 0.715 \\); gain \\( 0.256 \\) bits. The tree repeats this for every (feature, threshold), keeps the highest gain, and then recurses into each child. </p>"
+        },
+        {
+          "type": "text",
+          "html": "<p> The weighting with \\( n_j/n \\) is not decoration but the heart of the measure. Compare two splits on the same parent: A makes 19 of the 20 samples pure but leaves one small dirty leaf; B cleans up both halves substantially, but neither completely. Unweighted, A looked “nearly perfect” — weighted, B can simply win, because the one dirty mini-leaf counts for only 1/20. Rehabilitating one sample does not outweigh half-cleaning nineteen: however small a child is, its impurity counts in proportion to its size. </p>"
+        },
+        {
+          "type": "callout",
+          "kind": "warning",
+          "html": "<p> The classic trap: a feature with many unique values — a customer ID, a timestamp to the millisecond — offers so many thresholds that one always sits in between, chopping the data into already-pure mini-groups. Seemingly high information gain, in reality pure memorisation: the tree learns the ID, not the pattern. C4.5 counters this with the <em>gain ratio</em> — gain divided by the split entropy of the group sizes themselves. In scikit-learn it hardly plays a role: categorical features must first be turned into dummy variables, which makes every question binary. See the overfit brakes in <em>Decision trees</em> and the framework in <em>Bias-variance tradeoff</em>. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Gini or entropy: which do you pick?",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> The comparison in one table — with the honest caveat that the bottom row is the one that matters: </p>"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "",
+            "Gini",
+            "Entropy"
+          ],
+          "rows": [
+            [
+              "<strong>formula</strong>",
+              "1 − Σ p<sub>k</sub>²",
+              "−Σ p<sub>k</sub> log₂ p<sub>k</sub>"
+            ],
+            [
+              "<strong>ceiling (K classes)</strong>",
+              "1 − 1/K (stays below 1)",
+              "log₂ K (grows with K)"
+            ],
+            [
+              "<strong>arithmetic</strong>",
+              "squares only — cheap",
+              "a logarithm per class"
+            ],
+            [
+              "<strong>origin</strong>",
+              "CART (Breiman, 1984)",
+              "ID3/C4.5 (Quinlan), via Shannon (1948)"
+            ],
+            [
+              "<strong>in scikit-learn</strong>",
+              "the default",
+              "<code>criterion=&quot;entropy&quot;</code>"
+            ],
+            [
+              "<strong>split choice in practice</strong>",
+              "virtually always the same winner",
+              "idem — at most a different tree shape"
+            ]
+          ]
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p> Practical advice: <strong>leave the default (Gini) in place</strong> and spend your tuning budget on <code>max_depth</code>, <code>min_samples_leaf</code> and <code>min_samples_split</code> — these are the knobs that actually move the bias-variance needle. Pick entropy if you want to report information gain in <strong>bits</strong> (a tidy information-theoretic story) or when connecting to ID3/C4.5 literature. Curious about the difference on your own data? Put both in a cross-validation — see <em>Cross-validation</em> — and compare: almost always the scores differ only in the second decimal. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Compute it yourself: from formula to code",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> First build the measures themselves — a handful of NumPy — and recompute the example from above. The functions take class <em>counts</em> (say (12, 8)) and normalise internally to fractions: </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "gini, entropy and information gain by hand",
+          "runnable": true,
+          "source": "import numpy as np\n\ndef gini(counts):\n    p = np.asarray(counts) / sum(counts)\n    return 1 - (p ** 2).sum()\n\ndef entropy(counts):\n    p = np.asarray(counts)\n    p = p[p > 0] / p.sum()\n    return -(p * np.log2(p)).sum()\n\n# the node from the example: 20 samples, 12/8 -> children 2/6 and 10/2\nparent, left, right = (12, 8), (2, 6), (10, 2)\n\nfor name, f in [('gini', gini), ('entropy', entropy)]:\n    weighted = (sum(left) * f(left) + sum(right) * f(right)) / sum(parent)\n    print(f'{name:8s} parent={f(parent):.3f}  children={weighted:.3f}  '\n          f'information gain={f(parent) - weighted:.3f}')"
+        },
+        {
+          "type": "text",
+          "html": "<p> Exactly the hand-computed figures: Gini drops from 0.480 to 0.317 (gain 0.163) and entropy from 0.971 to 0.715 (gain 0.256 bits). Both measures praise this split strongly. Comparing the two gains directly makes no sense — different scales — but it does not need to: the tree always chooses within the scale of its own criterion. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "criterion=&quot;gini&quot; versus &quot;entropy&quot; on breast_cancer",
+          "runnable": true,
+          "source": "from sklearn.datasets import load_breast_cancer\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.tree import DecisionTreeClassifier\n\nX, y = load_breast_cancer(return_X_y=True)\nX_tr, X_te, y_tr, y_te = train_test_split(\n    X, y, test_size=0.25, random_state=42)\n\nfor criterion in ['gini', 'entropy']:\n    tree = DecisionTreeClassifier(criterion=criterion, random_state=42)\n    tree.fit(X_tr, y_tr)\n    print(f'criterion={criterion:8s} test-score={tree.score(X_te, y_te):.3f}  '\n          f'leaves={tree.get_n_leaves()}')"
+        },
+        {
+          "type": "text",
+          "html": "<p> Typical output: the Gini tree reaches 0.951 with 16 leaves, the entropy tree 0.958 with 14. “Virtually the same” therefore does not mean “literally identical”: the measures are related, not equal, and micro-decisions occasionally fall differently — here entropy happens to pick a more compact tree that tests slightly better. But one percentage point on a single split of the data is noise, not signal; do not draw conclusions from it. </p>"
+        },
+        {
+          "type": "callout",
+          "kind": "tip",
+          "html": "<p> So <code>criterion</code> is technically a hyperparameter — but one with a suspiciously small effect. Feel free to ignore it while tuning: if the CV scores flip between Gini and entropy, look at the spread between the folds themselves (see <em>Cross-validation</em>), not at the criterion. The tree shape that does matter — depth, leaf size — takes centre stage in <em>Bias-variance tradeoff</em>. </p>"
+        }
+      ]
+    }
+  ]
+}

@@ -1,9 +1,9 @@
 {
   "site": {
     "title": "MLP — Machine Learning Practice",
-    "description": "Machine Learning stof helder samengevat: van de eerste basisbegrippen tot scikit-learn, loss functions, logistic regression, SVM's en evaluatie-metrics — met formules, diagrammen, interactieve plots met live metrics, code-voorbeelden die je in de browser kunt uitvoeren, geheugensteuntjes voor elke stap en een FAQ met snel antwoord.",
-    "statFormulas": "±49",
-    "statCode": "46"
+    "description": "Machine Learning stof helder samengevat: van de eerste basisbegrippen tot scikit-learn, loss functions, logistic regression, SVM's, decision trees en evaluatie-metrics — met formules, diagrammen, interactieve plots met live metrics, code-voorbeelden die je in de browser kunt uitvoeren, geheugensteuntjes voor elke stap en een FAQ met snel antwoord.",
+    "statFormulas": "±45",
+    "statCode": "51"
   },
   "chapters": [
     {
@@ -38,12 +38,18 @@
     },
     {
       "id": "ch5",
+      "name": "Decision trees & bias-variance",
+      "accent": "green",
+      "description": "beslisbomen voor classificatie en regressie, en het kader dat under- en overfitting verklart"
+    },
+    {
+      "id": "ch6",
       "name": "Evaluatie & metrics",
       "accent": "cyan",
       "description": "modellen beoordelen: metrics voor regressie en classificatie, en betrouwbaar schatten met cross-validation"
     },
     {
-      "id": "ch6",
+      "id": "ch7",
       "name": "FAQ",
       "accent": "green",
       "description": "snel antwoord op de meestgestelde vragen"
@@ -222,8 +228,44 @@
       "keywords": "vergelijking, keuze, pros cons, sgdclassifier, alpha, hinge, log_loss, cheat sheet"
     },
     {
-      "id": "regression-metrics",
+      "id": "decision-trees",
       "chapter": "ch5",
+      "title": "Decision trees: classificatie met vraag-en-antwoord",
+      "summary": "De beslisboom als if/else-machine: splits met feature en drempel, zuiverheid meten met Gini en entropy, de overfit-val en de remmen (max_depth, min_samples_leaf) — met een interactieve plot van beide onzuiverheidscurves.",
+      "level": 2,
+      "file": "topics/decision-trees.json",
+      "keywords": "decision tree, beslisboom, gini, entropy, informatiewinst, split, drempel, blad, wortel, cart, greedy, decisiontreeclassifier, max_depth, min_samples_leaf, min_samples_split, max_leaf_nodes, export_text, pre pruning, classificatie, interpretatie, onzuiverheid"
+    },
+    {
+      "id": "gini-entropy",
+      "chapter": "ch5",
+      "title": "Gini-index & entropie: onzuiverheid meten",
+      "summary": "De twee onzuiverheidsmaten achter boom-splits tot op de bodem: Gini als kans dat twee trekkingen verschillen, entropie als onzekerheid in bits, de bijna-equivalentie Gini ≤ H/2 in een interactieve (entropie, Gini)-plot met drie klasse-tellers, de informatiewinst-formule met uitgewerkt voorbeeld, en een eerlijke gini-vs-entropy-keuzetabel.",
+      "level": 2,
+      "file": "topics/gini-entropy.json",
+      "keywords": "gini, gini-index, gini impurity, entropie, entropy, onzuiverheid, impurity, informatiewinst, information gain, bits, log2, shannon, nats, split criterium, criterion, cart, id3, c4.5, gain ratio, klasseverdeling, meerderheid, beslisboom, decision tree, onzekerheid, informatietheorie, sweep, gewogen, kinderen"
+    },
+    {
+      "id": "regression-trees",
+      "chapter": "ch5",
+      "title": "Regression trees: getallen voorspellen met bladeren",
+      "summary": "Hetzelfde boomidee voor regressie: elk blad voorspelt het gemiddelde van zijn trainingsamples, splits kiezen op gewogen MSE en de voorspelling wordt een trapfunctie — sleep zelf splitspunten en bladgemiddelden in de interactieve plot met live MSE.",
+      "level": 2,
+      "file": "topics/regression-trees.json",
+      "keywords": "regression tree, regressieboom, decisiontreeregressor, bladgemiddelde, gemiddelde, gewogen mse, split cost, trapfunctie, piecewise constant, splitspunt, extrapolatie, max_depth, r2, appartementen, prijzen"
+    },
+    {
+      "id": "bias-variance",
+      "chapter": "ch5",
+      "title": "Bias-variance tradeoff: het kader achter under- en overfitting",
+      "summary": "De verwachte fout als bias² + variantie + ruis: de volledige decompositie, de U-curve in modelcomplexiteit die je zelf versleept, de knoppen die de balans schuiven (max_depth, C, k, meer data) en een NumPy-simulatie die bias en variantie daadwerkelijk meet.",
+      "level": 2,
+      "file": "topics/bias-variance.json",
+      "keywords": "bias, variantie, variance, bias-variance tradeoff, decompositie, irreducibele ruis, underfitting, overfitting, modelcomplexiteit, u-curve, generalisatie, sweet spot, ensembles, random forest, meer data, polyfit, simulatie"
+    },
+    {
+      "id": "regression-metrics",
+      "chapter": "ch6",
       "title": "Metrics bij regressie: MSE, RMSE, MAE & R²",
       "summary": "Hoe meet je de kwaliteit van een regressiemodel? MSE, RMSE, MAE en R² — formules, interpretatie, een uitgewerkt autoprijs-voorbeeld en interactieve plots met outliers.",
       "level": 2,
@@ -232,7 +274,7 @@
     },
     {
       "id": "classification-metrics",
-      "chapter": "ch5",
+      "chapter": "ch6",
       "title": "Metrics bij classificatie: confusion matrix, precision & recall",
       "summary": "De confusion matrix als fundament; accuracy en waarom die misleidt bij scheve klassen; precision, recall en F1 met concrete scenario's — en de binaire cross-entropy als trainingsdoel.",
       "level": 2,
@@ -241,7 +283,7 @@
     },
     {
       "id": "cross-validation",
-      "chapter": "ch5",
+      "chapter": "ch6",
       "title": "Cross-validation: betrouwbaar je model beoordelen",
       "summary": "Eén train/test-split is een gok; k-fold CV middelt k splits tot een stabielere schatting. Met cross_val_score, StratifiedKFold, LeaveOneOut, de keuze van k, GridSearchCV en Pipelines om data leakage te voorkomen.",
       "level": 2,
@@ -250,7 +292,7 @@
     },
     {
       "id": "faq",
-      "chapter": "ch6",
+      "chapter": "ch7",
       "title": "Veelgestelde vragen (FAQ)",
       "summary": "Zestien korte, heldere antwoorden: classificatie vs. regressie, train/test-splits, cross-validation, logistic regression zelf bouwen, overfitting, gradient descent, C, kernels, schalen, kansen en de juiste metric — met doorverwijzingen naar het bijbehorende onderwerp.",
       "level": 1,

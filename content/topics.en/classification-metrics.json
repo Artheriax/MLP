@@ -1,6 +1,6 @@
 {
   "id": "classification-metrics",
-  "chapter": "ch5",
+  "chapter": "ch6",
   "title": "Classification metrics: confusion matrix, precision & recall",
   "intro": "How do you judge a classifier? The confusion matrix as the foundation, accuracy and why it can mislead, precision and recall with concrete scenarios, the F1-score — and binary cross-entropy as the training objective, all with code that runs in the browser.",
   "keyPoints": [

@@ -1,6 +1,6 @@
 {
   "id": "regression-metrics",
-  "chapter": "ch5",
+  "chapter": "ch6",
   "title": "Regression metrics: MSE, RMSE, MAE & R²",
   "intro": "How do you measure whether a regression model predicts well? The four standard measures — MSE, RMSE, MAE and R&sup2; — with formulas, interpretation, a fully worked car-price example, the exact closed-form formulas for the best-fit line (b1 and the y-intercept b0) and interactive plots with live metrics that show what outliers do to your metric.",
   "keyPoints": [

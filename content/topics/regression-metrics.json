@@ -1,6 +1,6 @@
 {
   "id": "regression-metrics",
-  "chapter": "ch5",
+  "chapter": "ch6",
   "title": "Metrics bij regressie: MSE, RMSE, MAE & R²",
   "intro": "Hoe meet je of een regressiemodel goed voorspelt? De vier standaardmaten — MSE, RMSE, MAE en R&sup2; — met formules, interpretatie, een compleet uitgewerkt voorbeeld over autoprijzen, de exacte formules voor de best-fit lijn (b1 en het snijpunt met de y-as b0) en interactieve plots met live metrics die laten zien wat outliers met je metric doen.",
   "keyPoints": [
