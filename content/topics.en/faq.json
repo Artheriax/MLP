@@ -1,6 +1,6 @@
 {
   "id": "faq",
-  "chapter": "ch7",
+  "chapter": "ch8",
   "title": "Frequently asked questions (FAQ)",
   "intro": "Sixteen short, clear answers to the most frequently asked questions — from the difference between classification and regression to picking the right metric. Every question points to the topic where the material is covered in depth with examples, so from this single page you can navigate the whole site.",
   "keyPoints": [
@@ -72,6 +72,11 @@
           "type": "callout",
           "kind": "info",
           "html": "<p><strong>What exactly are bias and variance — and how do they relate to overfitting?</strong></p><p><strong>Bias</strong> is the systematic error: your model does not grasp the pattern, full stop (underfitting — poor train and test). <strong>Variance</strong> is the fickleness: swap the training set and the fit jumps all over the place (overfitting — perfect train, poor test). The expected error is bias² + variance + noise, and complexity shifts the balance: a deeper tree or a higher C lowers bias and raises variance. See <em>Bias-variance tradeoff</em>.</p>"
+        },
+        {
+          "type": "callout",
+          "kind": "info",
+          "html": "<p><strong>How much maths do I actually need for machine learning?</strong></p><p>Less than you think to <em>start</em>, more than you think to <em>understand</em>. Being productive with scikit-learn takes almost no maths; understanding why a model learns, why the learning rate misbehaves and why regularisation helps rests on three pillars: <strong>derivatives</strong> (the gradient that gradient descent follows), <strong>optimisation</strong> (critical points, convexity) and a little <strong>probability</strong> (probabilities, expectations). The chapter <em>Calculus &amp; optimisation</em> covers the first two from scratch — and if you want a structured path, <em>AP Calculus AB</em> shows how that official curriculum maps onto exactly this material.</p>"
         }
       ]
     },
@@ -102,6 +107,11 @@
           "type": "callout",
           "kind": "info",
           "html": "<p><strong>Should I pick Gini or entropy for my decision tree?</strong></p><p>Hardly ever a real choice: Gini and entropy are strongly correlated (Gini ≤ H/2, equal at 50/50) and pick nearly the same splits. Gini is the cheap default (CART, no logarithms); entropy belongs to ID3/C4.5 and measures in bits. At the end the trees differ at most in shape (different leaf counts), not in score. See <em>Gini index &amp; entropy</em>.</p>"
+        },
+        {
+          "type": "callout",
+          "kind": "info",
+          "html": "<p><strong>What is the difference between bagging and boosting?</strong></p><p>Both are ensemble methods, but they attack different problems. <strong>Bagging</strong> (bootstrap aggregating, of which the random forest is the best known) trains models <em>in parallel</em> on different bootstrap samples and averages the predictions — that mainly lowers <em>variance</em>: jittery, deep trees become stable together. <strong>Boosting</strong> (gradient boosting, XGBoost) trains models <em>one after another</em>, each new model learning mostly from its predecessors' mistakes — that mainly lowers <em>bias</em>: too-simple models are sharpened step by step. Rule of thumb: random forest is the friendly default that needs little tuning; bring in boosting when you need the last bit of performance and are willing to tune. See <em>Bagging &amp; random forests</em>.</p>"
         }
       ]
     },

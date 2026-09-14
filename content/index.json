@@ -1,9 +1,9 @@
 {
   "site": {
     "title": "MLP — Machine Learning Practice",
-    "description": "Machine Learning stof helder samengevat: van de eerste basisbegrippen tot scikit-learn, loss functions, logistic regression, SVM's, decision trees en evaluatie-metrics — met formules, diagrammen, interactieve plots met live metrics, code-voorbeelden die je in de browser kunt uitvoeren, geheugensteuntjes voor elke stap en een FAQ met snel antwoord.",
-    "statFormulas": "±45",
-    "statCode": "51"
+    "description": "Machine Learning stof helder samengevat: van de eerste basisbegrippen tot scikit-learn, loss functions, logistic regression, SVM's, decision trees, calculus en evaluatie-metrics — met formules, diagrammen, interactieve plots met live metrics, code-voorbeelden die je in de browser kunt uitvoeren, geheugensteuntjes voor elke stap en een FAQ met snel antwoord.",
+    "statFormulas": "±53",
+    "statCode": "60"
   },
   "chapters": [
     {
@@ -44,12 +44,18 @@
     },
     {
       "id": "ch6",
+      "name": "Calculus & optimalisatie",
+      "accent": "yellow",
+      "description": "van afgeleiden en kritieke punten tot integralen en het AP-examen"
+    },
+    {
+      "id": "ch7",
       "name": "Evaluatie & metrics",
       "accent": "cyan",
       "description": "modellen beoordelen: metrics voor regressie en classificatie, en betrouwbaar schatten met cross-validation"
     },
     {
-      "id": "ch7",
+      "id": "ch8",
       "name": "FAQ",
       "accent": "green",
       "description": "snel antwoord op de meestgestelde vragen"
@@ -264,8 +270,44 @@
       "keywords": "bias, variantie, variance, bias-variance tradeoff, decompositie, irreducibele ruis, underfitting, overfitting, modelcomplexiteit, u-curve, generalisatie, sweet spot, ensembles, random forest, meer data, polyfit, simulatie"
     },
     {
-      "id": "regression-metrics",
+      "id": "bagging-random-forests",
+      "chapter": "ch5",
+      "title": "Bagging & random forests: sterker dan de som der bomen",
+      "summary": "Ensembles als medicijn tegen hoge variantie: bootstrap-sets en het 63,2%-getal, aggregeren met de variantieformule rho·sigma² + (1−rho)·sigma²/B live verschuifbaar, random forests als decorrelering via max_features, de OOB-score als gratis validatie en feature importance met zijn korrels zout — van één boom naar een bos van honderd in runnable code.",
+      "level": 2,
+      "file": "topics/bagging-random-forests.json",
+      "keywords": "bagging, bootstrap, bootstrap aggregating, random forest, randomforestclassifier, baggingclassifier, ensemble, n_estimators, max_features, oob, out of bag, oob_score, feature importance, mdi, mean decrease in impurity, variantie reductie, decorrelatie, aggregeren, voting, averaging, breast cancer, sterke default"
+    },
+    {
+      "id": "differential-calculus",
       "chapter": "ch6",
+      "title": "Differentiaalrekening: de afgeleide",
+      "summary": "De afgeleide als limiet van verschilquotiënten: de definitie een keer echt uitgewerkt, de raaklijn als beste lineaire benadering die je zelf verschuift, het secant-naar-raaklijn-limiet in cijfers en code, de rekenregels van machtregel tot kettingregel, de vaste waarden van sin, cos, e^x en ln, en hogere afgeleiden als brug naar gradiënten en convexiteit.",
+      "level": 2,
+      "file": "topics/differential-calculus.json",
+      "keywords": "afgeleide, differentiaalrekening, derivative, differentieren, limiet, verschilquotient, secant, raaklijn, tangent, helling, differentieerbaar, machtregel, productregel, quotiientregel, kettingregel, chain rule, hogere afgeleiden, tweede afgeleide, convex, lineaire benadering, numerieke afgeleide, centrale differentie"
+    },
+    {
+      "id": "optimization",
+      "chapter": "ch6",
+      "title": "Optimalisatie: waar de afgeleide nul is",
+      "summary": "Extrema vinden met calculus: kritieke punten verzamelen, de eerste- en tweede-afgeleide-test, concaviteit en buigpunten, het klassieke kartonnen-doosprobleem van formule tot eindzin, en gradient descent als uitweg zodra f' = 0 niet analytisch oplosbaar is — de exacte route die elk ML-model met zijn loss aflegt.",
+      "level": 2,
+      "file": "topics/optimization.json",
+      "keywords": "optimalisatie, optimization, extremum, maximum, minimum, kritiek punt, critical point, eerste afgeleide test, tweede afgeleide test, concaviteit, convex, buigpunt, doosprobleem, randen, gesloten interval, woordprobleem, lokaal versus globaal, gradient descent, learning rate, minimize_scalar"
+    },
+    {
+      "id": "ap-calculus-ab",
+      "chapter": "ch6",
+      "title": "AP Calculus AB: het examen in kaart",
+      "summary": "Het Amerikaanse calculus-eindexamen compleet in kaart: formaat, unit-gewichten en strategie, limits en continuïteit met een gat in de grafiek dat je zelf benadert, integratie met Riemann-sommen en de fundamentele stelling live in een plot, differentiaalvergelijkingen met richtingsvelden en Eulers methode, en de vertaaltabel van elk examenderdeel naar machine learning.",
+      "level": 2,
+      "file": "topics/ap-calculus-ab.json",
+      "keywords": "ap calculus, ap calculus ab, college board, examen, advanced placement, credits, multiple choice, free response, frq, rubric, calculator policy, limits, limieten, continuuiteit, continuity, ivt, intermediate value theorem, mvt, mean value theorem, riemann, riemann som, integraal, integration, antiderivaat, ftc, fundamental theorem, u substitutie, differentiaalvergelijking, differential equation, slope field, richtingsveld, euler, eulers methode, exponentiele groei, doubling time"
+    },
+    {
+      "id": "regression-metrics",
+      "chapter": "ch7",
       "title": "Metrics bij regressie: MSE, RMSE, MAE & R²",
       "summary": "Hoe meet je de kwaliteit van een regressiemodel? MSE, RMSE, MAE en R² — formules, interpretatie, een uitgewerkt autoprijs-voorbeeld en interactieve plots met outliers.",
       "level": 2,
@@ -274,7 +316,7 @@
     },
     {
       "id": "classification-metrics",
-      "chapter": "ch6",
+      "chapter": "ch7",
       "title": "Metrics bij classificatie: confusion matrix, precision & recall",
       "summary": "De confusion matrix als fundament; accuracy en waarom die misleidt bij scheve klassen; precision, recall en F1 met concrete scenario's — en de binaire cross-entropy als trainingsdoel.",
       "level": 2,
@@ -283,7 +325,7 @@
     },
     {
       "id": "cross-validation",
-      "chapter": "ch6",
+      "chapter": "ch7",
       "title": "Cross-validation: betrouwbaar je model beoordelen",
       "summary": "Eén train/test-split is een gok; k-fold CV middelt k splits tot een stabielere schatting. Met cross_val_score, StratifiedKFold, LeaveOneOut, de keuze van k, GridSearchCV en Pipelines om data leakage te voorkomen.",
       "level": 2,
@@ -292,7 +334,7 @@
     },
     {
       "id": "faq",
-      "chapter": "ch7",
+      "chapter": "ch8",
       "title": "Veelgestelde vragen (FAQ)",
       "summary": "Zestien korte, heldere antwoorden: classificatie vs. regressie, train/test-splits, cross-validation, logistic regression zelf bouwen, overfitting, gradient descent, C, kernels, schalen, kansen en de juiste metric — met doorverwijzingen naar het bijbehorende onderwerp.",
       "level": 1,

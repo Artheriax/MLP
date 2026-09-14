@@ -1,6 +1,6 @@
 {
   "id": "faq",
-  "chapter": "ch7",
+  "chapter": "ch8",
   "title": "Veelgestelde vragen (FAQ)",
   "intro": "Zestien korte, heldere antwoorden op de vragen die het vaakst langskomen — van het verschil tussen classificatie en regressie tot de keuze van de juiste metric. Elke vraag verwijst door naar het onderwerp waar de stof uitgebreid en met voorbeelden staat, zodat je vanuit deze ene pagina de hele site kunt navigeren.",
   "keyPoints": [
@@ -72,6 +72,11 @@
           "type": "callout",
           "kind": "info",
           "html": "<p><strong>Wat zijn bias en variantie precies — en wat heeft het met overfitting te maken?</strong></p><p><strong>Bias</strong> is de systematische fout: je model snapt het patroon niet, hoe dan ook (underfitting — train én test slecht). <strong>Variantie</strong> is de wispelturigheid: wissel de trainset en de fit springt alle kanten op (overfitting — train perfect, test slecht). De verwachte fout is bias² + variantie + ruis, en complexiteit schuift de balans: diepere boom of hogere C verlaagt bias en verhoogt variantie. Zie <em>Bias-variance tradeoff</em>.</p>"
+        },
+        {
+          "type": "callout",
+          "kind": "info",
+          "html": "<p><strong>Hoeveel wiskunde heb ik eigenlijk nodig voor machine learning?</strong></p><p>Minder dan je denkt om te <em>beginnen</em>, meer dan je denkt om te <em>begrijpen</em>. Productief aan de slag gaan met scikit-learn kan bijna zonder wiskunde; snappen waarom een model leert, waarom de learning rate knielt en waarom regularisatie helpt, draait op drie pijlers: <strong>afgeleiden</strong> (de gradiënt die gradient descent volgt), <strong>optimalisatie</strong> (kritieke punten, convexiteit) en een beetje <strong>kansrekening</strong> (kansen, verwachtingen). Het hoofdstuk <em>Calculus &amp; optimalisatie</em> behandelt de eerste twee vanaf nul — en wie een gestructureerd leerpad wil, vindt in <em>AP Calculus AB</em> hoe dat officiële curriculum precies op deze stof past.</p>"
         }
       ]
     },
@@ -102,6 +107,11 @@
           "type": "callout",
           "kind": "info",
           "html": "<p><strong>Moet ik Gini of entropy kiezen voor mijn decision tree?</strong></p><p>Vrijwel nooit een echte keuze: Gini en entropy zijn sterk gecorreleerd (Gini ≤ H/2, gelijk bij 50/50) en pikken bijna altijd dezelfde splits. Gini is de goedkope default (CART, geen logaritmes); entropy hoort bij ID3/C4.5 en meet in bits. Aan het eind verschillen de bomen hooguit in vorm (ander aantal bladeren), niet in score. Zie <em>Gini-index &amp; entropie</em>.</p>"
+        },
+        {
+          "type": "callout",
+          "kind": "info",
+          "html": "<p><strong>Wat is het verschil tussen bagging en boosting?</strong></p><p>Beide zijn ensemble-methoden, maar ze pakken een ander probleem aan. <strong>Bagging</strong> (bootstrap aggregating, en daarvan is de random forest de bekendste) traint modellen <em>parallel</em> op verschillende bootstrap-sets en middelt de voorspellingen — dat verlaagt vooral de <em>variantie</em>: wispelturige, diepe bomen worden samen stabiel. <strong>Boosting</strong> (gradient boosting, XGBoost) traint modellen <em>achter elkaar</em>, waarbij elke nieuwe model vooral leert van de fouten van zijn voorgangers — dat verlaagt vooral de <em>bias</em>: te simpele modellen worden stap voor stap scherper. Vuistregel: random forest is de vriendelijke default die weinig afstelling nodig heeft; boosting haal je boven als je het laatste beetje prestatie nodig hebt en bereid bent af te stemmen. Zie <em>Bagging &amp; random forests</em>.</p>"
         }
       ]
     },

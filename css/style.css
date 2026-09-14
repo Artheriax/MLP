@@ -872,7 +872,7 @@ body.sb-collapsed .sidebar { margin-left: calc(-1 * var(--sidebar-w)); }
 
 .topic { position: relative; }
 
-.topic-body { display: grid; gap: 8px; }
+.topic-body { display: grid; gap: 8px; grid-template-columns: minmax(0, 1fr); }
 
 /* secties */
 

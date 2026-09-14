@@ -1,0 +1,370 @@
+{
+  "id": "differential-calculus",
+  "chapter": "ch6",
+  "title": "Differential calculus: the derivative",
+  "intro": "How fast is something changing, right now? Averages anyone can compute: distance divided by time. But instantaneous speed — the reading on the speedometer at a single tick of the clock — looks like a paradox: over a time interval of zero you also cover zero distance. Differential calculus dissolves the paradox with one clever move: <em>compute the average over ever smaller intervals and watch where it goes</em>. What remains is the <strong>derivative</strong> — the single most important tool in the mathematics behind machine learning, because every model that “learns” does so by differentiating its loss and descending the slope. This topic builds the derivative from the ground up: definition, interpretation, rules of differentiation, and the bridge to gradients.",
+  "keyPoints": [
+    "The derivative \\( f'(x) \\) is the <strong>instantaneous rate of change</strong>: the slope of the tangent line touching the curve at \\( (x, f(x)) \\) — positive = increasing, negative = decreasing, zero = horizontal (a candidate peak or valley).",
+    "The definition is a <strong>limit of difference quotients</strong>: \\( f'(x) = \\lim_{h \\to 0} \\frac{f(x+h) - f(x)}{h} \\). For \\( f(x) = x^2 \\) that yields exactly \\( 2x \\) — not an approximation but the limit itself.",
+    "The differentiation rules turn limits into algebra: the power rule \\( (x^n)' = n x^{n-1} \\), plus the sum, product, quotient and chain rules — together the entire toolkit.",
+    "Four functions with fixed derivatives: \\( (\\sin x)' = \\cos x \\), \\( (\\cos x)' = -\\sin x \\), \\( (e^x)' = e^x \\), \\( (\\ln x)' = 1/x \\). The exponential is unique: its derivative is itself.",
+    "Differentiation can be repeated: \\( f'' \\) measures <strong>curvature</strong> — the sign gradient descent needs to know whether the valley is well shaped. The sigmoid derivative \\( \\sigma' = \\sigma(1-\\sigma) \\) is the classic ML application."
+  ],
+  "level": 2,
+  "sections": [
+    {
+      "title": "Measuring change at a single point",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Suppose you drive 60 kilometres in one hour. Average speed: 60 km/h — just divide. But what was your speed at exactly 14:32? Any <em>real</em> interval has duration, and over an interval you always speak of an average; at a single instant nothing lasts and you cover nothing, so “distance divided by time” gives 0/0. Measuring change at one point seems impossible — and yet the answer (the speedometer reading at that moment) feels completely natural. This tension is three hundred years old, and it is exactly the problem Newton and Leibniz solved independently. </p>"
+        },
+        {
+          "type": "text",
+          "html": "<p> Their trick: approximate the unmeasurable with the measurable. Take a <strong>secant</strong> — a line through two points on the curve, here \\( (x, f(x)) \\) and \\( (x+h, f(x+h)) \\). Its slope is the ordinary difference quotient \\( \\frac{f(x+h)-f(x)}{h} \\): computable, precisely the average change over the interval. Now slide the second point along the curve towards the first: \\( h \\to 0 \\). The secant rotates along and locks into its limiting position — the <strong>tangent</strong> at \\( (x, f(x)) \\). The slope of that limiting line is the derivative: instantaneous change, defined as the limit of averages. No more paradox, only a limit. </p>"
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p> Three interpretations of the same number \\( f'(x) \\), all true and all useful: <strong>(1) geometrically</strong> — the slope of the tangent; <strong>(2) physically</strong> — instantaneous speed (differentiate position for velocity, again for acceleration); <strong>(3) as sensitivity</strong> — nudge \\( x \\) by a small \\( \\Delta x \\) and \\( f \\) changes by roughly \\( f'(x)\\,\\Delta x \\). That third reading is the ML reading: the gradient literally says “turn this knob and the loss changes this much per unit”. </p>"
+        }
+      ]
+    },
+    {
+      "title": "The definition: a limit of steps",
+      "blocks": [
+        {
+          "type": "formula",
+          "label": "The derivative as a limit",
+          "latex": "f'(x) \\;=\\; \\lim_{h \\to 0} \\; \\frac{f(x+h) - f(x)}{h}",
+          "caption": "The difference quotient (secant slope) with step h, in the limit of h going to zero (tangent slope). If the limit exists, f is called differentiable at x."
+        },
+        {
+          "type": "text",
+          "html": "<p> Do it once, properly, then never again. For \\( f(x) = x^2 \\): the difference quotient is \\( \\frac{(x+h)^2 - x^2}{h} = \\frac{x^2 + 2xh + h^2 - x^2}{h} = \\frac{h(2x + h)}{h} = 2x + h \\). For every step \\( h > 0 \\) that is just a number — and in the limit \\( h \\to 0 \\) the loose \\( h \\) neatly vanishes: \\( f'(x) = 2x \\). At \\( x = 3 \\) the slope is exactly 6. Notice how the limit does the work: the flaw in the definition (dividing by something heading to zero) is dismantled by cancelling first and taking the limit only <em>afterwards</em>. </p>"
+        },
+        {
+          "type": "text",
+          "html": "<p> The notations all carry the same content. <strong>Lagrange</strong> writes \\( f'(x) \\) — compact and functional. <strong>Leibniz</strong> writes \\( \\frac{df}{dx} \\) or \\( \\frac{d}{dx}f(x) \\) — the tiny ratio of change in \\( f \\) over change in \\( x \\); wordier, but indispensable as soon as multiple variables and the chain rule appear (the gradient \\( \\nabla \\) is its family). The <strong>operator notation</strong> \\( \\frac{d}{dx} \\) reads as a verb: “differentiate what stands to the right with respect to \\( x \\)”. ML texts switch between them constantly, so learn to read both. </p>"
+        },
+        {
+          "type": "callout",
+          "kind": "info",
+          "html": "<p> When does the derivative <em>not</em> exist? Two classic cases. A <strong>kink</strong>: \\( f(x) = |x| \\) has slope −1 on the left of zero and +1 on the right — the secants cannot agree, no limit. A <strong>vertical tangent</strong>: \\( f(x) = \\sqrt[3]{x} \\) stands fully upright at zero, the slope runs off to infinity. For machine learning this is no museum piece: loss surfaces with kinks (ReLU activations, hinge loss) demand care during optimisation — where the derivative does not exist, the gradient cannot tell which way to point. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Sliding the tangent",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Before the rules arrive: build intuition first. The plot below shows \\( f(x) = \\sin x \\) with its tangent at \\( x_0 \\) — and \\( x_0 \\) is yours to move. Slide the point of tangency and watch the interplay: at the peaks and valleys of the sine the tangent goes horizontal (slope 0, exactly the critical points of <em>Optimisation</em>), on the rising flanks it tilts up with the curve, on the falling flanks down. The slope chip below right shows \\( f'(x_0) = \\cos(x_0) \\) live. </p>"
+        },
+        {
+          "type": "plot",
+          "title": "The tangent on the sine",
+          "subtitle": "Slide the point of tangency x₀ and watch the tangent tilt along. The slope of the yellow line is exactly f′(x₀) = cos(x₀) — at the sine's peaks and valleys it becomes 0, and precisely there sit a local maximum or minimum.",
+          "xrange": [
+            -6.5,
+            6.5
+          ],
+          "yrange": [
+            -2.5,
+            2.5
+          ],
+          "xlabel": "x",
+          "ylabel": "f(x)",
+          "curves": [
+            {
+              "expr": "Math.sin(x)",
+              "label": "f(x) = sin(x)",
+              "color": "cyan"
+            },
+            {
+              "expr": "Math.cos(x0)*(x - x0) + Math.sin(x0)",
+              "label": "tangent at x₀",
+              "color": "yellow"
+            }
+          ],
+          "sliders": [
+            {
+              "param": "x0",
+              "min": -6,
+              "max": 6,
+              "step": 0.1,
+              "value": 1,
+              "label": "tangent point x₀"
+            }
+          ],
+          "markers": [
+            {
+              "x": "x0",
+              "y": "Math.sin(x0)",
+              "color": "green",
+              "label": "tangent point (x₀, f(x₀))"
+            }
+          ],
+          "metrics": [
+            {
+              "label": "f(x₀)",
+              "expr": "Math.sin(x0)",
+              "decimals": 3
+            },
+            {
+              "label": "slope f′(x₀)",
+              "expr": "Math.cos(x0)",
+              "decimals": 3
+            },
+            {
+              "label": "slope angle (°)",
+              "expr": "Math.atan(Math.cos(x0)) * 180 / Math.PI",
+              "decimals": 1
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "html": "<p> One observation worth keeping: the tangent is the <strong>best linear approximation</strong> of the curve around the point of tangency. Close to \\( x_0 \\) you may replace the curve by its tangent — that is exactly what the formula \\( f(x) \\approx f(x_0) + f'(x_0)(x - x_0) \\) states, and it is the definition of “locally linear”. Every smooth model is, up close, a linear model; gradient descent on a loss surface is in fact repeatedly descending such a local tangent. The same idea returns as the Taylor approximation, where higher derivatives bring the curvature along. </p>"
+        }
+      ]
+    },
+    {
+      "title": "From secant to tangent: the limit in action",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Now the definition itself, visualised on \\( f(x) = x^2 \\) around the point \\( (3, 9) \\). The yellow secant cuts the parabola at \\( (3, 9) \\) and \\( (3+h, (3+h)^2) \\); the <code>h</code> slider pulls the second point towards the first. Watch what does <em>not</em> happen: the secant rotates, but its slope slides orderly towards the magenta tangent with slope exactly 6 — the worked result \\( 2x + h \\) at \\( x = 3 \\), visible as the metric climbing to 6.000. </p>"
+        },
+        {
+          "type": "plot",
+          "title": "The secant locks onto the tangent",
+          "subtitle": "Pull the step h to zero and watch the yellow secant (through (3, 9) and (3+h, (3+h)²)) rotate towards the magenta tangent with slope exactly 6. The difference quotient is exactly 6 + h — check the metrics.",
+          "xrange": [
+            0,
+            5
+          ],
+          "yrange": [
+            0,
+            25
+          ],
+          "xlabel": "x",
+          "ylabel": "f(x)",
+          "curves": [
+            {
+              "expr": "x*x",
+              "label": "f(x) = x²",
+              "color": "cyan"
+            },
+            {
+              "expr": "9 + (6+h)*(x - 3)",
+              "label": "secant with step h",
+              "color": "yellow"
+            },
+            {
+              "expr": "9 + 6*(x - 3)",
+              "label": "tangent (h = 0), slope 6",
+              "color": "magenta"
+            }
+          ],
+          "sliders": [
+            {
+              "param": "h",
+              "min": 0.05,
+              "max": 2,
+              "step": 0.05,
+              "value": 1,
+              "label": "step h"
+            }
+          ],
+          "markers": [
+            {
+              "x": "3",
+              "y": "9",
+              "color": "green",
+              "label": "fixed point (3, 9)"
+            },
+            {
+              "x": "3 + h",
+              "y": "(3+h)*(3+h)",
+              "color": "yellow",
+              "label": "second point (3+h, (3+h)²)"
+            }
+          ],
+          "metrics": [
+            {
+              "label": "step h",
+              "expr": "h",
+              "decimals": 2
+            },
+            {
+              "label": "quotient = 6 + h",
+              "expr": "((3+h)*(3+h) - 9)/h",
+              "decimals": 3
+            },
+            {
+              "label": "distance to limit 6",
+              "expr": "((3+h)*(3+h) - 9)/h - 6",
+              "decimals": 3
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "html": "<p> The same story in numbers: at \\( h = 1 \\) the quotient is 7, at \\( h = 0{,}5 \\) it is 6.5, at \\( h = 0{,}05 \\) it is 6.05 — and every halving of \\( h \\) halves the distance to 6. That tidy linearity is a blessing of the parabola here (the quotient is <em>exactly</em> \\( 6 + h \\)); on curvier functions the quotient wiggles more, but the limit behaves the same: no jump at the end, just a value everything leans towards. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "the limit in numbers: the quotient climbs to 6",
+          "runnable": true,
+          "source": "# f(x) = x^2 around x = 3: (f(3+h) - f(3)) / h\nfor h in [1, 0.5, 0.1, 0.01, 0.001]:\n    quot = ((3 + h)**2 - 9) / h\n    print(f'h={h:7.3f}   difference quotient = {quot:.4f}')\n\nprint('limit h -> 0:       f\\'(3) = 6  (since f\\'(x) = 2x)')"
+        },
+        {
+          "type": "text",
+          "html": "<p> Typical output: 7.0000, 6.5000, 6.1000, 6.0100, 6.0010 — and the closing line confirms the analytic limit. This is the whole of differential calculus in ten lines of Python: an average over ever smaller steps, with a fixed place it wants to go. The rest of this topic is convenience: rules that spare you from running the limit yourself. </p>"
+        }
+      ]
+    },
+    {
+      "title": "The rules: from limits to algebra",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> The limit definition is the proof of existence, not the daily tool — working through \\( h \\to 0 \\) by hand every time is like multiplying by repeated addition. Newton and Leibniz's successors therefore distilled a small, composable rule system, and that is what differentiating <em>is</em> in practice: recognise the pattern, apply the rule, done. The workhorse is the <strong>power rule</strong>, proved once and used forever: \\( (x^n)' = n x^{n-1} \\) — the exponent comes off the front, reduced by one. Fractions and roots fall under it too: \\( \\sqrt{x} = x^{1/2} \\) has derivative \\( \\tfrac{1}{2} x^{-1/2} = \\tfrac{1}{2\\sqrt{x}} \\). </p>"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "rule",
+            "formula",
+            "example"
+          ],
+          "rows": [
+            [
+              "constant",
+              "\\( (c)' = 0 \\)",
+              "\\( (7)' = 0 \\) — a flat line does not change"
+            ],
+            [
+              "power rule",
+              "\\( (x^n)' = n\\,x^{n-1} \\)",
+              "\\( (x^3)' = 3x^2 \\), &nbsp; \\( (\\sqrt{x})' = \\tfrac{1}{2\\sqrt{x}} \\)"
+            ],
+            [
+              "constant factor",
+              "\\( (c \\cdot f)' = c \\cdot f' \\)",
+              "\\( (5x^2)' = 10x \\)"
+            ],
+            [
+              "sum/difference",
+              "\\( (f \\pm g)' = f' \\pm g' \\)",
+              "\\( (x^2 + 3x)' = 2x + 3 \\)"
+            ],
+            [
+              "product",
+              "\\( (f \\cdot g)' = f'g + fg' \\)",
+              "\\( (x \\sin x)' = \\sin x + x \\cos x \\)"
+            ],
+            [
+              "quotient",
+              "\\( \\left(\\tfrac{f}{g}\\right)' = \\tfrac{f'g - fg'}{g^2} \\)",
+              "\\( \\left(\\tfrac{x}{x^2+1}\\right)' = \\tfrac{1 - x^2}{(x^2+1)^2} \\)"
+            ],
+            [
+              "chain",
+              "\\( f(g(x))' = f'(g) \\cdot g'(x) \\)",
+              "\\( (\\sin(x^2))' = 2x \\cos(x^2) \\)"
+            ]
+          ]
+        },
+        {
+          "type": "text",
+          "html": "<p> The <strong>chain rule</strong> deserves its own paragraph, because it is the most-used rule in all of machine learning. A composition \\( f(g(x)) \\) changes twice over: from \\( x \\) to \\( g \\), and from \\( g \\) to \\( f \\) — and the total sensitivity is the <em>product</em> of the two steps: outer derivative × inner derivative. In Leibniz notation it reads itself: \\( \\frac{df}{dx} = \\frac{df}{dg} \\cdot \\frac{dg}{dx} \\) — the \\( dg \\)'s cancel like fractions (strictly forbidden, but as a mnemonic it works beautifully). In neural networks, the repeated application of the chain rule is called <strong>backpropagation</strong> — literally the same rule, only in matrix form and in reverse. </p>"
+        },
+        {
+          "type": "callout",
+          "kind": "tip",
+          "html": "<p> Strategy for a composite expression: <strong>identify the outermost structure first</strong> (a product? a quotient? a composition?), apply the matching rule to the big chunks, and differentiate the chunks only in the next round. Trying to do everything at once breeds errors; working in layers rarely does. Check any answer against the numerical derivative in the code below — two lines of NumPy tell you whether your algebra holds. </p>"
+        }
+      ]
+    },
+    {
+      "title": "sin, cos, eˣ and ln: the fixed values",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Four functions carry modern mathematics, and their derivatives are fixed values to know by heart. They all follow directly from the limit definition (with the classic limits \\( \\lim_{h \\to 0} \\tfrac{\\sin h}{h} = 1 \\) and \\( \\lim_{h \\to 0} \\tfrac{e^h - 1}{h} = 1 \\)), but the proof is needed once; you use the result every day. </p>"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "function",
+            "derivative",
+            "note"
+          ],
+          "rows": [
+            [
+              "\\( \\sin x \\)",
+              "\\( \\cos x \\)",
+              "sin and cos shift through in phase"
+            ],
+            [
+              "\\( \\cos x \\)",
+              "\\( -\\sin x \\)",
+              "differentiate again and you are back at \\( -\\sin \\)..."
+            ],
+            [
+              "\\( e^x \\)",
+              "\\( e^x \\)",
+              "<strong>the only function (with f(0)=1) that is its own derivative</strong>"
+            ],
+            [
+              "\\( \\ln x \\)",
+              "\\( \\tfrac{1}{x} \\)",
+              "the inverse of \\( e^x \\) — the chain rule proves it"
+            ]
+          ]
+        },
+        {
+          "type": "text",
+          "html": "<p> The exponential is the quiet hero of the story: \\( e^x \\) is the <em>only</em> function (up to a constant factor) whose growth rate equals its current value — if it grows, its growth grows along. That is not a curious property but the reason \\( e \\) surfaces everywhere in mathematics: compositions behave neatly under the chain rule, \\( (e^{g(x)})' = g'(x)\\, e^{g(x)} \\) — the outside never changes. The logarithm offers the same convenience: \\( (\\ln g(x))' = \\tfrac{g'(x)}{g(x)} \\), which makes it the natural measure of <em>relative</em> change — hence log-loss, log-odds, and half of information theory. </p>"
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p> The classic ML application in one line: the <strong>sigmoid</strong> \\( \\sigma(z) = \\tfrac{1}{1+e^{-z}} \\) has derivative \\( \\sigma'(z) = \\sigma(z)\\,(1 - \\sigma(z)) \\). Derivation: quotient rule or chain rule on the \\( e^{-z} \\), and a few lines later everything falls into place. This compact form is why the sigmoid was the standard activation for so long: the derivative is <em>free</em> once the function value is known. See <em>Probabilities &amp; the sigmoid function</em> for the function itself, and <em>Gradient descent</em> for where this derivative lands in the learning process. </p>"
+        }
+      ]
+    },
+    {
+      "title": "Higher derivatives and the bridge to ML",
+      "blocks": [
+        {
+          "type": "text",
+          "html": "<p> Nothing stops you from differentiating the derivative: \\( f''(x) = (f')'(x) \\), the <strong>second derivative</strong> — the change <em>of</em> the change. Physically: position → velocity → acceleration. Geometrically \\( f'' \\) measures <strong>curvature</strong>: positive means bowl-shaped (convex — the curve holds its tangents below it, like \\( x^2 \\)), negative means dome-shaped (concave — the curve hangs below its tangents, like \\( -x^2 \\)), and a sign change marks an <strong>inflection point</strong>. For \\( f(x) = x^3 - 3x \\): \\( f''(x) = 6x \\), so convex to the right of zero, concave to the left — the inflection sits exactly at the origin. </p>"
+        },
+        {
+          "type": "text",
+          "html": "<p> Why this matters for machine learning is the shape of the valley. If the loss is <strong>convex</strong> (\\( f'' \\geq 0 \\) everywhere, as with linear regression under squared loss), every local minimum is also the global one — descending the slope cannot get lost. If the loss is <strong>non-convex</strong> (neural networks: kinks, plateaus, multiple valleys), there are local minima and saddle points where gradient descent can stall. And the <strong>learning rate</strong> from <em>Gradient descent</em> is a curvature issue: too-large steps in a steep, narrow valley (large \\( f'' \\)) bounce from wall to wall. The derivative says where it goes down; the second derivative says how carefully you must walk. </p>"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "numerical differentiation: checking the rules",
+          "runnable": true,
+          "source": "import numpy as np\n\ndef D(f, x, h=1e-5):\n    \"\"\"central difference: approximates f'(x) with error O(h^2)\"\"\"\n    return (f(x + h) - f(x - h)) / (2 * h)\n\nderivatives = [\n    ('x^2',    lambda t: t**2,  lambda t: 2*t),      # power rule\n    ('x^3',    lambda t: t**3,  lambda t: 3*t**2),   # power rule\n    ('sin(x)', np.sin,          np.cos),             # fixed\n    ('exp(x)', np.exp,          np.exp),             # itself\n    ('ln(x)',  np.log,          lambda t: 1/t),      # fixed\n]\nprint(f\"{'function':10s} {'x':>5s} {'numerical':>10s} {'rule':>10s}\")\nfor name, f, df in derivatives:\n    for x in [0.5, 2.0]:\n        print(f'{name:10s} {x:5.1f} {D(f, x):10.4f} {df(x):10.4f}')"
+        },
+        {
+          "type": "text",
+          "html": "<p> Typical output: ten rows in which the numerical and rule-based derivatives agree to four decimal places — the power rule, the sine, the exponential and the logarithm all confirmed by the limit definition in action. This is also your tool for daily practice: after a hand-derived derivative of a complicated loss, phrase the check as \\( |D(f, x) - f'(x)| < 10^{-6} \\) on a few test points, and catch algebra errors before your model spends hours learning on them. </p>"
+        },
+        {
+          "type": "callout",
+          "kind": "key",
+          "html": "<p> One function of one variable was the starting point; machine learning lives in higher dimensions. There the derivative becomes a <strong>gradient</strong> \\( \\nabla f \\): the vector of all partial derivatives (differentiate with respect to one variable while holding the others fixed) — the direction of steepest ascent. Step against it: \\( \\nabla f \\) points up, so \\( -\\nabla f \\) is the descent direction. Every weight update in every model in this course — logistic regression, SVMs via SGDClassifier, neural networks — is that one rule, shaped by the chain rule and executed in a thousand dimensions. <em>Gradient descent</em> sets it running; <em>Optimisation</em> (next topic) makes it land. </p>"
+        }
+      ]
+    }
+  ]
+}

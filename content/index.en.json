@@ -1,9 +1,9 @@
 {
   "site": {
     "title": "MLP — Machine Learning, clearly summarised",
-    "description": "Machine Learning material, clearly summarised: from the first basic concepts to scikit-learn, loss functions, logistic regression, SVMs, decision trees and evaluation metrics — with formulas, diagrams, interactive plots with live metrics, code examples you can run in the browser, memory hooks for every step and an FAQ with quick answers.",
-    "statFormulas": "±45",
-    "statCode": "51"
+    "description": "Machine Learning material, clearly summarised: from the first basic concepts to scikit-learn, loss functions, logistic regression, SVMs, decision trees, calculus and evaluation metrics — with formulas, diagrams, interactive plots with live metrics, code examples you can run in the browser, memory hooks for every step and an FAQ with quick answers.",
+    "statFormulas": "±53",
+    "statCode": "60"
   },
   "chapters": [
     {
@@ -44,12 +44,18 @@
     },
     {
       "id": "ch6",
+      "name": "Calculus & optimisation",
+      "accent": "yellow",
+      "description": "from derivatives and critical points to integrals and the AP exam"
+    },
+    {
+      "id": "ch7",
       "name": "Evaluation & metrics",
       "accent": "cyan",
       "description": "judging models: metrics for regression and classification, and reliable estimation with cross-validation"
     },
     {
-      "id": "ch7",
+      "id": "ch8",
       "name": "FAQ",
       "accent": "green",
       "description": "quick answers to the most common questions"
@@ -161,7 +167,7 @@
       "title": "Logistic regression: why it isn't actually a regression",
       "summary": "In theory it is a classifier, not a regression model: why the name misleads, the pipeline from line to probability to class, and why plain linear regression fails on 0/1 labels.",
       "level": 2,
-      "file": "topics/logistic-regression.json",
+      "file": "topics.en/logistic-regression.json",
       "keywords": "logistic regression, classification, regression, name, logit, log odds, sigmoid, threshold, pipeline, predict_proba, predict, linear vs logistic"
     },
     {
@@ -264,8 +270,44 @@
       "keywords": "bias, variance, bias-variance tradeoff, decomposition, irreducible noise, underfitting, overfitting, model complexity, u-curve, generalisation, sweet spot, ensembles, random forest, more data, polyfit, simulation"
     },
     {
-      "id": "regression-metrics",
+      "id": "bagging-random-forests",
+      "chapter": "ch5",
+      "title": "Bagging & random forests: stronger than the sum of trees",
+      "summary": "Ensembles as the remedy for high variance: bootstrap samples and the 63.2% number, aggregating with the variance formula rho·sigma² + (1−rho)·sigma²/B live and draggable, random forests as decorrelation via max_features, the OOB score as free validation and feature importance with its grains of salt — from a single tree to a forest of a hundred in runnable code.",
+      "level": 2,
+      "file": "topics.en/bagging-random-forests.json",
+      "keywords": "bagging, bootstrap, bootstrap aggregating, random forest, randomforestclassifier, baggingclassifier, ensemble, n_estimators, max_features, oob, out of bag, oob_score, feature importance, mdi, mean decrease in impurity, variance reduction, decorrelation, aggregating, voting, averaging, breast cancer, strong default"
+    },
+    {
+      "id": "differential-calculus",
       "chapter": "ch6",
+      "title": "Differential calculus: the derivative",
+      "summary": "The derivative as a limit of difference quotients: the definition worked out for real once, the tangent line as best linear approximation that you slide yourself, the secant-to-tangent limit in numbers and code, the rules from power rule to chain rule, the standard derivatives of sin, cos, e^x and ln, and higher derivatives as the bridge to gradients and convexity.",
+      "level": 2,
+      "file": "topics.en/differential-calculus.json",
+      "keywords": "derivative, differential calculus, differentiate, limit, difference quotient, secant, tangent, tangent line, slope, differentiable, power rule, product rule, quotient rule, chain rule, higher derivatives, second derivative, convex, linear approximation, numerical derivative, central difference"
+    },
+    {
+      "id": "optimization",
+      "chapter": "ch6",
+      "title": "Optimisation: where the derivative is zero",
+      "summary": "Finding extrema with calculus: collecting critical points, the first- and second-derivative tests, concavity and inflection points, the classic cardboard-box problem from formula to final sentence, and gradient descent as the escape hatch once f' = 0 has no closed-form solution — the exact route every ML-model walks with its loss.",
+      "level": 2,
+      "file": "topics.en/optimization.json",
+      "keywords": "optimisation, optimization, extremum, maximum, minimum, critical point, first derivative test, second derivative test, concavity, convex, inflection point, box problem, endpoints, closed interval, word problem, local versus global, gradient descent, learning rate, minimize_scalar"
+    },
+    {
+      "id": "ap-calculus-ab",
+      "chapter": "ch6",
+      "title": "AP Calculus AB: the exam, mapped",
+      "summary": "The American calculus exit exam fully mapped: format, unit weights and strategy, limits and continuity with a hole in the graph you approach yourself, integration with Riemann sums and the Fundamental Theorem live in a plot, differential equations with slope fields and Euler's method, and the translation table from every exam part to machine learning.",
+      "level": 2,
+      "file": "topics.en/ap-calculus-ab.json",
+      "keywords": "ap calculus, ap calculus ab, college board, exam, advanced placement, credits, multiple choice, free response, frq, rubric, calculator policy, limits, continuity, ivt, intermediate value theorem, mvt, mean value theorem, riemann, riemann sum, integral, integration, antiderivative, ftc, fundamental theorem, u substitution, differential equation, slope field, euler, euler's method, exponential growth, doubling time"
+    },
+    {
+      "id": "regression-metrics",
+      "chapter": "ch7",
       "title": "Regression metrics: MSE, RMSE, MAE & R²",
       "summary": "How do you measure the quality of a regression model? MSE, RMSE, MAE and R² — formulas, interpretation, a worked car-price example and interactive plots with outliers.",
       "level": 2,
@@ -274,7 +316,7 @@
     },
     {
       "id": "classification-metrics",
-      "chapter": "ch6",
+      "chapter": "ch7",
       "title": "Classification metrics: confusion matrix, precision & recall",
       "summary": "The confusion matrix as the foundation; accuracy and why it misleads with imbalanced classes; precision, recall and F1 with concrete scenarios — and binary cross-entropy as the training objective.",
       "level": 2,
@@ -283,7 +325,7 @@
     },
     {
       "id": "cross-validation",
-      "chapter": "ch6",
+      "chapter": "ch7",
       "title": "Cross-validation: judging your model reliably",
       "summary": "A single train/test split is a gamble; k-fold CV averages k splits into a more stable estimate. With cross_val_score, StratifiedKFold, LeaveOneOut, the choice of k, GridSearchCV and Pipelines to prevent data leakage.",
       "level": 2,
@@ -292,7 +334,7 @@
     },
     {
       "id": "faq",
-      "chapter": "ch7",
+      "chapter": "ch8",
       "title": "Frequently asked questions (FAQ)",
       "summary": "Sixteen short, clear answers: classification vs. regression, train/test splits, cross-validation, building logistic regression yourself, overfitting, gradient descent, C, kernels, scaling, probabilities and the right metric — with pointers to the matching topic.",
       "level": 1,
