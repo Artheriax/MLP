@@ -2,7 +2,7 @@
   "id": "decision-trees",
   "chapter": "ch5",
   "title": "Decision trees: classificatie met vraag-en-antwoord",
-  "intro": "Een decision tree is een beslisboom die data sorteert met ja/nee-vragen. Geen formules, geen coëfficiënten — gewoon vragen als “is het inkomen lager dan €2500?”. Dat maakt bomen het meest uitlegbare model in scikit-learn, en tegelijk het schoolvoorbeeld van overfitting als je ze onbeperkt laat groeien.",
+  "intro": "Een decision tree sorteert data met ja/nee-vragen — geen formules, geen co&euml;ffici&euml;nten. Het meest uitlegbare model in scikit-learn, en tegelijk het schoolvoorbeeld van overfitting.",
   "keyPoints": [
     "Een boom splitst de data met <strong>ja/nee-vragen</strong> (feature + drempel) tot de bladeren zuiver zijn: elk blad voorspelt één klasse.",
     "Een split kiest de <strong>feature + drempel die de onzuiverheid het sterkst verlaagt</strong> — gemeten met Gini of entropy.",
@@ -16,11 +16,11 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Een <strong>decision tree</strong> classificeert door data te sorteren met vragen. Elke <em>interne node</em> stelt één vraag van de vorm “is feature \\( x_j \\) kleiner dan drempel \\( t \\)?”, en de twee antwoorden (“ja” links, “nee” rechts) leiden naar de volgende vraag. Onderaan staan de <strong>bladeren</strong> (leaf nodes): daar valt het definitieve oordeel — de klasse die in dat blad de meerderheid heeft. </p>"
+          "html": "Elke <em>interne node</em> stelt &eacute;&eacute;n vraag van de vorm &ldquo;is feature \\( x_j \\) kleiner dan drempel \\( t \\)?&rdquo;; de <strong>bladeren</strong> geven het definitieve oordeel: de meerderheidsklasse in dat blad."
         },
         {
           "type": "text",
-          "html": "<p> Voor een leningsaanvraag zou de boom er zo uit kunnen zien: <em>“is het inkomen €2500 of hoger?”</em> — ja → <em>“is de schuldenlast lager dan €500?”</em> — ja → blad <strong>goedgekeurd</strong>. Een nieuwe aanvraag valt van boven naar beneden door de boom en eindigt in precies één blad. Datzelfde pad kun je letterlijk aan een klant uitleggen — iets wat bij logistic regression (een optelling van gewogen features) al veel abstracter voelt, en bij een RBF-SVM vrijwel onmogelijk is. </p>"
+          "html": "Voorbeeld leningsaanvraag: &ldquo;inkomen &euro;2500 of hoger?&rdquo; &rarr; ja &rarr; &ldquo;schuldenlast &lt; &euro;500?&rdquo; &rarr; ja &rarr; blad <strong>goedgekeurd</strong>. Een nieuwe aanvraag valt van boven naar beneden door de boom &mdash; dat pad kun je letterlijk aan een klant uitleggen."
         },
         {
           "type": "table",
@@ -60,7 +60,7 @@
         {
           "type": "callout",
           "kind": "key",
-          "html": "<p> De boom maakt zijn voorspelling met <strong>as-parallelle splits</strong>: elke vraag snijdt langs één feature-as (“lager dan \\( t \\)?”). Daardoor is de beslisgrens een <strong>compositie van rechte lijnen</strong> — niet-lineair in zijn geheel, maar opgebouwd uit simpele stukken. Zie het onderwerp <em>Lineaire decision boundaries</em> voor het contrast met de rechte lijn.</p>"
+          "html": "De beslisgrens is een <strong>compositie van rechte lijnen</strong> (as-parallelle splits): niet-lineair in zijn geheel, opgebouwd uit simpele stukken."
         }
       ]
     },
@@ -69,15 +69,15 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> De centrale bouwstap is de <strong>split</strong>: kies één feature \\( x_j \\) en één drempel \\( t \\), en deel de samples in twee groepen — \\( x_j \\le t \\) links en \\( x_j > t \\) rechts. scikit-learn probeert in feite elke (feature, drempel)-combinatie en houdt de split over die de twee groepen het <em>schoonst</em> uit elkaar legt: één kant vooral positieven, de andere vooral negatieven. </p>"
+          "html": "De <strong>split</strong>: kies &eacute;&eacute;n feature en &eacute;&eacute;n drempel, deel de samples in twee groepen. scikit-learn probeert elke (feature, drempel)-combinatie en houdt de split over die de groepen het <em>schoonst</em> uit elkaar legt."
         },
         {
           "type": "text",
-          "html": "<p> Dat zoeken is <strong>greedy</strong> en <strong>top-down</strong> (het CART-algoritme): begin in de wortel met alle data, kies de allermooiste split, pas dezelfde stap toe op beide helften, en zo verder. “Greedy” betekent: elke split kiest louter het beste <em>nu</em>, zonder vooruitkijken — de boom kan dus niet meer terugkomen op een eerdere keuze. Voor de praktijk werkt dat verrassend goed. </p>"
+          "html": "Dat zoeken is <strong>greedy</strong> en <strong>top-down</strong> (CART): begin in de wortel, kies de beste split nu, herhaal op beide helften. De boom kijkt nooit vooruit en komt niet terug op eerdere keuzes."
         },
         {
           "type": "text",
-          "html": "<p> Kleine demo met acht samples en twee features (<em>inkomen</em> en <em>leeftijd</em>): in de wortel zitten 3 goedgekeurde (✓) en 5 afgewezen (✗) aanvragen gemengd. </p>"
+          "html": "Demo: acht samples, twee features; in de wortel zitten 3 goedgekeurde (&#10003;) en 5 afgewezen (&#10007;) aanvragen gemengd."
         },
         {
           "type": "table",
@@ -111,7 +111,7 @@
         {
           "type": "callout",
           "kind": "info",
-          "html": "<p> Merk op dat één split zelden volstaat: na “inkomen ≤ 2500” zit links nog een mix van ✓ en ✗. Daarom <em>groeit</em> de boom: elk niet-puur kind krijgt zelf een nieuwe split, met een andere feature of een andere drempel — net zolang tot elk blad zuiver is of een stop-conditie (diepte, minimum samples) aftiket. </p>"
+          "html": "&Eacute;&eacute;n split zelden volstaat: elk niet-puur kind krijgt zelf een nieuwe split, tot elk blad zuiver is of een stop-conditie (diepte, minimum samples) aftikt."
         }
       ]
     },
@@ -120,7 +120,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> “Zuiver” moet je kunnen <em>meten</em>. Stel dat in een node de fractie positieven \\( p \\) is (en dus \\( 1-p \\) negatieven). Dan zijn er twee gangbare onzuiverheidsmaten — beide 0 bij een pure node (\\( p = 0 \\) of \\( p = 1 \\)) en maximaal bij een 50/50-mix: </p>"
+          "html": "Met fractie positieven \\( p \\) in een node zijn er twee gangbare onzuiverheidsmaten &mdash; beide 0 bij een pure node en maximaal bij 50/50:"
         },
         {
           "type": "formula",
@@ -202,16 +202,16 @@
         },
         {
           "type": "text",
-          "html": "<p> Hoe kiest de boom nu de <em>beste</em> split? Hij zoekt de split die de <strong>gewogen gemiddelde onzuiverheid van de kinderen minimaliseert</strong> — of anders gezegd: die de onzuiverheid het sterkst verlaagt (de <em>information gain</em>). “Gewogen” is essentieel: een split die 99% van de samples in één puur kind legt en 1% in één heel vuil kind, hoeft niet beter te zijn dan een split die beide helften flink zuivert. </p>"
+          "html": "De boom kiest de split die de <strong>gewogen gemiddelde onzuiverheid van de kinderen minimaliseert</strong> (hoogste information gain). &ldquo;Gewogen&rdquo; is essentieel: een klein vuil kind weegt minder mee dan een groot."
         },
         {
           "type": "text",
-          "html": "<p> Uitgewerkt voor de split “inkomen ≤ 2500” uit de demo (\\( p \\) = fractie ✓ per groep). De wortel heeft \\( p = 3/8 = 0{,}375 \\), dus \\( G = 2 \\cdot 0{,}375 \\cdot 0{,}625 = 0{,}469 \\). Links wordt \\( n_L = 6 \\) met \\( p_L = 1/6 \\): \\( G_L = 2 \\cdot \\tfrac{1}{6} \\cdot \\tfrac{5}{6} = 0{,}278 \\). Rechts wordt \\( n_R = 2 \\) met \\( p_R = 1 \\): puur, \\( G_R = 0 \\). De gewogen kind-onzuiverheid is \\( \\tfrac{6}{8} \\cdot 0{,}278 + \\tfrac{2}{8} \\cdot 0 = 0{,}208 \\) — een flinke daling vanaf 0,469. </p>"
+          "html": "Uitgewerkt voor &ldquo;inkomen &le; 2500&rdquo;: wortel \\( G = 0{,}469 \\); kinderen \\( \\tfrac{6}{8} \\cdot 0{,}278 + \\tfrac{2}{8} \\cdot 0 = 0{,}208 \\) &mdash; een flinke daling."
         },
         {
           "type": "callout",
           "kind": "tip",
-          "html": "<p> In scikit-learn kies je de maat met <code>criterion</code>: <code>DecisionTreeClassifier(criterion=&quot;gini&quot;)</code> of <code>criterion=&quot;entropy&quot;</code>. Gini is de default. In de praktijk leveren beide vrijwel dezelfde bomen op — de drempels waar ze op uitkomen liggen zo dicht bij elkaar dat het niet de moeite loont er lang over na te denken. </p>"
+          "html": "In scikit-learn kies je de maat met <code>criterion</code>: <code>&quot;gini&quot;</code> (default) of <code>&quot;entropy&quot;</code>. Beide leveren in de praktijk vrijwel dezelfde bomen."
         }
       ]
     },
@@ -220,11 +220,11 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Onbeperkt doorgroeien is gevaarlijk. Een boom die doorloopt tot <em>elk blad puur is</em>, haalt op de trainset altijd 100% accuracy — want uiteindelijk zit in elk blad precies één sample, en dat sample voorspelt hij natuurlijk goed. Maar dat is geen leren meer, dat is <strong>de trainingsdata uit het hoofd leren</strong>: precies het overfitting uit het onderwerp <em>Wat is machine learning?</em>, nu in zijn meest extreme vorm. </p>"
+          "html": "Een boom die doorgroeit tot elk blad puur is, haalt altijd 100% train-accuracy &mdash; want uiteindelijk zit in elk blad precies &eacute;&eacute;n sample. Dat is geen leren maar <strong>de trainingsdata uit het hoofd leren</strong>."
         },
         {
           "type": "text",
-          "html": "<p> scikit-learn heeft daarom stop-remmen — <strong>pre-pruning</strong> genoemd, want ze knippen de boom al <em>tijdens</em> de groei: </p>"
+          "html": null
         },
         {
           "type": "table",
@@ -259,7 +259,7 @@
         {
           "type": "callout",
           "kind": "warning",
-          "html": "<p> De remmen verschuiven de balans tussen <strong>bias</strong> (te vlak → systematisch naast de waarheid) en <strong>variantie</strong> (te diep → andere trainset, andere boom). Hoe je die balans precies uitlegt en stemt, lees je in het onderwerp <em>Bias-variance tradeoff</em> — voor bomen is <code>max_depth</code> dé voorbeeldknop. </p>"
+          "html": "De remmen verschuiven de balans tussen <strong>bias</strong> (te vlak) en <strong>variantie</strong> (te diep) &mdash; voor bomen is <code>max_depth</code> d&eacute; voorbeeldknop."
         }
       ]
     },
@@ -268,7 +268,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> De workflow is exact de standaard-drie uit het onderwerp <em>Supervised learning</em>: <code>fit</code>, <code>predict</code>, <code>score</code>. Geen schaler nodig, geen pipeline-noodzaak — drempels zijn schaal-onafhankelijk. Het voorbeeld hieronder traint één onbeperkte boom en één afgeremde boom op de borstkanker-dataset en vergelijkt de train- en testscores: </p>"
+          "html": "De standaard-drie: <code>fit</code>, <code>predict</code>, <code>score</code> &mdash; geen schaler nodig, drempels zijn schaal-onafhankelijk. Het voorbeeld traint &eacute;&eacute;n onbeperkte en &eacute;&eacute;n afgeremde boom op de borstkanker-dataset:"
         },
         {
           "type": "code",
@@ -279,7 +279,7 @@
         },
         {
           "type": "text",
-          "html": "<p> Typisch beeld: de onbeperkte boom zit op <strong>100% train-accuracy</strong> en verliest op de testset bijna vijf procentpunten — een klassiek <em>variantie</em>-signaal. De afgeremde boom scoort op train iets lager, maar op test hier beter (0.958 vs 0.951), met de helft van het aantal bladeren (8 vs 16). Dat is de bias-variance-balans in één regeltje output. </p>"
+          "html": "Typisch beeld: de onbeperkte boom zit op 100% train-accuracy en verliest op test bijna vijf punten; de afgeremde boom test beter (0.958 vs 0.951) met de helft van de bladeren."
         },
         {
           "type": "code",
@@ -291,7 +291,7 @@
         {
           "type": "callout",
           "kind": "tip",
-          "html": "<p> <code>export_text</code> toont de boom als regels — precies de vorm waarin je hem aan een domeinexpert kunt voorleggen (“klopt het dat deze twee metingen al bijna de hele beslissing doen?”). Voor een echte discussie over <em>waarom</em>-vragen is dit goud waard; geen ander model in scikit-learn is zo transparant. </p>"
+          "html": "<code>export_text</code> toont de boom als regels &mdash; de vorm waarin je hem aan een domeinexpert kunt voorleggen. Geen ander model in scikit-learn is zo transparant."
         }
       ]
     },
@@ -300,7 +300,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Wanneer kies je een boom, en wanneer toch logistic regression of een SVM? De eerlijke afweging: </p>"
+          "html": "Wanneer kies je een boom, en wanneer logistic regression of een SVM?"
         },
         {
           "type": "table",
@@ -340,7 +340,7 @@
         {
           "type": "callout",
           "kind": "key",
-          "html": "<p> Het <strong>grote zwaktepunt — hoge variantie</strong> — is tegelijk de opening naar het vervolg: veel willekeurige, licht verschillende bomen <em>middelen</em> die ruis weg (random forests, buiten de scope van deze cursus). Eerst het fundamentele kader: het onderwerp <em>Bias-variance tradeoff</em> laat zien waarom “de ene boom is wispelturig” en “het gemiddelde van veel bomen is dat niet” twee kanten van dezelfde wiskunde zijn. </p>"
+          "html": "Het zwaktepunt &mdash; <strong>hoge variantie</strong> &mdash; is de opening naar het vervolg: veel willekeurige bomen <em>middelen</em> die ruis weg (random forests)."
         }
       ]
     }

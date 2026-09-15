@@ -2,7 +2,7 @@
   "id": "kansen-sigmoid",
   "chapter": "ch3",
   "title": "Probabilities & the sigmoid function",
-  "intro": "So far logistic regression made hard predictions: this class, or that. But under the hood a mechanism turns the raw model output into a genuine probability — and that immediately explains when the model is &quot;sure of itself&quot;. Here you'll find the sigmoid formula, what <code>exp()</code> actually does, and why the S-curve pops up everywhere: from logistic regression to neural networks.",
+  "intro": "Under the hood the sigmoid turns the raw model output into a real probability — the sigmoid formula, what exp() does and why the S-curve is everywhere.",
   "keyPoints": [
     "The sigmoid <strong>σ(z) = 1 / (1 + e<sup>−z</sup>)</strong> squeezes any score into [0,1].",
     "<code>predict_proba()</code> = sigmoid(<code>decision_function()</code>): probabilities are raw scores through the S-curve.",
@@ -16,12 +16,12 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> In chapter 1 we saw decision-boundary pictures with coloured regions: wherever the fill has a colour, that class is predicted. Make the same picture but now colour it by the <strong>predicted probability</strong> of the red class and a rolling landscape appears: on the decision boundary the probability is exactly <strong>0.5</strong>; further away from the boundary it becomes ever redder (towards 1) or bluer (towards 0). More than 50% sure it is red → predict red; otherwise blue. The hard decision boundary and the probability map are thus two sides of the same coin. </p>"
+          "html": "Color the decision-boundary plot with the predicted <strong>probability</strong> instead of the class: on the boundary the probability is exactly 0.5, further away it approaches 1 or 0. Hard boundary and probability view are two sides of one coin."
         },
         {
           "type": "callout",
           "kind": "info",
-          "html": "<p> In those probability figures regularisation was almost switched off (very large C). Turn regularisation on and the probabilities hug 0.5 more closely — smaller coefficients mean <em>less confident</em> predictions. See the connection: overconfidence ↔ overfitting. </p>"
+          "html": "With regularization on (small C) probabilities hug 0.5: smaller coefficients = less confident. Note the link: overconfidence &harr; overfitting."
         }
       ]
     },
@@ -30,7 +30,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> How are those probabilities computed? From the <strong>raw model output</strong> (the score \\( z = w \\cdot x + b \\) from <a href=\"#/topic/logistic-regression\">the logistic regression pipeline</a>), which can itself be any real number — while probabilities live between 0 and 1. So we need something that &quot;squeezes&quot; the raw output into that interval: the <strong>sigmoid function</strong>. Study the curve below and slide along: at raw output zero the probability is 0.5 (exactly on the boundary); at positive raw output the probability of the positive class approaches 1; at negative output it approaches 0 — in other words: strong confidence in the negative class. Because the raw output grows the further you sit from the boundary, you are also more confident there. </p>"
+          "html": "The sigmoid \\( \\sigma(z) = \\frac{1}{1+e^{-z}} \\) squeezes any raw output into (0, 1): \\( z = 0 \\) &rarr; 0.5 (exactly on the boundary), positive &rarr; toward 1, negative &rarr; toward 0. Further from the boundary means more confident."
         },
         {
           "type": "formula",
@@ -127,7 +127,7 @@
         {
           "type": "callout",
           "kind": "key",
-          "html": "<p> Why is the threshold 0.5 and not something else? Because σ(z) &ge; 0.5 is <em>exactly</em> the same as z &ge; 0: the threshold hides inside the sign of the raw output. That is why <code>predict()</code> in logistic regression simply checks whether the score is positive. </p>"
+          "html": "Why threshold 0.5? Because \\( \\sigma(z) \\ge 0.5 \\) is <em>exactly</em> the same as \\( z \\ge 0 \\): the threshold hides in the sign of the raw output."
         }
       ]
     },
@@ -136,7 +136,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> The denominator of the sigmoid holds \\( e^{-z} \\) — and that <code>exp()</code> is more than a stray magic symbol. The base <strong>e</strong> is <em>Euler's number</em> (&plusmn;2.71828&hellip;) and <code>exp(z)</code> means nothing more than <strong>e multiplied by itself z times</strong>: \\( \\exp(1) = e \\), \\( \\exp(2) = e \\cdot e \\), \\( \\exp(0) = 1 \\). Why this particular base? Because e is the natural base of <em>continuous growth</em>: wherever an increase is proportional to the current amount (interest on interest, population growth, cooling coffee, radioactive decay), the quantity naturally grows or shrinks by a factor e per unit of time. That is why exp shows up all over science. </p><p> Three properties carry the sigmoid: <strong>(1)</strong> \\( e^0 = 1 \\) — hence \\( \\sigma(0) = \\frac{1}{1+1} = 0.5 \\); <strong>(2)</strong> \\( \\exp(-z) = 1/\\exp(z) \\) — negative powers are simply the reciprocal; <strong>(3)</strong> \\( \\exp \\) grows faster than any polynomial yet shrinks towards zero without ever reaching it. Inside the sigmoid, \\( e^{-z} \\) therefore acts as a <strong>brake</strong>: every extra unit of z multiplies that brake by 1/e (&plusmn;0.37). Large z &rarr; brake &asymp; 0 &rarr; \\( \\sigma \\approx 1/(1+0) = 1 \\). Negative z &rarr; the brake explodes (at \\( z = -5 \\) it is already \\( e^5 \\approx 148 \\)) &rarr; \\( \\sigma \\approx 0 \\). </p>"
+          "html": "<code>exp(z)</code> means e multiplied by itself z times (e &asymp; 2.71828, the base of continuous growth). In the sigmoid \\( e^{-z} \\) acts as a <strong>brake</strong>: large z &rarr; brake &asymp; 0 &rarr; \\( \\sigma \\approx 1 \\); negative z &rarr; brake explodes (already \\( e^5 \\approx 148 \\) at z = &minus;5) &rarr; \\( \\sigma \\approx 0 \\)."
         },
         {
           "type": "table",
@@ -185,7 +185,7 @@
         },
         {
           "type": "text",
-          "html": "<p> Read the table as a ride along the decision boundary: on the left (negative score) the brake is large and the probability small; at the boundary the brake is exactly 1 and the probability 0.5; on the right the brake slams shut and the probability approaches 1. Note the symmetry: at \\( z = 2 \\) the brake is 0.1353 and at \\( z = -2 \\) precisely its inverse (7.3891) — which is why \\( \\sigma(-z) = 1 - \\sigma(z) \\). </p>"
+          "html": "Read the table as a ride along the boundary: on the left the brake is large (small probability), on the boundary exactly 1 (probability 0.5), on the right the brake snaps shut (probability &rarr; 1)."
         },
         {
           "type": "code",
@@ -197,7 +197,7 @@
         {
           "type": "callout",
           "kind": "tip",
-          "html": "<p> Why e and not 10 or 2? e is the only base for which the slope of \\( b^x \\) is exactly \\( b^x \\) itself. As a result the derivative of the sigmoid is remarkably tidy: \\( \\sigma'(z) = \\sigma(z)\\,(1 - \\sigma(z)) \\) — the derivative can be built from the function value alone. One reason gradient descent on logistic regression flows so smoothly. </p>"
+          "html": "Why e? Only with base e is the slope of \\( b^x \\) exactly \\( b^x \\) itself — hence the clean derivative \\( \\sigma'(z) = \\sigma(z)(1-\\sigma(z)) \\)."
         }
       ]
     },
@@ -206,7 +206,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> The S-curve wasn't invented for machine learning — it is the universal shape of <strong>anything that starts slowly, accelerates and then saturates</strong>. A probability that cannot leave [0, 1], a population that cannot grow forever, a market that doesn't adopt everything at once: always the same sigmoid. Conversely, that is exactly why the function is so suited as a translation layer from 'arbitrary score' to 'probability'. </p>"
+          "html": "The S-curve is the universal shape of everything that starts slowly, accelerates and saturates — probabilities, population growth, market adoption."
         },
         {
           "type": "table",
@@ -247,7 +247,7 @@
         },
         {
           "type": "text",
-          "html": "<p> For the ML world the most important kinship is with <strong>tanh</strong> and <strong>softmax</strong>. Tanh is literally the same S-curve, stretched to (−1, 1) — handy when a neuron must be able to signal 'negative'. Softmax is the multi-class generalisation: it assigns each class a share of the total (all probabilities sum to 1). You can verify the kinship yourself with the code below. </p>"
+          "html": "Relatives: <strong>tanh</strong> is the same curve stretched to (&minus;1, 1); <strong>softmax</strong> is the multi-class generalization (probabilities summing to 1)."
         },
         {
           "type": "code",
@@ -259,7 +259,7 @@
         {
           "type": "callout",
           "kind": "info",
-          "html": "<p> In modern networks ReLU-style activations are often faster and more popular on hidden layers, but in the <em>output layer</em> for binary classification the sigmoid remains the standard to this day — for exactly the same reason as in logistic regression: it is the cleanest translation of a score into a probability. </p>"
+          "html": "In modern networks ReLU variants are more popular on hidden layers, but in the output layer for binary classification the sigmoid is still the standard."
         }
       ]
     },
@@ -268,7 +268,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> In scikit-learn, <code>decision_function</code> is precisely the raw model output, and <code>predict_proba</code> the sigmoid of it. You can verify this yourself: compute the sigmoid of the raw output by hand and compare it with what <code>predict_proba</code> gives — identical. An extra insight from the course: with 2 features you have 2 coefficients, while the direction of a line needs only one number. The <strong>ratio</strong> of the coefficients gives the direction of the boundary, the <strong>magnitude</strong> gives your confidence level. Regularisation therefore changes not only the certainty but often also the orientation of the boundary. </p>"
+          "html": "Verify it yourself: <code>predict_proba</code> = sigmoid(<code>decision_function</code>). And remember: the <em>ratio</em> of the coefficients gives the boundary's direction, the <em>magnitude</em> the confidence level."
         },
         {
           "type": "code",

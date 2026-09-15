@@ -2,7 +2,7 @@
   "id": "ap-calculus-ab",
   "chapter": "ch6",
   "title": "AP Calculus AB: the exam, mapped",
-  "intro": "In the United States, high-school calculus ends with a single national exam: <strong>AP Calculus AB</strong>, administered by the College Board in the first half of May. Three hours and fifteen minutes, 51 questions, one score from 1 to 5 — and a 3 or higher earns college credit at many universities. This topic maps the exam: which units count and how heavily, what you already know from <em>Differential calculus</em> and <em>Optimisation</em>, and what gets added — limits in their own right, integration with the Fundamental Theorem of Calculus, and differential equations. For anyone heading into machine learning this is not ballast: the derivative <em>is</em> gradient descent, the integral shows up as expectation and as AUC, and Euler's method is gradient descent in disguise.",
+  "intro": "<strong>AP Calculus AB</strong>: the national US calculus exam (College Board, early May, 3 h 15 min, 51 questions, score 1&ndash;5). This topic maps the exam — and its content is exactly the math behind every <code>fit()</code> call.",
   "keyPoints": [
     "AP Calculus AB is the national US calculus exam (College Board, early May): <strong>45 multiple-choice questions in 105 minutes</strong> plus <strong>6 free-response questions in 90 minutes</strong>, partly with and partly without a calculator; the final score runs from 1 to 5.",
     "The <strong>derivative half</strong> of the exam (units 2–5, roughly 50%) is already on this site: definition, rules, implicit differentiation, motion and optimisation — see <em>Differential calculus</em> and <em>Optimisation</em>.",
@@ -17,11 +17,11 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> <strong>Advanced Placement</strong> (AP) is the American system of university-level courses taken in high school, each closing with one standardised exam. Calculus AB covers one semester of college calculus: limits, derivatives, their applications, integrals and differential equations. The exam is identical across the country, on the same morning in early May — and the result carries weight: colleges routinely grant credit or advanced placement for a 3, 4 or 5, letting first-years start in Calculus II (or beyond). </p>"
+          "html": "<strong>Advanced Placement</strong> = university-level courses in high school, capped by one standardized exam. AB covers one semester of college calculus; a 3, 4 or 5 often earns credit or advanced placement."
         },
         {
           "type": "text",
-          "html": "<p> There are two exam levels: <strong>AB</strong> and <strong>BC</strong>. BC contains all of AB plus polynomial and Taylor series, parametric and polar coordinates, and extra integration techniques — roughly two semesters instead of one. Rule of thumb: AB is the standard route towards the sciences, economics or data; BC is for those majoring in mathematics itself. For machine learning, AB suffices — the extra BC material (series) only returns in advanced optimisation theory. </p>"
+          "html": "Two levels: <strong>AB</strong> and <strong>BC</strong> — BC adds everything of AB plus series, parametric/polar coordinates and extra integration techniques (roughly two semesters). For machine learning AB is enough."
         },
         {
           "type": "table",
@@ -60,12 +60,12 @@
         },
         {
           "type": "text",
-          "html": "<p> The multiple-choice section tests breadth and speed: recognise the right rule, read a graph, evaluate a limit. The free-response questions (Section II) are multi-part problem solves — items a through d, each with its own points — in which you must <em>show</em> your reasoning, not just the answer. That combination (fast recognition plus written argument) is exactly the pair of skills that separates understanding an ML model from merely calling one. </p>"
+          "html": "Section I (multiple choice) tests broadly and fast; Section II (<em>free response</em>) are multi-part problems where you must <em>show</em> your reasoning — points per part."
         },
         {
           "type": "callout",
           "kind": "info",
-          "html": "<p> Why does a US exam sit on a machine-learning site? Because the AB syllabus is precisely the mathematics that <em>training</em> rests on. A model learns by minimising a <strong>loss</strong> using <strong>derivatives</strong> (the gradient), aggregated over data (sums and <strong>integrals</strong>), with an update rule that <em>is</em> Euler's method. The exam is, in that sense, a structured checklist of the calculus behind every <code>fit()</code> call. </p>"
+          "html": "Why on an ML site? The AB material is exactly the math that <em>training</em> rests on: minimizing a loss with <strong>derivatives</strong>, aggregated over data (<strong>integrals</strong>), with a <strong>step rule</strong> that is Euler's method."
         }
       ]
     },
@@ -74,11 +74,11 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> The limit is the foundation the whole calculus stands on, and the exam invariably opens with it. The idea: <strong>\\( \\lim_{x \\to a} f(x) = L \\)</strong> means \\( f(x) \\) gets as close to \\( L \\) as you want, provided \\( x \\) is close enough to \\( a \\) — <em>without \\( f(a) \\) mattering at all</em>. That last part is the core, and the counter-intuitive part: the function need not even exist at \\( a \\). The derivative (the limit of difference quotients as \\( h \\to 0 \\), see <em>Differential calculus</em>) needs exactly this: the step \\( h \\) never becomes zero, but its limit exists. </p>"
+          "html": "The limit is the foundation: \\( \\lim_{x \\to a} f(x) = L \\) means \\( f(x) \\) gets as close to \\( L \\) as you want once \\( x \\) is close enough to \\( a \\) — <em>without \\( f(a) \\) itself mattering</em>. The function need not even exist at \\( a \\)."
         },
         {
           "type": "text",
-          "html": "<p> The classic example of “does not exist, yet approachable” is the function with a hole: \\( g(x) = \\frac{x^2 - 4}{x - 2} \\). For every \\( x \\neq 2 \\) you may cancel and \\( x + 2 \\) remains; at \\( x = 2 \\) itself the expression reads \\( 0/0 \\). The graph is therefore the line \\( y = x + 2 \\) minus one point — and that missing ordinate, 4, is exactly what the limit fills in. In the plot below, slide <code>a</code> towards 2 and watch the metrics: the green approach point climbs towards (2, 4), and precisely at \\( a = 2 \\) the expression ceases to exist — the point vanishes and the metric shows a dash, while the yellow limit line stands firm. </p>"
+          "html": "The classic hole: \\( g(x) = \\frac{x^2 - 4}{x - 2} \\) is simply \\( x + 2 \\) for \\( x \\neq 2 \\); at \\( x = 2 \\) it reads 0/0. Slide <code>a</code> toward 2: the approaching point climbs to (2, 4), at \\( a = 2 \\) it vanishes — but the yellow limit line holds."
         },
         {
           "type": "plot",
@@ -158,12 +158,12 @@
         },
         {
           "type": "text",
-          "html": "<p> One-sided limits complete the picture: \\( x \\to a^- \\) (from the left) and \\( x \\to a^+ \\) (from the right) must be <em>equal</em> for the ordinary limit to exist — at a jump in the graph, it does not. With that, <strong>continuity</strong> fits in three lines: \\( f(a) \\) exists, \\( \\lim_{x \\to a} f(x) \\) exists, and the two are equal. The exam bundles this into two theorems you must be able to invoke: the <strong>IVT</strong> (Intermediate Value Theorem — a continuous function that runs from 2 to 5 takes on every intermediate value, so somewhere it equals exactly 3) and later the MVT from the differentiation side. Both look theoretical, but they formally underwrite “a graph that starts below zero and ends above zero must cross zero” — the sort of reasoning bisection and root-finding rest on. </p>"
+          "html": "One-sided limits (left/right) must agree for the limit to exist. <strong>Continuity</strong> in three lines: \\( f(a) \\) exists, the limit exists, and they are equal. Plus the <strong>IVT</strong>: a continuous function running from 2 to 5 takes every intermediate value along the way."
         },
         {
           "type": "callout",
           "kind": "key",
-          "html": "<p> Three exam shapes of limits to recognise: (1) <strong>direct substitution works</strong> — polynomials and fractions without a zero denominator: just plug in \\( a \\); (2) <strong>0/0</strong> — factor or divide polynomials until the obstruction cancels, as above; (3) <strong>infinity</strong> — for \\( x \\to \\pm\\infty \\), divide by the highest power and watch the lower terms evaporate. And remember: a limit can exist while the function value does not — conversely, a function value can exist with the limit having nothing to do with it. </p>"
+          "html": "Three exam patterns to recognize: <strong>(1)</strong> direct substitution works (no zero denominator), <strong>(2)</strong> 0/0 — factor until the nuisance cancels, <strong>(3)</strong> \\( x \\to \\pm\\infty \\) — divide by the highest power."
         }
       ]
     },
@@ -172,7 +172,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> The core — the limit definition \\( f'(x) = \\lim_{h \\to 0} \\frac{f(x+h) - f(x)}{h} \\), the rules, the standard derivatives of \\( \\sin, \\cos, e^x, \\ln \\) — is covered extensively in <em>Differential calculus</em>, and its exam focal points (critical points, first- and second-derivative tests, optimisation) in <em>Optimisation</em>. What the AB exam adds is mostly <strong>applying the machinery in context</strong>: three techniques that carry it into situations where \\( y \\) is not neatly isolated. </p>"
+          "html": "The core — limit definition, rules, standard derivatives — is in <em>Differential calculus</em>; the exam hotspots (critical points, both tests, optimization) in <em>Optimization</em>. What AB adds: <strong>applying in context</strong>."
         },
         {
           "type": "table",
@@ -206,16 +206,16 @@
         },
         {
           "type": "text",
-          "html": "<p> Motion problems deserve a warning, because the exam likes to play with them: <strong>velocity</strong> (signed) and <strong>speed</strong> (its absolute value) are not the same — a particle “turning around” means \\( v(t) \\) changes sign, not that it stands still. And in related rates the classic trap is differentiating a formula <em>after</em> substituting numbers; the order is always: write the relation, <em>then</em> differentiate, <em>then</em> substitute the known rates. That discipline — differentiating relations between changes rather than operating on loose numbers — is exactly how backpropagation computes through a network: the chain rule relays the rates layer by layer. </p>"
+          "html": "<strong>Motion</strong>: velocity (signed) and speed (absolute value) are not the same; &ldquo;turning around&rdquo; means \\( v(t) \\) changes sign. For related rates: write the relation first, differentiate, then substitute — exactly how backpropagation works layer by layer."
         },
         {
           "type": "text",
-          "html": "<p> Two theorems belong in this row because the exam invokes them explicitly as legal grounds. The <strong>MVT</strong> (Mean Value Theorem): if \\( f \\) is differentiable on \\( [a,b] \\), there exists a \\( c \\) with \\( f'(c) = \\frac{f(b)-f(a)}{b-a} \\) — somewhere the tangent is as steep as the secant. And the IVT from the previous section returns as a tool for <em>proving that a solution exists</em> (an equation has a root in an interval if the continuous left-hand values change sign there). Both are called “existence arguments” on the exam: you need not find the point, only show it must be there. </p>"
+          "html": "Two theorems as legal instruments: the <strong>MVT</strong> (somewhere the tangent matches the secant: \\( f'(c) = \\frac{f(b)-f(a)}{b-a} \\)) and the <strong>IVT</strong> as a tool to prove a solution exists. Both are &ldquo;existence arguments&rdquo;."
         },
         {
           "type": "callout",
           "kind": "tip",
-          "html": "<p> In the free-response questions, <strong>optimisation</strong> and <strong>motion</strong> are the two regulars. The cardboard-box problem from <em>Optimisation</em> is literally exam-shaped: state the objective function, note the domain, solve \\( f' = 0 \\), test candidates and endpoints, and finish with a full sentence with units. Each of those five steps earns points — even if your arithmetic slips. </p>"
+          "html": "In free-response questions <strong>optimization</strong> and <strong>motion</strong> are the regulars. The five-step plan (objective, domain, \\( f' = 0 \\), candidates and edges, full sentence with units) earns points at every step."
         }
       ]
     },
@@ -224,7 +224,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> The other half of the exam revolves around the inverse move: not “given \\( f \\), what is \\( f' \\)” but “given \\( f \\), which function has \\( f \\) as its derivative?”. Such a function is an <strong>antiderivative</strong> \\( F \\) with \\( F' = f \\), and because derivatives wash out constant terms there is never just one but a whole family: \\( F(x) + C \\). The elongated-S notation — \\( \\int f(x)\\,dx \\) — reads as “sum of \\( f(x) \\) over little pieces \\( dx \\)”, and that reading is not decoration: it is the definition. </p>"
+          "html": "An <strong>antiderivative</strong> \\( F \\) with \\( F' = f \\) is never unique: \\( F(x) + C \\). The notation \\( \\int f(x)\\,dx \\) reads as &ldquo;sum of \\( f(x) \\) over pieces \\( dx \\)&rdquo; — and that is the definition."
         },
         {
           "type": "table",
@@ -257,7 +257,7 @@
         },
         {
           "type": "text",
-          "html": "<p> The <strong>definite</strong> integral \\( \\int_a^b f(x)\\,dx \\) is something else than a family of functions: it is a <strong>number</strong> — the net (signed) area between \\( f \\) and the x-axis from \\( a \\) to \\( b \\), with pieces below the axis counting negative. The direct definition is the limit of <strong>Riemann sums</strong>: split \\( [a,b] \\) into \\( n \\) strips of width \\( \\Delta x = \\frac{b-a}{n} \\), approximate each strip by a rectangle with height \\( f \\) at the left edge, right edge or midpoint, and add up. The finer the partition, the closer the sum gets to the true area — the same limit idea as for the derivative, but now for sums. </p>"
+          "html": "The <strong>definite</strong> integral is a <strong>number</strong>: the net (signed) area between \\( f \\) and the x-axis, defined as the limit of <strong>Riemann sums</strong> — strips of width \\( \\Delta x \\), height \\( f \\) at left/right/mid, sum, refine."
         },
         {
           "type": "code",
@@ -268,7 +268,7 @@
         },
         {
           "type": "text",
-          "html": "<p> Typical output: at \\( n = 4 \\) the left and right sums are still far apart (1.7500 and 3.7500 — one side underestimates, the other overestimates, because \\( x^2 \\) grows); by \\( n = 100 \\) they have squeezed together around 2.6666 and 2.7068, and the midpoint sums are dramatically better at every \\( n \\) (2.6250 already at \\( n = 4 \\)). The target: \\( \\tfrac{8}{3} = 2.6667 \\). This squeezing behaviour is exactly what the limit definition formalises — and it explains how numerical libraries (and the calculator in exam Part B) compute integrals: they refine the sum until the difference with the neighbours is negligible. </p>"
+          "html": "Typical output: at \\( n = 4 \\) left and right sums sit far apart (1.7500 and 3.7500); at \\( n = 100 \\) they squeeze together around 2.6666/2.7068, with midpoint sums dramatically better. Target: \\( \\tfrac{8}{3} = 2.6667 \\)."
         },
         {
           "type": "formula",
@@ -278,7 +278,7 @@
         },
         {
           "type": "text",
-          "html": "<p> Feel the theorem with the plot below. The yellow curve is \\( F(x) = \\tfrac{x^3}{3} \\), the antiderivative of \\( f(x) = x^2 \\) (cyan). The “area to b” metric is \\( F(b) - F(0) = \\tfrac{b^3}{3} \\) — the number the Riemann sums were chasing. And the second metric shows the other half of the theorem: the <strong>slope of \\( F \\)</strong> at the sliding point is \\( F'(b) = b^2 \\), exactly the value of the cyan curve there. Differentiation and integration are each other's inverse: accumulating area (integral) and reading off slope (derivative) interlock like a zipper. </p>"
+          "html": "Feel the FTC in the plot: \\( F(x) = \\tfrac{x^3}{3} \\) is the antiderivative of \\( f(x) = x^2 \\). Metric 1: area up to b = \\( F(b) - F(0) \\). Metric 2: the slope of \\( F \\) at the moving point = \\( b^2 \\) — differentiation and integration undo each other."
         },
         {
           "type": "plot",
@@ -345,12 +345,12 @@
         },
         {
           "type": "text",
-          "html": "<p> What the exam further asks of integration: <strong>u-substitution</strong> (the chain rule in reverse: recognise \\( f(g(x)) \\cdot g'(x) \\), substitute \\( u = g(x) \\), integrate, substitute back), the area <strong>between two curves</strong> (integrate the difference), the <strong>average value</strong> of a function on an interval (\\( \\tfrac{1}{b-a} \\int_a^b f \\)) and volumes of revolution (stacking disks of area \\( \\pi r^2 \\)). All the same move: a sum of infinitesimal contributions, and the FTC to turn it into numbers. </p>"
+          "html": "Also asked: <strong>u-substitution</strong> (the chain rule in reverse), area <strong>between two curves</strong> (integrate the difference), <strong>average value</strong> (\\( \\tfrac{1}{b-a} \\int_a^b f \\)) and volumes of revolution (stacking disks \\( \\pi r^2 \\))."
         },
         {
           "type": "callout",
           "kind": "key",
-          "html": "<p> The core to take away: <strong>integrating is accumulating</strong>. Position is accumulated velocity, tank content is accumulated inflow, and — later in ML — an expectation \\( E[X] \\) and the AUC (area under the ROC curve from <em>Classification metrics</em>) are accumulated probability mass. Whoever understands the Riemann sum understands why “area under a curve” in one course and “expected value” in another are the same construction. </p>"
+          "html": "<strong>Integrating is accumulating</strong>: position is summed velocity, water content summed inflow — and in ML the expectation \\( E[X] \\) and AUC (area under the ROC curve) are summed probability mass."
         }
       ]
     },
@@ -359,11 +359,11 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> A <strong>differential equation</strong> (DE) is an equation in which a function and its derivative(s) appear together: \\( y' = f(x, y) \\). Instead of “what is the derivative of this function”, the question is now “which function satisfies this law of change”. That is the form nature writes her laws in: populations grow proportionally to their size, coffee cools at a rate proportional to its temperature gap with the room, interest acts on the current balance. The AB exam asks for one technique plus two ideas. </p>"
+          "html": "A <strong>differential equation</strong> is an equation where a function and its derivative(s) appear together: \\( y' = f(x, y) \\) — the form in which nature writes its laws (population growth, cooling, interest)."
         },
         {
           "type": "text",
-          "html": "<p> The technique is <strong>separation</strong>: rewrite \\( \\frac{dy}{dx} = f(x)\\,g(y) \\) as \\( \\frac{dy}{g(y)} = f(x)\\,dx \\) and integrate both sides (the chain rule in reverse, again). The prototype law is exponential growth: </p>"
+          "html": "The technique is <strong>separation</strong>: rewrite \\( \\frac{dy}{dx} = f(x)g(y) \\) as \\( \\frac{dy}{g(y)} = f(x)\\,dx \\) and integrate both sides. Prototype: exponential growth \\( y' = ky \\)."
         },
         {
           "type": "formula",
@@ -373,7 +373,7 @@
         },
         {
           "type": "text",
-          "html": "<p> The two ideas around it. First the <strong>slope field</strong>: at each grid point \\( (x, y) \\) draw a small segment with slope \\( f(x,y) \\); solution curves are the trajectories that follow the segments — you see the entire family of solutions at a glance, even if you cannot solve a single one by hand. Second <strong>Euler's method</strong>: if solving fails, walk through the slope field step by step: standing at \\( (x, y) \\), take a step of \\( h \\) in the direction the field indicates there, and repeat. It is the most naïve numerical solver that exists — and, in a different guise, the most important one in all of machine learning. </p>"
+          "html": "Two ideas around it: the <strong>slope field</strong> (a little tick with slope \\( f(x,y) \\) at every grid point — solutions are the paths the ticks trace) and <strong>Euler's method</strong> (walking through the field step by step)."
         },
         {
           "type": "code",
@@ -384,12 +384,12 @@
         },
         {
           "type": "text",
-          "html": "<p> Typical output: 5.0625, 5.9605, 6.7275, against the exact value \\( e^2 = 7.3891 \\). Two things stand out. The approximations all <strong>underestimate</strong> — logical: \\( y' = y \\) is convex growth, and Euler keeps extending the slope from the start of each step while the true slope is already rising within the step. And each reduction of the step size removes roughly half the error (2.33 → 1.43 → 0.66): that linear behaviour in \\( h \\) is the signature of a first-order method — the reason practical solvers use higher-order schemes (Runge-Kutta) or adaptive steps. </p>"
+          "html": "Typical output: 5.0625, 5.9605, 6.7275 versus exact \\( e^2 = 7.3891 \\). The approximations underestimate (convex growth), and each step halving removes roughly half the error — the signature of a first-order method."
         },
         {
           "type": "callout",
           "kind": "info",
-          "html": "<p> The disguise: write gradient descent as <strong>\\( \\frac{dx}{dt} = -\\nabla f(x) \\)</strong> — “always move in the direction where the loss decreases”. Euler's method on this differential equation, with step \\( \\eta \\), is <em>literally</em> the update \\( x \\leftarrow x - \\eta\\,\\nabla f(x) \\) from <em>Gradient descent</em>. Training is numerically solving a differential equation; the learning rate is the step size \\( h \\); and the “too-large \\( \\eta \\) diverges” phenomenon is Euler instability at large steps. This is the deepest AP-to-ML bridge on this site. </p>"
+          "html": "The disguise: write gradient descent as \\( \\frac{dx}{dt} = -\\nabla f(x) \\). Euler's method on this DE, with step \\( \\eta \\), is <em>literally</em> the update \\( x \\leftarrow x - \\eta\\,\\nabla f(x) \\). Training = solving a DE numerically."
         }
       ]
     },
@@ -448,20 +448,20 @@
         },
         {
           "type": "text",
-          "html": "<p> The distribution teaches you two things. First: <strong>the derivative side, together with integration, is the bulk</strong> — units 2 through 5 count about 50%, unit 6 up to another 20%. Whoever masters this site's two calculus topics, plus §4 here, holds the computational core of the exam. Second: there is no unit called “difficult tricks” — every part is an application of limit, derivative or integral. The exam rewards mastery of a small toolkit, not encyclopaedic knowledge. </p>"
+          "html": "The weighting teaches: the derivative side plus integration is the bulk — units 2 through 6 together count ~70%. There is no &ldquo;hard tricks&rdquo; unit: every part applies limit, derivative or integral."
         },
         {
           "type": "text",
-          "html": "<p> Tactically: in Section I you have on average <strong>70 seconds per multiple-choice question</strong> (105 min for 45 questions) — do not marry a question, everything counts equally, and wrong answers cost nothing (guessing is allowed and leaving blanks is just dumb). The calculator is permitted only in the designated parts, and then only for <strong>four tasks</strong>: displaying a graph, finding an intercept, the derivative at a point, and the value of a definite integral — “symbolic algebra on the machine” (say, a general derivative formula) counts as misuse. In Section II, every FRQ part earns separate points via a rubric: the <em>setup</em> (writing down the right integral or equation) often weighs as much as the outcome, and words like <strong>“justify”</strong> or <strong>“explain why”</strong> ask for reasoning in which a theorem (IVT, MVT) or a sign argument plays the lead — “because the graph says so” earns zero. </p>"
+          "html": "Tactically: on average <strong>70 seconds per multiple-choice question</strong>; errors cost nothing, guessing is allowed. The calculator is restricted to <strong>four tasks</strong>; in Section II every FRQ part earns points via a rubric — <em>setup</em> often weighs as much as the answer, and &ldquo;justify&rdquo; demands reasoning."
         },
         {
           "type": "callout",
           "kind": "warning",
-          "html": "<p> The five classic point killers: (1) <strong>dropping units</strong> — “maximum volume 2000” without cm³ loses the point; (2) <strong>rounding too early</strong> — carry full precision and round only the final answer (three decimals); (3) <strong>answers without context</strong> — on an FRQ “yes” is not an answer, “yes, because v(t) changes sign at t = 3 so the particle turns around” is; (4) <strong>forgetting the domain</strong> in optimisation — a critical point outside the physical domain (negative length!) is not a candidate; (5) <strong>skipping the calculus</strong> — an answer consisting only of machine values without a written derivative or integral scores nothing, even if the number is right. </p>"
+          "html": "The five point killers: <strong>(1)</strong> omitting units, <strong>(2)</strong> premature rounding, <strong>(3)</strong> answers without context, <strong>(4)</strong> forgetting the domain in optimization, <strong>(5)</strong> skipping the calculus (machine values without a written derivative or integral)."
         },
         {
           "type": "text",
-          "html": "<p> Finally the scoring itself: the multiple-choice section is marked automatically, the six FRQs by teachers in a multi-day session with a fixed rubric per question. The two parts are weighted onto the 1–5 scale, with cut-offs drifting slightly each year (roughly: 5 = solid mastery with insight, 4 = adequate, 3 = the essentials present). Which score earns credit is set by the receiving institution — an engineering programme often asks a 4 or 5, a general maths requirement often a 3. Check your target institution's table in advance; the exam itself takes place in the first two weeks of May each year, on a nationally fixed morning, simultaneously across the country. </p>"
+          "html": "Scoring: multiple choice by machine, the six FRQs by teachers with a fixed rubric; weighted into the 1&ndash;5 scale. A 3 often earns credit, engineering programs often want a 4 or 5 — check your target institution's table."
         }
       ]
     },
@@ -470,7 +470,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Zoom out and the exam is one big inventory of the mathematics that keeps returning on this site. No part is ballast; each has a fixed place in the ML workflow. The table below is the translation table — left what the exam tests, right where it reappears on this site dressed in ML clothes. </p>"
+          "html": "The exam is one big inventory of the math that recurs throughout this site. The table is the translation table: left what the exam tests, right where it returns in ML clothing."
         },
         {
           "type": "table",
@@ -509,12 +509,12 @@
         },
         {
           "type": "text",
-          "html": "<p> One example of that translation, down to the bone. The ROC curve from <em>Classification metrics</em> plots true-positive against false-positive rate across all thresholds; the AUC — the standard measure of “how well does the model rank” — is literally the definite integral of that curve, and large parts of the ML literature derive threshold-free statements from area arguments that come straight out of unit 6. Anyone who has watched Riemann sums squeeze together looks at an AUC of 0.93 not with mysticism but with a summation instinct. </p>"
+          "html": "Example to the bone: the AUC — the standard measure of &ldquo;how well does the model rank&rdquo; — is literally the definite integral of the ROC curve. Anyone who has watched Riemann sums squeeze shut looks at 0.93 without mysticism."
         },
         {
           "type": "callout",
           "kind": "key",
-          "html": "<p> The sentence at the heart of this topic: <strong>whoever masters the AB syllabus owns exactly the mathematics behind training a model</strong> — a loss (objective function), a gradient (a derivative in many dimensions), and a step rule (Euler). The exam asks for it in the language of boxes, balloons and particles; machine learning asks for it in the language of weights and data. The toolkit is identical, and this site lets you read it in both languages. </p>"
+          "html": "The key sentence: <strong>whoever masters the AB material owns exactly the math behind training a model</strong> — a loss (objective), a gradient (derivative in many dimensions), and a step rule (Euler)."
         }
       ]
     }

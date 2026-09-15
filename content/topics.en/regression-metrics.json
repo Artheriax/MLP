@@ -2,7 +2,7 @@
   "id": "regression-metrics",
   "chapter": "ch7",
   "title": "Regression metrics: MSE, RMSE, MAE & R²",
-  "intro": "How do you measure whether a regression model predicts well? The four standard measures — MSE, RMSE, MAE and R&sup2; — with formulas, interpretation, a fully worked car-price example, the exact closed-form formulas for the best-fit line (b1 and the y-intercept b0) and interactive plots with live metrics that show what outliers do to your metric.",
+  "intro": "Four standard regression measures — MSE, RMSE, MAE and R&sup2; — with formulas, a worked car-price example, the exact formulas for b1 and b0, and interactive plots with live metrics.",
   "keyPoints": [
     "<strong>MSE</strong> = mean squared error; <strong>RMSE</strong> = its square root, in y's own units.",
     "<strong>MAE</strong> is robust to outliers; MSE/RMSE punish large mistakes <em>extra</em> hard.",
@@ -16,7 +16,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Training a model is step one; judging whether it is any good is step two. For that you use <strong>metrics</strong>: numbers that summarise the quality of the predictions. In <em>regression</em> the target \\( y \\) is quantitative (a number, such as a price or a temperature), so everything revolves around one question: <em>how far are the predictions \\( \\hat{y} \\) from the true values \\( y \\)?</em> </p> <p> There is a subtle difference with the <em>loss function</em> from the <a href=\"#/topic/loss-functions\">Maths &amp; loss</a> chapter. You use the loss <em>during training</em> — it must be mathematically convenient to minimise (differentiable, smooth). A metric is used <em>afterwards</em> to communicate how good the model is — it must be understandable to humans. Sometimes they coincide (MSE is both), sometimes not: a model trains with squared loss, but you report the MAE because it is easier to interpret. </p>"
+          "html": "In regression everything revolves around one question: <em>how far are the predictions \\( \\hat{y} \\) from the true values \\( y \\)?</em> Note the distinction: the <strong>loss</strong> is for <em>training</em> (mathematically convenient), the <strong>metric</strong> for <em>judging</em> (human-readable)."
         },
         {
           "type": "table",
@@ -55,7 +55,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> The three most widely used measures for regression are the <strong>Mean Squared Error (MSE)</strong>, the <strong>Root Mean Squared Error (RMSE)</strong> and the <strong>Mean Absolute Error (MAE)</strong>. All three measure the average deviation between prediction and reality, each in its own way — and you feel that difference most when the data contains <em>outliers</em>. </p>"
+          "html": "The three most used measures — <strong>MSE</strong>, <strong>RMSE</strong> and <strong>MAE</strong> — all capture the average deviation, each in its own way; you feel the difference mostly with <em>outliers</em>."
         },
         {
           "type": "formula",
@@ -77,7 +77,7 @@
         },
         {
           "type": "text",
-          "html": "<p> The symbols: \\( N \\) is the number of data points, \\( i \\) is the counter over those points, \\( y_i \\) is the <em>true</em> target value of point \\( i \\) and \\( \\hat{y}_i \\) (\"y-hat\") is the <em>predicted</em> target value of the model for that same point. The difference \\( y_i - \\hat{y}_i \\) is therefore the <em>error</em> of a single prediction, also called the <strong>residual</strong>. </p>"
+          "html": "Symbols: \\( N \\) = number of points, \\( y_i \\) = true value, \\( \\hat{y}_i \\) = prediction; the difference \\( y_i - \\hat{y}_i \\) is one prediction's error (the <strong>residual</strong>)."
         },
         {
           "type": "table",
@@ -111,7 +111,7 @@
         {
           "type": "callout",
           "kind": "tip",
-          "html": "<p> Why is the MSE more sensitive to outliers than the MAE? An error of 10 becomes \\( 10^2 = 100 \\) in MSE but simply 10 in MAE. One extremely wrong prediction can dominate the entire MSE — while the MAE only grows linearly with it. If your data contains a lot of noise or a few extreme points, MAE gives a fairer picture. </p>"
+          "html": "MSE vs MAE with outliers: an error of 10 becomes \\( 10^2 = 100 \\) under MSE but just 10 under MAE — one extreme error dominates the MSE, while MAE only grows linearly."
         }
       ]
     },
@@ -120,7 +120,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Consider a linear regression with three feature variables and one target variable: </p> <ul> <li><strong>X1</strong> — age of the car (in years): 1, 3, 4, 7, 9</li> <li><strong>X2</strong> — mileage (in 10,000 km): 5, 12, 15, 23, 30</li> <li><strong>X3</strong> — number of previous owners: 1, 2, 1, 3, 2</li> <li><strong>Y</strong> — price of the car (in $1000): 18, 12, 10, 6, 4</li> </ul> <p> After training you arrive at the parameters \\( b_0 = 20 \\), \\( b_1 = -1 \\), \\( b_2 = -0.5 \\) and \\( b_3 = -2 \\). The prediction equation is therefore: </p>"
+          "html": "Linear regression with three features on five cars. After training: \\( b_0 = 20 \\), \\( b_1 = -1 \\), \\( b_2 = -0.5 \\), \\( b_3 = -2 \\). The prediction equation:"
         },
         {
           "type": "formula",
@@ -130,7 +130,7 @@
         },
         {
           "type": "text",
-          "html": "<p> To judge this model you work through two steps: first the five predictions, then MSE, RMSE and MAE. The code below does exactly that and runs directly in your browser — press <em>Run</em> and follow the results. </p>"
+          "html": "Judge the model in two steps: first the five predictions, then MSE, RMSE and MAE. Press <em>Run</em> and follow the results."
         },
         {
           "type": "code",
@@ -142,7 +142,7 @@
         {
           "type": "callout",
           "kind": "info",
-          "html": "<p> Read the outcome like this: the average error is <strong>MAE = 6.9</strong> ($6,900), and the RMSE comes out higher (7.79). That difference is a diagnostic signal: the five errors (3.5 / 5 / 3.5 / 10.5 / 12) are unevenly distributed — the last two cars deviate substantially and pull the squared measures up extra. If the RMSE were nearly equal to the MAE, all errors would lie close together. And note the R&sup2;: at &minus;1.53 this model performs <em>worse</em> than simply predicting the mean. </p>"
+          "html": "Read the result: MAE = 6.9 (&euro; 6,900), RMSE higher (7.79) — the five errors are unevenly distributed. And R&sup2; = &minus;1.53: this model performs <em>worse</em> than simply predicting the mean."
         }
       ]
     },
@@ -151,7 +151,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> This is how you implement the three measures from scratch with NumPy. Each function takes two parameters: the <em>true</em> target values and the <em>predicted</em> target values — which can come from any regression model. In practice you rarely write them yourself: scikit-learn ships <code>mean_squared_error</code>, <code>mean_absolute_error</code> and <code>r2_score</code> ready-made, but knowing what happens inside is exactly what this site wants to convey. </p>"
+          "html": "The three measures from scratch with NumPy — scikit-learn ships <code>mean_squared_error</code>, <code>mean_absolute_error</code> and <code>r2_score</code>, but seeing inside them is the point."
         },
         {
           "type": "code",
@@ -167,7 +167,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> The measure that usually serves as the headline metric for regression is the <strong>explained variance</strong>, \\( R^2 \\). This is a statistical measure that indicates which part of the variance in the dependent variable (target) is explained by the independent variables (features). Here too you see the difference between the predicted target value \\( \\hat{y} \\) and the mean of the actual target values \\( \\bar{y} \\): </p>"
+          "html": "The headline regression measure: <strong>R&sup2;</strong>, the explained variance — what fraction of the target's variance is explained by the features."
         },
         {
           "type": "formula",
@@ -202,7 +202,7 @@
         },
         {
           "type": "text",
-          "html": "<p> A value close to 1 means that many data points lie close to the regression line; a value close to 0 means the line explains little. And as you saw in the car-price example: negative is possible too — then your model performs <em>worse</em> than a model that simply always predicts the mean. That sounds odd, but it really happens: a badly trained model, wrong features or a training set that is too small can be the cause. </p>"
+          "html": "Toward 1: much variance explained. Toward 0: the line explains little. Negative is possible too — then your model is worse than always predicting the mean."
         },
         {
           "type": "code",
@@ -223,7 +223,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> So far you nudged \\( b_0 \\) and \\( b_1 \\) with sliders until the error got small. But for simple linear regression \\( \\hat{y} = b_0 + b_1 x \\) you don't have to slide at all: there are <strong>exact closed-form formulas</strong> that give the best values in one go — the values that minimise the MSE. <strong>b1</strong> is the slope (direction coefficient) and <strong>b0</strong> is the <strong>y-intercept</strong>: the predicted value when \\( x = 0 \\). </p>"
+          "html": "For simple linear regression \\( \\hat{y} = b_0 + b_1 x \\) <strong>exact formulas</strong> give the best values in one shot — \\( b_1 \\) is the slope, \\( b_0 \\) the y-intercept."
         },
         {
           "type": "formula",
@@ -239,7 +239,7 @@
         },
         {
           "type": "text",
-          "html": "<p> Here \\( \\bar{x} \\) is the mean of all x-values and \\( \\bar{y} \\) the mean of all y-values. Read the formula for <strong>b1</strong> like this: the numerator adds up, per point, how much x and y deviate from their means <em>together</em> (moving together makes it large; moving in opposite directions makes it negative). The denominator measures how much the x-values themselves spread. Small spread in x but strong co-movement gives a steep slope. The formula for <strong>b0</strong> then forces the line exactly through the centroid \\( (\\bar{x}, \\bar{y}) \\) — drag a line through that point in an interactive plot and watch the MSE respond immediately. </p><p> Where do these formulas come from? Set the derivatives of the MSE with respect to \\( b_0 \\) and \\( b_1 \\) to zero — exactly the point where the loss landscape flattens, as in <a href=\"#/topic/gradient-descent\">gradient descent</a> — and solve the resulting system. For a simple line that single minimum has a closed form; <a href=\"#/topic/gradient-descent\">gradient descent</a> approaches the same values iteratively, while the formulas above hand them to you in one shot. </p>"
+          "html": "Read \\( b_1 \\) like this: the numerator counts how much x and y deviate from their means <em>together</em>, the denominator measures the spread of x; \\( b_0 \\) puts the line exactly through the center of gravity \\( (\\bar{x}, \\bar{y}) \\). Origin: set the MSE derivatives to zero — solvable in closed form for the simple line; gradient descent approaches the same values."
         },
         {
           "type": "code",
@@ -250,7 +250,7 @@
         },
         {
           "type": "text",
-          "html": "<p> These are exactly the values scikit-learn returns: <code>LinearRegression</code> stores the slope in <code>coef_</code> and the y-intercept in <code>intercept_</code>. Go ahead and check — the code below runs in your browser and prints both side by side. </p>"
+          "html": null
         },
         {
           "type": "code",
@@ -262,7 +262,7 @@
         {
           "type": "callout",
           "kind": "key",
-          "html": "<p> With <strong>multiple features</strong> (like the car-price example: \\( b_0 + b_1 x_1 + b_2 x_2 + b_3 x_3 \\)) there is no short summation formula anymore — the computer then solves a system of equations for you (or approaches the optimum with gradient descent). If your model uses a single feature, these two formulas are <em>the</em> one-liner answers. </p>"
+          "html": "With <strong>multiple features</strong> no short closed form exists — the computer solves a system (or approximates with gradient descent). With one feature these are <em>the</em> two formulas."
         }
       ]
     },
@@ -271,7 +271,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Below are three datasets, each with one feature variable and a linear model \\( y_{pred} = b_0 + b_1 x \\), where \\( b_0 \\) is the y-intercept and \\( b_1 \\) the slope. <strong>Drag the sliders</strong>: every plot now has <strong>live metrics</strong> — as you drag, the MSE and \\( R^2 \\) are recomputed instantly and the chip lights up green once you approach the best achievable fit. Challenge yourself: first compute b1 and b0 of dataset A with the formulas above (b1 = 1.86, b0 = 1.68), then find that same pair with the sliders. </p>"
+          "html": "Three datasets, each with sliders and <strong>live metrics</strong>: find the best line and watch MSE and R&sup2; move along. Challenge yourself: compute dataset A's \\( b_1 \\) and \\( b_0 \\) by hand first (1.86 and 1.68)."
         },
         {
           "type": "plot",
@@ -633,12 +633,12 @@
         {
           "type": "callout",
           "kind": "key",
-          "html": "<p> What these three datasets show: dataset <strong>A</strong> is the ideal case — linear, little noise, a high \\( R^2 \\) within reach. Dataset <strong>B</strong> shows how a single outlier inflates the squared measures (MSE/RMSE) and can shift the best line; MAE stays much less sensitive to it. Dataset <strong>C</strong> exposes the limit of the <em>model</em>: no straight line fits, however you slide — the solution is then not to slide better, but to pick a better model (for example \\( x^2 \\) as an extra feature). </p>"
+          "html": "A = the ideal case (linear, little noise); B shows one outlier blowing up the quadratic measures; C shows the limit of the <em>model</em> — no straight line fits, the fix is a better model (e.g. \\( x^2 \\) as a feature)."
         },
         {
           "type": "callout",
           "kind": "tip",
-          "html": "<p> With multiple features the equation becomes \\( y_{pred} = b_0 + b_1 x_1 + b_2 x_2 + \\cdots + b_n x_n \\) — a <em>plane</em> instead of a line. The car-price example above is exactly such a case with three features. </p>"
+          "html": null
         }
       ]
     }

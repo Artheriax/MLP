@@ -2,7 +2,7 @@
   "id": "bagging-random-forests",
   "chapter": "ch5",
   "title": "Bagging & random forests: sterker dan de som der bomen",
-  "intro": "In het bias-variance-onderwerp eindigde de diagnose bij een belofte: als hoge variantie het probleem is, zijn <strong>ensembles</strong> het middel. Dit onderwerp maakt die belofte waar. Bagging traint tientallen diepe bomen elk op een andere bootstrap-steekproef van dezelfde trainingsdata en middelt hun voorspellingen — de zenuwachtige precisie van één boom wordt een stabiel gemiddelde. Random forests voegen daar één geniaal ingrediënt aan toe: per split mag de boom maar een willekeurig handjevol features zien, zodat de bomen verschillende dingen leren in plaats van dezelfde boom honderd keer. Inclusief OOB-scores, de variance-formule die alles verklaart en code die je zelf in de browser draait.",
+  "intro": "Tegen hoge variantie: <strong>ensembles</strong>. Bagging traint tientallen diepe bomen elk op een andere bootstrap-steekproef en middelt; random forests laten per split maar een willekeurig handjevol features zien. Met OOB-scores en de variance-formule die alles verklaart.",
   "keyPoints": [
     "Een diepe boom heeft lage bias maar hoge variantie. <strong>Bagging</strong> (bootstrap aggregating) traint B bomen op B verschillende bootstrap-sets en middelt de voorspellingen: zelfde bias, fors minder variantie.",
     "Een <strong>bootstrap-set</strong> is n trekkingen mét terugleggen uit je n trainingssamples: gemiddeld <strong>63.2% uniek</strong> en 36.8% dubbel — en precies die ongebruikte samples vormen per boom een gratis validatieset (de <strong>OOB-score</strong>).",
@@ -17,16 +17,16 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Een volgroeide beslisboom is een paradox: op de trainingsdata onverslaanbaar, maar zijn beslisstructuur is rammelig. Verwissel een handvol trainingssamples en de boom kan een heel andere wortel-split kiezen, andere drempels vinden, een ander blad als voorspelling geven — het model <em>knapt</em> bij de minste aanraking van de data. Dat is de hoge variantie uit <em>Bias-variance tradeoff</em> in het echt: geen rekenfout, maar de logische consequentie van <strong>greedy splits op dense drempels</strong> zonder enige middeling. Elke boom onthoudt precies díe details die zijn eigen trainset toevallig bevat. </p>"
+          "html": "Een volgroeide boom is op trainingsdata onverslaanbaar, maar zijn structuur is rammelig: verwissel een handvol samples en de wortel-split, drempels en bladeren kunnen allemaal veranderen. Dat is <strong>hoge variantie</strong> in het echt."
         },
         {
           "type": "text",
-          "html": "<p> De klassieke oplossing voor een wispelturige schatter is <em>herhaald meten en middelen</em> — en dat is precies wat een ensemble doet. Train honderd verschillende bomen op honderd verschillende versies van je data, en hun <strong>gemeenschappelijke fouten middelen weg</strong>: de ene boom piekert op een splitsing die de andere juist glad afhandelt, en het gemiddelde blijft overeind waar individuele bomen zwiepen. Voor deze truc werken heb je bomen die <strong>diep en ongeregeld</strong> mogen zijn — de bias is per boom laag, de variantie wordt door het middelen opgeruimd. Het enige wat je nog nodig hebt, is een manier om uit één trainingsset meerdere scháárbar verschillende versies te halen. </p>"
+          "html": "De klassieke oplossing voor een wispelturige schatter: <em>herhaald meten en middelen</em>. Train honderd verschillende bomen op honderd versies van je data en hun <strong>gemeenschappelijke fouten middelen weg</strong> &mdash; de bomen mogen daarvoor juist diep en ongeregeld zijn."
         },
         {
           "type": "callout",
           "kind": "key",
-          "html": "<p> Eén zin om het hele onderwerp te dragen: <strong>bagging vervangt één dwarse leerling door een comité van honderd die elk een beetje anders getraind zijn — en het comité beslist.</strong> Bij regressie wordt het gemiddelde van de bladwaarden genomen, bij classificatie de meerderheidsstem (of het gemiddelde van de kansen). Alles wat volgt — bootstrap, OOB, feature-subsampling — is techniek om dat comité zo <em>verschillend</em> en dus zo sterk mogelijk te maken. </p>"
+          "html": "<strong>Bagging vervangt &eacute;&eacute;n dwarse leerling door een comit&eacute; van honderd die elk een beetje anders getraind zijn &mdash; en het comit&eacute; beslist.</strong> Bij regressie: gemiddelde; bij classificatie: meerderheidsstem of gemiddelde kans."
         }
       ]
     },
@@ -35,7 +35,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Je hebt n trainingssamples en wilt B verschillende trainingssets — niet klonen, want identieke sets geven identieke bomen. De bootstrap is het minste dat nodig is: trek <strong>n keer een sample mét terugleggen</strong>. Elke trek gaat terug in de stapel, dus dezelfde sample kan (en zal) vaker gekozen worden, terwijl een ander sample dit keer helemaal niet valt. De resulterende set heeft altijd exact n rijen, maar een <em>andere mengeling</em>: ruwweg twee derde van de originele samples is aanwezig (sommigen dubbel of driedubbel), één derde ontbreekt. Voor een boom die op drempels splitst is dat ruim genoeg prikkel om een andere vorm te leren. </p>"
+          "html": "De bootstrap: trek <strong>n keer een sample m&eacute;t terugleggen</strong>. Elke set heeft exact n rijen maar een andere mengeling: ruwweg twee derde van de originele samples is aanwezig, &eacute;&eacute;n derde ontbreekt."
         },
         {
           "type": "formula",
@@ -45,7 +45,7 @@
         },
         {
           "type": "text",
-          "html": "<p> Check het getal zelf: bij n = 100 is \\( (1 - 0{,}01)^{100} = 0{,}366 \\), en simulaties met een echte random generator geven per set 61 tot 66 unieke samples — gemiddeld frappant dicht bij die 63.2%. Die <strong>36.8% ontbrekende samples per bootstrap-set zijn geen afval maar een geschenk</strong>: de boom die op deze set getraind werd, heeft ze nóoit gezien. Gebruik ze als mini-testset voor precies díe boom, middel die scores over alle B bomen, en je hebt een generalisatie-schatting <em>bijna gratis</em> — dat is de <strong>out-of-bag-score</strong> (OOB), hieronder verder uitgewerkt. </p>"
+          "html": "Bij n = 100 is \\( (1 - 0{,}01)^{100} = 0{,}366 \\): gemiddeld 63,2% uniek per set. Die <strong>36.8% ontbrekende samples</strong> zijn een geschenk: gebruik ze als mini-testset voor precies d&iacute;e boom &mdash; dat is de <strong>out-of-bag-score</strong> (OOB)."
         },
         {
           "type": "code",
@@ -56,12 +56,12 @@
         },
         {
           "type": "text",
-          "html": "<p> Typische output: drie sets met 62–64% unieke samples, en de theorieregel die 36.6% ontbrekend voorspelt. Het percentage wankelt per set, maar middelt zich keurig naar de limiet — precies de wet van grote aantallen waar het hele ensemble-idee op drijft. </p>"
+          "html": "Typische output: drie sets met 62&ndash;64% unieke samples, en de theorieregel die 36.6% voorspelt."
         },
         {
           "type": "callout",
           "kind": "info",
-          "html": "<p> Waarom <em>met</em> terugleggen, en niet gewoon willekeurig n/2 samples pakken zonder terugleggen? Omdat de bootstrap twee vliegen in één klap slaat: de set blijft even groot als de traindata (geen informatie-arme mini-sets), én de multipliciteiten geven extra variëteit — een sample dat drie keer voorkomt, weegt drie keer zo zwaar mee in de splits van die ene boom. Bovendien maakt de teruglegging de 36.8% out-of-bag-fractie tot een vast, voorspelbaar gegeven. </p>"
+          "html": "Waarom <em>met</em> terugleggen? De set blijft even groot als de traindata &eacute;n de multipliciteiten geven extra vari&euml;teit &mdash; een sample dat drie keer voorkomt weegt drie keer zo zwaar in die ene boom."
         }
       ]
     },
@@ -70,7 +70,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Nu het volledige recept. Stap 1: maak B bootstrap-sets. Stap 2: train op elke set een <strong>volgroeide, ongereguleerde</strong> boom (juist ja — géén max_depth hier; je wílt lage bias per boom). Stap 3: <strong>aggregeer</strong>. Bij regressie is de ensemble-voorspelling het gewone gemiddelde van de B bladwaarden; bij classificatie stemmen de B bomen en wint de meerderheid, of — netter — de kansen van \\( \\texttt{predict\\_proba} \\) worden eerst gemiddeld en dán pas afgerond. In scikit-learn zit dit hele recept in <code>BaggingClassifier</code> en <code>BaggingRegressor</code>. </p>"
+          "html": "Het recept: <strong>(1)</strong> B bootstrap-sets, <strong>(2)</strong> per set een volgroeide, ongereguleerde boom (g&eacute;&eacute;n <code>max_depth</code> &mdash; je wilt lage bias per boom), <strong>(3)</strong> aggregeer: gemiddelde (regressie) of meerderheidsstem (classificatie). In scikit-learn: <code>BaggingClassifier</code>/<code>BaggingRegressor</code>."
         },
         {
           "type": "formula",
@@ -80,16 +80,16 @@
         },
         {
           "type": "text",
-          "html": "<p> Waarom middelen zo goed werkt, is aritmetiek. Als elke boom een fout maakt met gemiddelde nul en variantie \\( \\sigma^2 \\), en de fouten <em>onafhankelijk</em> zouden zijn, dan daalt de variantie van het gemiddelde naar \\( \\sigma^2 / B \\): 100 bomen = 100× minder ruis. Zo ver komt het nooit — de bomen delen dezelfde traindata, dus hun fouten zijn gecorreleerd (correlatie \\( \\rho \\)) en de winst stopt op een plateau. Maar de richting klopt wél, en dat is de kracht van bagging: <strong>de bias verandert niet, de variantie zakt</strong>. Vergelijk het met pruning: daar koop je variantie-korting door bias te verhogen. Bagging krijgt de korting bijna gratis. </p>"
+          "html": "Waarom middelen werkt: bij onafhankelijke fouten daalt de variantie van het gemiddelde naar \\( \\sigma^2/B \\) &mdash; 100 bomen = 100&times; minder ruis. Zo ver komt het nooit (de bomen delen dezelfde data, dus hun fouten zijn gecorreleerd met \\( \\rho \\)), maar de richting klopt: <strong>bias blijft, variantie zakt</strong>."
         },
         {
           "type": "text",
-          "html": "<p> Dan de <strong>OOB-score</strong> (out-of-bag). Voor elke trainingssample geldt: ongeveer 36.8% van de B bomen heeft die sample nóoit in zijn bootstrap-set gezien. Vraag aan precies díe bomen een voorspelling voor de sample, aggregeer die, en vergelijk met het echte label — herhaal voor alle samples en je hebt een schatting van de test-score, <em>zonder één extra fit en zonder de testset aan te raken</em>. Het is geen volledige cross-validation (de B deels-ensemblen overlappen), maar in de praktijk zit de OOB-score er steevast dicht bij de test-score — zie de code verderop. </p>"
+          "html": "De <strong>OOB-score</strong>: voor elke sample voorspellen all&eacute;&eacute;n de bomen die haar nó&oacute;it zagen (&plusmn;36.8%), geaggregeerd en vergeleken met het echte label &mdash; een testscore-schatting zonder de testset aan te raken."
         },
         {
           "type": "callout",
           "kind": "tip",
-          "html": "<p> Praktisch: zet <code>oob_score=True</code> bij <code>BaggingClassifier</code>/<code>RandomForestClassifier</code> en behandel <code>model.oob_score_</code> als je eerste saniteitscheck. Scoret OOB slecht terwijl de train-score perfect is, dan overfittet het bos nog steeds (te diepe bomen, te weinig regularisatie) — hoef je niet eens te splitsen om het te zien. Voor de definitieve beoordeling blijf je natuurlijk de testset en cross-validation gebruiken (zie <em>Cross-validation</em>). </p>"
+          "html": "Praktisch: zet <code>oob_score=True</code> en behandel <code>model.oob_score_</code> als eerste saniteitscheck. Scoret OOB slecht terwijl de train-score perfect is, dan overfittet het bos nog steeds."
         }
       ]
     },
@@ -98,11 +98,11 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Bagging heeft één blinde vlek. De bomen verschillen alleen door hun bootstrap-set — maar zodra één feature <em>overweldigend</em> voorspellend is, kiest vrijwel elke boom die feature in de wortel, op bijna dezelfde drempel, en groeien de bomen <strong>geruggesteund op elkaar</strong>: hoge correlatie \\( \\rho \\), en dus een hoog plateau waar de variantie niet onder kan. In de breast_cancer-data zie je dit gebeuren: <em>worst concave points</em> is zo'n dominante feature dat gewone bagging-bomen veel op elkaar lijken. Random forests breken die dominantie op de enige plek waar het pijn doet: de split zelf. </p>"
+          "html": "Bagging heeft &eacute;&eacute;n blinde vlek: is &eacute;&eacute;n feature overweldigend voorspellend, dan kiezen vrijwel alle bomen die feature in de wortel en groeien ze <strong>op elkaar</strong> &mdash; hoge correlatie \\( \\rho \\), hoog plateau. Random forests breken die dominantie op de split zelf."
         },
         {
           "type": "text",
-          "html": "<p> De ingreep is karig: bij <strong>elke split</strong> (dus bij elke node, opnieuw) trekt het algoritme willekeurig <strong>m van de p features</strong> en mag de boom alleen dáár uit kiezen. Alles blijft zoals in <em>Decision trees</em> — Gini, greedy, recursief — maar het speelveld per node is een steekproef. Voor classificatie is de default \\( m = \\sqrt{p} \\): bij 30 features kijkt elke split naar zo'n 5 of 6 kandidaten; bij regressie is het \\( p/3 \\). De dominante feature wordt nu bij de meeste nodes gewoon <em>niet aangeboden</em>, zodat de bomen gedwongen worden andere structuren te ontdekken. De individuele boom wordt er iets slechter van (iets hogere bias) — maar ze worden <strong>fundamenteel verschillend</strong>, en dat is de ruil die je wilt. </p>"
+          "html": "De ingreep: bij <strong>elke split</strong> trekt het algoritme willekeurig <strong>m van de p features</strong> en mag de boom alleen d&aacute;ruit kiezen. Default: \\( m = \\sqrt{p} \\) (classificatie) of \\( p/3 \\) (regressie). De individuele boom wordt iets slechter &mdash; maar de bomen worden <strong>fundamenteel verschillend</strong>."
         },
         {
           "type": "formula",
@@ -112,7 +112,7 @@
         },
         {
           "type": "text",
-          "html": "<p> Lees de formule term voor term. De <strong>tweede term</strong> is de bekende \\( \\sigma^2/B \\): die krimpt met elk extra procent hout, maar wat je ook doet, hij gaat naar nul — met B = 100 is hij al te verwaarlozen. De <strong>eerste term</strong> is het plateau: hij hangt niet van B af, alleen van \\( \\rho \\). Conclusie in één adem: <strong>meer bomen helpt altijd, maar verdwijnt in de mist als \\( \\rho \\) hoog blijft — en random forests zijn precies de knop aan \\( \\rho \\)</strong>. Feature-subsampling verlaagt de correlatie, en elke daling daarvan drukt het plateau waar het ensemble naartoe convergeert direct omlaag. Zie het zelf in de plot. </p>"
+          "html": "Lees de formule term voor term: de <strong>tweede term</strong> \\( \\sigma^2/B \\) krimpt weg met meer bomen; de <strong>eerste term</strong> \\( \\rho\\sigma^2 \\) is het plateau en hangt alleen van \\( \\rho \\) af. <strong>Meer bomen helpt altijd, maar verdwijnt in de mist als \\( \\rho \\) hoog blijft &mdash; random forests zijn precies de knop aan \\( \\rho \\).</strong>"
         },
         {
           "type": "plot",
@@ -199,12 +199,12 @@
         },
         {
           "type": "text",
-          "html": "<p> Bij de startwaarden (\\( \\rho = 0{,}3 \\), \\( \\sigma^2 = 0{,}8 \\), B = 10) staat de variantie op 0.296 — al 2.7× rustiger dan één boom. Sleep B naar 100 en er gebeurt bijna niets meer (0.246): de \\( \\sigma^2/B \\)-term is dan vrijwel uitgewist en je hangt aan het plateau \\( \\rho\\sigma^2 = 0{,}24 \\). Sleep nu ρ naar 0.1 en het plateau zakt naar 0.08 — een order van grootte winst die geen aantal bomen ooit had kunnen kopen. Dít is de reden dat random forests beter zijn dan gewone bagging, en de reden dat <code>max_features</code> de belangrijkste hyperparameter van het bos is. </p>"
+          "html": "Bij de startwaarden staat de variantie op 0.296; sleep B naar 100 en er gebeurt bijna niets meer (0.246 &mdash; het plateau). Sleep \\( \\rho \\) naar 0.1 en het plateau zakt naar 0.08: een order van grootte die geen aantal bomen ooit kon kopen."
         },
         {
           "type": "callout",
           "kind": "warning",
-          "html": "<p> Een hardnekt misverstand: “te veel bomen kan overfitting geven”. Nee — méér bomen kan de generalisatie <strong>niet verslechteren</strong> (de variantie daalt monotoon naar het plateau en blijft daar liggen). Wat extra bomen wél kosten is reken- en geheugentijd en voorspelsnelheid. Andersom geldt wél: het bos <em>kan</em> overfitten door te diepe, te puur getrainde bomen — maar dat heet <code>max_depth</code>/<code>min_samples_leaf</code>, niet <code>n_estimators</code>. Zie het kader in <em>Bias-variance tradeoff</em> voor de diagnose-knoppen. </p>"
+          "html": "Hardnekt misverstand: &ldquo;te veel bomen geeft overfitting&rdquo;. Nee &mdash; m&eacute;&eacute;r bomen kan de generalisatie <strong>niet verslechteren</strong>; ze kosten alleen reken- en voorspeltijd. Overfitten kan w&eacute;l door te diepe bomen &mdash; maar dat heet <code>max_depth</code>, niet <code>n_estimators</code>."
         }
       ]
     },
@@ -213,7 +213,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Een random forest heeft verrassend weinig aandacht nodig — een groot deel van zijn reputatie als “sterke default” komt juist daarvandaan. Deze tabel is de eerlijke prioriteitenlijst: bovenaan staan de knoppen die er echt toe doen, onderaan de knoppen die je op de default kunt laten. </p>"
+          "html": "Een random forest heeft verrassend weinig aandacht nodig &mdash; vandaar de reputatie &ldquo;sterke default&rdquo;. De tabel is de eerlijke prioriteitenlijst:"
         },
         {
           "type": "table",
@@ -264,12 +264,12 @@
         },
         {
           "type": "text",
-          "html": "<p> De afstem-volgorde die in de praktijk werkt: zet eerst <code>oob_score=True</code> en <code>n_estimators=100</code> vast, scan dan <code>max_features</code> over een handjevol waarden (√p, de helft, alle p — de uitersten begrenzen het verhaal), en pak pas daarna de boomremmen als de scores nog steeds teleurstellen. Dat laatste is zelden nodig: de combinatie “diepe bomen + middeling” is precies de configuratie waarin een forest uitblinkt. Wie hem tóch strakker wil, doet dat met <code>GridSearchCV</code> of <code>RandomizedSearchCV</code> — het pipeline-advies uit <em>Cross-validation</em> geldt onverminderd. </p>"
+          "html": "Afstem-volgorde: zet <code>oob_score=True</code> en <code>n_estimators=100</code> vast, scan <code>max_features</code> (&radic;p, de helft, alle p), en pak pas daarna de boomremmen. Dat laatste is zelden nodig."
         },
         {
           "type": "callout",
           "kind": "tip",
-          "html": "<p> Vergeet de schaal-stap níet: bomen zelf zijn ongevoelig voor schalen (splits kijken naar drempels, niet naar afstanden), maar zodra je het bos in een pipeline met andere modellen of pre-processing combineert, wil je die pipeline voor álle kandidaten gelijk houden. En bedenk: wat je aan random forests leert over <code>max_features</code> en de ρ-plateau-logica, keert letterlijk terug bij gradient boosting en gestapelde ensembles. </p>"
+          "html": "Vergeet de schaal-stap niet zodra het bos in een pipeline met andere modellen of preprocessing combineert &mdash; houd die pipeline voor alle kandidaten gelijk."
         }
       ]
     },
@@ -278,16 +278,16 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Eén boom lees je van boven naar beneden, honderd bomen lees je als <em>verhaal in cijfers</em>. De <strong>mean decrease in impurity</strong> (MDI) — wat <code>feature_importances_</code> teruggeeft — telt per feature over alle bomen en alle nodes op hoevéél de gewogen onzuiverheid daalde wanneer die feature de split maakte (met Gini of entropy, zie <em>Gini-index &amp; entropie</em>). Het resultaat wordt genormaliseerd tot een verdeling die <strong>somt tot 1</strong>: 0.17 betekent “verantwoordelijk voor 17% van alle zuiverheidswinst in het bos”. Het is een ruwe maar verrassend bruikbare blik in de black box. </p>"
+          "html": "De <strong>mean decrease in impurity</strong> (MDI, wat <code>feature_importances_</code> teruggeeft) telt per feature op hoeveel de gewogen onzuiverheid daalde en somt tot 1: 0.17 = &ldquo;verantwoordelijk voor 17% van alle zuiverheidswinst&rdquo;."
         },
         {
           "type": "text",
-          "html": "<p> Neem de bijbehorende interpretatiekorrels zout. MDI is <strong>bias naar features met veel mogelijke drempels</strong>: een continue of quasi-unieke feature (een ID-kolom, een tijdstempel) kan kunstmatig hoog scoren omdat de boom er zóveel manieren op kan splitsen — hetzelfde overfit-mechanisme als bij de gain-ratio-waarschuwing in <em>Gini-index &amp; entropie</em>. Het robuustere alternatief is <strong>permutation importance</strong>: schud één feature in de testset door elkaar en kijk hoevéél de score daalt — groot dalen = belangrijke feature. Die werkt op de test-score, heeft geen drempel-bias en waarschuwt je bovendien als een feature alleen op training leunt. <code>sklearn.inspection.permutation_importance</code> doet het in drie regels. </p>"
+          "html": "Neem de korrels zout: MDI is <strong>bias naar features met veel mogelijke drempels</strong> (ID's, tijdstempels). Robuuster: <strong>permutation importance</strong> &mdash; schud &eacute;&eacute;n feature door elkaar en kijk hoeveel de score daalt."
         },
         {
           "type": "callout",
           "kind": "warning",
-          "html": "<p> Correlatie-verhaal erbij: twee features die hetzelfde signaal dragen (bijv. oppervlakte én radius van dezelfde tumor) <em>delen</em> de importance — geen van beide hoeft dominant te scoren, ook al is het signaal cruciaal. Omgekeerd kan een feature laag scoren terwijl hij in interactie met een ander wel degelijk telt. Gebruik importance dus als <strong>verkenning en sanity-check</strong> (“welke groep features draagt het verhaal?”), niet als bewijsstuk voor causaliteit. </p>"
+          "html": "Twee features die hetzelfde signaal dragen <em>delen</em> de importance; een feature kan laag scoren terwijl hij in interactie w&eacute;l telt. Gebruik importance als <strong>verkenning</strong>, niet als bewijsstuk."
         }
       ]
     },
@@ -296,7 +296,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Dezelfde breast_cancer-split als in eerdere onderwerpen, drie modellen naast elkaar: de vrijgeleide boom, gewone bagging en het volledige random forest — met OOB-score erbij. Let op de één-regel-verschillen: bij bagging geef je de estimator expliciet mee, bij het forest zit alles gebakken in de klasse. </p>"
+          "html": "Zelfde borstkanker-split, drie modellen naast elkaar: de vrijgeleide boom, gewone bagging en het volledige random forest &mdash; met OOB-score erbij."
         },
         {
           "type": "code",
@@ -307,7 +307,7 @@
         },
         {
           "type": "text",
-          "html": "<p> Typische output: de enkele boom test 0.951; bagging stijgt naar 0.958 met OOB 0.955; het random forest wint met 0.965 en OOB 0.960. Zie de patronen uit dit onderwerp bevestigd: beide ensembles verslaan de enkele boom, het forest (met zijn decorrelerende feature-steekproef) verslaat gewone bagging, en de OOB-scores volgen de test-scores op minder dan een halve procentpunt — de gratis saniteitscheck werkt. Geen van de verschillen is dramatisch: breast_cancer is een kleine, vriendelijke dataset waarop ook één boom al ver komt; op grotere, ruisere data lopen de verschillen doorgaans verder uit. </p>"
+          "html": "Typische output: enkele boom 0.951; bagging 0.958 (OOB 0.955); random forest 0.965 (OOB 0.960). Beide ensembles verslaan de boom, het forest verslaat bagging, en de OOB-scores volgen binnen een half punt."
         },
         {
           "type": "code",
@@ -318,12 +318,12 @@
         },
         {
           "type": "text",
-          "html": "<p> Typische output: <em>worst concave points</em> voert met 0.172, gevolgd door <em>worst area</em> (0.123), <em>mean concave points</em> (0.090), <em>mean concavity</em> (0.083) en <em>worst radius</em> (0.081); de som over alle 30 features is exact 1.0. De morfologie van de celkernen — hoe gekarteld, hoe groot — draagt dus het verhaal, precies wat de medische literatuur ook zegt. Dat soort overeenkomst is de feature importance op zijn best: geen bewijs, maar een controleerbare samenvatting van wat het model geleerd heeft. </p>"
+          "html": "Typische output: <em>worst concave points</em> voert met 0.172, gevolgd door <em>worst area</em> (0.123) en <em>mean concave points</em> (0.090); de som over alle 30 features is exact 1.0."
         },
         {
           "type": "callout",
           "kind": "key",
-          "html": "<p> Waar dit naartoe gaat: random forests zijn het ene uiteinde van het ensemble-spectrum — <strong>parallel, gecorreleerd-arbeiders-verlagend, variantie-jager</strong>. Het andere uiteinde is <strong>boosting</strong>: bomen die ná elkaar trainen en elk de fouten van de vorige proberen te repareren — een bias-jager. Ze vullen elkaar perfect aan, en samen dekken ze het grootste deel van de praktische tabellen-data-wereld af. Het bias-variance-kader uit dit hoofdstuk is de landkaart waarop je beide blijft terugvinden. </p>"
+          "html": "Random forests zijn het &eacute;&eacute;n uiteinde van het ensemble-spectrum: <strong>parallel, variantie-jager</strong>. Het andere uiteinde is <strong>boosting</strong>: bomen achter elkaar die elkaars fouten repareren &mdash; een bias-jager."
         }
       ]
     }

@@ -2,7 +2,7 @@
   "id": "vergelijking",
   "chapter": "ch4",
   "title": "LR vs. SVM & the SGDClassifier",
-  "intro": "When do you choose logistic regression and when an SVM? Plus the SGDClassifier, which shows that these models differ only in their loss function.",
+  "intro": null,
   "keyPoints": [
     "Large data or need probabilities → <strong>logistic regression</strong>; clear margin on little data → <strong>SVM</strong>.",
     "Key hyperparameters: <strong>C</strong> (both), <strong>penalty</strong> (LR), <strong>gamma</strong> (RBF-SVM).",
@@ -16,7 +16,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Both are linear classifiers, and both can work with kernels — though it is more common with SVMs, because predictions are much faster when the number of support vectors is small. Both can be talked into producing probabilities, but with logistic regression that is <em>natural</em> (it is built into the loss), while with SVMs it takes extra work. Both extend to multi-class via one-vs-rest <em>or</em> by adapting the loss directly. </p> <p> The sharpest difference remains: with logistic regression (as with most methods) <strong>all</strong> data points influence the fit; with an SVM only the <strong>support vectors</strong> matter — the rest can go. And finally a matter of definition: \"logistic regression\" does not refer to a specific type of regularisation, but \"SVM\" by convention means: linear classifier with hinge loss <em>plus</em> L2 regularisation. </p>"
+          "html": "Both are linear classifiers and both can use kernels. Sharpest difference: in logistic regression <strong>all</strong> points influence the fit, in an SVM only the <strong>support vectors</strong>. And by convention &ldquo;SVM&rdquo; means: hinge loss <em>plus</em> L2 regularization."
         },
         {
           "type": "table",
@@ -100,7 +100,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Finally, a class that illustrates the red thread of the course: <code>SGDClassifier</code> (SGD = <strong>stochastic gradient descent</strong>). It can handle much larger datasets than the other methods. To switch between logistic regression and a linear SVM you only need to change the <code>loss</code> hyperparameter — <em>the model is the same, only the loss changes</em>. Exactly what we saw in chapter 2. </p> <p> One \"gotcha\": the regularisation hyperparameter here is called <code>alpha</code> instead of <code>C</code> — and a larger <code>alpha</code> means <em>more</em> regularisation. In short: <code>alpha</code> is the inverse of <code>C</code>. </p>"
+          "html": "<code>SGDClassifier</code> handles larger datasets and switches between LR and SVM via the <code>loss</code> hyperparameter alone — the model is the same. Gotcha: regularization is called <code>alpha</code> here (the inverse of <code>C</code>: higher = more regularization)."
         },
         {
           "type": "code",
@@ -121,7 +121,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Zoom out: data science is answering questions and making decisions based on data, and combines pieces such as data collection, data preparation, database design, visualisation, communication, software engineering and machine learning. Within machine learning there are branches like supervised learning, unsupervised learning and reinforcement learning; we stayed inside supervised learning — predicting a target from features with labelled data. Within supervised learning we focused on <em>classification</em> (categorical targets), and within that on the two most popular linear classifiers: logistic regression and SVMs. </p> <p> Next steps: tree-based methods (random forests, boosting), non-linear classifiers in depth, or unsupervised learning. </p>"
+          "html": "Zoom out: data science spans everything from data collection to communication; ML is a branch within it, supervised learning within that, classification within that — and LR and SVMs within that. Next on this site: tree-based methods and calculus."
         }
       ]
     }

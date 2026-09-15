@@ -2,7 +2,7 @@
   "id": "regression-trees",
   "chapter": "ch5",
   "title": "Regression trees: predicting numbers with leaves",
-  "intro": "A regression tree is the same decision tree as for classification — but every leaf now predicts a number: the mean of the training values in that leaf. The result is a step function you can drag yourself below: move the split points, adjust the leaf means and watch the MSE drop live.",
+  "intro": "The same tree idea, but every leaf now predicts a <strong>number</strong>: the mean of the training values in that leaf. The result is a step function you can drag yourself.",
   "keyPoints": [
     "Same tree, different leaf: a classification leaf predicts the <strong>majority class</strong>, a regression leaf the <strong>mean</strong> \\( c_m \\) of the targets in that leaf.",
     "A split minimises the <strong>weighted MSE of the children</strong> — the regression counterpart of Gini/entropy.",
@@ -16,11 +16,11 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> In the topic <em>Decision trees</em> the tree sorted samples until every leaf was a <em>class</em>. For regression the questions stay the same (“is the floor area below 60 m²?”), but the leaves do something different: they predict a <strong>number</strong>. Which number? The <strong>mean of the target values</strong> of the training samples that ended up in that leaf. </p>"
+          "html": "The questions are the same (&ldquo;area below 60 m&sup2;?&rdquo;), but the leaves predict a <strong>number</strong>: the <strong>mean of the target values</strong> in that leaf."
         },
         {
           "type": "text",
-          "html": "<p> That sounds simple — and it is. It is literally the best constant prediction for a fixed group of samples in the least-squares sense: if you want to minimise MSE over a fixed group, you cannot do better than the mean (see the topic <em>Metrics for regression</em>). So the tree only has to search <em>where the boundaries between the groups lie</em>; what to predict inside each group it already knows. </p>"
+          "html": "That is the best constant prediction for a group in the least-squares sense: whoever minimizes MSE over a fixed group can do no better than the mean. So the tree only searches for <em>where the boundaries lie</em>."
         },
         {
           "type": "table",
@@ -64,7 +64,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> For splitting you need two formulas. One for what a leaf predicts — the mean — and one for what a split costs: the <strong>weighted average MSE of the two children</strong>: </p>"
+          "html": "Two formulas: one for what a leaf predicts (the mean) and one for what a split costs (the <strong>weighted average MSE of the children</strong>):"
         },
         {
           "type": "formula",
@@ -80,16 +80,16 @@
         },
         {
           "type": "text",
-          "html": "<p> Worked out on twelve apartments (floor area in m², price in thousand euro). One split at <em>area ≤ 60</em>: the left child catches the four small flats (prices 178, 190, 172, 185), mean \\( c_L = 181{,}25 \\) with \\( \\text{MSE}_L = 46{,}7 \\). The right child catches the eight larger ones (255 … 341), mean \\( c_R = 289 \\) with \\( \\text{MSE}_R = 1995 \\) — still a mess, because that group mixes medium and large. The cost of this first split: \\( \\tfrac{4}{12} \\cdot 46{,}7 + \\tfrac{8}{12} \\cdot 1995 \\approx 1346 \\). </p>"
+          "html": "Twelve apartments, one split at <em>area &le; 60</em>: left mean 181.25 (MSE 46.7), right mean 289 (MSE 1995 — still a mess). Cost: \\( \\tfrac{4}{12} \\cdot 46.7 + \\tfrac{8}{12} \\cdot 1995 \\approx 1346 \\)."
         },
         {
           "type": "text",
-          "html": "<p> So the tree splits the <em>right</em> child once more, at <em>area ≤ 90</em>: the medium ones get leaf mean 259 (MSE 37.5), the large ones 344 (MSE 27.5). The tree cost drops to \\( \\tfrac{4}{12} \\cdot 46{,}7 + \\tfrac{4}{12} \\cdot 37{,}5 + \\tfrac{4}{12} \\cdot 27{,}5 \\approx 37{,}2 \\) — a factor 36 better. This is exactly why trees work <em>recursively</em>: every split makes at least one child cleaner, and the tree keeps biting until the brakes (depth, <code>min_samples_leaf</code>) intervene. </p>"
+          "html": "Split the right side again at <em>area &le; 90</em>: leaf means 259 and 344, tree cost drops to \\( \\approx 37.2 \\) — 36&times; better. Trees keep biting <em>recursively</em> until the brakes kick in."
         },
         {
           "type": "callout",
           "kind": "key",
-          "html": "<p> Compare this with <em>Gradient descent</em>: linear models approach their optimum with small steps through parameter space. A tree searches its structure with <strong>greedy splits</strong> — always the best split <em>now</em>, never looking back. The optimisation is very different, but the brake-at-the-end (regularisation vs. pruning) plays exactly the same bias-variance role in both. </p>"
+          "html": "Compare with gradient descent: linear models approach their optimum in small steps; a tree searches its structure with <strong>greedy splits</strong>. The brake at the end plays the same bias-variance role in both."
         }
       ]
     },
@@ -98,7 +98,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Below are the same twelve apartments. The cyan staircase is the tree prediction with two split points (\\( t_1, t_2 \\)) and three leaf means (\\( m_1, m_2, m_3 \\)). Drag the sliders to the values from the worked example — \\( t_1 = 60 \\), \\( t_2 = 90 \\), \\( m_1 = 181 \\), \\( m_2 = 259 \\), \\( m_3 = 344 \\) — and watch the MSE chip light up green: </p>"
+          "html": "The cyan staircase is the tree prediction with two split points and three leaf means. Drag the sliders to the example values — \\( t_1 = 60 \\), \\( t_2 = 90 \\), \\( m_1 = 181 \\), \\( m_2 = 259 \\), \\( m_3 = 344 \\) — and watch the MSE chip light up green:"
         },
         {
           "type": "plot",
@@ -232,12 +232,12 @@
         },
         {
           "type": "text",
-          "html": "<p> What you see here is the core of regression trees: <strong>the prediction is constant per leaf</strong>. Not a slope like linear regression — a series of plateaus. For data that itself thinks in jumps (housing types, tax brackets, threshold subsidies) that fits <em>better</em> than a straight line; for smooth processes (temperature, growth) the line is usually more natural. </p>"
+          "html": "The heart of regression trees: <strong>the prediction is constant per leaf</strong> — a series of plateaus, not a slope. For data that thinks in thresholds (housing types, tax brackets) that fits better than a straight line."
         },
         {
           "type": "callout",
           "kind": "tip",
-          "html": "<p> Also try what happens when you push \\( t_1 \\) and \\( t_2 \\) close together: you create a narrow, thinly populated leaf. The MSE on these twelve points can even <em>drop</em> (parking an outlier in its own leaf), while the prediction on new data becomes arbitrary — the interactive version of overfitting, and exactly why <code>min_samples_leaf</code> exists. </p>"
+          "html": "Put \\( t_1 \\) and \\( t_2 \\) close together: the MSE on these twelve points can even <em>drop</em> (an outlier in its own leaf) while predictions on new data become arbitrary — exactly why <code>min_samples_leaf</code> exists."
         }
       ]
     },
@@ -246,16 +246,16 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> More depth means more steps. With <code>max_depth=1</code> the tree fits a single jump — too coarse for three housing types (high bias). With unlimited depth every apartment eventually gets its own plateau: perfect on the training set, arbitrary on new data (high variance). The logic is identical to the classification topic: <code>max_depth</code> and <code>min_samples_leaf</code> determine how fine the staircase is, and with it where you sit on the bias-variance axis. </p>"
+          "html": "More depth = more steps: <code>max_depth=1</code> is too coarse (high bias), unlimited gives every apartment its own plateau (high variance). <code>max_depth</code> and <code>min_samples_leaf</code> set your position on the bias-variance axis."
         },
         {
           "type": "text",
-          "html": "<p> There is one more hard ceiling specific to regression trees: <strong>no extrapolation</strong>. The model only knows leaf means from the training data — ask for the price of 200 m² and the tree answers with the highest leaf mean it knows (here 344). A linear regression with a positive slope happily projects on to 600; the tree effectively refuses any statement beyond the seen range. Sometimes a flaw, sometimes a virtue: at least it invents nothing. </p>"
+          "html": "Hard ceiling: <strong>no extrapolation</strong>. The tree only knows leaf means from the training data — ask for a price at 200 m&sup2; and you get the highest known leaf mean. Sometimes a flaw, sometimes a virtue: it invents nothing."
         },
         {
           "type": "callout",
           "kind": "warning",
-          "html": "<p> Rules of thumb: if the underlying relation suits a straight line (or a smooth curve), linear regression is usually more accurate per parameter. If the data itself jumps in thresholds, the tree wins. And <strong>never</strong> predict far outside the training range with a regression tree — every leaf value is a closed, historical average, not a trend. </p>"
+          "html": "Rules of thumb: smooth relation &rarr; linear regression usually more accurate; data that jumps in thresholds &rarr; the tree wins. And <strong>never</strong> predict far outside the training range with a regression tree."
         }
       ]
     },
@@ -264,7 +264,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> The same API as always — the model is just called <code>DecisionTreeRegressor</code> now. The example trains the tree on the twelve apartments from the interactive plot, compares three depths and checks the extrapolation: </p>"
+          "html": "The same API as always — only the model is now called <code>DecisionTreeRegressor</code>. The example trains on the twelve apartments, compares three depths and checks extrapolation:"
         },
         {
           "type": "code",
@@ -275,12 +275,12 @@
         },
         {
           "type": "text",
-          "html": "<p> Note the three lines of output: <code>max_depth=2</code> already scores almost as well as the unlimited tree on this data, with four leaves instead of twelve. And the prediction for 200 m² is identical to that for 114 m² — the tree <em>cannot</em> go beyond its highest leaf. That is not a bug but architecture: leaf means are constants, not formulas. </p>"
+          "html": "Note: <code>max_depth=2</code> already scores nearly as well as the unrestricted tree, and the prediction for 200 m&sup2; is identical to that for 114 m&sup2; — the tree <em>cannot</em> go beyond its highest leaf."
         },
         {
           "type": "callout",
           "kind": "info",
-          "html": "<p> For regression too, scikit-learn scans all (feature, threshold) pairs per split. With \\( d \\) features and \\( n \\) samples that is \\( O(d \\cdot n \\log n) \\) per node — noticeably faster than an SVM kernel on the same data. That, plus scale-independence, makes trees the natural first candidate for tabular regression problems. </p>"
+          "html": "Per split scikit-learn scans all (feature, threshold) pairs: \\( O(d \\cdot n \\log n) \\) per node — noticeably faster than an SVM kernel. Plus scale-independence: trees are the natural first candidate for tabular data."
         }
       ]
     }

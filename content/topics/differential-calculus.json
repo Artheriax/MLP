@@ -2,7 +2,7 @@
   "id": "differential-calculus",
   "chapter": "ch6",
   "title": "Differentiaalrekening: de afgeleide",
-  "intro": "Hoe snel verandert iets, precies nú? Gemiddelden weet iedereen te berekenen: afstand gedeeld door tijd. Maar de momentane snelheid — de stand van de teller op één tik van de klok — lijkt een paradox: over een tijdsinterval van nul leg je ook nul afstand af. Differentiaalrekening lost die paradox op met één listig idee: <em>bereken het gemiddelde over steeds kleinere intervallen en kijk waar het naartoe gaat</em>. Wat overblijft is de <strong>afgeleide</strong> — het belangrijkste gereedschap in de wiskunde achter machine learning, want elk model dat “leert” doet dat door zijn loss te differentiëren en de helling af te dalen. Dit onderwerp bouwt de afgeleide vanaf nul op: definitie, interpretatie, rekenregels en de brug naar gradiënten.",
+  "intro": "Hoe snel verandert iets, precies n&uacute;? Differentiaalrekening lost dat op met &eacute;&eacute;n listig idee: bereken het gemiddelde over steeds kleinere intervallen en kijk waar het naartoe gaat. Wat overblijft is de <strong>afgeleide</strong> &mdash; het gereedschap achter elk model dat &ldquo;leert&rdquo;.",
   "keyPoints": [
     "De afgeleide \\( f'(x) \\) is de <strong>momentane verandering</strong>: de helling van de raaklijn die de curve op punt \\( (x, f(x)) \\) raakt — positief = stijgend, negatief = dalend, nul = horizontaal (potentieel top of dal).",
     "De definitie is een <strong>limiet van verschilquotiënten</strong>: \\( f'(x) = \\lim_{h \\to 0} \\frac{f(x+h) - f(x)}{h} \\). Voor \\( f(x) = x^2 \\) geeft dat exact \\( 2x \\) — geen benadering, maar de limiet zelf.",
@@ -17,16 +17,16 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Stel: je rijdt 60 kilometer in één uur. Gemiddelde snelheid: 60 km/u — delen maar. Maar wat was je snelheid om precies 14:32? Elk <em>echt</em> interval duurt even, en over een interval praat je altijd over een gemiddelde; op één tijdstip duurt niets en leg je niets af, dus “afstand gedeeld door tijd” geeft 0/0. Het lijkt onmogelijk om van één punt de verandering te meten — en toch voelt het antwoord (de teller op dat moment) volkomen natuurlijk. Deze spanning is driehonderd jaar oud, en het is precies het probleem dat Newton en Leibniz onafhankelijk van elkaar oplosten. </p>"
+          "html": "Gemiddelde snelheid is simpel delen &mdash; maar op &eacute;&eacute;n tijdstip duurt niets en leg je niets af: 0/0. Newton en Leibniz losten deze paradox onafhankelijk op."
         },
         {
           "type": "text",
-          "html": "<p> Hun list: benader het onmeetbare met het meetbare. Neem een <strong>secant</strong> — een lijn door twee punten op de curve, hier \\( (x, f(x)) \\) en \\( (x+h, f(x+h)) \\). De helling daarvan is het gewone verschilquotiënt \\( \\frac{f(x+h)-f(x)}{h} \\): wél te berekenen, precies de gemiddelde verandering over het interval. Schuif nu het tweede punt langs de curve richting het eerste: \\( h \\to 0 \\). De secant draait mee en klikt vast op zijn limietpositie — de <strong>raaklijn</strong> (tangent) in \\( (x, f(x)) \\). De helling van dát limiet-lijn is de afgeleide: momentane verandering, gedefinieerd als de grens van gemiddelden. Geen paradox meer, alleen een limiet. </p>"
+          "html": "Hun list: benader het onmeetbare met het meetbare. De <strong>secant</strong> door \\( (x, f(x)) \\) en \\( (x+h, f(x+h)) \\) heeft helling \\( \\frac{f(x+h)-f(x)}{h} \\). Schuif \\( h \\to 0 \\) en de secant klikt vast op de <strong>raaklijn</strong>: de afgeleide is de grens van gemiddelden."
         },
         {
           "type": "callout",
           "kind": "key",
-          "html": "<p> Drie interpretaties van hetzelfde getal \\( f'(x) \\), allemaal waar en allemaal bruikbaar: <strong>(1) geometrisch</strong> — de helling van de raaklijn; <strong>(2) fysiek</strong> — de momentane snelheid (positie differentiëren geeft snelheid, nogmaals differentiëren geeft versnelling); <strong>(3) als gevoeligheid</strong> — als ik \\( x \\) een kleintje \\( \\Delta x \\) opschuif, verandert \\( f \\) bij benadering met \\( f'(x)\\,\\Delta x \\). Die derde lezing is de ML-lezing: de gradiënt zegt letterlijk “draai aan deze knop en de loss verandert zóveel per eenheid”. </p>"
+          "html": "Drie interpretaties van \\( f'(x) \\): <strong>geometrisch</strong> helling van de raaklijn, <strong>fysiek</strong> momentane snelheid, <strong>als gevoeligheid</strong> &mdash; schuif \\( x \\) op, dan verandert \\( f \\) bij benadering met \\( f'(x)\\,\\Delta x \\). Die derde is de ML-lezing."
         }
       ]
     },
@@ -41,16 +41,16 @@
         },
         {
           "type": "text",
-          "html": "<p> Eén keer echt doen, daarna nooit meer. Voor \\( f(x) = x^2 \\): het verschilquotiënt is \\( \\frac{(x+h)^2 - x^2}{h} = \\frac{x^2 + 2xh + h^2 - x^2}{h} = \\frac{h(2x + h)}{h} = 2x + h \\). Voor elke stap \\( h > 0 \\) is dat gewoon een getal — en in de limiet \\( h \\to 0 \\) verdwijnt het losse \\( h \\) keurig: \\( f'(x) = 2x \\). Bij \\( x = 3 \\) is de helling dus exact 6. Merk op hoe de limiet het karwei klust: het nadeel van de definitie (delen door iets dat naar nul gaat) wordt ontmanteld door <em>eerst</em> weg te strepen wat kan en <em>pas dan</em> de limiet te nemen. </p>"
+          "html": "&Eacute;&eacute;n keer echt doen: voor \\( f(x) = x^2 \\) is het verschilquoti&euml;nt \\( 2x + h \\), en in de limiet \\( h \\to 0 \\) blijft \\( f'(x) = 2x \\). Bij \\( x = 3 \\): helling exact 6."
         },
         {
           "type": "text",
-          "html": "<p> De notaties dragen alle drie dezelfde inhoud. <strong>Lagrange</strong> schrijft \\( f'(x) \\) — “f-strijk x”, compact en functioneel. <strong>Leibniz</strong> schrijft \\( \\frac{df}{dx} \\) of \\( \\frac{d}{dx}f(x) \\) — het kleine oneindige verhoudinkje van verandering in \\( f \\) over verandering in \\( x \\); omslachtiger, maar onmisbaar zodra meerdere variabelen en de kettingregel opduiken (de gradiënt \\( \\nabla \\) is zijn familie). De <strong>operator-notatie</strong> \\( \\frac{d}{dx} \\) lees je als een werkwoord: “differentieer wat er rechts staat naar \\( x \\)”. In ML-teksten wisselen ze elkaar voortdurend af, dus leer ze allebei lezen. </p>"
+          "html": "Drie notaties, dezelfde inhoud: Lagrange \\( f'(x) \\); Leibniz \\( \\frac{df}{dx} \\) (onmisbaar bij de kettingregel en gradi&euml;nten); operator-notatie \\( \\frac{d}{dx} \\) = &ldquo;differentieer wat rechts staat&rdquo;."
         },
         {
           "type": "callout",
           "kind": "info",
-          "html": "<p> Wanneer <em>bestaat</em> de afgeleide niet? Twee klassieke gevallen. Een <strong>knik</strong>: \\( f(x) = |x| \\) heeft op nul links helling −1 en rechts +1 — de secanten kunnen niet kiezen, geen limiet. Een <strong>verticale raaklijn</strong>: \\( f(x) = \\sqrt[3]{x} \\) staat op nul recht overeind, de helling loopt naar oneindig. Voor machine learning is dat geen theorie-museumstuk: loss-oppervlakken met knikken (zoals bij ReLU-activaties of de hinge loss) vragen om voorzichtigheid bij de optimalisatie — daar waar de afgeleide niet bestaat, weet de gradiënt niet welke kant op te wijzen. </p>"
+          "html": "Wanneer bestaat de afgeleide niet? Bij een <strong>knik</strong> (\\( |x| \\) op nul: links &minus;1, rechts +1) of een <strong>verticale raaklijn</strong>. Relevant voor ML: loss-vlakken met knikken (ReLU, hinge loss) vragen voorzichtigheid bij de optimalisatie."
         }
       ]
     },
@@ -59,7 +59,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Voordat de rekenregels komen: even voelen. De plot hieronder toont \\( f(x) = \\sin x \\) met zijn raaklijn in \\( x_0 \\) — en \\( x_0 \\) is van jou. Verschuif het raakpunt en let op het samenspel: op de toppen en dalen van de sinus wordt de raaklijn horizontaal (helling 0, precies de kritieke punten uit <em>Optimalisatie</em>), op de stijgende flanken kantelt hij mee omhoog, op de dalende omlaag. De helling-chip rechts onder toont de waarde van \\( f'(x_0) = \\cos(x_0) \\) live. </p>"
+          "html": "Voelen voordat rekenen: verschuif het raakpunt \\( x_0 \\) op de sinus. Op toppen en dalen wordt de raaklijn horizontaal (helling 0 &mdash; de kritieke punten), op de flanken kantelt hij mee."
         },
         {
           "type": "plot",
@@ -125,7 +125,7 @@
         },
         {
           "type": "text",
-          "html": "<p> Kleine observatie om mee te nemen: de raaklijn is de <strong>beste lineaire benadering</strong> van de curve rond het raakpunt. Vlakbij \\( x_0 \\) mag je de curve door zijn raaklijn vervangen — dat is precies wat de formule \\( f(x) \\approx f(x_0) + f'(x_0)(x - x_0) \\) zegt, en het is de definitie van “lokaal lineair”. Elk glad model is dus van dichtbij een lineair model; gradient descent op een loss-oppervlak valt eigenlijk steeds opnieuw zo'n lokale raaklijn af. Dezelfde gedachte keert terug als de Taylor-benadering, waar diepere afgeleiden de kromming meenemen. </p>"
+          "html": "Neem mee: de raaklijn is de <strong>beste lineaire benadering</strong> rond het raakpunt &mdash; \\( f(x) \\approx f(x_0) + f'(x_0)(x - x_0) \\). Elk glad model is van dichtbij lineair; gradient descent daalt steeds zo'n lokale raaklijn af."
         }
       ]
     },
@@ -134,7 +134,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Nu de definitie zelf in beeld, op \\( f(x) = x^2 \\) rond het punt \\( (3, 9) \\). De gele secant snijdt de parabool in \\( (3, 9) \\) en \\( (3+h, (3+h)^2) \\); de slider <code>h</code> trekt het tweede punt richting het eerste. Let op wat er níet gebeurt: de secant draait wel, maar zijn helling schuift ordelijk naar de magenta raaklijn met helling exact 6 — de uitwerking \\( 2x + h \\) met \\( x = 3 \\), zichtbaar als de metric die naar 6.000 klimt. </p>"
+          "html": "De definitie in actie op \\( f(x) = x^2 \\) rond \\( (3, 9) \\): de gele secant snijdt in \\( (3, 9) \\) en \\( (3+h, (3+h)^2) \\); de slider <code>h</code> trekt het tweede punt dichterbij en de helling schuift ordelijk naar exact 6."
         },
         {
           "type": "plot",
@@ -211,7 +211,7 @@
         },
         {
           "type": "text",
-          "html": "<p> In cijfers hetzelfde verhaal: bij \\( h = 1 \\) is het quotiënt 7, bij \\( h = 0{,}5 \\) is het 6.5, bij \\( h = 0{,}05 \\) is het 6.05 — en bij elke halvering van \\( h \\) halveert de afstand tot 6. Die keurige lineariteit is hier een geluk van de parabool (het quotiënt is <em>exact</em> \\( 6 + h \\)); bij krommere functies kronkelt het quotiënt wat, maar de limiet gedraagt zich hetzelfde: geen sprong op het eind, maar een waarde waar alles naartoe neigt. </p>"
+          "html": "In cijfers: bij \\( h = 1 \\) is het quoti&euml;nt 7, bij 0.5 is het 6.5, bij 0.05 is het 6.05 &mdash; elke halvering van \\( h \\) halveert de afstand tot 6."
         },
         {
           "type": "code",
@@ -222,7 +222,7 @@
         },
         {
           "type": "text",
-          "html": "<p> Typische output: 7.0000, 6.5000, 6.1000, 6.0100, 6.0010 — en de slotregel bevestigt de analytische limiet. Dit is de hele differentiaalrekening in tien regels Python: een gemiddelde over steeds kleiner wordende stappen, met een vaste plek waar hij heen wil. De rest van dit onderwerp is handigheid: regels die je die limiet nooit meer zelf hoeft uit te voeren. </p>"
+          "html": "Typische output: 7.0000, 6.5000, 6.1000, 6.0100, 6.0010 &mdash; de hele differentiaalrekening in tien regels Python."
         }
       ]
     },
@@ -231,7 +231,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> De limietdefinitie is het bewijs van bestaan, niet het dagelijkse gereedschap — elke keer \\( h \\to 0 \\) met de hand doornemen is als vermenigvuldigen door herhaald optellen. Newton en Leibniz' erfgenamen hebben daarom een klein, compossabel regelsysteem afgeleid, en dáár is differentiëren mee gedaan: herken het patroon, pas de regel toe, klaar. De belangrijkste is de <strong>machtregel</strong>, die één keer bewijzen en voor altijd gebruiken is: \\( (x^n)' = n x^{n-1} \\) — de exponent komt er vooraan af, zichzelf verminderd met één. Ook breuken en wortels vallen eronder: \\( \\sqrt{x} = x^{1/2} \\) heeft afgeleide \\( \\tfrac{1}{2} x^{-1/2} = \\tfrac{1}{2\\sqrt{x}} \\). </p>"
+          "html": "De limietdefinitie is het bewijs, niet het dagelijkse gereedschap. De rekenregels zijn het gereedschap &mdash; de <strong>machtregel</strong> voorop: \\( (x^n)' = n x^{n-1} \\). Ook wortels: \\( \\sqrt{x} = x^{1/2} \\) heeft afgeleide \\( \\tfrac{1}{2\\sqrt{x}} \\)."
         },
         {
           "type": "table",
@@ -280,12 +280,12 @@
         },
         {
           "type": "text",
-          "html": "<p> De <strong>kettingregel</strong> verdient zijn eigen alinea, want hij is de meest gebruikte regel in heel de machine learning. Een samenstelling \\( f(g(x)) \\) verandert dubbel: van \\( x \\) naar \\( g \\), en van \\( g \\) naar \\( f \\) — en de totale gevoeligheid is het <em>product</em> van de twee stapjes: buiten-afgeleide × binnen-afgeleide. In Leibniz-notatie leest het zichzelf: \\( \\frac{df}{dx} = \\frac{df}{dg} \\cdot \\frac{dg}{dx} \\) — de \\( dg \\)'s vallen tegen elkaar weg als breuken (dat mág niet strikt, maar als ezelsbrug werkt het prima). Bij neural networks heet het repeterend toepassen van de kettingregel <strong>backpropagation</strong> — letterlijk dezelfde regel, alleen in matrixvorm en achterstevoren. </p>"
+          "html": "De <strong>kettingregel</strong> is de meest gebruikte regel in heel de ML: \\( \\frac{df}{dx} = \\frac{df}{dg} \\cdot \\frac{dg}{dx} \\) &mdash; de totale gevoeligheid is het product van de stapjes. Repeterend toegepast heet het <strong>backpropagation</strong>."
         },
         {
           "type": "callout",
           "kind": "tip",
-          "html": "<p> Strategie bij een samengestelde uitdrukking: <strong>identificeer eerst de buitenste structuur</strong> (is het een product? een quotiënt? een samenstelling?), pas de bijbehorende regel toe op de grote brokken, en differentieer de brokken pas in de volgende ronde. Wie in één keer alles wil doen, maakt fouten; wie in lagen werkt, maakt ze zelden. Controleer elk antwoord eventueel met de numerieke afgeleide uit de code verderop — twee regels NumPy en je weet of je algebra klopt. </p>"
+          "html": "Strategie bij samengestelde uitdrukkingen: <strong>identificeer eerst de buitenste structuur</strong> (product? quoti&euml;nt? samenstelling?), pas de regel toe op de grote brokken, en differentieer de brokken pas in de volgende ronde."
         }
       ]
     },
@@ -294,7 +294,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Vier functies dragen de moderne wiskunde, en hun afgeleiden zijn vaste waarden om uit het hoofd te kennen. Ze volgen allemaal rechtstreeks uit de limietdefinitie (met de bekende grenzen \\( \\lim_{h \\to 0} \\tfrac{\\sin h}{h} = 1 \\) en \\( \\lim_{h \\to 0} \\tfrac{e^h - 1}{h} = 1 \\)), maar het bewijs hoeft één keer; het resultaat gebruik je elke dag. </p>"
+          "html": "Vier vaste waarden om uit het hoofd te kennen &mdash; ze volgen allemaal rechtstreeks uit de limietdefinitie:"
         },
         {
           "type": "table",
@@ -328,12 +328,12 @@
         },
         {
           "type": "text",
-          "html": "<p> De exponentiële is de stilistische held van het verhaal: \\( e^x \\) is de <em>enige</em> functie (op een constante factor na) waarvan de groeisnelheid gelijk is aan de huidige stand — groeit hij, dan groeit zijn groei mee. Dat is geen curieuze eigenschap maar de reden dat \\( e \\) overal in de wiskunde opduikt: samenstellingen gedragen zich netjes onder de kettingregel, \\( (e^{g(x)})' = g'(x)\\, e^{g(x)} \\) — de buitenkant verandert niet. Bij de logaritme hetzelfde gemak: \\( (\\ln g(x))' = \\tfrac{g'(x)}{g(x)} \\), wat hem de natuurlijke maat maakt voor <em>relatieve</em> verandering — vandaar log-loss, log-odds en de halve informatietheorie. </p>"
+          "html": "De exponenti&euml;le is de stilistische held: \\( e^x \\) is de enige functie waarvan de groeisnelheid gelijk is aan de huidige stand. Samenstellingen blijven netjes: \\( (e^{g(x)})' = g'(x) e^{g(x)} \\) en \\( (\\ln g(x))' = \\tfrac{g'(x)}{g(x)} \\)."
         },
         {
           "type": "callout",
           "kind": "key",
-          "html": "<p> De klassieke ML-toepassing in één regel: de <strong>sigmoid</strong> \\( \\sigma(z) = \\tfrac{1}{1+e^{-z}} \\) heeft afgeleide \\( \\sigma'(z) = \\sigma(z)\\,(1 - \\sigma(z)) \\). Afleiden: quotiëntregel of kettingregel op de \\( e^{-z} \\), en een paar regels later valt alles op zijn plek. Deze compacte vorm is de reden dat de sigmoid eeuwenlang de standaard-activatie was: de afgeleide is <em>gratis</em> te hergebruiken als de functiewaarde al bekend is. Zie <em>Kansen &amp; de sigmoid-functie</em> voor de functie zelf, en <em>Gradient descent</em> voor waar deze afgeleide in het leerproces landt. </p>"
+          "html": "De ML-klassieker: de <strong>sigmoid</strong> \\( \\sigma(z) = \\tfrac{1}{1+e^{-z}} \\) heeft afgeleide \\( \\sigma'(z) = \\sigma(z)(1 - \\sigma(z)) \\) &mdash; gratis te hergebruiken als de functiewaarde al bekend is."
         }
       ]
     },
@@ -342,11 +342,11 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Niets houdt je tegen om de afgeleide opnieuw te differentiëren: \\( f''(x) = (f')'(x) \\), de <strong>tweede afgeleide</strong> — de verandering ván de verandering. Fysiek: positie → snelheid → versnelling. Geometrisch meet \\( f'' \\) de <strong>kromming</strong>: positief betekent komvormig (convex — de curve houdt zijn raaklijnen onder zich, zoals \\( x^2 \\)), negatief bergvormig (concaaf — de curve hangt onder zijn raaklijnen, zoals \\( -x^2 \\) of de omgekeerde parabool), en een tekenwissel markeert een <strong>buigpunt</strong>. Voor \\( f(x) = x^3 - 3x \\): \\( f''(x) = 6x \\), dus convex rechts van nul, concaaf links — het buigpunt zit precies op de oorsprong. </p>"
+          "html": "De <strong>tweede afgeleide</strong> meet de kromming: positief = komvormig (convex), negatief = bergvormig (concaaf), tekenwissel = <strong>buigpunt</strong>. Voor \\( f(x) = x^3 - 3x \\): \\( f''(x) = 6x \\), buigpunt in de oorsprong."
         },
         {
           "type": "text",
-          "html": "<p> Waarom dit voor machine learning telt, is de vorm van het dal. Is de loss <strong>convex</strong> (\\( f'' \\geq 0 \\) overal, zoals bij lineaire regressie met de squared loss), dan heeft elk lokaal minimum ook mondiaal de laagste loss — dalen langs de helling kan niet verdwalen. Is de loss <strong>non-convex</strong> (neural networks: hoeken, plateaus, meerdere dalen), dan zijn er lokale minima en saddle points waar gradient descent kan blijven steken. En de <strong>learning rate</strong> uit <em>Gradient descent</em> is een curvature-kwestie: te grote stappen in een steil, smal dal (grote \\( f'' \\)) springen van wand tot wand. De afgeleide zegt waar het daalt; de tweede afgeleide zegt hoe voorzichtig je moet zijn. </p>"
+          "html": "Voor ML is dit de vorm van het dal: een <strong>convexe</strong> loss (lineaire regressie) heeft &eacute;&eacute;n mondiaal minimum &mdash; dalen kan niet verdwalen. Een <strong>non-convexe</strong> loss (neural networks) heeft lokale minima en plateaus, en de learning rate is een curvature-kwestie."
         },
         {
           "type": "code",
@@ -357,12 +357,12 @@
         },
         {
           "type": "text",
-          "html": "<p> Typische output: tien regels waarin de numerieke en de regel-gebaseerde afgeleide op vier decimalen samenvallen — de machtregel, de sinus, de exponentiële en de logaritme allemaal bevestigd door de limietdefinitie in actie. Dit is ook je gereedschap voor de dagelijkse praktijk: bij een handmatige afgeleide van een gecompliceerde loss formuleer je de controle als \\( |D(f, x) - f'(x)| < 10^{-6} \\) op een paar testpunten, en vang je algebra-fouten voordat je model er uren op leert. </p>"
+          "html": "Typische output: numerieke en regel-gebaseerde afgeleide spreken op vier decimalen af &mdash; ook jouw gereedschap om handmatige afgeleiden te controleren."
         },
         {
           "type": "callout",
           "kind": "key",
-          "html": "<p> Eén functie van één variabele was het beginpunt; machine learning leeft in hogere dimensies. Daar wordt de afgeleide een <strong>gradiënt</strong> \\( \\nabla f \\): de vector van alle partiële afgeleiden (differentieer naar één variabele, houd de rest vast) — en de richting van de steilste stijging. Met de min stappen: \\( \\nabla f \\) wijst omhoog, dus \\( -\\nabla f \\) is de afdaalrichting. Elke gewichtsupdate in elk model dat je in deze cursus tegenkomt — logistic regression, SVM's via de SGDClassifier, neural networks — is die ene regel, gevormd met de kettingregel en uitgevoerd in duizend dimensies. <em>Gradient descent</em> laat hem draaien; <em>Optimalisatie</em> (volgende onderwerp) laat hem landen. </p>"
+          "html": "In hogere dimensies wordt de afgeleide een <strong>gradi&euml;nt</strong> \\( \\nabla f \\): de vector van parti&euml;le afgeleiden, wijzend naar de steilste stijging. Elke gewichtsupdate in elk model is \\( x \\leftarrow x - \\eta \\nabla f \\), gevormd met de kettingregel."
         }
       ]
     }

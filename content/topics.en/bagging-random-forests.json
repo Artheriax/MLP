@@ -2,7 +2,7 @@
   "id": "bagging-random-forests",
   "chapter": "ch5",
   "title": "Bagging & random forests: stronger than the sum of trees",
-  "intro": "The bias-variance topic ended its diagnosis with a promise: if high variance is the problem, <strong>ensembles</strong> are the cure. This topic delivers on that promise. Bagging trains dozens of deep trees, each on a different bootstrap sample of the same training data, and averages their predictions — one tree's twitchy precision becomes a stable mean. Random forests add one brilliant ingredient: at every split the tree may only look at a random handful of features, so the trees learn different things instead of reproducing the same tree a hundred times. Including OOB scores, the variance formula that explains everything, and code you run right in your browser.",
+  "intro": "Against high variance: <strong>ensembles</strong>. Bagging trains dozens of deep trees each on a different bootstrap sample and averages; random forests let each split see only a random handful of features. With OOB scores and the variance formula that explains it all.",
   "keyPoints": [
     "A deep tree has low bias but high variance. <strong>Bagging</strong> (bootstrap aggregating) trains B trees on B different bootstrap sets and averages the predictions: same bias, far less variance.",
     "A <strong>bootstrap set</strong> is n draws <em>with replacement</em> from your n training samples: on average <strong>63.2% unique</strong> and 36.8% duplicates — and exactly those unused samples give each tree a free validation set (the <strong>OOB score</strong>).",
@@ -17,16 +17,16 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> A fully grown decision tree is a paradox: unbeatable on its training data, yet its decision structure is flimsy. Swap a handful of training samples and the tree may pick a completely different root split, find different thresholds, output a different leaf — the model <em>snaps</em> at the slightest touch of the data. That is the high variance from <em>Bias-variance tradeoff</em> in the flesh: not a bug but the logical consequence of <strong>greedy splits on dense thresholds</strong> with no averaging whatsoever. Each tree memorises exactly those details its own training set happens to contain. </p>"
+          "html": "A fully grown tree is unbeatable on training data, but its structure is shaky: swap a handful of samples and the root split, thresholds and leaves can all change. That is <strong>high variance</strong> in the flesh."
         },
         {
           "type": "text",
-          "html": "<p> The classic fix for a jittery estimator is <em>measure repeatedly and average</em> — which is precisely what an ensemble does. Train a hundred different trees on a hundred different versions of your data, and their <strong>individual errors wash out in the mean</strong>: one tree agonises over a split another one handles smoothly, and the average stays upright where individual trees whip around. For this trick to work you want trees that are <strong>deep and unruly</strong> — per-tree bias is low, and the averaging cleans up the variance. The only missing ingredient is a way to squeeze several meaningfully different versions out of a single training set. </p>"
+          "html": "The classic fix for a jittery estimator: <em>measure repeatedly and average</em>. Train a hundred different trees on a hundred versions of your data and their <strong>shared errors cancel out</strong> — the trees may be deep and unruly for exactly that reason."
         },
         {
           "type": "callout",
           "kind": "key",
-          "html": "<p> One sentence to carry the whole topic: <strong>bagging replaces one stubborn learner with a committee of a hundred, each trained slightly differently — and the committee decides.</strong> For regression the leaf values are averaged; for classification the trees vote (or the probabilities are averaged first). Everything that follows — bootstrap, OOB, feature subsampling — is technique to make that committee as <em>different</em>, and therefore as strong, as possible. </p>"
+          "html": "<strong>Bagging replaces one stubborn learner with a committee of a hundred, each trained slightly differently — and the committee decides.</strong> Regression: average; classification: majority vote or averaged probability."
         }
       ]
     },
@@ -35,7 +35,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> You have n training samples and want B different training sets — cloning won't do, because identical sets give identical trees. The bootstrap is the minimum viable machinery: <strong>draw a sample n times, with replacement</strong>. Every draw goes back on the pile, so the same sample can (and will) be picked repeatedly while some other sample is missed entirely this round. The resulting set always has exactly n rows but a <em>different mix</em>: roughly two thirds of the original samples are present (some twice or thrice), one third is absent. For a tree that splits on thresholds, that is plenty of provocation to learn a different shape. </p>"
+          "html": "The bootstrap: draw <strong>n samples with replacement</strong>. Each set has exactly n rows but a different mix: roughly two thirds of the original samples appear, one third is missing."
         },
         {
           "type": "formula",
@@ -45,7 +45,7 @@
         },
         {
           "type": "text",
-          "html": "<p> Check the number yourself: for n = 100, \\( (1 - 0{,}01)^{100} = 0{,}366 \\), and simulations with a real random generator give 61 to 66 unique samples per set — averaging uncannily close to that 63.2%. Those <strong>36.8% missing samples per bootstrap set are not waste but a gift</strong>: the tree trained on this set has never seen them. Use them as a mini test set for exactly that tree, average those scores over all B trees, and you have a generalisation estimate <em>almost for free</em> — that is the <strong>out-of-bag score</strong> (OOB), detailed below. </p>"
+          "html": "At n = 100, \\( (1 - 0.01)^{100} = 0.366 \\): on average 63.2% unique per set. Those <strong>36.8% missing samples</strong> are a gift: use them as a mini test set for exactly that tree — that is the <strong>out-of-bag score</strong> (OOB)."
         },
         {
           "type": "code",
@@ -56,12 +56,12 @@
         },
         {
           "type": "text",
-          "html": "<p> Typical output: three sets with 62–64% unique samples, and the theory line predicting 36.6% missing. The percentage wobbles per set but averages obediently towards the limit — precisely the law of large numbers the whole ensemble idea floats on. </p>"
+          "html": "Typical output: three sets with 62&ndash;64% unique samples, and the theory rule predicting 36.6%."
         },
         {
           "type": "callout",
           "kind": "info",
-          "html": "<p> Why draw <em>with</em> replacement instead of just grabbing n/2 samples without it? Because the bootstrap kills two birds with one stone: the set stays the same size as the training data (no information-starved mini-sets), and the multiplicities add extra variety — a sample appearing three times weighs three times as heavily in that particular tree's splits. The replacement also turns the 36.8% out-of-bag fraction into a fixed, predictable fact. </p>"
+          "html": "Why <em>with</em> replacement? The set stays as large as the training data and the multiplicities add extra variety — a sample appearing three times weighs three times as heavily in that one tree."
         }
       ]
     },
@@ -70,7 +70,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Now the full recipe. Step 1: build B bootstrap sets. Step 2: on each set train a <strong>fully grown, unregulated</strong> tree (yes — deliberately no max_depth; you <em>want</em> low per-tree bias). Step 3: <strong>aggregate</strong>. For regression the ensemble prediction is the plain average of the B leaf values; for classification the B trees vote and the majority wins, or — neater — the \\( \\texttt{predict\\_proba} \\) probabilities are averaged first and only then rounded. In scikit-learn this entire recipe lives in <code>BaggingClassifier</code> and <code>BaggingRegressor</code>. </p>"
+          "html": "The recipe: <strong>(1)</strong> B bootstrap sets, <strong>(2)</strong> per set a fully grown, unregularized tree (no <code>max_depth</code> — you want low bias per tree), <strong>(3)</strong> aggregate: mean (regression) or majority vote (classification). In scikit-learn: <code>BaggingClassifier</code>/<code>BaggingRegressor</code>."
         },
         {
           "type": "formula",
@@ -80,16 +80,16 @@
         },
         {
           "type": "text",
-          "html": "<p> Why averaging works this well is arithmetic. If each tree errs with mean zero and variance \\( \\sigma^2 \\), and the errors were <em>independent</em>, the variance of the mean would drop to \\( \\sigma^2 / B \\): 100 trees = 100× less noise. It never gets that far — the trees share the same training data, so their errors are correlated (correlation \\( \\rho \\)) and the gain stalls on a plateau. But the direction is right, and that is bagging's power: <strong>the bias stays put, the variance drops</strong>. Compare with pruning: there you buy variance relief by raising bias. Bagging gets the relief almost for free. </p>"
+          "html": "Why averaging works: with independent errors the variance of the mean drops to \\( \\sigma^2/B \\) — 100 trees = 100&times; less noise. It never gets that far (trees share the same data, so their errors correlate at \\( \\rho \\)), but the direction holds: <strong>bias stays, variance drops</strong>."
         },
         {
           "type": "text",
-          "html": "<p> Then the <strong>OOB score</strong> (out-of-bag). For every training sample, roughly 36.8% of the B trees never saw it in their bootstrap set. Ask exactly those trees for a prediction on that sample, aggregate those, compare with the true label — repeat for all samples and you have an estimate of the test score, <em>without a single extra fit and without touching the test set</em>. It is not full cross-validation (the sub-ensembles overlap), but in practice the OOB score reliably tracks the test score — see the code below. </p>"
+          "html": "The <strong>OOB score</strong>: for every sample, only the trees that never saw it (~36.8%) predict, aggregated and compared to the true label — a test-score estimate without touching the test set."
         },
         {
           "type": "callout",
           "kind": "tip",
-          "html": "<p> Practical tip: set <code>oob_score=True</code> on <code>BaggingClassifier</code>/<code>RandomForestClassifier</code> and treat <code>model.oob_score_</code> as your first sanity check. If OOB is poor while the training score is perfect, the forest is still overfitting (trees too deep, not enough regularisation) — you don't even need a split to see it. For the final verdict you still use the test set and cross-validation (see <em>Cross-validation</em>). </p>"
+          "html": "Practical: set <code>oob_score=True</code> and treat <code>model.oob_score_</code> as your first sanity check. If OOB is poor while train is perfect, the forest still overfits."
         }
       ]
     },
@@ -98,11 +98,11 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Bagging has one blind spot. The trees differ only through their bootstrap sets — but as soon as one feature is <em>overwhelmingly</em> predictive, nearly every tree picks that feature at the root, at nearly the same threshold, and the trees grow <strong>spine to spine</strong>: high correlation \\( \\rho \\), hence a high plateau the variance can never sink below. In the breast_cancer data you can watch it happen: <em>worst concave points</em> is such a dominant feature that plain bagging trees look alike. Random forests break that dominance at the only place it hurts: the split itself. </p>"
+          "html": "Bagging has one blind spot: if one feature is overwhelmingly predictive, nearly every tree picks it at the root and the trees grow <strong>alike</strong> — high correlation \\( \\rho \\), high plateau. Random forests break that dominance at the split itself."
         },
         {
           "type": "text",
-          "html": "<p> The intervention is tiny: at <strong>every split</strong> (so at every node, afresh) the algorithm draws a random <strong>m of the p features</strong> and the tree may only choose among those. Everything else stays as in <em>Decision trees</em> — Gini, greedy, recursive — but the candidate list per node is a sample. For classification the default is \\( m = \\sqrt{p} \\): with 30 features each split looks at about 5 or 6 candidates; for regression it is \\( p/3 \\). The dominant feature is now simply <em>not offered</em> at most nodes, forcing the trees to discover other structure. Each individual tree gets slightly worse (a little more bias) — but they become <strong>fundamentally different</strong>, and that is exactly the trade you want. </p>"
+          "html": "The intervention: at <strong>every split</strong> the algorithm draws a random <strong>m of the p features</strong> and the tree may choose only from those. Defaults: \\( m = \\sqrt{p} \\) (classification) or \\( p/3 \\) (regression). Each tree gets slightly worse — but the trees become <strong>fundamentally different</strong>."
         },
         {
           "type": "formula",
@@ -112,7 +112,7 @@
         },
         {
           "type": "text",
-          "html": "<p> Read the formula term by term. The <strong>second term</strong> is the familiar \\( \\sigma^2/B \\): it shrinks with every extra plank of wood, and whatever you do, it goes to zero — at B = 100 it is already negligible. The <strong>first term</strong> is the plateau: it does not depend on B at all, only on \\( \\rho \\). Conclusion in one breath: <strong>more trees always helps, but drowns in the noise if \\( \\rho \\) stays high — and random forests are precisely the knob on \\( \\rho \\)</strong>. Feature subsampling lowers the correlation, and every reduction pushes the plateau the ensemble converges to straight down. See it yourself in the plot. </p>"
+          "html": "Read the formula term by term: the <strong>second term</strong> \\( \\sigma^2/B \\) shrinks away with more trees; the <strong>first term</strong> \\( \\rho\\sigma^2 \\) is the plateau and depends only on \\( \\rho \\). <strong>More trees always helps, but vanishes into the fog if \\( \\rho \\) stays high — random forests are precisely the knob on \\( \\rho \\).</strong>"
         },
         {
           "type": "plot",
@@ -199,12 +199,12 @@
         },
         {
           "type": "text",
-          "html": "<p> At the starting values (\\( \\rho = 0{,}3 \\), \\( \\sigma^2 = 0{,}8 \\), B = 10) the variance sits at 0.296 — already 2.7× calmer than a single tree. Drag B to 100 and almost nothing happens (0.246): the \\( \\sigma^2/B \\) term is all but erased and you are pinned to the plateau \\( \\rho\\sigma^2 = 0{,}24 \\). Now drag ρ down to 0.1 and the plateau sinks to 0.08 — an order of magnitude of gain that no number of trees could ever buy. This is why random forests beat plain bagging, and why <code>max_features</code> is the forest's most important hyperparameter. </p>"
+          "html": "At the start values variance sits at 0.296; drag B to 100 and almost nothing happens (0.246 — the plateau). Drag \\( \\rho \\) to 0.1 and the plateau drops to 0.08: an order of magnitude no number of trees could ever buy."
         },
         {
           "type": "callout",
           "kind": "warning",
-          "html": "<p> A persistent myth: “too many trees causes overfitting”. No — more trees <strong>cannot hurt generalisation</strong> (variance decreases monotonically towards the plateau and stays there). What extra trees do cost is compute, memory and prediction latency. The other way round, the forest <em>can</em> overfit through trees that are too deep and too pure — but that knob is called <code>max_depth</code>/<code>min_samples_leaf</code>, not <code>n_estimators</code>. See the diagnosis framework in <em>Bias-variance tradeoff</em>. </p>"
+          "html": "Stubborn myth: &ldquo;too many trees causes overfitting&rdquo;. No — more trees <strong>cannot hurt</strong> generalization; they only cost compute and prediction time. A forest can overfit via trees that are too deep — but that knob is <code>max_depth</code>, not <code>n_estimators</code>."
         }
       ]
     },
@@ -213,7 +213,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> A random forest needs surprisingly little attention — much of its reputation as a “strong default” comes exactly from that. This table is the honest priority list: at the top the knobs that genuinely matter, at the bottom the ones you can leave on default. </p>"
+          "html": "A random forest needs surprisingly little attention — hence its reputation as a &ldquo;strong default&rdquo;. The table is the honest priority list:"
         },
         {
           "type": "table",
@@ -264,12 +264,12 @@
         },
         {
           "type": "text",
-          "html": "<p> The tuning order that works in practice: fix <code>oob_score=True</code> and <code>n_estimators=100</code> first, then scan <code>max_features</code> over a handful of values (√p, half, all of p — the extremes frame the story), and only then reach for the tree brakes if the scores still disappoint. That last step is rarely needed: the combination “deep trees + averaging” is precisely the configuration a forest excels at. If you do want it tighter, use <code>GridSearchCV</code> or <code>RandomizedSearchCV</code> — the pipeline advice from <em>Cross-validation</em> applies unchanged. </p>"
+          "html": "Tuning order: fix <code>oob_score=True</code> and <code>n_estimators=100</code>, scan <code>max_features</code> (&radic;p, half, all p), and only then touch the tree brakes. Rarely needed."
         },
         {
           "type": "callout",
           "kind": "tip",
-          "html": "<p> Don't forget the scaling step: trees themselves are scale-insensitive (splits look at thresholds, not distances), but as soon as the forest joins a pipeline with other models or preprocessing, you want that pipeline identical for every candidate. And note: what you learn here about <code>max_features</code> and the ρ-plateau logic returns verbatim in gradient boosting and stacked ensembles. </p>"
+          "html": "Do not skip the scaling step once the forest is combined in a pipeline with other models or preprocessing — keep that pipeline identical across candidates."
         }
       ]
     },
@@ -278,16 +278,16 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> One tree you read top to bottom; a hundred trees you read as a <em>story in numbers</em>. The <strong>mean decrease in impurity</strong> (MDI) — what <code>feature_importances_</code> returns — tallies, across all trees and all nodes, how much the weighted impurity dropped whenever that feature made the split (using Gini or entropy, see <em>Gini index &amp; entropy</em>). The result is normalised into a distribution that <strong>sums to 1</strong>: 0.17 means “responsible for 17% of all impurity gain in the forest”. A crude but surprisingly useful look inside the black box. </p>"
+          "html": "The <strong>mean decrease in impurity</strong> (MDI, what <code>feature_importances_</code> returns) sums per feature how much weighted impurity dropped and totals 1: 0.17 = &ldquo;responsible for 17% of all purity gain&rdquo;."
         },
         {
           "type": "text",
-          "html": "<p> Take the accompanying grains of salt. MDI is <strong>biased towards features with many possible thresholds</strong>: a continuous or quasi-unique feature (an ID column, a timestamp) can score artificially high because the tree has so many ways to split on it — the same overfit mechanism as the gain-ratio warning in <em>Gini index &amp; entropy</em>. The more robust alternative is <strong>permutation importance</strong>: shuffle one feature of the test set and watch how far the score drops — a big drop means an important feature. It works on the test score, has no threshold bias, and warns you when a feature only leans on training. <code>sklearn.inspection.permutation_importance</code> does it in three lines. </p>"
+          "html": "Take it with salt: MDI is <strong>biased toward features with many possible thresholds</strong> (IDs, timestamps). More robust: <strong>permutation importance</strong> — shuffle one feature and watch how much the score drops."
         },
         {
           "type": "callout",
           "kind": "warning",
-          "html": "<p> Correlation caveat: two features carrying the same signal (say, area and radius of the same tumour) <em>share</em> the importance — neither needs to score dominantly even if the signal is crucial. Conversely a feature may score low while mattering greatly in interaction with another. Use importance as <strong>exploration and sanity check</strong> (“which group of features carries the story?”), never as proof of causality. </p>"
+          "html": "Two features carrying the same signal <em>share</em> importance; a feature can score low yet matter in interaction. Use importance for <strong>exploration</strong>, not as proof."
         }
       ]
     },
@@ -296,7 +296,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> The same breast_cancer split as in earlier topics, three models side by side: the unbridled tree, plain bagging and the full random forest — with OOB scores. Note the one-line differences: bagging takes the estimator explicitly, the forest has it all baked in. </p>"
+          "html": "Same breast cancer split, three models side by side: the unbridled tree, plain bagging and the full random forest — with OOB scores."
         },
         {
           "type": "code",
@@ -307,7 +307,7 @@
         },
         {
           "type": "text",
-          "html": "<p> Typical output: the single tree tests 0.951; bagging rises to 0.958 with OOB 0.955; the random forest wins with 0.965 and OOB 0.960. The patterns from this topic confirmed: both ensembles beat the single tree, the forest (with its decorrelating feature sample) beats plain bagging, and the OOB scores track the test scores within half a percentage point — the free sanity check works. None of the gaps is dramatic: breast_cancer is a small, friendly dataset where even one tree comes far; on larger, noisier data the gaps usually widen. </p>"
+          "html": "Typical output: single tree 0.951; bagging 0.958 (OOB 0.955); random forest 0.965 (OOB 0.960). Both ensembles beat the tree, the forest beats bagging, and OOB tracks within half a point."
         },
         {
           "type": "code",
@@ -318,12 +318,12 @@
         },
         {
           "type": "text",
-          "html": "<p> Typical output: <em>worst concave points</em> leads with 0.172, followed by <em>worst area</em> (0.123), <em>mean concave points</em> (0.090), <em>mean concavity</em> (0.083) and <em>worst radius</em> (0.081); the sum over all 30 features is exactly 1.0. The morphology of the cell nuclei — how jagged, how large — carries the story, matching what the medical literature says. That kind of agreement is feature importance at its best: not proof, but a checkable summary of what the model learned. </p>"
+          "html": "Typical output: <em>worst concave points</em> leads with 0.172, followed by <em>worst area</em> (0.123) and <em>mean concave points</em> (0.090); the sum across all 30 features is exactly 1.0."
         },
         {
           "type": "callout",
           "kind": "key",
-          "html": "<p> Where this leads: random forests are one end of the ensemble spectrum — <strong>parallel, variance-hunting, correlation-reducing</strong>. The other end is <strong>boosting</strong>: trees trained one after another, each trying to repair the previous one's errors — a bias hunter. They complement each other perfectly, and together they cover most of the practical tabular-data world. The bias-variance framework from this chapter is the map on which you will keep finding both. </p>"
+          "html": "Random forests are one end of the ensemble spectrum: <strong>parallel, variance hunter</strong>. The other end is <strong>boosting</strong>: trees in sequence repairing each other's errors — a bias hunter."
         }
       ]
     }

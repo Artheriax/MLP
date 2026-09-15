@@ -2,7 +2,7 @@
   "id": "loss-diagrams",
   "chapter": "ch2",
   "title": "Loss-diagrammen: logistic loss vs. hinge loss",
-  "intro": "Waarschijnlijk het meest conceptuele onderwerp van de cursus — maar als je dit beeld eenmaal snapt, weet je exact wát logistic regression en SVM's zijn, en waarom ze zich anders gedragen. De grafieken hieronder zijn interactief: beweeg je muis eroverheen.",
+  "intro": "De conceptuele kern van de cursus: loss uitgezet tegen de raw model output. Begrijp je deze diagrammen, dan weet je wat logistic regression en SVM's zijn.",
   "keyPoints": [
     "Een loss-diagram zet de loss uit tegen de <strong>raw model output</strong> (positief = goed voorspeld).",
     "Squared loss <strong>mislukt</strong> voor classificatie: correcte, zekere voorspellingen raken alsnog bestraft.",
@@ -16,7 +16,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> We tekenen loss-curven op een vast soort assenstelsel: op de verticale as de <strong>loss</strong>, op de horizontale as de <strong>raw model output</strong> \\( f(x) = w \\cdot x + b \\). Omdat we voorspellen op basis van het teken, verdeelt de verticale as bij nul het plaatje in twee helften: links voorspellen we klasse −1, rechts klasse +1. </p> <p> We bekijken één trainingsvoorbeeld dat in klasse <strong>+1</strong> zit. Dan is de rechterhelft (positieve output) <em>correct</em> en de linkerhelft <em>incorrect</em>. Let op: dit is iets anders dan de beslisgrens-plaatjes van hoofdstuk 1 — hier zijn de assen niet twee features, maar raw output en loss, hoeveel features je model ook heeft. En dit is de loss voor <em>één</em> voorbeeld; de totale loss is de som over alle voorbeelden. </p>"
+          "html": "Het assenstelsel: verticaal de <strong>loss</strong>, horizontaal de <strong>raw model output</strong> \\( f(x) = w \\cdot x + b \\). Voor &eacute;&eacute;n trainingsvoorbeeld in klasse <strong>+1</strong> is de rechterhelft (positieve output) correct en de linkerhelft incorrect. Dit is de loss per voorbeeld; de totale loss is de som over alle voorbeelden."
         },
         {
           "type": "plot",
@@ -45,7 +45,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Voor lineaire regressie ís de raw output de voorspelling, en daar werkt de kwadratische loss prima: hoe verder van de echte target (hier aangenomen 1), hoe hoger de loss. Maar voor een lineaire classifier is dat onzin: <em>het teken</em> moet kloppen, de afstand tot de target doet er niet toe. </p> <p> Zie het probleem in de curve: de linkerarm is prima (fouten worden hard gestraft), maar de rechterarm is rampzalig — een grote <em>positieve</em> raw output betekent een <em>correcte, zelfverzekerde</em> voorspelling, en de squared loss straft die juist met een hoge penalty. Je zou dus \"perfect goede\" modellen als slecht beoordelen tijdens het fitten. Dáárom hebben we speciale loss functies voor classificatie nodig. </p>"
+          "html": "De squared loss werkt hier niet: een grote <em>positieve</em> raw output is een correcte, zelfverzekerde voorspelling — maar de kwadratische penalty straft die juist hard. Vandaar: speciale loss functies voor classificatie."
         },
         {
           "type": "plot",
@@ -74,7 +74,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> De <strong>logistic loss</strong> (gebruikt door logistic regression) is in feite een <em>gladde versie van de 0-1 loss</strong>: beweeg je naar rechts — de zone van correcte voorspellingen — dan daalt de loss geleidelijk. De interpretatie als \"aantal fouten\" is weg, maar in plaats daarvan kun je deze loss wél praktisch minimaliseren. </p> <p> De <strong>hinge loss</strong> (gebruikt door SVM's) heeft dezelfde basisvorm, maar met één cruciaal detail: vanaf raw output <strong>+1</strong> wordt de loss exact nul en blijft hij dat — er is een \"plat\" stuk. Voorspel je een voorbeeld correct <em>buiten een zekere foutmarge</em>, dan draagt het voorbeeld niets meer bij aan de fit. Dit platte stuk is de sleutel tot support vectors in hoofdstuk 4. </p>"
+          "html": "<strong>Logistic loss</strong> (logistic regression): een gladde versie van de 0-1 loss — de &ldquo;tel de fouten&rdquo;-interpretatie is weg, maar wel minimaliseerbaar. <strong>Hinge loss</strong> (SVM): zelfde basisvorm, maar vanaf raw output <strong>+1</strong> exact nul — het platte stuk dat support vectors veroorzaakt."
         },
         {
           "type": "plot",

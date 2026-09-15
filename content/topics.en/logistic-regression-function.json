@@ -2,7 +2,7 @@
   "id": "logistic-regression-function",
   "chapter": "ch3",
   "title": "Building logistic regression yourself: from sigmoid to classifier",
-  "intro": "Scikit-learn's LogisticRegression is a black box: you call fit and it works. You only really understand it once you've built one — and that's not so hard: a sigmoid, a binary cross-entropy loss, its gradient, and a few lines of gradient descent. In this topic we build the whole classifier in pure NumPy: a standalone function logistic_regression(X, y) that learns the coefficients, plus predict_proba and predict. Finally we compare the result with scikit-learn and extend the function to multi-class via one-vs-rest.",
+  "intro": "You only truly understand LogisticRegression once you build it yourself: sigmoid + binary cross-entropy + the gradient + a few lines of gradient descent, in pure NumPy.",
   "keyPoints": [
     "Building it yourself = cracking the black box: <strong>sigmoid + BCE + gradient + updates</strong>.",
     "The BCE gradient: <strong>(1/n)·Xᵀ(ŷ − y)</strong> — elegant shape, blazing fast with NumPy.",
@@ -16,11 +16,11 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Scikit-learn's <code>LogisticRegression</code> is a single call and it works — but what actually happens inside? In the previous topics you saw the theory: the <a href=\"#/topic/logistic-regression\">pipeline from line to probability to class</a>, the <a href=\"#/topic/kansen-sigmoid\">sigmoid</a>, <a href=\"#/topic/regularisatie\">regularisation via C</a>, and the <a href=\"#/topic/gradient-descent\">update rule of gradient descent</a>. Here we turn that theory into code: one coherent function that does it all. </p>"
+          "html": "The theory from the previous topics, now in one coherent function — no scikit-learn, just NumPy."
         },
         {
           "type": "text",
-          "html": "<p> The exercise pays off. Anyone who has built a logistic regression from scratch once immediately gets why you need to <strong>scale</strong> features (so the gradient step is the same size in every direction), why the <strong>learning rate</strong> is a knob you have to tune, and why <code>scipy.optimize.minimize</code> or scikit-learn's internal solver are <em>much</em> more efficient than plain gradient descent. And once you've derived the gradient of the loss by hand, you never forget it again — including where the factor \\( (\\hat{y}_i - y_i) \\) comes from. </p>"
+          "html": "Building it yourself teaches you why you must <strong>scale</strong>, why the <strong>learning rate</strong> is a knob, and where the factor \\( (\\hat{y}_i - y_i) \\) in the gradient comes from."
         },
         {
           "type": "callout",
@@ -34,7 +34,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Two functions form the foundation. The <strong>sigmoid</strong> squeezes any real score \\( z \\) into the interval (0, 1), turning it into a probability. The <strong>binary cross-entropy (BCE)</strong> measures how far a predicted probability is from the true label — the same loss you met in <a href=\"#/topic/classification-metrics\">Classification metrics</a>, there viewed as an evaluation measure; here it's the <em>training signal</em> we'll minimise. </p>"
+          "html": "Two building blocks: the <strong>sigmoid</strong> (score &rarr; probability) and <strong>binary cross-entropy (BCE)</strong> — here not a judging metric but the learning signal."
         },
         {
           "type": "formula",
@@ -58,7 +58,7 @@
         {
           "type": "callout",
           "kind": "tip",
-          "html": "<p> The <em>numerically stable</em> sigmoid has two branches: for \\( z \\geq 0 \\) the usual form, for \\( z &lt; 0 \\) an equivalent rewritten form that avoids <code>np.exp(large_positive)</code> (overflow). In practice you rarely write this yourself — scikit-learn does it internally — but if you ever hit a large \\( z \\) with <code>RuntimeWarning: overflow</code>, you know where it came from. </p>"
+          "html": "The numerically stable sigmoid uses two branches to avoid <code>np.exp</code> overflow — scikit-learn does this internally."
         }
       ]
     },
@@ -67,7 +67,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> To run gradient descent we need the <strong>derivative of the loss with respect to the weights</strong>. The derivation is a nice exercise in the chain rule; the end result is surprisingly simple and intuitive: </p>"
+          "html": null
         },
         {
           "type": "formula",
@@ -77,12 +77,12 @@
         },
         {
           "type": "text",
-          "html": "<p> Read the factor \\( (\\hat{y}_i - y_i) \\) as the <strong>prediction error</strong>. If the prediction is spot on (\\( \\hat{y}_i = y_i \\)) its contribution to the gradient is zero — there's nothing to learn from that sample. If it's wrong, the sample pulls the weights along. The vector form <code>(1/n) * X.T @ (y_hat - y)</code> is exactly what we use in the function below; it's short, efficient, and exactly what scikit-learn computes internally (albeit with a more elegant solver than plain gradient descent). </p>"
+          "html": "Read \\( (\\hat{y}_i - y_i) \\) as the <strong>prediction error</strong>: if the prediction is right, the gradient contribution is zero. The vector form <code>(1/n) * X.T @ (y_hat - y)</code> is what the function below uses."
         },
         {
           "type": "callout",
           "kind": "info",
-          "html": "<p> The derivation in three steps: <strong>(1)</strong> write BCE per sample as \\( -[y \\log \\sigma(z) + (1-y)\\log(1 - \\sigma(z))] \\) with \\( z = w \\cdot x \\); <strong>(2)</strong> use \\( \\sigma'(z) = \\sigma(z)(1 - \\sigma(z)) \\) and the chain rule; <strong>(3)</strong> everything cancels beautifully and you're left with \\( (\\sigma(z) - y)\\, x \\). The fact that the derivative of the log and the derivative of the sigmoid <em>cancel exactly</em> is the reason BCE is such a beloved loss for classification — the gradient stays clean and numerically stable. </p>"
+          "html": "The derivation: <strong>(1)</strong> write BCE per sample, <strong>(2)</strong> apply \\( \\sigma'(z) = \\sigma(z)(1-\\sigma(z)) \\) + chain rule, <strong>(3)</strong> everything cancels to \\( (\\sigma(z) - y)\\,x \\) — that is why BCE is so beloved."
         }
       ]
     },
@@ -91,7 +91,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Here is the whole classifier. The function <code>logistic_regression</code> accepts a 2D feature matrix <code>X</code> and a 1D label vector <code>y</code>, initialises the weights to zero, and runs the update rule from <a href=\"#/topic/gradient-descent\">gradient descent</a> <code>n_iter</code> times: compute predictions, compute the gradient, nudge the weights a step against the gradient. Alongside the main function we define <code>predict_proba</code> (probabilities) and <code>predict</code> (hard labels via a 0.5 threshold) — exactly the same interface as scikit-learn. </p>"
+          "html": "The whole classifier: weights at zero, and per epoch predict &rarr; gradient &rarr; update, plus <code>predict_proba</code> and <code>predict</code> with the same interface as scikit-learn."
         },
         {
           "type": "code",
@@ -103,7 +103,7 @@
         {
           "type": "callout",
           "kind": "key",
-          "html": "<p> Count the lines: the whole training loop is <strong>five lines</strong>. Bias column in, weights to zero, and each epoch: predict, compute the gradient, update the weights. The maths from the previous section translates directly into <code>Xb.T @ (y_hat - y) / n</code> — a single matrix-vector product gives you the gradient for <em>all</em> weights at once. </p>"
+          "html": "The training loop is <strong>five lines</strong>; the gradient for all weights at once is a single matrix-vector product."
         }
       ]
     },
@@ -112,7 +112,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Does it work on real data? Below we run the same function on the breast cancer dataset (569 samples, 30 features) and compare accuracy and coefficients with scikit-learn's <code>LogisticRegression</code>. To make the comparison fair, we disable scikit-learn's regularisation (<code>C=1e6</code>) — our function has none. Also note the <code>StandardScaler</code>: without scaling, gradient descent needs many more epochs, because the features vary wildly in scale (one column ranges from 0 to 0.1, another from 0 to 4000). </p>"
+          "html": "Same function on the breast cancer dataset (569 &times; 30), with scikit-learn's regularization off (<code>C=1e6</code>) and a <code>StandardScaler</code> — without scaling gradient descent needs many more epochs."
         },
         {
           "type": "code",
@@ -123,12 +123,12 @@
         },
         {
           "type": "text",
-          "html": "<p> The accuracy of our five-line function is typically within a percent of scikit-learn — on this dataset they are virtually identical. The coefficients differ slightly because scikit-learn uses a much more advanced solver (LBFGS, a quasi-Newton method) that converges in fewer iterations and with higher precision than plain gradient descent. So our implementation is not <em>better</em> than scikit-learn, but they do the same thing in essence: minimise BCE. </p>"
+          "html": "The five-line function is typically within a percent of scikit-learn; coefficients differ slightly because LBFGS converges more elegantly."
         },
         {
           "type": "callout",
           "kind": "tip",
-          "html": "<p> In practice you keep using scikit-learn — faster, more stable, with regularisation built in. But now that you know what goes on <em>inside</em> that <code>fit</code>, you also understand why scikit-learn's hyperparameters (<code>C</code>, <code>solver</code>, <code>max_iter</code>) do what they do. </p>"
+          "html": "In practice you keep using scikit-learn — but now you understand what <code>C</code>, <code>solver</code> and <code>max_iter</code> do."
         }
       ]
     },
@@ -137,7 +137,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> How fast the loss drops depends on the <strong>learning rate</strong>. Too small and you need thousands of epochs to get anywhere; too large and the update rule overshoots the minimum, the loss explodes and the model <em>diverges</em>. The plot below shows two training curves: one at a healthy learning rate, and one at the current (adjustable) learning rate. Slide towards \\( \\eta = 2 \\) — the orange curve swings upward. </p>"
+          "html": "The learning rate decides whether the loss descends smoothly (healthy), crawls (too small) or swings up and <em>diverges</em> (too large). Slide toward \\( \\eta = 2 \\) and watch it flip."
         },
         {
           "type": "plot",
@@ -213,7 +213,7 @@
         {
           "type": "callout",
           "kind": "warning",
-          "html": "<p> The rule of thumb for the learning rate: <strong>small enough that the loss drops monotonically, large enough that you don't need 100,000 epochs</strong>. In practice you find it by trial and error (e.g. 0.001, 0.01, 0.1, 0.3, 1.0) or via an adaptive solver like Adam. Scikit-learn's <code>LogisticRegression</code> uses <code>LBFGS</code> by default, which tunes the step size <em>automatically</em> — hence you almost never have to think about the learning rate there. </p>"
+          "html": "Rule of thumb: small enough that the loss decreases monotonically, large enough that you do not need 100,000 epochs. LBFGS sets the step size automatically."
         }
       ]
     },
@@ -222,7 +222,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Our function is binary: it learns a single line that separates two classes. For <strong>3 or more classes</strong> the simplest extension is <strong>one-vs-rest (OVR)</strong>: train a separate binary classifier for each class that learns \"this class versus all the others\". At prediction time you pick the class whose classifier gives the highest probability. This is exactly what scikit-learn does when you set <code>multi_class='ovr'</code> — see <a href=\"#/topic/multiclass\">Multi-class</a> for the theory. </p>"
+          "html": "For 3+ classes: train a binary one-vs-rest classifier per class and pick the highest probability when predicting — exactly what <code>multi_class='ovr'</code> does."
         },
         {
           "type": "code",
@@ -234,7 +234,7 @@
         {
           "type": "callout",
           "kind": "info",
-          "html": "<p> The extension is literally a <em>loop</em> around the existing function: train <code>k</code> binary classifiers (each with a different \"positive\" class), save all the weight vectors, and at prediction time pick the class with the highest probability. Exactly the same structure as scikit-learn's OVR mode — except we wire it up by hand here. </p>"
+          "html": "The extension is a loop around the existing function: train k times, store the weights, pick the highest probability."
         }
       ]
     },
@@ -243,7 +243,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> What we've built is the heart of logistic regression: a linear score, a sigmoid, BCE as the loss, and the gradient in matrix form. That's the whole story. But our implementation also has limitations compared to scikit-learn: </p>"
+          "html": null
         },
         {
           "type": "table",
@@ -283,11 +283,7 @@
         {
           "type": "callout",
           "kind": "tip",
-          "html": "<p> <strong>When do you build it yourself, when do you use scikit-learn?</strong> Building yourself is for learning — do it once and you understand it forever. In production and for experiments you use scikit-learn: faster, more stable, with regularisation built in. The only situation where building yourself really pays off is when you need a <em>specific</em> variant that scikit-learn doesn't offer — a custom loss, a custom update rule, or integration into a larger system. </p>"
-        },
-        {
-          "type": "text",
-          "html": "<p> Further reading: the theory behind the pipeline (line → probability → class) is in <a href=\"#/topic/logistic-regression\">Logistic regression: why it isn't actually a regression</a>, the sigmoid in depth in <a href=\"#/topic/kansen-sigmoid\">Probabilities &amp; the sigmoid function</a>, regularisation (the missing knob in our function) in <a href=\"#/topic/regularisatie\">Regularisation: the hyperparameter C, L1 and L2</a>, and the update rule we used in <a href=\"#/topic/gradient-descent\">Gradient descent: how does a model learn?</a>. </p>"
+          "html": "Building it yourself is for learning — do it once and you understand it forever. Production: scikit-learn, unless you need a special variant."
         }
       ]
     }

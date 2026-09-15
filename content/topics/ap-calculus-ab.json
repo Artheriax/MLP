@@ -2,7 +2,7 @@
   "id": "ap-calculus-ab",
   "chapter": "ch6",
   "title": "AP Calculus AB: het examen in kaart",
-  "intro": "In de Verenigde Staten sluit het calculus-vak op de middelbare school af met één landelijk examen: <strong>AP Calculus AB</strong>, in de eerste week van mei, gemaakt en nagekeken door de College Board. Drie uur en een kwartier, 51 vragen, één score van 1 tot 5 — en een 3 of hoger levert op veel universiteiten direct studiepunten op. Dit onderwerp brengt het examen in kaart: welke onderdelen tellen mee en hoe zwaar, wat je al kent van <em>Differentiaalrekening</em> en <em>Optimalisatie</em>, en wat erbij komt — limits als zelfstandig onderwerp, integratie met de fundamentele stelling van de calculus, en differentiaalvergelijkingen. Voor wie doorstroomt naar machine learning is dat geen ballast: de afgeleide ís gradient descent, de integraal duikt op als verwachting en als AUC, en Eulers methode is gradient descent in vermomming.",
+  "intro": "<strong>AP Calculus AB</strong>: het landelijke Amerikaanse eindexamen calculus (College Board, begin mei, 3 uur 15 min, 51 vragen, score 1&ndash;5). Dit onderwerp brengt het examen in kaart &mdash; en de stof is precies de wiskunde achter elke <code>fit()</code>-aanroep.",
   "keyPoints": [
     "AP Calculus AB is het landelijke Amerikaanse eindexamen calculus (College Board, begin mei): <strong>45 multiple-choicevragen in 105 minuten</strong> plus <strong>6 open vragen in 90 minuten</strong>, deels mét en deels zónder rekenmachine; de eindscore loopt van 1 tot 5.",
     "De <strong>afgeleide helft</strong> van het examen (units 2–5, samen ±50%) staat al op deze site: definitie, rekenregels, impliciet differentiëren, beweging en optimalisatie — zie <em>Differentiaalrekening</em> en <em>Optimalisatie</em>.",
@@ -17,11 +17,11 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> <strong>Advanced Placement</strong> (AP) is het Amerikaanse systeem van vakken op universiteitsniveau die je op de middelbare school volgt, afgesloten met één gestandaardiseerd examen per vak. Calculus AB dekt één semester college-calculus: limits, afgeleiden, toepassingen daarvan, integralen en differentiaalvergelijkingen. Het examen is overal in het land hetzelfde, op dezelfde ochtend in begin mei — en de uitslag weegt zwaar: hogescholen en universiteiten geven voor een 3, 4 of 5 vaak credit of een hoger plaatsingsniveau, waardoor eerstejaars meteen in calculus II (of verder) kunnen beginnen. </p>"
+          "html": "<strong>Advanced Placement</strong> = vakken op universiteitsniveau op de middelbare school, afgesloten met &eacute;&eacute;n gestandaardiseerd examen. AB dekt &eacute;&eacute;n semester college-calculus; een 3, 4 of 5 levert vaak credit of een hogere plaatsing op."
         },
         {
           "type": "text",
-          "html": "<p> Er bestaan twee examenniveaus: <strong>AB</strong> en <strong>BC</strong>. BC bevat alles van AB plus polynoom- en Taylorreeksen, parametrische en poolcoördinaten, en extra integratietechnieken — ruwweg twee semesters in plaats van één. De vuistregel: AB is de standaardroute voor wie richting exacte vakken, economie of data wil; BC voor wie wiskunde zelf hoofdvak wordt. Voor machine learning heb je aan AB genoeg — de extra BC-stof (reeksen) komt pas bij geavanceerde optimalisatietheorie terug. </p>"
+          "html": "Twee niveaus: <strong>AB</strong> en <strong>BC</strong> &mdash; BC bevat alles van AB plus reeksen, parametrische/poolco&ouml;rdinaten en extra integratietechniek (ruwweg twee semesters). Voor machine learning heb je aan AB genoeg."
         },
         {
           "type": "table",
@@ -60,12 +60,12 @@
         },
         {
           "type": "text",
-          "html": "<p> De multiple-choicevragen (Sectie I) toetsen breed en snel: herken de juiste regel, lees een grafiek, evalueer een limiet. De open vragen (Sectie II, <em>free response questions</em>) zijn meerdelige probleemoplossingen — onderdelen a t/m d, met aparte punten per onderdeel — waarin je je redenering moet <em>laten zien</em>, niet alleen het antwoord. Precies die combinatie (snelle herkenning + uitgeschreven argumentatie) maakt het examen een goede maatstaf: hetzelfde paar vaardigheden bepaalt of je een ML-model begrijpt of alleen kunt aanroepen. </p>"
+          "html": "Sectie I (multiple choice) toet breed en snel; Sectie II (<em>free response</em>) zijn meerdelige probleemoplossingen waarin je je redenering moet <em>laten zien</em> &mdash; aparte punten per onderdeel."
         },
         {
           "type": "callout",
           "kind": "info",
-          "html": "<p> Waarom staat een Amerikaans eindexamen op een machine-learning-site? Omdat de AB-stof exact de wiskunde is waarop <em>trainen</em> rust. Een model leert door zijn <strong>loss</strong> te minimaliseren met behulp van <strong>afgeleiden</strong> (de gradiënt), geaggregeerd over data (sommen en <strong>integralen</strong>), met een <strong>stapregel</strong> die Eulers methode is. Het examen is in die zin een gestructureerde checklist van de calculus achter elke <code>fit()</code>-aanroep. </p>"
+          "html": "Waarom op een ML-site? De AB-stof is exact de wiskunde waarop <em>trainen</em> rust: een loss minimaliseren met <strong>afgeleiden</strong>, geaggregeerd over data (<strong>integralen</strong>), met een <strong>stapregel</strong> die Eulers methode is."
         }
       ]
     },
@@ -74,11 +74,11 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> De limiet is het fundament waar de hele calculus op staat, en het examen opent er steevast mee. Het idee: <strong>\\( \\lim_{x \\to a} f(x) = L \\)</strong> betekent dat \\( f(x) \\) zo dicht als je wilt bij \\( L \\) komt, zodra \\( x \\) maar dicht genoeg bij \\( a \\) zit — <em>zonder dat \\( f(a) \\) zelf ook maar iets uitmaakt</em>. Dat laatste is de kern, en het tegenintuïtieve deel: de functie hoeft op \\( a \\) niet eens te bestaan. Voor de afgeleide (het limiet van verschilquotiënten met \\( h \\to 0 \\), zie <em>Differentiaalrekening</em>) is precies dit nodig: de stap \\( h \\) wordt nooit nul, maar zijn grens bestaat wél. </p>"
+          "html": "De limiet is het fundament: \\( \\lim_{x \\to a} f(x) = L \\) betekent dat \\( f(x) \\) zo dicht als je wilt bij \\( L \\) komt zodra \\( x \\) dicht genoeg bij \\( a \\) zit &mdash; <em>zonder dat \\( f(a) \\) zelf iets uitmaakt</em>. De functie hoeft op \\( a \\) niet eens te bestaan."
         },
         {
           "type": "text",
-          "html": "<p> Het klassieke voorbeeld van “bestaat niet, maar naderbaar wél” is de functie met een gat: \\( g(x) = \\frac{x^2 - 4}{x - 2} \\). Voor elke \\( x \\neq 2 \\) kun je wegdelen en blijft \\( x + 2 \\) over; op \\( x = 2 \\) zelf staat er \\( 0/0 \\). De grafiek is dus de lijn \\( y = x + 2 \\) minus één punt — en die missende ordinaat, 4, is precies wat de limiet aanvult. Schuif in de plot hieronder met de <code>a</code>-slider richting 2 en kijk naar de metrics: het groene naderingspunt klimt naar (2, 4), en precies op \\( a = 2 \\) bestaat de uitdrukking niet meer — het punt verdwijnt en de metric toont een streepje, maar de gele limietlijn houdt stand. </p>"
+          "html": "Het klassieke gat: \\( g(x) = \\frac{x^2 - 4}{x - 2} \\) is voor \\( x \\neq 2 \\) gewoon \\( x + 2 \\); op \\( x = 2 \\) staat er 0/0. Schuif met de <code>a</code>-slider richting 2: het naderingspunt klimt naar (2, 4), precies op \\( a = 2 \\) verdwijnt het &mdash; maar de gele limietlijn houdt stand."
         },
         {
           "type": "plot",
@@ -158,12 +158,12 @@
         },
         {
           "type": "text",
-          "html": "<p> Eenzijdige limieten maken het volledig: \\( x \\to a^- \\) (van links) en \\( x \\to a^+ \\) (van rechts) moeten <em>gelijk</em> zijn wil de gewone limiet bestaan — bij een sprong in de grafiek bestaat hij niet. Daarmee is <strong>continuïteit</strong> in drie regels gepakt: \\( f(a) \\) bestaat, \\( \\lim_{x \\to a} f(x) \\) bestaat, en de twee zijn gelijk. Het examen combineert dit tot de twee stellingen die je moet kunnen aanroepen: de <strong>IVT</strong> (Intermediate Value Theorem — een continue functie die van 2 naar 5 loopt, neemt onderweg elke tussenuitkomst aan, dus ergens staat hij exact 3) en later de MVT uit de differentiatie-hoek. Beide lijken theoretisch, maar ze zijn de formele onderbouwing van “een graph die begint onder nul en eindigt boven nul moet nul raken” — het soort redenering waar bisection-algoritmes en root-finding op rusten. </p>"
+          "html": "Eenzijdige limieten (links/rechts) moeten gelijk zijn wil de limiet bestaan. <strong>Contin&uuml;teit</strong> in drie regels: \\( f(a) \\) bestaat, de limiet bestaat, en ze zijn gelijk. Plus de <strong>IVT</strong>: een continue functie die van 2 naar 5 loopt neemt onderweg elke tussenuitkomst aan."
         },
         {
           "type": "callout",
           "kind": "key",
-          "html": "<p> Drie examenvormen van limits die je moet herkennen: (1) <strong>invullen werkt</strong> — polynomen en breuken zonder nul-noemer: gewoon \\( a \\) invullen; (2) <strong>0/0</strong> — factoriseren of veeltermdeling tot de storing wegvalt, zoals hierboven; (3) <strong>oneindig</strong> — bij \\( x \\to \\pm\\infty \\) delen door de hoogste macht en de lagere termen zien verdampen naar 0. En onthoud: een limiet kan bestaan terwijl de functiewaarde niet bestaat — omgekeerd kan een functiewaarde bestaan zonder dat de limiet er iets mee te maken heeft. </p>"
+          "html": "Drie examenvormen herkennen: <strong>(1)</strong> invullen werkt (geen nul-noemer), <strong>(2)</strong> 0/0 &mdash; factoriseren tot de storing wegvalt, <strong>(3)</strong> \\( x \\to \\pm\\infty \\) &mdash; delen door de hoogste macht."
         }
       ]
     },
@@ -172,7 +172,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> De kern — de limietdefinitie \\( f'(x) = \\lim_{h \\to 0} \\frac{f(x+h) - f(x)}{h} \\), de rekenregels, de standaardafgeleiden van \\( \\sin, \\cos, e^x, \\ln \\) — staat uitgebreid in <em>Differentiaalrekening</em>, en de examen-zwaartepunten daarvan (kritieke punten, eerste- en tweede-afgeleide-test, optimalisatie) in <em>Optimalisatie</em>. Wat het AB-examen daarbij vraagt, is vooral <strong>toepassen in context</strong>: drie technieken die de machinerie naar situaties brengen waarin \\( y \\) niet netjes geïsoleerd is. </p>"
+          "html": "De kern &mdash; limietdefinitie, rekenregels, standaardafgeleiden &mdash; staat in <em>Differentiaalrekening</em>; de examen-zwaartepunten (kritieke punten, beide tests, optimalisatie) in <em>Optimalisatie</em>. Wat AB erbovenop doet: <strong>toepassen in context</strong>."
         },
         {
           "type": "table",
@@ -206,16 +206,16 @@
         },
         {
           "type": "text",
-          "html": "<p> Bewegingsproblemen verdienen een waarschuwing, want het examen speelt er graag mee: <strong>snelheid</strong> (velocity, met teken) en <strong>tempo</strong> (speed, de absolute waarde) zijn niet hetzelfde — een partikel “omkeeren” betekent dat \\( v(t) \\) van teken wisselt, niet dat het stilstaat. En bij gerelateerde tempo's is de klassieke valkuil dat je een formule differentieert ná het invullen van getallen; de volgorde is altijd: relatie opschrijven, dán differentiëren, dán de bekende tempo's invullen. Deze discipline — differentiëren als relatie tussen veranderingen, niet als bewerking op losse getallen — is exact de manier waarop backpropagation door een netwerk rekent: de kettingregel schakelt laag voor laag de tempo's door. </p>"
+          "html": "<strong>Beweging</strong>: snelheid (velocity, met teken) en tempo (speed, absolute waarde) zijn niet hetzelfde; &ldquo;omkeren&rdquo; betekent dat \\( v(t) \\) van teken wisselt. Bij gerelateerde tempo's: eerst relatie opschrijven, d&aacute;n differenti&euml;ren, d&aacute;n invullen &mdash; precies hoe backpropagation laag voor laag doorrekent."
         },
         {
           "type": "text",
-          "html": "<p> Twee stellingen horen in dit rijtje thuis omdat het examen ze expliciet als rechtsbeginsel aanroept. De <strong>MVT</strong> (Mean Value Theorem): is \\( f \\) differentieerbaar op \\( [a,b] \\), dan bestaat er een \\( c \\) met \\( f'(c) = \\frac{f(b)-f(a)}{b-a} \\) — ergens loopt de raaklijn even steil als de koppelijn. En de IVT uit de vorige sectie keert terug als gereedschap om te <em>bewijzen dat een oplossing bestaat</em> (een vergelijking heeft een nulpunt in een interval als de continue linkerlid-waarden van teken wisselen). Beide heten op het examen “existence arguments”: je hoeft het punt niet te vinden, alleen aan te tonen dat het er moet zijn. </p>"
+          "html": "Twee stellingen als rechtsbeginsel: de <strong>MVT</strong> (ergens loopt de raaklijn even steil als de koppelijn: \\( f'(c) = \\frac{f(b)-f(a)}{b-a} \\)) en de <strong>IVT</strong> als gereedschap om te bewijzen dat een oplossing bestaat. Beide heten &ldquo;existence arguments&rdquo;."
         },
         {
           "type": "callout",
           "kind": "tip",
-          "html": "<p> In de free-responsevragen zijn <strong>optimalisatie</strong> en <strong>beweging</strong> de twee vaste gasten. Het kartonnen-doosprobleem uit <em>Optimalisatie</em> is letterlijk examenvorm: formuleer de doelfunctie, noteer het domein, los \\( f' = 0 \\) op, toets kandidaten én randen, en eindig met een volledige zin mét eenheden. Elk van die vijf stappen levert punten — ook als je rekenkundig uitglijdt. </p>"
+          "html": "In de free-responsevragen zijn <strong>optimalisatie</strong> en <strong>beweging</strong> de vaste gasten. Het vijfstappenplan (doelfunctie, domein, \\( f' = 0 \\), kandidaten &eacute;n randen, volledige zin met eenheden) levert per stap punten op."
         }
       ]
     },
@@ -224,7 +224,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> De tweede helft van het examen draait om de omgekeerde beweging: niet “gegeven \\( f \\), wat is \\( f' \\)” maar “gegeven \\( f \\), welke functie heeft \\( f \\) als afgeleide?”. Zo'n functie heet een <strong>antiderivaat</strong> \\( F \\) met \\( F' = f \\), en omdat afgeleiden constante termen wegpoetsen bestaat er nooit één maar een hele familie: \\( F(x) + C \\). De notatie met de langgerekte S — \\( \\int f(x)\\,dx \\) — leest als “som van \\( f(x) \\) over stukjes \\( dx \\)”, en die lezing is geen decor: het is de definitie. </p>"
+          "html": "Een <strong>antiderivaat</strong> \\( F \\) met \\( F' = f \\) is nooit uniek: \\( F(x) + C \\). De notatie \\( \\int f(x)\\,dx \\) leest als &ldquo;som van \\( f(x) \\) over stukjes \\( dx \\)&rdquo; &mdash; en dat is de definitie."
         },
         {
           "type": "table",
@@ -257,7 +257,7 @@
         },
         {
           "type": "text",
-          "html": "<p> De <strong>bepaalde</strong> integraal \\( \\int_a^b f(x)\\,dx \\) is iets anders dan een familie functies: het is een <strong>getal</strong> — de netto (getekende) oppervlakte tussen \\( f \\) en de x-as van \\( a \\) tot \\( b \\), waar stukken onder de as negatief meetellen. De directe definitie is de limiet van <strong>Riemann-sommen</strong>: verdeel \\( [a,b] \\) in \\( n \\) stroken van breedte \\( \\Delta x = \\frac{b-a}{n} \\), benader elke strook door een rechthoek met hoogte \\( f \\) op de linkerrand, rechterrand of het midden, en sommeer. Hoe fijner de verdeling, hoe dichter de som bij de ware oppervlakte — hetzelfde limiet-idee als bij de afgeleide, maar nu voor sommen. </p>"
+          "html": "De <strong>bepaalde</strong> integraal is een <strong>getal</strong>: de netto (getekende) oppervlakte tussen \\( f \\) en de x-as, gedefinieerd als de limiet van <strong>Riemann-sommen</strong> &mdash; stroken van breedte \\( \\Delta x \\), hoogte \\( f \\) op links/rechts/midden, sommeren, verfijnen."
         },
         {
           "type": "code",
@@ -268,7 +268,7 @@
         },
         {
           "type": "text",
-          "html": "<p> Typische output: bij \\( n = 4 \\) staan de links- en rechts-sommen nog ver uit elkaar (1.7500 en 3.7500 — de enen onderschatten, de anderen overschatten, want \\( x^2 \\) groeit); bij \\( n = 100 \\) knijpen ze zich samen rond 2.6666 en 2.7068, en de midden-sommen zijn bij elke \\( n \\) dramatisch beter (2.6250 al bij \\( n = 4 \\)). Het doelwit: \\( \\tfrac{8}{3} = 2.6667 \\). Dit knijpende gedrag is precies wat de limietdefinitie formaliseert — en het verklaart ook waarom numerieke bibliotheken (en de rekenmachine in het examendeel B) integralen berekenen: zij verfijnen de som tot het verschil met de buren verwaarloosbaar is. </p>"
+          "html": "Typische output: bij \\( n = 4 \\) staan links- en rechts-sommen ver uit elkaar (1.7500 en 3.7500); bij \\( n = 100 \\) knijpen ze samen rond 2.6666/2.7068, met de midden-sommen dramatisch beter. Doelwit: \\( \\tfrac{8}{3} = 2.6667 \\)."
         },
         {
           "type": "formula",
@@ -278,7 +278,7 @@
         },
         {
           "type": "text",
-          "html": "<p> Voel de stelling met de plot hieronder. De gele curve is \\( F(x) = \\tfrac{x^3}{3} \\), het antiderivaat van \\( f(x) = x^2 \\) (cyaan). De metric “oppervlakte tot b” is \\( F(b) - F(0) = \\tfrac{b^3}{3} \\) — het getal dat de Riemann-sommen najoegen. En de tweede metric laat de andere helft van de stelling zien: de <strong>helling van \\( F \\)</strong> in het verschuivende punt is \\( F'(b) = b^2 \\), exact de waarde van de cyaan-curve daar. Differentiëren en integreren zijn elkaars omkering: oppervlakte opbouwen (integraal) en helling aflezen (afgeleide) passen in elkaar als een rits. </p>"
+          "html": "Voel de FTC in de plot: \\( F(x) = \\tfrac{x^3}{3} \\) is het antiderivaat van \\( f(x) = x^2 \\). Metric 1: oppervlakte tot b = \\( F(b) - F(0) \\). Metric 2: de helling van \\( F \\) in het verschuivende punt = \\( b^2 \\) &mdash; differenti&euml;ren en integreren zijn elkaars omkering."
         },
         {
           "type": "plot",
@@ -345,12 +345,12 @@
         },
         {
           "type": "text",
-          "html": "<p> Wat het examen verder van integratie vraagt: <strong>u-substitutie</strong> (de kettingregel achterstevoren: herken \\( f(g(x)) \\cdot g'(x) \\), vervang \\( u = g(x) \\), integreer, substitueer terug), de oppervlakte <strong>tussen twee curven</strong> (integreer het verschil), de <strong>gemiddelde waarde</strong> van een functie op een interval (\\( \\tfrac{1}{b-a} \\int_a^b f \\)) en volumina van omwentelingslichamen (schijfjes oppervlakte \\( \\pi r^2 \\) opstapelen). Allemaal dezelfde beweging: een som van infinitesimale bijdragen, en de FTC om er getallen uit te halen. </p>"
+          "html": "Verder gevraagd: <strong>u-substitutie</strong> (de kettingregel achterstevoren), oppervlakte <strong>tussen twee curven</strong> (integreer het verschil), <strong>gemiddelde waarde</strong> (\\( \\tfrac{1}{b-a} \\int_a^b f \\)) en omwentelingsvolume (schijfjes \\( \\pi r^2 \\))."
         },
         {
           "type": "callout",
           "kind": "key",
-          "html": "<p> De kern die je moet meenemen: <strong>integreren is accumuleren</strong>. Positie is de opgetelde snelheid, waterinhoud is de opgetelde aanvoer, en — straks in ML — een verwachting \\( E[X] \\) en de AUC (oppervlakte onder de ROC-curve uit <em>Metrics bij classificatie</em>) zijn opgetelde kansmassa. Wie de Riemann-som doorheeft, begrijpt waarom “oppervlakte onder een curve” in het ene vak en “verwachte waarde” in het andere dezelfde constructie is. </p>"
+          "html": "<strong>Integreren is accumuleren</strong>: positie is opgetelde snelheid, waterinhoud opgetelde aanvoer &mdash; en in ML zijn de verwachting \\( E[X] \\) en de AUC (oppervlakte onder de ROC-curve) opgetelde kansmassa."
         }
       ]
     },
@@ -359,11 +359,11 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Een <strong>differentiaalvergelijking</strong> (DV) is een vergelijking waarin een functie en haar afgeleide(n) samen optreden: \\( y' = f(x, y) \\). In plaats van “wat is de afgeleide van deze functie” is de vraag nu “welke functie voldoet aan deze veranderingswet”. Dat is de vorm waarin de natuur haar wetten schrijft: populaties groeien evenredig met hun grootte, koffie koelt af met een tempo evenredig aan het temperatuurverschil met de omgeving, rente werkt op het saldo van dat moment. Het AB-examen vraagt één techniek plus twee ideeën. </p>"
+          "html": "Een <strong>differentiaalvergelijking</strong> is een vergelijking waarin een functie en haar afgeleide(n) samen optreden: \\( y' = f(x, y) \\) &mdash; de vorm waarin de natuur haar wetten schrijft (populatiegroei, afkoeling, rente)."
         },
         {
           "type": "text",
-          "html": "<p> De techniek is <strong>scheiden</strong>: herschrijf \\( \\frac{dy}{dx} = f(x)\\,g(y) \\) als \\( \\frac{dy}{g(y)} = f(x)\\,dx \\) en integreer beide kanten (de kettingregel achterstevoren, opnieuw). De prototype-wet is exponentiële groei: </p>"
+          "html": "De techniek is <strong>scheiden</strong>: herschrijf \\( \\frac{dy}{dx} = f(x)g(y) \\) als \\( \\frac{dy}{g(y)} = f(x)\\,dx \\) en integreer beide kanten. Prototype: exponenti&euml;le groei \\( y' = ky \\)."
         },
         {
           "type": "formula",
@@ -373,7 +373,7 @@
         },
         {
           "type": "text",
-          "html": "<p> De twee ideeën eromheen. Ten eerste het <strong>richtingsveld</strong> (slope field): zet op elk roosterpunt \\( (x, y) \\) een klein streepje met helling \\( f(x,y) \\); oplossingscurven zijn dan de banen die de streepjes volgen — je ziet de hele familie oplossingen in één blik, ook als je er geen één met de hand kunt oplossen. Ten tweede <strong>Eulers methode</strong>: als oplossen niet lukt, loop dan stap voor stap door het richtingsveld: sta je in \\( (x, y) \\), zet dan een stapje van \\( h \\) in de richting die het veld daar aangeeft, en herhaal. Het is de naïefste numerieke oplosser die bestaat — en, in een andere gedaante, de belangrijkste van heel machine learning. </p>"
+          "html": "Twee idee&euml;n eromheen: het <strong>richtingsveld</strong> (op elk roosterpunt een streepje met helling \\( f(x,y) \\) &mdash; oplossingen zijn de banen die de streepjes volgen) en <strong>Eulers methode</strong> (stap voor stap door het veld lopen)."
         },
         {
           "type": "code",
@@ -384,12 +384,12 @@
         },
         {
           "type": "text",
-          "html": "<p> Typische output: 5.0625, 5.9605, 6.7275, tegenover de exacte waarde \\( e^2 = 7.3891 \\). Twee dingen vallen op. De benaderingen <strong>onderschatten</strong> allemaal — logisch: \\( y' = y \\) is convex groeiend, en Euler verlengt telkens de helling van het begin van de stap terwijl de echte helling binnen de stap al oploopt. En elke stapverkleining haalt ruwweg de helft van de fout weg (2.33 → 1.43 → 0.66): dat lineaire gedrag in \\( h \\) is de signatuur van een eerste-orde methode — de reden dat praktische solvers hogere orde gebruiken (Runge-Kutta) of adaptieve stappen. </p>"
+          "html": "Typische output: 5.0625, 5.9605, 6.7275 tegenover exact \\( e^2 = 7.3891 \\). De benaderingen onderschatten (convexe groei), en elke stapverkleining haalt ruwweg de helft van de fout weg &mdash; de signatuur van een eerste-orde methode."
         },
         {
           "type": "callout",
           "kind": "info",
-          "html": "<p> De vermomming: schrijf gradient descent als <strong>\\( \\frac{dx}{dt} = -\\nabla f(x) \\)</strong> — “beweeg steeds in de richting waarin de loss daalt”. Eulers methode op deze differentiaalvergelijking, met stap \\( \\eta \\), is <em>letterlijk</em> de update \\( x \\leftarrow x - \\eta\\,\\nabla f(x) \\) uit <em>Gradient descent</em>. Trainen is een differentiaalvergelijking numeriek oplossen; de learning rate is de stapgrootte \\( h \\); en het “te grote \\( \\eta \\) laat je divergeren”-verschijnsel is Eulers instabiliteit bij grote stappen. Dit is de diepste AP-naar-ML-brug op deze site. </p>"
+          "html": "De vermomming: schrijf gradient descent als \\( \\frac{dx}{dt} = -\\nabla f(x) \\). Eulers methode op deze DV, met stap \\( \\eta \\), is <em>letterlijk</em> de update \\( x \\leftarrow x - \\eta\\,\\nabla f(x) \\). Trainen = een DV numeriek oplossen."
         }
       ]
     },
@@ -448,20 +448,20 @@
         },
         {
           "type": "text",
-          "html": "<p> De verdeling leert je twee dingen. Ten eerste: <strong>de afgeleide-kant is samen met integratie de hoofdmoot</strong> — units 2 t/m 5 tellen ±50%, unit 6 nog eens tot 20%. Wie de twee calculus-onderwerpen van deze site doorheeft, plus §4 hier, heeft de rekenkern van het examen in handen. Ten tweede: er zit geen unit “moeilijke trucs” tussen — elk onderdeel is een toepassing van limiet, afgeleide of integraal. Het examen beloont beheersing van een klein gereedschapskist, niet encyclopedische kennis. </p>"
+          "html": "De verdeling leert: de afgeleide-kant samen met integratie is de hoofdmoot &mdash; units 2 t/m 6 tellen samen &plusmn;70%. Er zit geen unit &ldquo;moeilijke trucs&rdquo; tussen: elk onderdeel is een toepassing van limiet, afgeleide of integraal."
         },
         {
           "type": "text",
-          "html": "<p> Tactisch: in Sectie I heb je gemiddeld <strong>70 seconden per multiple-choicevraag</strong> (105 min voor 45 vragen) — overschat een vraag niet, alles meetelt even zwaar, en fouten kosten niets (raden mag en is bij weglaten dom). De rekenmachine is alleen toegestaan in de aangegeven delen, en dan alleen voor <strong>vier taken</strong>: een grafiek tonen, het snijpunt met een as vinden, de afgeleide in één punt, en de waarde van een bepaalde integraal — “symbolische algebra op de machine” (bijv. een algemene afgeleide-formule) geldt als fraude op de machine-onderdelen. In Sectie II levert elk FRQ-onderdeel aparte punten op via een rubric: <em>setup</em> (de juiste integraal of vergelijking opschrijven) telt vaak even zwaar als de uitkomst, en woorden als <strong>“justify”</strong> of <strong>“explain why”</strong> vragen om een redenering waarin een stelling (IVT, MVT) of een tekenargument de hoofdrol speelt — “want de grafiek dat zegt” levert nul punten. </p>"
+          "html": "Tactisch: gemiddeld <strong>70 seconden per multiple-choicevraag</strong>; fouten kosten niets, raden mag. De rekenmachine mag maar <strong>vier taken</strong>; in Sectie II levert elk FRQ-onderdeel aparte punten op via een rubric &mdash; <em>setup</em> telt vaak even zwaar als de uitkomst, en &ldquo;justify&rdquo; vraagt om een redenering."
         },
         {
           "type": "callout",
           "kind": "warning",
-          "html": "<p> De vijf klassieke puntendoders: (1) <strong>eenheden weglaten</strong> — “maximum volume 2000” zonder cm³ kost het punt; (2) <strong>te vroeg afronden</strong> — reken door met volledige precisie, rond pas het eindantwoord (drie decimalen); (3) <strong>antwoorden zonder context</strong> — bij een FRQ is “ja” geen antwoord, “ja, want v(t) wisselt van teken bij t = 3 dus keert het partikel om” wel; (4) <strong>het domein vergeten</strong> bij optimalisatie — een kritiek punt buiten het fysieke domein (negatieve lengte!) is geen kandidaat; (5) <strong>de calculus overslaan</strong> — een antwoord dat alleen uit machine-waarden bestaat zonder opgeschreven afgeleide of integraal scoort niet, ook al is het getal juist. </p>"
+          "html": "De vijf puntendoders: <strong>(1)</strong> eenheden weglaten, <strong>(2)</strong> te vroeg afronden, <strong>(3)</strong> antwoorden zonder context, <strong>(4)</strong> het domein vergeten bij optimalisatie, <strong>(5)</strong> de calculus overslaan (alleen machine-waarden zonder afgeleide of integraal opschrijven)."
         },
         {
           "type": "text",
-          "html": "<p> Tot slot de scoring zelf: de multiple-choice wordt machinaal nagekeken, de zes FRQ's door docenten in een meerdaagse sessie met per vraag een vaste rubric. De twee delen worden gewogen samengevoegd op de schaal 1–5, waarbij de grenzen jaarlijks licht schuiven (ruwweg: 5 = ruim voldoende beheersing met inzicht, 4 = voldoende, 3 = de kern aanwezig). Welke score credit oplevert, bepaalt de ontvangende instelling — een engineering-opleiding vraagt vaak een 4 of 5, een algemene wiskundeeis vaak een 3. Check vooraf de tabel van je doelinstelling; het examen is elk jaar in de eerste twee weken van mei, op een landelijk vastgelegde ochtend, overal in het land op hetzelfde moment. </p>"
+          "html": "Scoring: multiple choice machinaal, de zes FRQ's door docenten met een vaste rubric; gewogen samengevoegd op de schaal 1&ndash;5. Een 3 levert vaak credit op, engineering-opleidingen vragen vaak een 4 of 5 &mdash; check de tabel van je doelinstelling."
         }
       ]
     },
@@ -470,7 +470,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Zoom uit en het examen is één grote inventarisatie van de wiskunde die in deze site steeds terugkeert. Geen enkel onderdeel is ballast; elk heeft een vaste plek in de ML-workflow. De tabel hieronder is de vertaaltabel — links wat het examen toetst, rechts waar het op deze site in een ML-jas gestoken terugkomt. </p>"
+          "html": "Het examen is &eacute;&eacute;n grote inventarisatie van de wiskunde die in deze site terugkeert. De tabel is de vertaaltabel: links wat het examen toetst, rechts waar het in ML-jas terugkomt."
         },
         {
           "type": "table",
@@ -509,12 +509,12 @@
         },
         {
           "type": "text",
-          "html": "<p> Eén voorbeeld van die vertaling tot op het bot. De ROC-curve uit <em>Metrics bij classificatie</em> zet true-positive tegen false-positive rate over alle drempels; de AUC — de standaardmaat voor “hoe goed rangschikt het model” — is letterlijk de bepaalde integraal van die curve, en grote stukken ML-literatuur leiden drempel-onafhankelijke uitspraken af uit oppervlakte-argumenten die rechtstreeks uit unit 6 komen. Wie ooit Riemann-sommen heeft zien dichtknijpen, kijkt naar een AUC-waarde van 0.93 niet met mystiek maar met een sommatie-intuïtie. </p>"
+          "html": "Voorbeeld tot op het bot: de AUC &mdash; de standaardmaat voor &ldquo;hoe goed rangschikt het model&rdquo; &mdash; is letterlijk de bepaalde integraal van de ROC-curve. Wie Riemann-sommen heeft zien dichtknijpen, kijkt naar 0.93 zonder mystiek."
         },
         {
           "type": "callout",
           "kind": "key",
-          "html": "<p> De kernzin van dit onderwerp: <strong>wie de AB-stof beheerst, bezit precies de wiskunde achter het trainen van een model</strong> — een loss (doelfunctie), een gradiënt (afgeleide in veel dimensies), en een stapregel (Euler). Het examen vraagt het in de taal van dozen, ballonnen en partikels; machine learning vraagt het in de taal van gewichten en data. Het gereedschap is identiek, en deze site laat je het in beide talen lezen. </p>"
+          "html": "De kernzin: <strong>wie de AB-stof beheerst, bezit precies de wiskunde achter het trainen van een model</strong> &mdash; een loss (doelfunctie), een gradi&euml;nt (afgeleide in veel dimensies), en een stapregel (Euler)."
         }
       ]
     }

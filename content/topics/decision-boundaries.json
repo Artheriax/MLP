@@ -2,7 +2,7 @@
   "id": "decision-boundaries",
   "chapter": "ch1",
   "title": "Lineaire decision boundaries & vocabulaire",
-  "intro": "Wat betekent het eigenlijk dat een classifier \"lineair\" is? Alles draait om de decision boundary: het grensvlak tussen de gebieden waarin het model de ene dan wel de andere klasse voorspelt.",
+  "intro": "Wat maakt een classifier &ldquo;lineair&rdquo;? De decision boundary: het grensvlak tussen de gebieden met verschillende voorspellingen.",
   "keyPoints": [
     "De <strong>decision boundary</strong> is de grens waarop het model van klasse wisselt.",
     "Lineair scheidbare data: een <strong>rechte lijn</strong> (hyperplane) scheidt de klassen perfect.",
@@ -16,7 +16,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Een <strong>decision boundary</strong> vertelt je welke klasse het model voorspelt voor elke waarde van <code>x</code>. In een 2D-plaatje voorspelt de classifier bijvoorbeeld de blauwe klasse in het blauwe gebied (waar feature 2 klein is) en de rode klasse in het rode gebied (waar feature 2 groot is). De scheidende lijn ertussen is de beslisgrens. </p> <p> Zo'n grens heet <strong>lineair</strong> als hij een rechte lijn is — in <em>elke</em> oriëntatie, dus ook schuin. Een <strong>niet-lineaire</strong> grens is elke andere vorm; dat kan zelfs leiden tot niet-aangrenzende gebieden met dezelfde voorspelling, zoals een \"eiland\" van blauw midden in rood gebied. In hun basisvorm zijn logistic regression én SVM's lineaire classifiers; niet-lineaire varianten volgen in hoofdstuk 4. </p>"
+          "html": "De <strong>decision boundary</strong> scheidt de gebieden waarin het model de ene dan wel de andere klasse voorspelt. <strong>Lineair</strong> = een rechte lijn; elke andere vorm is niet-lineair. Logistic regression en lineaire SVM's zijn in basisvorm lineaire classifiers."
         },
         {
           "type": "formula",
@@ -26,7 +26,7 @@
         },
         {
           "type": "text",
-          "html": "<p> Met 2 features is de grens een lijn, met 3 features een vlak, en met 5 features wordt de ruimte van mogelijke x-waarden 5-dimensioneel (moeilijk te tekenen!) en is de grens een <strong>hyperplane</strong>: een hoger-dimensionaal \"vlak\" dat de ruimte in twee helften deelt. Het principe blijft identiek — alleen de dimensie verandert. </p>"
+          "html": "Met 3 features is de grens een vlak, met meer een <strong>hyperplane</strong> — het principe blijft identiek."
         }
       ]
     },
@@ -35,7 +35,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Een dataset heet <strong>linearly separable</strong> (lineair scheidbaar) als er één rechte grens bestaat die de klassen perfect van elkaar scheidt. Voorlopig praten we over <em>binair</em> (2-klassen) classificatie; multi-class volgt in hoofdstuk 3. </p> <p> Scheidbaarheid is een eigenschap van de <em>data</em>, niet van het model: sommige datasets kun je met geen enkele lijn perfect verdelen. Een eenvoudige sanity-check: fit een lineaire classifier en kijk of de training accuracy 1.0 is — dan was er kennelijk een scheidende grens te vinden. </p>"
+          "html": "<strong>Linearly separable</strong> = er bestaat &eacute;&eacute;n rechte grens die de klassen perfect scheidt. Scheidbaarheid is een eigenschap van de <em>data</em>, niet van het model."
         },
         {
           "type": "code",

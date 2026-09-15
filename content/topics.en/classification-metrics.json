@@ -2,7 +2,7 @@
   "id": "classification-metrics",
   "chapter": "ch7",
   "title": "Classification metrics: confusion matrix, precision & recall",
-  "intro": "How do you judge a classifier? The confusion matrix as the foundation, accuracy and why it can mislead, precision and recall with concrete scenarios, the F1-score — and binary cross-entropy as the training objective, all with code that runs in the browser.",
+  "intro": "The confusion matrix as the foundation, accuracy and why it misleads, precision and recall, the F1 score — and binary cross-entropy as the training objective.",
   "keyPoints": [
     "Everything starts with the <strong>confusion matrix</strong>: TP, FP, FN and TN.",
     "<strong>Accuracy</strong> can mislead on imbalanced classes — 99% accurate may mean 'always the majority'.",
@@ -17,7 +17,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> In classification the goal is to use the feature variables to create a <strong>decision boundary</strong> that separates the data points by their category. All standard metrics build on one table: the <em>confusion matrix</em>, which crosses the predictions (positive/negative) with reality (positive/negative). Every prediction falls into exactly one of the four cells. </p>"
+          "html": "Every standard metric builds on one table: the <strong>confusion matrix</strong>, crossing predictions with reality — each prediction lands in exactly one of four cells."
         },
         {
           "type": "table",
@@ -41,12 +41,12 @@
         },
         {
           "type": "text",
-          "html": "<p> The four cells are quickly internalised: <strong>TP</strong> is a justified alarm (predicted positive, truly positive), <strong>TN</strong> a justified all-clear, <strong>FP</strong> a <em>false alarm</em> (predicted positive, but actually negative) and <strong>FN</strong> a <em>missed case</em> (predicted negative, but actually positive). Note the asymmetry: in almost every application a false alarm and a missed case are <em>not</em> equally bad. In medical screening a missed case (FN) is more serious than one unnecessary follow-up test (FP); in a spam filter a false alarm (FP — an important email in the spam folder) is more annoying than one spam that slips through (FN). </p>"
+          "html": "<strong>TP</strong> = rightful alarm, <strong>TN</strong> = rightful all-clear, <strong>FP</strong> = false alarm, <strong>FN</strong> = missed case. The asymmetry: in medical screening a missed case is worse; in a spam filter a false alarm is."
         },
         {
           "type": "callout",
           "kind": "key",
-          "html": "<p> The confusion matrix itself is already a diagnostic: look at which corner stands out. Many FPs? Your model is too eager (or your threshold is too low). Many FNs? Your model is too cautious — and with logistic regression you can raise or lower the <em>threshold</em> to shift the balance. </p>"
+          "html": "The matrix itself is a diagnostic: many FPs = too eager (threshold too low); many FNs = too cautious — the threshold shifts the balance."
         }
       ]
     },
@@ -55,7 +55,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> The simplest metric is <strong>accuracy</strong>: the share of predictions that is correct, all taken together. </p>"
+          "html": null
         },
         {
           "type": "formula",
@@ -65,7 +65,7 @@
         },
         {
           "type": "text",
-          "html": "<p> The danger hides in <strong>class imbalance</strong>. Suppose 99% of emails are not spam: a model that simply <em>always</em> predicts \"not spam\" scores 99% accuracy — and is completely useless. Accuracy weighs all four cells equally and does not care which error hurts. That is exactly why precision and recall exist. </p>"
+          "html": "The danger: <strong>imbalanced classes</strong>. At 99% non-spam, &ldquo;always non-spam&rdquo; also scores 99% accuracy — and is completely useless. Hence precision and recall."
         },
         {
           "type": "callout",
@@ -79,7 +79,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> <strong>Precision</strong> looks at everything you <em>called positive</em> and asks: how much of that was truly positive? <strong>Recall</strong> looks at everything that is <em>truly positive</em> and asks: how much of that did I find? Two sides of the same coin — one punishes false alarms (FP), the other missed cases (FN). </p>"
+          "html": "<strong>Precision</strong>: of everything you <em>called positive</em>, how much truly was? <strong>Recall</strong>: of everything <em>truly positive</em>, how much did you find?"
         },
         {
           "type": "formula",
@@ -125,7 +125,7 @@
         },
         {
           "type": "text",
-          "html": "<p> Precision and recall are in tension: make the threshold stricter and the number of FPs drops (precision up) while the number of FNs rises (recall down). Make it more lenient and the reverse happens. There is no \"correct\" balance — it depends on the cost of both error types in your application. </p>"
+          "html": "They are in tension: stricter threshold = fewer FPs (precision up) but more FNs (recall down). The right balance depends on the costs of both error types."
         }
       ]
     },
@@ -134,7 +134,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> If you want to summarise precision and recall in a single number, you do not take the ordinary mean (which still awards an extreme precision of 1.0 with a useless recall of 0.0 an average of 0.5) but the <strong>harmonic mean</strong>: </p>"
+          "html": "Precision and recall in one number? Not the plain mean (extremes 1.0 and 0.0 still average 0.5), but the <strong>harmonic mean</strong>:"
         },
         {
           "type": "formula",
@@ -144,7 +144,7 @@
         },
         {
           "type": "text",
-          "html": "<p> The harmonic mean punishes extremes: if one of the two is low, the F1 sinks with it. A high F1 is only achievable when precision and recall are <em>both</em> high — which is why it so often serves as the summarising metric. </p>"
+          "html": "The harmonic mean punishes extremes: one low value drags F1 down. High only if <em>both</em> are high."
         }
       ]
     },
@@ -153,7 +153,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> The four functions below take the <em>true classes</em> and the <em>predicted classes</em> (0/1, no probabilities — the threshold has already been applied). As in the confusion matrix: count TPs, FPs, TNs and FNs with boolean masks. In scikit-learn, <code>accuracy_score</code>, <code>precision_score</code>, <code>recall_score</code> and <code>f1_score</code> exist ready-made — but seeing how they are built makes them concrete. </p>"
+          "html": "The four functions take true and predicted classes (0/1, threshold already applied) and count TP/FP/TN/FN with boolean masks. scikit-learn ships them — seeing the construction makes them concrete."
         },
         {
           "type": "code",
@@ -174,7 +174,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> The metrics above judge the <em>final decision</em> (after the threshold). But during training logistic regression has a different objective: the <strong>binary cross-entropy loss (BCE)</strong>. With two categories you use BCE; with more than two classes the <em>categorical</em> cross-entropy. The values of \\( y \\) are the true classes (1 or 0); the values of \\( \\hat{y} \\) are the predicted probabilities (between 0 and 1): </p>"
+          "html": "The metrics above judge the decision <em>after</em> the threshold; during training the objective is <strong>binary cross-entropy (BCE)</strong> — \\( y \\) the classes (1/0), \\( \\hat{y} \\) the predicted probabilities."
         },
         {
           "type": "formula",
@@ -184,7 +184,7 @@
         },
         {
           "type": "text",
-          "html": "<p> Why exactly this shape? Look at the two cases. If \\( y_i = 1 \\), only \\( -\\log(\\hat{y}_i) \\) remains: predict a probability close to 1 and the penalty is almost zero; predict 0.1 and the penalty is large. If \\( y_i = 0 \\), the term flips around and \\( -\\log(1 - \\hat{y}_i) \\) punishes probabilities towards 1. One function, two directions — and smooth, so it minimises well with gradient descent. </p>"
+          "html": "Why this shape? For \\( y = 1 \\), \\( -\\log(\\hat{y}) \\) punishes probabilities toward 0; for \\( y = 0 \\), \\( -\\log(1-\\hat{y}) \\) punishes probabilities toward 1. One function, two directions, smooth and minimizable."
         },
         {
           "type": "code",
@@ -196,7 +196,7 @@
         {
           "type": "callout",
           "kind": "info",
-          "html": "<p> Compare the two outcomes in the run above: probabilities close to the correct labels give a low BCE, confident mistakes give a high one. This is the learning signal: during training the coefficients keep shifting until this loss is as small as possible. See also <a href=\"#/topic/loss-diagrams\">loss diagrams</a>, where the logistic loss plays the same role relative to the hinge loss of SVMs. </p>"
+          "html": "Probabilities near the correct labels = low BCE; confident mistakes = high. This is the learning signal that shifts the coefficients."
         }
       ]
     },
@@ -205,11 +205,11 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> How a classifier arrives at its decision happens in four steps: <strong>(1)</strong> compute a linear score (the logit) \\( l = b_0 + b_1 x_1 + \\cdots + b_n x_n \\); <strong>(2)</strong> convert it into a probability with the sigmoid \\( \\hat{y} = 1/(1 + e^{-l}) \\); <strong>(3)</strong> apply a threshold (usually 0.5: probability &ge; 0.5 &rarr; positive); <strong>(4)</strong> minimise the BCE during training. The threshold in step 3 is adjustable — and shifting it moves exactly the balance between precision and recall you saw above. </p>"
+          "html": "From probability to decision in four steps: <strong>(1)</strong> linear score \\( l \\), <strong>(2)</strong> sigmoid &rarr; probability, <strong>(3)</strong> threshold (usually 0.5), <strong>(4)</strong> minimize BCE during training. The threshold is adjustable and shifts the precision/recall balance."
         },
         {
           "type": "text",
-          "html": "<p> Below: logistic regression with two feature variables (x1 horizontal, x2 vertical). The target has two classes: <span style=\"color:var(--green)\">class 1 (positive)</span> and <span style=\"color:var(--magenta)\">class 0 (negative)</span>. The decision boundary is \\( b_0 + b_1 x_1 + x_2 = 0 \\) — slide <strong>b0</strong> and <strong>b1</strong> and see how the boundary trades one error type for the other.  The <strong>live metrics</strong> under each plot — accuracy, precision, recall and F1 — are recomputed on the 24 points with every slider move: watch each shift of the boundary redistribute the four measures.</p>"
+          "html": "Below: logistic regression with two features. Slide <strong>b0</strong> and <strong>b1</strong> and watch the boundary trade one error type for the other — the live metrics (accuracy, precision, recall, F1) recompute on every move."
         },
         {
           "type": "plot",
@@ -606,7 +606,7 @@
         {
           "type": "callout",
           "kind": "key",
-          "html": "<p> Dataset B shows the core of this chapter: because the clouds overlap, no boundary is perfect, and every shift of the line swaps FPs for FNs — the precision/recall trade-off in plain sight. For non-linearly separated data (e.g. concentric circles) no straight boundary helps; the solution is to <strong>transform features</strong> (for example adding \\( x_1^2 \\) and \\( x_2^2 \\)) or to use a kernel — see <a href=\"#/topic/kernel-svm\">Kernel SVMs</a>. </p>"
+          "html": "Dataset B shows the essence: overlapping clouds &rarr; no boundary is perfect, every shift trades FPs for FNs. For non-linearly separated data: transform features (e.g. \\( x_1^2, x_2^2 \\)) or use a kernel."
         }
       ]
     }

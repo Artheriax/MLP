@@ -2,7 +2,7 @@
   "id": "ml-types",
   "chapter": "ch0",
   "title": "The three types of machine learning",
-  "intro": "Supervised, unsupervised or reinforcement? The three families of machine learning, what data each of them needs, which tasks belong to them — and how two questions tell you which family your problem is.",
+  "intro": "Three families: supervised (learning with answers), unsupervised (structure without labels) and reinforcement (learning via reward).",
   "keyPoints": [
     "<strong>Supervised learning</strong>: learning with labels — classification (category) and regression (number). This course's focus.",
     "<strong>Unsupervised learning</strong>: finding structure without labels — clustering, PCA, anomaly detection.",
@@ -16,7 +16,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Machine learning is classified by the <em>kind of feedback</em> the model learns from. Do you have examples with answers? That is <strong>supervised learning</strong>. Do you only have data without answers and are you looking for structure? That is <strong>unsupervised learning</strong>. And if a program learns by acting and receiving rewards, it is called <strong>reinforcement learning</strong>. </p>"
+          "html": "Classified by feedback type: examples <strong>with</strong> answers = <strong>supervised</strong>; data only, finding structure = <strong>unsupervised</strong>; learning by acting and earning rewards = <strong>reinforcement</strong>."
         },
         {
           "type": "table",
@@ -53,7 +53,7 @@
         },
         {
           "type": "text",
-          "html": "<p> In practice supervised learning is by far the most used: it is what scikit-learn describes as “fit on (X, y)”. The other two families belong to the basic vocabulary of the field. </p>"
+          "html": "Supervised is by far the most common — exactly what scikit-learn means by &ldquo;fit on (X, y)&rdquo;."
         }
       ]
     },
@@ -62,7 +62,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> In supervised learning your data consists of <strong>pairs</strong>: the features X (what you know) and the target y (the answer). The model learns the mapping from X to y, so that later it can also predict a y for <em>new</em> X. Within this family there are two tasks, distinguished by what kind of y you predict. </p>"
+          "html": "Data consists of <strong>pairs</strong>: features X (what you know) and target y (the answer). The model learns the map X &rarr; y so it can predict y for new X."
         },
         {
           "type": "table",
@@ -89,12 +89,12 @@
         },
         {
           "type": "text",
-          "html": "<p> Note the terminology: <em>classification</em> with two classes is called binary; with three or more classes it is multi-class (chapter 3 goes deeper). And “regression” in “logistic regression” is confusing: despite the name it is a <em>classification</em> algorithm — the regression step happens under the hood. </p>"
+          "html": "Two classes is <em>binary</em>, three or more <em>multi-class</em>. Note: despite its name, logistic regression is <em>classification</em>."
         },
         {
           "type": "callout",
           "kind": "key",
-          "html": "<p> The hallmark of supervised learning: <strong>you already have the answer</strong> for your training data. The model learns the relation, not the answer itself — and is then tested on questions it has not seen yet. </p>"
+          "html": "Hallmark of supervised learning: <strong>you already have the answer</strong> for the training data; the model is tested on questions it has not seen."
         }
       ]
     },
@@ -103,11 +103,11 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Sometimes you have no answers — only data. <strong>Unsupervised learning</strong> then looks for structure: <em>clustering</em> groups similar samples (KMeans is the classic), <em>dimensionality reduction</em> compresses many columns into a few (PCA), and <em>anomaly detection</em> flags the points that belong nowhere. A typical application: customer segmentation — discover for yourself which groups of customers exist in your sales data. </p>"
+          "html": "Without labels, unsupervised learning looks for structure: <em>clustering</em> (KMeans), <em>dimensionality reduction</em> (PCA), <em>anomaly detection</em>. Example: customer segmentation."
         },
         {
           "type": "text",
-          "html": "<p> Below is a minimal example: eight points in two dimensions that clearly form two groups. KMeans finds the two groups <em>without anyone ever telling it what the groups are</em>. Feel free to run the code in your browser. </p>"
+          "html": "Eight points, two clusters: KMeans finds them <em>without anyone naming the groups</em>. Run the code yourself."
         },
         {
           "type": "code",
@@ -119,7 +119,7 @@
         {
           "type": "callout",
           "kind": "tip",
-          "html": "<p> In unsupervised learning there is no y to check against — the quality of a clustering is judged <em>by you</em>, by interpreting the groups. That is exactly why it is called “learning without a teacher”. </p>"
+          "html": "There is no y to check against: you judge clustering quality <em>yourself</em>, by interpretation."
         }
       ]
     },
@@ -128,11 +128,11 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> In <strong>reinforcement learning</strong> (RL) an <em>agent</em> learns by acting in an environment: every action yields a (delayed) reward or penalty, and the agent optimises its policy to maximise the total reward. There is no labelled example of “the right move” — only the long-term outcome. Applications: robot control, game AI and the RLHF technique used to fine-tune large language models. </p>"
+          "html": "An <em>agent</em> learns by acting: actions yield (delayed) reward or punishment; the policy maximizes total reward. Uses: robotics, game AI, RLHF."
         },
         {
           "type": "text",
-          "html": "<p> The difference from supervised learning is essential: in supervised learning you get the correct answer for each example; in RL you must discover <em>which</em> actions led to the reward yourself — and the reward often comes much later. Think of chess: you only find out at the end whether you won. </p>"
+          "html": "Difference with supervised: there you get the correct answer per example; here you must discover <em>which</em> actions led to the reward — often much later."
         },
         {
           "type": "table",
@@ -158,7 +158,7 @@
         {
           "type": "callout",
           "kind": "key",
-          "html": "<p> These two questions — “do you have labels?” and “does the feedback come per example or via rewards?” — place almost every ML system in the right family. A handy tool for assignments and exams. </p>"
+          "html": "Two questions place any system: do you have labels? And does feedback arrive per example or via reward?"
         }
       ]
     }

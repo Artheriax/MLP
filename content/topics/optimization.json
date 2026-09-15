@@ -2,7 +2,7 @@
   "id": "optimization",
   "chapter": "ch6",
   "title": "Optimalisatie: waar de afgeleide nul is",
-  "intro": "Een bedrijf maximaliseert winst, een ingenieur minimaliseert materiaalgebruik — en een machine learning-model <strong>minimaliseert zijn loss</strong>. Alledrie doen ze hetzelfde: een functie waarvan de waarde afhangt van keuzes die jij maakt, en de vraag “welke keuze geeft de beste waarde?”. Differentiaalrekening geeft het gereedschap: op een gladde functie kan een maximum of minimum alleen zitten waar de <strong>helling verdwijnt</strong> — \\( f'(x) = 0 \\) — of op de rand van het toegestane gebied. Dit onderwerp bouwt de volledige aanpak: kritieke punten vinden, met de eerste en tweede afgeleide classificeren, randen checken, en — wanneer de vergelijking niet oplosbaar is — gradient descent laten zoeken. Precies het pad dat elk ML-model aflegt.",
+  "intro": "Een bedrijf maximaliseert winst, een model <strong>minimaliseert zijn loss</strong>. Op een gladde functie kan een extremum alleen waar de helling verdwijnt: \\( f'(x) = 0 \\). Dit onderwerp: kritieke punten, eerste en tweede test, randen checken &mdash; en gradient descent als de algebra vastloopt.",
   "keyPoints": [
     "Extrema van een gladde functie op een gesloten interval zitten alleen op <strong>kritieke punten</strong> (\\( f'(c) = 0 \\) of \\( f' \\) bestaat niet) of op de <strong>randen</strong> van het domein — nergens anders.",
     "<strong>Eerste-afgeleide-test</strong>: wisselt \\( f' \\) van + naar − bij een kritiek punt, dan is het een lokaal maximum; van − naar + een lokaal minimum; geen tekenwissel, dan geen extremum (zoals \\( x^3 \\) op 0).",
@@ -17,16 +17,16 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Optimalisatieproblemen herken je aan hun vorm, en die vorm is altijd hetzelfde: er is een <strong>doelfunctie</strong> (winst, volume, fout, loss) die afhangt van keuzevariabelen (prijs, afmeting, modelgewichten), en er is een <strong>domein</strong> van toegestane keuzes (budget, beschikbaar karton, bereikbare parameterwaarden). Vraag: welke keuze optimaliseert het doel? De calculus-reflex is oud maar dragend: <em>op een gladde functie kan een top of dal niet schuin liggen</em>. Als de helling op zijn hoogste punt nog steeds omlaag wijst, dan was je er namelijk nog niet — loop maar door. Op een extremum binnen het domein moet de raaklijn dus horizontaal zijn: \\( f'(c) = 0 \\). </p>"
+          "html": "Elk optimalisatieprobleem heeft dezelfde vorm: een <strong>doelfunctie</strong> (winst, volume, loss), keuzevariabelen en een <strong>domein</strong> van toegestane keuzes. De calculus-reflex: <em>op een gladde functie kan een top of dal niet schuin liggen</em> &mdash; dus \\( f'(c) = 0 \\)."
         },
         {
           "type": "text",
-          "html": "<p> Eén onderscheid dat op het examen én in de praktijk telkens terugkomt: <strong>lokaal versus globaal</strong>. Een lokaal maximum is alleen maar hoger dan zijn directe omgeving — klim op een heuvel in de Alpen en je staat lokaal boven alles, ook al is de Mount Everest hoger. Een globaal maximum is het hoogste punt van het hele domein. Voor <strong>convexe</strong> functies (komvormig overal, \\( f'' \\geq 0 \\)) vallen ze samen: één dal, geen verrassingen — de squared loss van lineaire regressie heeft die vorm, en precies daarom is die loss zo geliefd. Voor non-convexe functies (neural networks) bestaan beide soorten door elkaar en kan een naieve zoekstrategie op een lokale heuvel blijven steken. </p>"
+          "html": "<strong>Lokaal versus globaal</strong>: een lokaal maximum is alleen hoger dan zijn directe omgeving; een globaal is het hoogste punt van het hele domein. Voor <strong>convexe</strong> functies (\\( f'' \\ge 0 \\), zoals de squared loss) vallen ze samen &mdash; bij non-convexe (neural networks) niet."
         },
         {
           "type": "callout",
           "kind": "info",
-          "html": "<p> Terminologie voor de rest van dit onderwerp: <strong>extremum</strong> is de verzamelnaam voor maximum en minimum; <strong>kritiek punt</strong> is elke binnenliggende kandidaat (\\( f' = 0 \\) of niet-differentieerbaar); <strong>buigpunt</strong> is waar de kromming van teken wisselt. En onthoud dat “maximaliseren van \\( f \\)” hetzelfde is als “minimaliseren van \\( -f \\)” — ML praat vrijwel altijd over minimaliseren van een loss, maar elke techniek hier werkt direct door een minteken om te wisselen. </p>"
+          "html": "Terminologie: <strong>extremum</strong> = verzamelnaam; <strong>kritiek punt</strong> = binnenliggende kandidaat (\\( f' = 0 \\) of niet-differentieerbaar); <strong>buigpunt</strong> = tekenwissel van de kromming. En: max van \\( f \\) = min van \\( -f \\)."
         }
       ]
     },
@@ -35,7 +35,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> De kandidaten verzamelen is mechanisch: differentieer, zet op nul, los op. Neem de parade-ganger \\( f(x) = x^3 - 3x \\): \\( f'(x) = 3x^2 - 3 \\), dus \\( 3x^2 - 3 = 0 \\) geeft \\( x = \\pm 1 \\). Meer kandidaten zijn er niet — en samen met de randen van het domein (indien begrensd) is dat de volledige lijst waaraan een extremum kan wonen. In de plot hieronder loop je met de <code>xc</code>-slider over de curve en zie je beide functies tegelijk: de cyaan-curve is \\( f \\), de gele curve is \\( f' \\). De status-chip vertaalt de helling naar taal — en op \\( x = \\pm 1 \\), precies waar de gele curve de x-as snijdt, slaat hij om van “stijgend” naar “dalend” (of andersom). </p>"
+          "html": "Kandidaten verzamelen is mechanisch: differentieer, zet op nul, los op. Voor \\( f(x) = x^3 - 3x \\): \\( f'(x) = 3x^2 - 3 = 0 \\) geeft \\( x = \\pm 1 \\). In de plot: de gele curve is \\( f' \\) &mdash; kritieke punten liggen precies waar ze de x-as snijdt."
         },
         {
           "type": "plot",
@@ -112,7 +112,7 @@
         },
         {
           "type": "text",
-          "html": "<p> Aflezen wat de kritieke punten betekenen: op \\( x = -1 \\) ligt de top van de heuvel (\\( f(-1) = 2 \\), lokaal maximum) en op \\( x = 1 \\) de bodem van het dal (\\( f(1) = -2 \\), lokaal minimum). Maar let op de derde karakteristieke plek: op \\( x = 0 \\) is de curve glad maar horizontaal-krommend — géén extremum, want de curve daalt er gewoon dóór. Een kritiek punt is een <em>kandidaat</em>, nog geen vonnis; de classificatie is de volgende stap. Precies daarom is het onderscheid belangrijk: niet elk nulpunt van \\( f' \\) is een top of dal. </p>"
+          "html": "Aflezen: \\( x = -1 \\) is de top (\\( f(-1) = 2 \\), lokaal max), \\( x = 1 \\) de bodem (\\( f(1) = -2 \\), lokaal min). Maar op \\( x = 0 \\) is de curve horizontaal-zonder-extremum: een kritiek punt is een <em>kandidaat</em>, geen vonnis."
         }
       ]
     },
@@ -121,7 +121,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Het teken van \\( f' \\) is de complete bewegingsbeschrijving van \\( f \\). Positieve helling betekent stijgen (naar rechts gaand liggen de functiewaardes hoger), negatieve betekent dalen, en nul betekent evenwijdig aan de x-as. Om een kritiek punt te <em>classificeren</em> kijk je dus niet naar het punt zelf, maar naar wat er <strong>omheen</strong> gebeurt — precies wat de eerste-afgeleide-test formaliseert: het teken van \\( f' \\) links en rechts van het kritieke punt vergelijken. De vier mogelijke uitkomsten staan in de tabel; de vierde (geen wissel) is degene die examens en interviews als valstrik in elkaar zetten. </p>"
+          "html": "Het teken van \\( f' \\) is de complete bewegingsbeschrijving: positief = stijgen, negatief = dalen, nul = evenwijdig. Classificeren doe je door naar wat er <strong>omheen</strong> gebeurt &mdash; de eerste-afgeleide-test."
         },
         {
           "type": "table",
@@ -160,12 +160,12 @@
         },
         {
           "type": "text",
-          "html": "<p> In de praktijk voer je dit uit met een tekenschema: zet de nulpunten van \\( f' \\) op een rij, kies in elk tussenliggend interval één proefpunt, en noteer het teken van \\( f' \\) daar. Het schema leest daarna als een weerbericht voor de curve: stijgende en dalende stroken afgewisseld door de kritieke punten. Voor de kubische uit de plot: \\( f' < 0 \\) op \\( (-\\infty, -1) \\)... maar wacht — daar klopt iets niet. Check het zelf met de slider: op \\( x = -2 \\) staat \\( f' = +9 \\), dus de curve <em>stijgt</em> daar. Het juiste schema is stijgend op \\( (-\\infty, -1) \\), dalend op \\( (-1, 1) \\), stijgend op \\( (1, \\infty) \\): eerst de heuveltop, dan het dal — en \\( x = 0 \\) ligt midden in de dalende strook, vandaar dat het géén extremum is. </p>"
+          "html": "Uitvoering met een tekenschema: nulpunten van \\( f' \\) op een rij, per interval &eacute;&eacute;n proefpunt, teken noteren. Voor de kubische: stijgend op \\( (-\\infty, -1) \\), dalend op \\( (-1, 1) \\), stijgend op \\( (1, \\infty) \\) &mdash; eerst de heuvel, dan het dal."
         },
         {
           "type": "callout",
           "kind": "key",
-          "html": "<p> Voor een <strong>globaal</strong> maximum of minimum op een gesloten interval \\( [a, b] \\) check je dus drie categorieën: de kritieke punten bínnen het interval, plus de twee eindpunten — evalueer \\( f \\) op al die kandidaten en het grootste/kleinste getal wint. Dit “kandidatenlijstje” is de volledige, bewezen methode: gladde functies kunnen nergens anders een extremum op \\( [a, b] \\) hebben. Klassieke valstrik: de randen vergeten — juist daar zit bij tekenschema's in woordproblemen vaak het echte antwoord (zoals bij de doos hieronder, waar \\( x = 15 \\) op de rand volume nul oplevert). </p>"
+          "html": "Voor een <strong>globaal</strong> extremum op \\( [a, b] \\): evalueer \\( f \\) op de kritieke punten b&iacute;nnen het interval <em>plus</em> de twee eindpunten &mdash; het grootste/kleinste getal wint. Klassieke valstrik: de randen vergeten."
         }
       ]
     },
@@ -174,7 +174,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> De tweede afgeleide voegt een tweede leeslaag toe. Waar \\( f'' > 0 \\) is de functie <strong>convex</strong> (komvormig — de raaklijnen liggen ónder de curve, zoals \\( x^2 \\)); waar \\( f'' < 0 \\) is hij <strong>concaaf</strong> (bergvormig — de raaklijnen liggen bóven de curve, zoals \\( -x^2 \\)); waar het teken omslaat zit een <strong>buigpunt</strong>. Voor de kubische \\( x^3 - 3x \\) is \\( f''(x) = 6x \\): concaaf links van nul, convex rechts, buigpunt in de oorsprong — zie de f″-metric in de plot hierboven meebewegen en van teken wisselen precies op \\( x = 0 \\). </p>"
+          "html": "Waar \\( f'' > 0 \\) is de functie <strong>convex</strong> (komvormig), waar \\( f'' < 0 \\) <strong>concaaf</strong> (bergvormig), waar het teken omslaat zit een <strong>buigpunt</strong>. Voor \\( x^3 - 3x \\): \\( f''(x) = 6x \\) &mdash; buigpunt in de oorsprong."
         },
         {
           "type": "table",
@@ -203,12 +203,12 @@
         },
         {
           "type": "text",
-          "html": "<p> Waarom de tweede test vaak sneller is: hij vraagt alleen \\( f'' \\) <em>op het kritieke punt zelf</em> — geen proefpunten links en rechts, geen tekenschema. De intuïtie is fysiek: een kritiek punt betekent “momentan stilstand” (helling nul), en de tweede afgeleide is de versnelling. Positieve versnelling op het stilstandspunt: je zit onderaan en het gaat omhoog — minimum. Negatieve versnelling: je zit bovenop en het zakt weg — maximum. De beperking is reëel: bij \\( f''(c) = 0 \\) zegt hij niets (check \\( x^4 \\): \\( f''(0) = 0 \\) en tóch een minimum), en dan is de eerste test de enige uitweg. </p>"
+          "html": "De tweede test is vaak sneller: hij vraagt alleen \\( f'' \\) <em>op het kritieke punt</em>. Intu&iuml;tie: stilstand (\\( f' = 0 \\)) plus positieve versnelling = minimum; negatieve = maximum. Beperking: bij \\( f''(c) = 0 \\) zegt hij niets (zie \\( x^4 \\))."
         },
         {
           "type": "callout",
           "kind": "tip",
-          "html": "<p> Voor ML is concaviteit geen bijzaak maar de kern van het leerproces. Een <strong>convexe loss</strong> (linear regressie met squared loss, logistic regression met de log-loss) heeft één dal: elke afdaal-strategie vindt uiteindelijk het globale minimum — langzaam misschien, maar zeker. Een <strong>non-convexe loss</strong> (neural networks) heeft meerdere dalen en plateaus: gradient descent kan in een lokaal minimum stranden, en de startpunt-keuze wordt opeens relevant. En de learning rate is een concavititeitskwestie: in een smal, steil dal (grote \\( f'' \\)) laten grote stappen je tegen de wanden ketsten — zie <em>Gradient descent</em> voor de simulatie. </p>"
+          "html": "Voor ML is concaviteit de kern van het leerproces: een <strong>convexe</strong> loss heeft &eacute;&eacute;n dal (elke afdaal-strategie vindt het), een <strong>non-convexe</strong> heeft meerdere dalen en plateaus &mdash; en de learning rate is een concavititeitskwestie."
         }
       ]
     },
@@ -217,7 +217,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Nu het hele repertoire in één AP-stijl woordprobleem. <em>Van een vierkant karton van 30 bij 30 cm knip je uit elke hoek een vierkantje van \\( x \\times x \\) cm en vouwt de zijkanten omhoog tot een open doos. Welke \\( x \\) geeft het grootste volume?</em> Vertaal eerst naar formules: de bodem wordt \\( (30-2x) \\times (30-2x) \\), de hoogte wordt \\( x \\), dus het volume is het product van alle drie. En het domein is fysiek afgedwongen: \\( x > 0 \\) (anders is er geen hoogte) en \\( x < 15 \\) (anders is er geen bodem) — dus \\( x \\in (0, 15) \\). </p>"
+          "html": "AP-stijl woordprobleem: vierkant karton 30&times;30 cm, uit elke hoek een vierkantje \\( x \\times x \\) knippen, zijkanten omhoog vouwen. Bodem \\( (30-2x)^2 \\), hoogte \\( x \\), dus \\( V(x) = x(30-2x)^2 \\) met domein \\( x \\in (0, 15) \\)."
         },
         {
           "type": "formula",
@@ -227,7 +227,7 @@
         },
         {
           "type": "text",
-          "html": "<p> Differentiëren met de <strong>productregel</strong> (want \\( x \\) maal een kwadraat): \\( V'(x) = (30-2x)^2 + x \\cdot 2(30-2x) \\cdot (-2) \\). Haal \\( (30-2x) \\) buiten haakjes en het valt op zijn plek: \\( V'(x) = (30-2x)\\left[(30-2x) - 4x\\right] = (30-2x)(30-6x) \\). Nulpunten: \\( x = 15 \\) (rand van het domein, volume nul) en \\( x = 5 \\) — de enige binnenliggende kandidaat. Tweede test: \\( V''(x) = 24x - 240 \\), dus \\( V''(5) = -120 < 0 \\): concaaf op de top. <strong>Maximum</strong> bij \\( x = 5 \\), met volume \\( V(5) = 5 \\cdot 20^2 = 2000 \\) cm³. </p>"
+          "html": "Differenti&euml;ren met de productregel: \\( V'(x) = (30-2x)(30-6x) \\). Nulpunten: \\( x = 15 \\) (rand, volume nul) en \\( x = 5 \\). Tweede test: \\( V''(5) = -120 < 0 \\) &mdash; <strong>maximum</strong> bij \\( x = 5 \\), volume \\( V(5) = 2000 \\) cm&sup3;."
         },
         {
           "type": "plot",
@@ -296,12 +296,12 @@
         },
         {
           "type": "text",
-          "html": "<p> In de plot lees je de hele analyse terug. Links van 5 is \\( V' > 0 \\): groter knippen geeft (nog) meer volume — de curve stijgt. Op \\( x = 5 \\) zelf is de helling exact nul: de gele stip zit op de top van de cyaan-curve, op hoogte 2000. Rechts daarvan wordt \\( V' < 0 \\): elke extra centimeter knippen kost volume, en bij \\( x \\to 15 \\) rest een bodemloze strook van nul. De scherpe waarneming die het woordprobleem tot een calculus-probleem maakte: de twee fysische randen zijn allebei slecht (volume 0), dus het optimum moet binnen liggen — en binnen kan het alleen waar \\( V' = 0 \\). </p>"
+          "html": "In de plot: links van 5 is \\( V' &gt; 0 \\) (meer volume), op 5 is de helling nul, rechts wordt hij negatief. De twee fysische randen zijn allebei slecht (volume 0) &mdash; dus het optimum moet binnen liggen."
         },
         {
           "type": "callout",
           "kind": "key",
-          "html": "<p> Dit patroon — <strong>randen slecht, binnenkant glad, dus kritiek punt</strong> — is de reden dat optimalisatie-vraagstukken bijna altijd deze vorm hebben. Of het nu een doos, een omheining met vaste lengte of een loss-landschap is: begrens je domein eerlijk, geef toe dat de randen meestal rampzalig zijn, en dan rest alleen de vraag “waar wordt de afgeleide nul?”. Op het AP-examen komt dit format dan ook vrijwel elk jaar terug, verpakt in andere attributen. </p>"
+          "html": "Dit patroon &mdash; <strong>randen slecht, binnenkant glad, dus kritiek punt</strong> &mdash; is de reden dat optimalisatie-vraagstukken bijna altijd deze vorm hebben. Of het nu een doos of een loss-landschap is."
         }
       ]
     },
@@ -310,7 +310,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Tot nu toe losten we \\( f'(x) = 0 \\) <em>analytisch</em> op — haakjes buiten, wortels trekken, klaar. Maar probeer dat maar eens bij \\( f(x) = e^{-x} + x^2 \\) of, erger, bij de loss van een neural network met een miljoen gewichten: geen gesloten vorm, geen symmetrie die redden kan. Dan draai je de aanpak om: je hoeft niet te <em>weten</em> waar de helling nul wordt, je hoeft hem alleen maar te <em>volgen</em>. Sta je op een helling die naar beneden wijst (\\( f' < 0 \\)), loop dan naar rechts; wijst hij omhoog (\\( f' > 0 \\)), loop naar links. Beide gevallen in één regel: een stap in de richting <em>tegen</em> de helling in. </p>"
+          "html": "Probeer \\( f'(x) = 0 \\) maar eens bij de loss van een neural network met een miljoen gewichten: geen gesloten vorm. Dan draai je de aanpak om: je hoeft de helling niet te <em>weten</em>, alleen te <em>volgen</em> &mdash; een stap tegen de helling in."
         },
         {
           "type": "formula",
@@ -320,7 +320,7 @@
         },
         {
           "type": "text",
-          "html": "<p> Klein en volledig voorbeeld: \\( f(x) = x^2 - 4x + 5 \\), dus \\( f'(x) = 2x - 4 \\), en analytisch zie je direct dat het minimum op \\( x = 2 \\) zit. Start gradient descent op \\( x_0 = 5 \\) met \\( \\eta = 0{,}1 \\): elke stap wordt \\( x \\leftarrow x - 0{,}1(2x-4) = 0{,}8x + 0{,}4 \\). De afstand tot 2 krimpt per stap met factor 0.8 — meetbaar, voorspelbaar, en na 35 stappen zit je op 2.001; na een paar honderd stappen is de afstand tot het exacte minimum numeriek nul. Geen derivative-nulpunt opgelost, en tóch het minimum gevonden: dát is de omarming die het mogelijk maakt dat modellen met miljoenen parameters überhaupt kunnen trainen. </p>"
+          "html": "Klein voorbeeld: \\( f(x) = x^2 - 4x + 5 \\), dus \\( f'(x) = 2x - 4 \\), minimum op \\( x = 2 \\). Start \\( x_0 = 5 \\) met \\( \\eta = 0{,}1 \\): elke stap \\( x \\leftarrow 0{,}8x + 0{,}4 \\) &mdash; de afstand tot 2 krimpt per stap met factor 0.8."
         },
         {
           "type": "code",
@@ -331,7 +331,7 @@
         },
         {
           "type": "text",
-          "html": "<p> Typische output: 4.4000, 2.7864, 2.2577, 2.0844, 2.0277, 2.0091, 2.0030 — en na 35 stappen 2.0012. Elke stap doet exact wat de theorie belooft: de afstand tot 2 met factor 0.8 verkleinen (check het zelf: 3.0, 2.4, 1.92, ...). En moedig genoeg: met een grotere \\( \\eta \\) gaat het sneller — tot hij omslaat: bij \\( \\eta > 1 \\) wordt de factor negatief-achtig en springt de reeks alle kanten op. Die instabiliteit is geen Python-grap maar de <em>divergentie</em> uit <em>Gradient descent</em>, in het klein. </p>"
+          "html": "Typische output: 4.4000, 2.7864, 2.2577, 2.0844, 2.0277, 2.0091 &mdash; na 35 stappen 2.0012. Bij \\( \\eta &gt; 1 \\) springt de reeks alle kanten op: de divergentie uit <em>Gradient descent</em>, in het klein."
         },
         {
           "type": "code",
@@ -342,12 +342,12 @@
         },
         {
           "type": "text",
-          "html": "<p> Typische output: <code>x = 5.0000</code>, <code>V = 2000.0</code> — de numerieke zoekmachine en de handmatige calculus geven hetzelfde antwoord tot op vier decimalen. Zo werkt het ook in de praktijk: de analyse levert inzicht en exacte antwoorden waar het kan; <code>scipy.optimize</code> (of gradient descent, of de solver in je DL-framework) levert antwoorden waar de algebra vastloopt. Beide hoeken horen bij hetzelfde vak. </p>"
+          "html": "Typische output: <code>x = 5.0000</code>, <code>V = 2000.0</code> &mdash; de numerieke zoekmachine en de handmatige calculus geven hetzelfde antwoord. Analyse levert inzicht; <code>scipy.optimize</code> levert antwoorden waar de algebra vastloopt."
         },
         {
           "type": "callout",
           "kind": "key",
-          "html": "<p> Zoom uit en je ziet de hele ML-workflow in dit onderwerp terug. De <strong>loss</strong> is de doelfunctie (hoe slecht voorspelt het model op de trainingsdata); de <strong>gewichten</strong> zijn de knoppen; de <strong>gradiënt</strong> is de afgeleide in veel dimensies; en <em>trainen</em> = herhaald \\( x \\leftarrow x - \\eta \\nabla f(x) \\) tot de loss niet verder wil dalen. Wat je hier op één variabele oefende — kritieke punten, convexiteit, leer-snelheid-versus-stabiliteit — schaalt recht evenredig mee naar een miljoen dimensies. <em>Gradient descent</em> behandelt de volledige versie. </p>"
+          "html": "De hele ML-workflow in &eacute;&eacute;n adem: <strong>loss</strong> = doelfunctie, <strong>gewichten</strong> = knoppen, <strong>gradi&euml;nt</strong> = afgeleide in veel dimensies, en <em>trainen</em> = herhaald \\( x \\leftarrow x - \\eta \\nabla f(x) \\)."
         }
       ]
     }

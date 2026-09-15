@@ -2,7 +2,7 @@
   "id": "regression-metrics",
   "chapter": "ch7",
   "title": "Metrics bij regressie: MSE, RMSE, MAE & R²",
-  "intro": "Hoe meet je of een regressiemodel goed voorspelt? De vier standaardmaten — MSE, RMSE, MAE en R&sup2; — met formules, interpretatie, een compleet uitgewerkt voorbeeld over autoprijzen, de exacte formules voor de best-fit lijn (b1 en het snijpunt met de y-as b0) en interactieve plots met live metrics die laten zien wat outliers met je metric doen.",
+  "intro": "Vier standaardmaten voor regressie &mdash; MSE, RMSE, MAE en R&sup2; &mdash; met formules, een uitgewerkt autoprijs-voorbeeld, de exacte formules voor b1 en b0, en interactieve plots met live metrics.",
   "keyPoints": [
     "<strong>MSE</strong> = gemiddelde kwadratische fout; <strong>RMSE</strong> = de wortel daaruit, in dezelfde eenheid als y.",
     "<strong>MAE</strong> is robuust tegen outliers; MSE/RMSE straffen grote fouten <em>extra</em> hard.",
@@ -16,7 +16,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Een model trainen is stap &eacute;&eacute;n; beoordelen of het iets waard is, is stap twee. Daarvoor gebruik je <strong>metrics</strong>: getallen die de kwaliteit van de voorspellingen samenvatten. Bij <em>regressie</em> is de target \\( y \\) kwantitatief (een getal, zoals een prijs of temperatuur), dus draait alles om &eacute;&eacute;n vraag: <em>hoe ver zitten de voorspellingen \\( \\hat{y} \\) van de echte waarden \\( y \\) af?</em> </p> <p> Er is een subtiel verschil met de <em>loss functie</em> uit het hoofdstuk <a href=\"#/topic/loss-functions\">Wiskunde &amp; loss</a>. De loss gebruik je <em>tijdens het trainen</em> — die moet wiskundig handig zijn om te minimaliseren (afleidbaar, glad). Een metric gebruik je <em>daarna</em> om te communiceren hoe goed het model is — die moet begrijpelijk zijn voor mensen. Soms vallen ze samen (MSE is beide), soms niet: een model train je met squared loss, maar je rapporteert de MAE omdat die makkelijker te interpreteren is. </p>"
+          "html": "Bij regressie draait alles om &eacute;&eacute;n vraag: <em>hoe ver zitten de voorspellingen \\( \\hat{y} \\) van de echte waarden \\( y \\) af?</em> Let op het verschil: de <strong>loss</strong> is voor het <em>trainen</em> (wiskundig handig), de <strong>metric</strong> voor het <em>beoordelen</em> (begrijpelijk voor mensen)."
         },
         {
           "type": "table",
@@ -55,7 +55,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> De drie meest gebruikte maten bij regressie zijn de <strong>Mean Squared Error (MSE)</strong>, de <strong>Root Mean Squared Error (RMSE)</strong> en de <strong>Mean Absolute Error (MAE)</strong>. Alle drie meten ze de gemiddelde afwijking tussen voorspelling en werkelijkheid, maar elk op z'n eigen manier — en dat verschil voel je vooral wanneer er <em>outliers</em> in de data zitten. </p>"
+          "html": "De drie meest gebruikte maten &mdash; <strong>MSE</strong>, <strong>RMSE</strong> en <strong>MAE</strong> &mdash; meten allemaal de gemiddelde afwijking, elk op z'n eigen manier; het verschil voel je vooral bij <em>outliers</em>."
         },
         {
           "type": "formula",
@@ -77,7 +77,7 @@
         },
         {
           "type": "text",
-          "html": "<p> De symbolen: \\( N \\) is het aantal datapunten, \\( i \\) is de loopteller over die punten, \\( y_i \\) is de <em>echte</em> targetwaarde van punt \\( i \\) en \\( \\hat{y}_i \\) (\"y-hat\") is de <em>voorspelde</em> targetwaarde van het model voor datzelfde punt. Het verschil \\( y_i - \\hat{y}_i \\) is dus de <em>fout</em> van &eacute;&eacute;n voorspelling, ook wel het <strong>residu</strong> genoemd. </p>"
+          "html": "Symbolen: \\( N \\) = aantal punten, \\( y_i \\) = echte waarde, \\( \\hat{y}_i \\) = voorspelling; het verschil \\( y_i - \\hat{y}_i \\) is de fout van &eacute;&eacute;n voorspelling (het <strong>residu</strong>)."
         },
         {
           "type": "table",
@@ -111,7 +111,7 @@
         {
           "type": "callout",
           "kind": "tip",
-          "html": "<p> Waarom is de MSE gevoeliger voor outliers dan de MAE? Een fout van 10 wordt bij MSE \\( 10^2 = 100 \\) maar bij MAE gewoon 10. &Eacute;&eacute;n extreem verkeerde voorspelling domineert daarmee de hele MSE — terwijl de MAE er slechts lineair door groeit. Zit er veel ruis of een paar extreme punten in je data, dan geeft MAE een eerlijker beeld. </p>"
+          "html": "MSE vs MAE bij outliers: een fout van 10 wordt bij MSE \\( 10^2 = 100 \\), bij MAE gewoon 10 &mdash; &eacute;&eacute;n extreme fout domineert de MSE, de MAE groeit er slechts lineair door."
         }
       ]
     },
@@ -120,7 +120,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Bekijk een lineaire regressie met drie featurevariabelen en &eacute;&eacute;n targetvariabele: </p> <ul> <li><strong>X1</strong> — leeftijd van de auto (in jaren): 1, 3, 4, 7, 9</li> <li><strong>X2</strong> — kilometerstand (in 10.000 km): 5, 12, 15, 23, 30</li> <li><strong>X3</strong> — aantal vorige eigenaren: 1, 2, 1, 3, 2</li> <li><strong>Y</strong> — prijs van de auto (in &euro; 1000): 18, 12, 10, 6, 4</li> </ul> <p> Na het trainen kom je tot de parameters \\( b_0 = 20 \\), \\( b_1 = -1 \\), \\( b_2 = -0.5 \\) en \\( b_3 = -2 \\). De voorspellingsvergelijking is dus: </p>"
+          "html": "Lineaire regressie met drie features op vijf auto's. Na training: \\( b_0 = 20 \\), \\( b_1 = -1 \\), \\( b_2 = -0{,}5 \\), \\( b_3 = -2 \\). De voorspellingsvergelijking:"
         },
         {
           "type": "formula",
@@ -130,7 +130,7 @@
         },
         {
           "type": "text",
-          "html": "<p> Om dit model te beoordelen reken je in twee stappen alles door: eerst de vijf voorspellingen, daarna MSE, RMSE en MAE. De code hieronder doet precies dat en draait direct in je browser — druk op <em>Uitvoeren</em> en volg de uitkomsten. </p>"
+          "html": "Beoordeel het model in twee stappen: eerst de vijf voorspellingen, daarna MSE, RMSE en MAE. Druk op <em>Uitvoeren</em> en volg de uitkomsten."
         },
         {
           "type": "code",
@@ -142,7 +142,7 @@
         {
           "type": "callout",
           "kind": "info",
-          "html": "<p> Lees de uitkomst zo: de gemiddelde fout is <strong>MAE = 6,9</strong> (&euro; 6.900), en de RMSE valt hoger uit (7,79). Dat verschil is een diagnostisch signaal: de vijf fouten (3,5 / 5 / 3,5 / 10,5 / 12) zijn ongelijk verdeeld — de laatste twee auto's wijken flink af en trekken de kwadratische maten extra omhoog. Zou de RMSE vrijwel gelijk zijn aan de MAE, dan liggen alle fouten dicht bij elkaar. En let op de R&sup2;: met &minus;1,53 presteert dit model <em>slechter</em> dan domweg het gemiddelde voorspellen. </p>"
+          "html": "Lees de uitkomst: MAE = 6,9 (&euro; 6.900), RMSE hoger (7,79) &mdash; de vijf fouten zijn ongelijk verdeeld. En R&sup2; = &minus;1,53: dit model presteert <em>slechter</em> dan domweg het gemiddelde voorspellen."
         }
       ]
     },
@@ -151,7 +151,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Zo implementeer je de drie maten vanaf nul met NumPy. Elke functie krijgt twee parameters: de <em>werkelijke</em> targetwaarden en de <em>voorspelde</em> targetwaarden — die uit elk regressiemodel kunnen komen. In de praktijk gebruik je ze zelden zelf: scikit-learn levert <code>mean_squared_error</code>, <code>mean_absolute_error</code> en <code>r2_score</code> klaar af, maar weten wat erin gebeurt is precies wat deze site wil overbrengen. </p>"
+          "html": "De drie maten vanaf nul met NumPy &mdash; scikit-learn levert <code>mean_squared_error</code>, <code>mean_absolute_error</code> en <code>r2_score</code> klaar af, maar zien wat erin gebeurt is de pointe."
         },
         {
           "type": "code",
@@ -167,7 +167,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> De metric die doorgaans als hoofdmaat voor regressie dient is de <strong>verklaarde variantie</strong>, \\( R^2 \\). Dit is een statistische maat die aangeeft welk deel van de variantie in de afhankelijke variabele (target) verklaard wordt door de onafhankelijke variabelen (features). Ook hier zie je het verschil tussen de voorspelde targetwaarde \\( \\hat{y} \\) en de gemiddelde daadwerkelijke targetwaarde \\( \\bar{y} \\): </p>"
+          "html": "De hoofdmaat voor regressie: <strong>R&sup2;</strong>, de verklaarde variantie &mdash; welk deel van de variantie in de target wordt verklaard door de features."
         },
         {
           "type": "formula",
@@ -202,7 +202,7 @@
         },
         {
           "type": "text",
-          "html": "<p> Een waarde dicht bij 1 houdt in dat veel datapunten dichtbij de regressielijn zitten; een waarde dicht bij 0 betekent dat de lijn weinig verklaart. En zoals je in het autoprijs-voorbeeld zag: negatief kan ook — dan presteert je model <em>slechter</em> dan een model dat domweg altijd het gemiddelde voorspelt. Dat klinkt gek, maar gebeurt echt: een slecht getraind model, verkeerde features of een te kleine trainset kunnen de oorzaak zijn. </p>"
+          "html": "Richting 1: veel variantie verklaard. Richting 0: de lijn verklaart weinig. Negatief kan ook &mdash; dan presteert je model slechter dan altijd het gemiddelde voorspellen."
         },
         {
           "type": "code",
@@ -223,7 +223,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Tot nu toe schoof je \\( b_0 \\) en \\( b_1 \\) met sliders in elkaar tot de fout klein werd. Maar voor enkelvoudige lineaire regressie \\( \\hat{y} = b_0 + b_1 x \\) hoef je helemaal niet te schuiven: er bestaan <strong>exacte formules</strong> die in &eacute;&eacute;n keer de beste waarden geven — de waarden die de MSE minimaliseren. <strong>b1</strong> is de richtingsco&euml;ffici&euml;nt (de helling van de lijn) en <strong>b0</strong> is het <strong>snijpunt met de y-as</strong>: de voorspelde waarde als \\( x = 0 \\). </p>"
+          "html": "Voor enkelvoudige lineaire regressie \\( \\hat{y} = b_0 + b_1 x \\) bestaan <strong>exacte formules</strong> die in &eacute;&eacute;n keer de beste waarden geven &mdash; \\( b_1 \\) is de helling, \\( b_0 \\) het y-snijpunt."
         },
         {
           "type": "formula",
@@ -239,7 +239,7 @@
         },
         {
           "type": "text",
-          "html": "<p> Hierbij is \\( \\bar{x} \\) het gemiddelde van alle x-waarden en \\( \\bar{y} \\) het gemiddelde van alle y-waarden. Lees de formule voor <strong>b1</strong> zo: de teller telt per punt op hoeveel x en y <em>samen</em> afwijken van hun gemiddelde (bewegen ze mee, dan is de teller groot; bewegen ze tegengesteld, dan is hij negatief). De noemer meet hoeveel de x-waarden zelf spreiden. Is de spreiding van x klein maar de samenbeweging groot, dan is de helling steil. De formule voor <strong>b0</strong> zorgt er daarna voor dat de lijn precies door het zwaartepunt \\( (\\bar{x}, \\bar{y}) \\) van de data loopt — schuif je in een interactieve plot de lijn door dat punt, dan verschuift de MSE meteen mee. </p><p> Waar komen deze formules vandaan? Zet de afgeleiden van de MSE naar \\( b_0 \\) en \\( b_1 \\) op nul — precies het punt waar het loss-landschap vlak wordt, zoals in <a href=\"#/topic/gradient-descent\">gradient descent</a> — en los het resultinge stelsel op. Voor de eenvoudige lijn bestaat dat ene minimum in gesloten vorm; <a href=\"#/topic/gradient-descent\">gradient descent</a> benadert dezelfde waarden iteratief, de formules hierboven geven ze in &eacute;&eacute;n keer. </p>"
+          "html": "Lees \\( b_1 \\) zo: de teller telt hoeveel x en y <em>samen</em> afwijken van hun gemiddelden, de noemer meet de spreiding van x; \\( b_0 \\) legt de lijn precies door het zwaartepunt \\( (\\bar{x}, \\bar{y}) \\). Herkomst: de afgeleiden van de MSE op nul zetten &mdash; voor de simpele lijn in gesloten vorm oplosbaar; gradient descent benadert dezelfde waarden."
         },
         {
           "type": "code",
@@ -250,7 +250,7 @@
         },
         {
           "type": "text",
-          "html": "<p> Dit zijn exact de waarden die scikit-learn teruggeeft: <code>LinearRegression</code> stopt de helling in <code>coef_</code> en het y-snijpunt in <code>intercept_</code>. Controleer het gerust — de code hieronder draait in je browser en print beide kanten naast elkaar. </p>"
+          "html": null
         },
         {
           "type": "code",
@@ -262,7 +262,7 @@
         {
           "type": "callout",
           "kind": "key",
-          "html": "<p> Met <strong>meerdere features</strong> (zoals het autoprijs-voorbeeld: \\( b_0 + b_1 x_1 + b_2 x_2 + b_3 x_3 \\)) bestaat er geen korte somformule meer — dan lost de computer een stelsel vergelijkingen voor je op (of benadert hij het optimum met gradient descent). Voorloopt jouw model op &eacute;&eacute;n feature, dan zijn dit <em>de</em> twee formules die in &eacute;&eacute;n regel de antwoorden geven. </p>"
+          "html": "Met <strong>meerdere features</strong> bestaat geen korte somformule meer &mdash; dan lost de computer een stelsel op (of benadert met gradient descent). Met &eacute;&eacute;n feature zijn dit d&eacute; twee formules."
         }
       ]
     },
@@ -271,7 +271,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Hieronder zie je drie datasets met elk &eacute;&eacute;n featurevariabele en een lineair model \\( y_{pred} = b_0 + b_1 x \\), waarbij \\( b_0 \\) het y-snijpunt is en \\( b_1 \\) de richtingsco&euml;ffici&euml;nt. <strong>Schuif met de sliders</strong>: elke plot heeft nu <strong>live metrics</strong> — terwijl je schuift worden de MSE en \\( R^2 \\) direct herberekend en licht de chip groen op zodra je het best haalbare resultaat nadert. Daag jezelf uit: bereken met de formules hierboven eerst zelf b1 en b0 van dataset A (b1 = 1.86, b0 = 1.68) en vind dat paar daarna terug met de sliders. </p>"
+          "html": "Drie datasets, elk met sliders en <strong>live metrics</strong>: zoek de beste lijn en zie MSE en R&sup2; direct meebewegen. Daag jezelf uit: bereken \\( b_1 \\) en \\( b_0 \\) van dataset A eerst zelf (1.86 en 1.68)."
         },
         {
           "type": "plot",
@@ -633,12 +633,12 @@
         {
           "type": "callout",
           "kind": "key",
-          "html": "<p> Wat deze drie datasets laten zien: dataset <strong>A</strong> is het ideaalplaatje — lineair, weinig ruis, een hoge \\( R^2 \\) haalbaar. Dataset <strong>B</strong> laat zien hoe &eacute;&eacute;n outlier de kwadratische maten (MSE/RMSE) opblaast en de beste lijn kan verschuiven; de MAE en een robuustere aanpak blijven daar gevoelig minder voor. Dataset <strong>C</strong> toont de grens van het <em>model</em>: geen enkele rechte lijn past, hoe je ook schuift — de oplossing is dan niet beter schuiven, maar een beter model (bijvoorbeeld \\( x^2 \\) als extra feature). </p>"
+          "html": "A = het ideaalplaatje (lineair, weinig ruis); B laat zien hoe &eacute;&eacute;n outlier de kwadratische maten opblaast; C toont de grens van het <em>model</em> &mdash; geen rechte lijn past, de oplossing is een beter model (bijv. \\( x^2 \\) als feature)."
         },
         {
           "type": "callout",
           "kind": "tip",
-          "html": "<p> Met meerdere features wordt de vergelijking \\( y_{pred} = b_0 + b_1 x_1 + b_2 x_2 + \\cdots + b_n x_n \\) — een <em>vlak</em> in plaats van een lijn. Het autoprijs-voorbeeld hierboven is precies zo'n geval met drie features. </p>"
+          "html": null
         }
       ]
     }

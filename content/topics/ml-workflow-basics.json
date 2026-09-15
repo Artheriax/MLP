@@ -2,7 +2,7 @@
   "id": "ml-workflow-basics",
   "chapter": "ch0",
   "title": "De ML-workflow van begin tot eind",
-  "intro": "Van ruwe vraag naar werkend model: de acht stappen van een ML-project, under- en overfitting interactief in beeld, en het fit–predict–score-drietal dat in heel scikit-learn hetzelfde klinkt.",
+  "intro": "De acht stappen van een ML-project, under- en overfitting interactief in beeld, en het fit&ndash;predict&ndash;score-drietal dat overal in scikit-learn hetzelfde is.",
   "keyPoints": [
     "De acht stappen: <em>vraag → data → splitsen → features klaarzetten → model kiezen → fitten → evalueren → afstemmen</em>.",
     "Het scikit-learn-drietal: <code>fit()</code> traint, <code>predict()</code> voorspelt, <code>score()</code> evalueert.",
@@ -16,7 +16,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Een ML-project is geen rechte lijn maar een <strong>lus</strong>: je evalueert, leert en gaat terug naar een eerdere stap. De volgorde hieronder is de kapstok waar elk project — van schoolopdracht tot productiesysteem — aan hangt. De valkuilen-kolom is minstens zo belangrijk als de stappen zelf. </p>"
+          "html": "Een ML-project is een <strong>lus</strong>, geen rechte lijn: de evaluatie stuurt bijna altijd terug naar een eerdere stap. De valkuilen-kolom is minstens zo belangrijk als de stappen."
         },
         {
           "type": "table",
@@ -70,7 +70,7 @@
         },
         {
           "type": "text",
-          "html": "<p> De evaluatie in stap 7 stuurt bijna altijd terug: slechte score? Dan kies je andere features (stap 4), een ander model (stap 5) of je verzamelt betere data (stap 2). Ervaren data scientists brengen het merendeel van hun tijd door in stap 2 tot en met 4 — niet in het kiezen van exotische modellen. </p>"
+          "html": "Slechte score? Kies andere features, een ander model of betere data. De meeste tijd gaat naar data en features, niet naar exotische modellen."
         }
       ]
     },
@@ -79,11 +79,11 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Twee manieren waarop een model kan mislukken: <strong>underfitting</strong> — het model is te simpel en scoort slecht op train- én testdata — en <strong>overfitting</strong> — het model is te complex, leert de ruis uit de trainingsdata uit het hoofd en verrast je met een slechte test-score. Tussenin zit de sweet spot: voldoende complex om het patroon te vatten, eenvoudig genoeg om te generaliseren. </p>"
+          "html": "<strong>Underfitting</strong>: te simpel, slecht op train &eacute;n test. <strong>Overfitting</strong>: te complex, trainingsdata uit het hoofd, slechte test-score. Daartussen zit de sweet spot."
         },
         {
           "type": "text",
-          "html": "<p> De grafiek hieronder tekent beide fouten tegen de modelcomplexiteit. De trainfout daalt altijd (complexer = beter kunnen nabouwen). De testfout daalt eerst mee en stijgt dan: dáár begint het overfitten. Schuif met de sliders om te zien hoe een gevoeliger model (hogere “ruisgevoeligheid”) of een vroegere “knik” de U-vorm versterkt. </p>"
+          "html": "In de grafiek: de trainfout daalt altijd, de testfout daalt eerst en stijgt dan — d&aacute;r begint het overfitten. Speel met de sliders."
         },
         {
           "type": "plot",
@@ -173,7 +173,7 @@
         {
           "type": "callout",
           "kind": "tip",
-          "html": "<p> In de praktijk is dit het diagnose-gereedschap bij stap 7 van de workflow: <em>vergelijk train- en test-score</em>. Klein verschil = gezond model; groot verschil = overfitting; beide slecht = underfitting. Regularisatie (hoofdstuk 3) is de klassieke medicijn tegen overfitting. </p>"
+          "html": "Diagnose: klein train/test-verschil = gezond model; groot verschil = overfitting; beide slecht = underfitting."
         }
       ]
     },
@@ -182,7 +182,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Eén van de krachten van scikit-learn: <strong>elk model heeft dezelfde drie methoden</strong>. <code>fit(X_train, y_train)</code> traint — het model leert zijn parameters. <code>predict(X)</code> past het model toe op nieuwe samples. <code>score(X_test, y_test)</code> beoordeelt de kwaliteit op onbekende data. Of je nu KNN, LogisticRegression of een SVM kiest: dit drietal verandert niet. </p>"
+          "html": "Elk model heeft <strong>dezelfde drie methoden</strong>: <code>fit(X_train, y_train)</code> traint, <code>predict(X)</code> voorspelt, <code>score(X_test, y_test)</code> beoordeelt — of je nu KNN, LogisticRegression of een SVM kiest."
         },
         {
           "type": "code",
@@ -193,7 +193,7 @@
         },
         {
           "type": "text",
-          "html": "<p> De coefficienten die <code>fit</code> oplevert vormen samen de voorspellingsvergelijking — precies de <em>regels</em> die het model zelf heeft geleerd. Hoe zo'n vergelijking eruitziet, welke loss-functie hem traint en hoe je hem regulariseert, is het onderwerp van de hoofdstukken 1 tot en met 4 van deze site. </p>"
+          "html": "Wat <code>fit</code> oplevert zijn de co&euml;ffici&euml;nten: de <em>regels</em> die het model zelf leerde. Hoe die tot stand komen, behandelen de hoofdstukken 2 t/m 4."
         }
       ]
     },
@@ -207,7 +207,7 @@
         },
         {
           "type": "text",
-          "html": "<p> Verder lezen: hoofdstuk 1 gaat direct in op scikit-learn, hoofdstuk 2 opent de wiskunde, hoofdstuk 3 en 4 behandelen logistic regression en SVM's, en hoofdstuk 5 de evaluatie-metrics. </p>"
+          "html": "Verder lezen: scikit-learn (h1), wiskunde &amp; loss (h2), logistic regression (h3), SVM's (h4), bomen (h5), calculus (h6), evaluatie (h7)."
         }
       ]
     }

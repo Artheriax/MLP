@@ -2,7 +2,7 @@
   "id": "kernel-svm",
   "chapter": "ch4",
   "title": "Kernel SVM's: niet-lineaire grenzen",
-  "intro": "Hoe fit je een niet-lineaire beslisgrens met een lineair model? Het antwoord is verrassend simpel: verander de ruimte waarin je lineair bent. Kernels doen dat — en de RBF-kernel is de standaardkeuze.",
+  "intro": "Niet-lineaire grens met een lineair model? Verander de ruimte waarin je lineair bent — dat doen kernels. De RBF-kernel is de standaardkeuze.",
   "keyPoints": [
     "Niet-lineaire data? <strong>Transformeer de features</strong> zodat ze wél lineair scheidbaar worden.",
     "De <strong>kernel-truc</strong> berekent de getransformeerde overeenkomsten zonder de transformatie zelf uit te voeren.",
@@ -16,7 +16,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Neem een 2D-speelgoeddataset die niet lineair scheidbaar is: rode punten clusteren rond de oorsprong \\( (0, 0) \\), blauwe punten liggen ver weg. Hoe je ook een lijn trekt — perfect scheidbaar lukt niet; een lineaire SVM voorspelt misschien gewoon overal \"blauw\". </p> <p> Maar kijk eens naar de transformatie \\( (x_1, x_2) \\to (x_1^2, x_2^2) \\): kwadrateren maakt waarden dicht bij nul klein, en waarden ver van nul (positief of negatief) groot. In dit <strong>nieuwe coordinatenstelsel</strong> zitten de rode punten links-onder en de blauwe rechts-boven — en plotseling zijn ze wél lineair scheidbaar! Een lineaire SVM op de nieuwe features geeft een perfecte classificatie, en terugvertaald naar de originele ruimte is de grens een <strong>ellips</strong>. </p>"
+          "html": "Neem 2D-data rond de oorsprong die niet scheidbaar is. Na de transformatie \\( (x_1, x_2) \\to (x_1^2, x_2^2) \\) zitten de klassen links-onder versus rechts-boven: w&eacute;l lineair scheidbaar, en terugvertaald is de grens een ellips."
         },
         {
           "type": "formula",
@@ -43,7 +43,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> In scikit-learn gebruik je voor kernels de <code>SVC</code>-klasse (niet <code>LinearSVC</code>). De default is de <strong>RBF-kernel</strong> (radial basis function): denk het als een extreem ingewikkelde feature-transformatie gevolgd door een lineaire grens in die nieuwe ruimte — het kwadrateren uit het vorige voorbeeld, maar dan veel geavanceerder. <code>fit</code> en <code>predict</code> werken zoals je gewend bent. </p> <p> Naast <code>C</code> (regularisatie, als altijd) krijgt de RBF-kernel een eigen hyperparameter: <strong>gamma</strong>, die de <em>gladheid</em> van de grens stuurt. De kernel-waarde tussen twee punten vervalt exponentieel met hun afstand, en gamma bepaalt hoe snel: </p>"
+          "html": "Voor kernels gebruik je <code>SVC</code> (niet <code>LinearSVC</code>); default is de <strong>RBF-kernel</strong>. Naast <code>C</code> krijgt hij de eigen hyperparameter <strong>gamma</strong>, die de <em>gladheid</em> van de grens sturt."
         },
         {
           "type": "formula",
@@ -82,7 +82,7 @@
         },
         {
           "type": "text",
-          "html": "<p> Concreet uit de cursus: met <code>gamma=0.01</code> wordt de grens mooi glad; met <code>gamma=2</code> ontstaat rondom elk blauw trainingsvoorbeeld een klein \"eiland\" — en haal je 100% training accuracy. Met de juiste hyperparameters kan een RBF-SVM bijna <em>elke</em> dataset perfect scheiden. Waarom niet altijd de grootste gamma + hoogste trainingscore? Juist: <strong>overfitting</strong>. Zoek de balans met een testset. </p>"
+          "html": "<code>gamma=0.01</code> geeft een mooie gladde grens; <code>gamma=2</code> geeft &ldquo;eilandjes&rdquo; rond elk trainingsvoorbeeld (100% train-accuracy). Grote gamma + hoge train-score = overfitting — zoek de balans met een testset."
         },
         {
           "type": "code",

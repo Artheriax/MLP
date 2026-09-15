@@ -2,7 +2,7 @@
   "id": "regression-trees",
   "chapter": "ch5",
   "title": "Regression trees: getallen voorspellen met bladeren",
-  "intro": "Een regression tree is dezelfde beslisboom als bij classificatie — maar elk blad voorspelt nu een getal: het gemiddelde van de trainingswaarden in dat blad. Het resultaat is een trapfunctie die je hieronder zelf kunt slepen: splitspunten verplaatsen, bladgemiddelden bijstellen en de MSE live zien dalen.",
+  "intro": "Hetzelfde bomen-idee, maar elk blad voorspelt nu een <strong>getal</strong>: het gemiddelde van de trainingswaarden in dat blad. Het resultaat is een trapfunctie die je zelf kunt slepen.",
   "keyPoints": [
     "Zelfde boom, ander blad: een classificatieblad voorspelt de <strong>meerderheidsklasse</strong>, een regressieblad het <strong>gemiddelde</strong> \\( c_m \\) van de targets in dat blad.",
     "Een split minimaliseert de <strong>gewogen MSE van de kinderen</strong> — het regressie-anker van Gini/entropy.",
@@ -16,11 +16,11 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> In het onderwerp <em>Decision trees</em> sorteerde de boom samples tot elk blad een <em>klasse</em> was. Voor regressie draait alles om dezelfde vragen (“is de oppervlakte kleiner dan 60 m²?”), maar de bladeren doen iets anders: ze voorspellen een <strong>getal</strong>. Welk getal? Het <strong>gemiddelde van de target-waarden</strong> van de trainingsamples die in dat blad terechtkwamen. </p>"
+          "html": "De vragen zijn dezelfde (&ldquo;oppervlakte kleiner dan 60 m&sup2;?&rdquo;), maar de bladeren voorspellen een <strong>getal</strong>: het <strong>gemiddelde van de target-waarden</strong> in dat blad."
         },
         {
           "type": "text",
-          "html": "<p> Dat klinkt simpel — en is het ook. Het is letterlijk de beste constante voorspelling voor een groep samples in de zin van de kleinste-kwadraten: wie de MSE over een vaste groep wil minimaliseren, kan niet beter doen dan het gemiddelde (zie het onderwerp <em>Metrics bij regressie</em>). De boom zoekt dus alleen nog <em>waar de grenzen tussen de groepen liggen</em>; wat hij in elke groep voorspelt, weet hij al. </p>"
+          "html": "Dat is de beste constante voorspelling voor een groep in kleinste-kwadraten-zin: wie de MSE over een vaste groep minimaliseert, kan niet beter dan het gemiddelde. De boom zoekt dus alleen nog <em>waar de grenzen liggen</em>."
         },
         {
           "type": "table",
@@ -64,7 +64,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Voor het splitsen heb je twee formules nodig. Eén voor wat een blad voorspelt — het gemiddelde — en één voor wat een split kost: de <strong>gewogen gemiddelde MSE van de twee kinderen</strong>: </p>"
+          "html": "Twee formules: &eacute;&eacute;n voor wat een blad voorspelt (het gemiddelde) en &eacute;&eacute;n voor wat een split kost (de <strong>gewogen gemiddelde MSE van de kinderen</strong>):"
         },
         {
           "type": "formula",
@@ -80,16 +80,16 @@
         },
         {
           "type": "text",
-          "html": "<p> Uitgewerkt op twaalf appartementen (oppervlakte in m², prijs in duizend euro). Eén split op <em>oppervlakte ≤ 60</em>: links vallen de vier kleine flats (prijzen 178, 190, 172, 185), gemiddeld \\( c_L = 181{,}25 \\) met \\( \\text{MSE}_L = 46{,}7 \\). Rechts vallen de acht grotere (255 … 341), gemiddeld \\( c_R = 289 \\) met \\( \\text{MSE}_R = 1995 \\) — nog een bende, want die groep mengt middelgroot en groot. De kost van deze eerste split: \\( \\tfrac{4}{12} \\cdot 46{,}7 + \\tfrac{8}{12} \\cdot 1995 \\approx 1346 \\). </p>"
+          "html": "Twaalf appartementen, &eacute;&eacute;n split op <em>oppervlakte &le; 60</em>: links gemiddeld 181,25 (MSE 46,7), rechts gemiddeld 289 (MSE 1995 &mdash; nog een bende). Kost: \\( \\tfrac{4}{12} \\cdot 46{,}7 + \\tfrac{8}{12} \\cdot 1995 \\approx 1346 \\)."
         },
         {
           "type": "text",
-          "html": "<p> Vandaar splitst de boom <em>rechts</em> nogmaals, op <em>oppervlakte ≤ 90</em>: de middelgroten krijgen bladgemiddelde 259 (MSE 37,5), de groten 344 (MSE 27,5). De boomkost zakt naar \\( \\tfrac{4}{12} \\cdot 46{,}7 + \\tfrac{4}{12} \\cdot 37{,}5 + \\tfrac{4}{12} \\cdot 27{,}5 \\approx 37{,}2 \\) — een factor 36 beter. Je ziet hier precies waarom bomen <em>recursief</em> werken: elke split maakt minstens één kind schoner, en de boom hapt zolang door tot de remmen (diepte, <code>min_samples_leaf</code>) ingrijpen. </p>"
+          "html": "Split rechts nogmaals op <em>oppervlakte &le; 90</em>: bladgemiddelden 259 en 344, boomkost zakt naar \\( \\approx 37{,}2 \\) &mdash; een factor 36 beter. Bomen happen <em>recursief</em> door tot de remmen ingrijpen."
         },
         {
           "type": "callout",
           "kind": "key",
-          "html": "<p> Vergelijk dit met <em>Gradient descent</em>: lineaire modellen benaderen hun optimum met kleine stapjes in parameter-ruimte. Een boom zoekt zijn structuur met <strong>greedy splits</strong> — kies steeds de beste split <em>nu</em> en kijk nooit terug. De optimalisatie is dus heel anders, maar de rem-op-het-einde (regularisatie vs. pruning) speelt in beide gevallen exact dezelfde bias-variance rol. </p>"
+          "html": "Vergelijk met gradient descent: lineaire modellen benaderen hun optimum met kleine stapjes; een boom zoekt zijn structuur met <strong>greedy splits</strong>. De rem-op-het-einde speelt in beide gevallen dezelfde bias-variance-rol."
         }
       ]
     },
@@ -98,7 +98,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Hieronder dezelfde twaalf appartementen. De cyan trap is de boomvoorspelling met twee splitspunten (\\( t_1, t_2 \\)) en drie bladgemiddelden (\\( m_1, m_2, m_3 \\)). Sleep de sliders naar de waarden uit het uitgewerkte voorbeeld — \\( t_1 = 60 \\), \\( t_2 = 90 \\), \\( m_1 = 181 \\), \\( m_2 = 259 \\), \\( m_3 = 344 \\) — en zie de MSE-chip groen oplichten: </p>"
+          "html": "De cyan trap is de boomvoorspelling met twee splitspunten en drie bladgemiddelden. Sleep de sliders naar de waarden uit het voorbeeld &mdash; \\( t_1 = 60 \\), \\( t_2 = 90 \\), \\( m_1 = 181 \\), \\( m_2 = 259 \\), \\( m_3 = 344 \\) &mdash; en zie de MSE-chip groen oplichten:"
         },
         {
           "type": "plot",
@@ -232,12 +232,12 @@
         },
         {
           "type": "text",
-          "html": "<p> Wat je hier ziet is de kern van regressiebomen: <strong>de voorspelling is constant per blad</strong>. Niet een helling zoals bij lineaire regressie — een serie plateaus. Voor data die zelf in springen denkt (woningtypen, belastingtarieven, drempelsubsidies) past dat juist <em>beter</em> dan een rechte lijn; voor gladde processen (temperatuur, groei) is de lijn vaak natuurlijker. </p>"
+          "html": "De kern van regressiebomen: <strong>de voorspelling is constant per blad</strong> &mdash; een serie plateaus, geen helling. Voor data die in drempels denkt (woningtypen, belastingtarieven) past dat juist beter dan een rechte lijn."
         },
         {
           "type": "callout",
           "kind": "tip",
-          "html": "<p> Probeer ook eens wat er gebeurt als je \\( t_1 \\) en \\( t_2 \\) vlak bij elkaar zet: je maakt een smal, dun-bevolkt blad. De MSE op deze twaalf punten kan daardoor zelfs <em>dalen</em> (een outlier in zijn eigen blad stoppen), terwijl de voorspelling op nieuwe data willekeurig wordt — de interactieve versie van overfitting, en precies waarom <code>min_samples_leaf</code> bestaat. </p>"
+          "html": "Zet \\( t_1 \\) en \\( t_2 \\) vlak bij elkaar: de MSE op deze twaalf punten kan zelfs <em>dalen</em> (een outlier in zijn eigen blad), terwijl de voorspelling op nieuwe data willekeurig wordt &mdash; precies waarom <code>min_samples_leaf</code> bestaat."
         }
       ]
     },
@@ -246,16 +246,16 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Meer diepte betekent meer treden. Met <code>max_depth=1</code> past de boom één sprong — te grof voor drie woningtypen (hoge bias). Met onbeperkte diepte krijgt uiteindelijk elk appartement zijn eigen plateau: perfect op de trainset, willekeur op nieuwe data (hoge variantie). De insteek is identiek aan die in het classificatie-onderwerp: <code>max_depth</code> en <code>min_samples_leaf</code> bepalen hoe fijn de trap is, en daarmee waar je op de bias-variance-as zit. </p>"
+          "html": "Meer diepte = meer treden: <code>max_depth=1</code> is te grof (hoge bias), onbeperkt geeft elk appartement zijn eigen plateau (hoge variantie). <code>max_depth</code> en <code>min_samples_leaf</code> bepalen waar je op de bias-variance-as zit."
         },
         {
           "type": "text",
-          "html": "<p> Er is nog een hard plafond dat specifiek voor regressiebomen geldt: <strong>geen extrapolatie</strong>. Het model kent alleen de bladgemiddelden uit de traindata — vraag een prijs voor 200 m² en de boom antwoordt met het hoogste bladgemiddelde dat hij kent (hier 344). Een lineaire regressie met positieve helling projecteert dan gerust door naar 600; de boom weigert in feite elke uitspraak buiten het gezien bereik. Dat is soms een gebrek, soms een deugd: hij verzint in elk geval niets. </p>"
+          "html": "Hard plafond: <strong>geen extrapolatie</strong>. De boom kent alleen bladgemiddelden uit de traindata &mdash; vraag een prijs voor 200 m&sup2; en je krijgt het hoogste bekende bladgemiddelde. Soms een gebrek, soms een deugd: hij verzint niets."
         },
         {
           "type": "callout",
           "kind": "warning",
-          "html": "<p> Vuistregels: past de onderliggende relatie bij een rechte lijn (of gladde curve), dan is lineaire regressie meestal nauwkeuriger per parameter. Springt de data zelf in drempels, dan wint de boom. En voorspel <strong>nooit</strong> ver buiten het trainbereik met een regressieboom — elke bladwaarde is een afgesloten, historisch gemiddelde, geen trend. </p>"
+          "html": "Vuistregels: gladde relatie &rarr; lineaire regressie meestal nauwkeuriger; data die springt in drempels &rarr; de boom wint. En voorspel <strong>nooit</strong> ver buiten het trainbereik met een regressieboom."
         }
       ]
     },
@@ -264,7 +264,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Dezelfde API als altijd — alleen heet het model nu <code>DecisionTreeRegressor</code>. Het voorbeeld traint de boom op de twaalf appartementen uit de interactieve plot, vergelijkt drie dieptes en checkt de extrapolatie: </p>"
+          "html": "Dezelfde API als altijd &mdash; alleen heet het model nu <code>DecisionTreeRegressor</code>. Het voorbeeld traint op de twaalf appartementen, vergelijkt drie dieptes en checkt de extrapolatie:"
         },
         {
           "type": "code",
@@ -275,12 +275,12 @@
         },
         {
           "type": "text",
-          "html": "<p> Let op de drie regels output: <code>max_depth=2</code> scoort op deze data al bijna net zo goed als de onbeperkte boom, met vier bladeren in plaats van twaalf. En de voorspelling voor 200 m² is identiek aan die voor 114 m² — de boom <em>kan</em> niet verder dan zijn hoogste blad. Dat is geen bug maar architectuur: bladgemiddelden zijn constanten, geen formules. </p>"
+          "html": "Let op: <code>max_depth=2</code> scoort al bijna net zo goed als de onbeperkte boom, en de voorspelling voor 200 m&sup2; is identiek aan die voor 114 m&sup2; &mdash; de boom <em>kan</em> niet verder dan zijn hoogste blad."
         },
         {
           "type": "callout",
           "kind": "info",
-          "html": "<p> Ook bij regressie zoekt scikit-learn per split alle (feature, drempel)-paren af. Bij \\( d \\) features en \\( n \\) samples is dat \\( O(d \\cdot n \\log n) \\) per node — merkbaar sneller dan een SVM-kernel op dezelfde data. Dat, plus de schaal-onafhankelijkheid, maakt bomen de natuurlijke eerste kandidaat bij tabulaire regressieproblemen. </p>"
+          "html": "Per split doorzoekt scikit-learn alle (feature, drempel)-paren: \\( O(d \\cdot n \\log n) \\) per node &mdash; merkbaar sneller dan een SVM-kernel. Plus schaal-onafhankelijkheid: bomen zijn de natuurlijke eerste kandidaat bij tabellaire data."
         }
       ]
     }

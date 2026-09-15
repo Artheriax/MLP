@@ -2,7 +2,7 @@
   "id": "data-features",
   "chapter": "ch0",
   "title": "Data, features & labels",
-  "intro": "De taal van ML-data: rijen zijn samples, kolommen zijn features, en de kolom die je voorspelt is de target. Hoe X en y er in scikit-learn uitzien, welke soorten features er bestaan — en waarom train/test-splitsen niet onderhandelbaar is.",
+  "intro": "Rijen zijn samples, kolommen zijn features, en de target is de kolom die je voorspelt — plus waarom de train/test-split niet onderhandelbaar is.",
   "keyPoints": [
     "Rijen = <strong>samples</strong>, kolommen = <strong>features</strong>; de doelkolom is <strong>y</strong>, de rest is <strong>X</strong>.",
     "Numerieke features gaan direct in het model; categorische features moet je eerst omzetten (o.a. one-hot).",
@@ -16,11 +16,11 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Vrijwel elke ML-dataset begint als een <strong>tabel</strong>. Elke <em>rij</em> is één sample (ook wel: observatie of instantie) — één auto, één persoon, één e-mail. Elke <em>kolom</em> is een variabele die die sample beschrijft. Machine learning komt neer op patronen vinden tussen die kolommen. </p>"
+          "html": "Elke dataset is een <strong>tabel</strong>: rijen zijn samples (&eacute;&eacute;n auto, &eacute;&eacute;n e-mail), kolommen zijn variabelen. ML = patronen tussen kolommen vinden."
         },
         {
           "type": "text",
-          "html": "<p> Als voorbeeld nemen we de autodataset die ook in het hoofdstuk <em>Evaluatie &amp; metrics</em> terugkomt: vijf auto's, elk beschreven door drie kenmerken, met de prijs als wat we willen voorspellen. De tabel is bewust klein gehouden: 5 rijen, 4 kolommen. </p>"
+          "html": "Voorbeeld: vijf auto's, drie kenmerken, prijs als target — bewust klein gehouden."
         },
         {
           "type": "table",
@@ -66,7 +66,7 @@
         {
           "type": "callout",
           "kind": "info",
-          "html": "<p> Jargon-check: <em>feature</em> = input-kolom (ook: onafhankelijke variabele, verklarende variabele). <em>Target</em> / <em>label</em> = de kolom die je voorspelt (afhankelijke variabele). In wiskundige teksten heet de target ook wel <em>y</em> en de features <em>x</em>. </p>"
+          "html": "Jargon: <em>feature</em> = input-kolom; <em>target/label</em> = de kolom die je voorspelt (wiskundig: x en y)."
         }
       ]
     },
@@ -75,7 +75,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> scikit-learn verwacht data altijd in twee stukken: <strong>X</strong>, de feature-matrix (hoofdletter, want tweedimensionaal), en <strong>y</strong>, de target-vector (kleinletter, want eendimensionaal). Elke rij van X hoort precies bij één element van y — rij 3 van X beschrijft dezelfde auto als element 3 van y. </p>"
+          "html": "scikit-learn verwacht <strong>X</strong> (2D feature-matrix, hoofdletter) en <strong>y</strong> (1D target-vector, kleinletter). Rij i van X hoort bij element i van y."
         },
         {
           "type": "formula",
@@ -85,7 +85,7 @@
         },
         {
           "type": "text",
-          "html": "<p> Hieronder zie je hoe je de autotabel omzet naar X en y met numpy — en hoe je de vormen en het eerste paar afleest. Dit patroon (data klaarzetten, vormen checken) is altijd je eerste stap in scikit-learn. </p>"
+          "html": "Zo zet je de tabel om naar X en y met numpy — vormen checken is altijd je eerste stap."
         },
         {
           "type": "code",
@@ -101,7 +101,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Features zijn er in drie smaken. <strong>Numerieke</strong> features zijn getallen waar wiskunde mee mag doen (leeftijd, kmstand). <strong>Categorische</strong> features zijn labels: nominaal (rood/blauw — geen volgorde) of ordinaal (laag/midden/hoog — wél volgorde). Modellen rekenen met getallen, dus categorische features moet je <em>encoderen</em>: nominaal via one-hot (één kolom per categorie), ordinaal mag als 0/1/2. </p>"
+          "html": "<strong>Numeriek</strong> = getallen. <strong>Categorisch</strong> = labels: nominaal (rood/blauw, geen volgorde) of ordinaal (laag/midden/hoog). Categorisch moet je <em>encoderen</em>: one-hot voor nominaal, 0/1/2 mag voor ordinaal."
         },
         {
           "type": "table",
@@ -131,7 +131,7 @@
         {
           "type": "callout",
           "kind": "warning",
-          "html": "<p> <strong>Garbage in, garbage out.</strong> Een model is nooit beter dan zijn features: missende waarden, outliers en verkeerd gecodeerde categorieën leiden rechtstreeks tot een slecht model. Data verkennen en schoonmaken is géén bijzaak — het is vaak het meeste werk van het hele project. </p>"
+          "html": "<strong>Garbage in, garbage out:</strong> missende waarden, outliers en verkeerde coderingen maken elk model slecht. Data verkennen en schoonmaken is vaak het meeste werk."
         }
       ]
     },
@@ -140,11 +140,11 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> De gouden regel: <strong>evalueer nooit op de data waar je mee trainde.</strong> Een model dat de trainingsdata uit het hoofd leert, scoort daar perfect en mislukt in het echt. Net als een examen: de antwoorden van oude examens heb je gezien tijdens het oefenen, het echte examen niet. Daarom splits je de data: een groot deel om te trainen (vaak 75–80%) en een kleiner deel om eerlijk te toetsen. </p>"
+          "html": "Gouden regel: <strong>evalueer nooit op de data waarop je traint</strong>. Splits 75&ndash;80% af om te trainen en houd de rest als eerlijke toets — het echte examen heb je nog niet gezien."
         },
         {
           "type": "text",
-          "html": "<p> Hieronder de complete mini-flow: splitsen, een simpel model trainen, en dan beide scores printen. Let op het verschil — de train-score is bijna altijd hoger, en het is de <em>test</em>-score die telt. </p>"
+          "html": "De mini-flow: splitsen, trainen, beide scores printen. De train-score is bijna altijd hoger; de <em>test</em>-score telt."
         },
         {
           "type": "code",
@@ -156,7 +156,7 @@
         {
           "type": "callout",
           "kind": "key",
-          "html": "<p> Train-score is een <em>optimistische</em> diagnose, test-score is de <em>eerlijke</em>. Alleen de test-score zegt iets over hoe het model het in de echte wereld zal doen. In het volgende onderwerp zie je hoe dit beschermt tegen under- en overfitting. </p>"
+          "html": "Train-score is een <em>optimistische</em> diagnose, test-score de <em>eerlijke</em>. Alleen de test-score zegt iets over nieuwe data."
         }
       ]
     }

@@ -2,7 +2,7 @@
   "id": "kernel-svm",
   "chapter": "ch4",
   "title": "Kernel SVMs: non-linear boundaries",
-  "intro": "How do you fit a non-linear decision boundary with a linear model? The answer is surprisingly simple: change the space in which you are linear. Kernels do exactly that — and the RBF kernel is the default choice.",
+  "intro": "Non-linear boundary with a linear model? Change the space in which you are linear — that is what kernels do. The RBF kernel is the standard choice.",
   "keyPoints": [
     "Non-linear data? <strong>Transform the features</strong> until they become linearly separable.",
     "The <strong>kernel trick</strong> computes transformed similarities without doing the transformation explicitly.",
@@ -16,7 +16,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Take a 2D toy dataset that is not linearly separable: red points cluster around the origin \\( (0, 0) \\), blue points lie far away. However you draw a line — perfect separation is impossible; a linear SVM might simply predict \"blue\" everywhere. </p> <p> But look at the transformation \\( (x_1, x_2) \\to (x_1^2, x_2^2) \\): squaring makes values close to zero small, and values far from zero (positive or negative) large. In this <strong>new coordinate system</strong> the red points sit bottom-left and the blue ones top-right — and suddenly they <em>are</em> linearly separable! A linear SVM on the new features gives a perfect classification, and translated back to the original space the boundary is an <strong>ellipse</strong>. </p>"
+          "html": "Take 2D data around the origin that is not separable. After the transformation \\( (x_1, x_2) \\to (x_1^2, x_2^2) \\) the classes sit bottom-left versus top-right: linearly separable, and translated back the boundary is an ellipse."
         },
         {
           "type": "formula",
@@ -43,7 +43,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> In scikit-learn you use the <code>SVC</code> class for kernels (not <code>LinearSVC</code>). The default is the <strong>RBF kernel</strong> (radial basis function): think of it as an extremely intricate feature transformation followed by a linear boundary in that new space — the squaring from the previous example, but far more sophisticated. <code>fit</code> and <code>predict</code> work as you are used to. </p> <p> Besides <code>C</code> (regularisation, as always) the RBF kernel gets its own hyperparameter: <strong>gamma</strong>, which steers the <em>smoothness</em> of the boundary. The kernel value between two points decays exponentially with their distance, and gamma determines how fast: </p>"
+          "html": "For kernels use <code>SVC</code> (not <code>LinearSVC</code>); the default is the <strong>RBF kernel</strong>. Besides <code>C</code> it has its own hyperparameter <strong>gamma</strong>, which steers the <em>smoothness</em> of the boundary."
         },
         {
           "type": "formula",
@@ -82,7 +82,7 @@
         },
         {
           "type": "text",
-          "html": "<p> Concretely from the course: with <code>gamma=0.01</code> the boundary is nicely smooth; with <code>gamma=2</code> a small \"island\" appears around every blue training example — and you reach 100% training accuracy. With the right hyperparameters an RBF SVM can separate almost <em>any</em> dataset perfectly. Why not always pick the largest gamma + highest training score? Exactly: <strong>overfitting</strong>. Search for the balance with a test set. </p>"
+          "html": "<code>gamma=0.01</code> gives a smooth boundary; <code>gamma=2</code> creates &ldquo;islands&rdquo; around every training example (100% training accuracy). Large gamma + high train score = overfitting — balance with a test set."
         },
         {
           "type": "code",

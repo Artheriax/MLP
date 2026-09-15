@@ -2,7 +2,7 @@
   "id": "multiclass",
   "chapter": "ch3",
   "title": "Multi-class: one-vs-rest & softmax",
-  "intro": "More than two classes? scikit-learn handles that automatically — but there is a choice happening behind the scenes: separate binary classifiers per class (one-vs-rest), or one joint model with a softmax loss. The consequences are small but understandable.",
+  "intro": "More than two classes? scikit-learn handles it automatically: separate binary classifiers per class (one-vs-rest) or one joint model with softmax.",
   "keyPoints": [
     "Multi-class = <strong>3+ classes</strong>. Two strategies: one-vs-rest and multinomial (softmax).",
     "<strong>OvR</strong>: one binary classifier per class ('this class or not'); highest score wins.",
@@ -16,7 +16,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> So far all the conceptual stories were <em>binary</em> (2 classes), while all along we were simply doing multi-class classification with the wine dataset (3 classes). How do linear classifiers pull that off? There are two popular strategies. </p>"
+          "html": "Multi-class = 3 or more classes. Two strategies do the work."
         }
       ]
     },
@@ -25,7 +25,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> <strong>One-vs-rest</strong> trains a dedicated binary classifier for <em>every</em> class. The code <code>y == 0</code> returns an array that is <code>True</code> wherever <code>y</code> equals 0 — so the first classifier learns \"class 0 or not-0\", the second \"1 or not-1\", and so on. Predicting is then done by letting all classifiers compute their <strong>raw model output</strong> (in scikit-learn: <code>decision_function</code>): the class with the <em>largest</em> raw output wins — that classifier is the most convinced. In the course, classifier 0 wins, so you predict class 0. </p>"
+          "html": "<strong>One-vs-rest</strong>: one binary classifier per class (&ldquo;class 0 or not-0?&rdquo;). Predicting: all classifiers compute their raw output — the <em>largest</em> wins."
         },
         {
           "type": "code",
@@ -46,7 +46,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> The <strong>multinomial</strong> approach instead adapts the <strong>loss function</strong> so that it directly optimises the multi-class problem — terms you will encounter: multinomial logistic regression, <strong>softmax</strong>, or cross-entropy loss. You fit once for all classes instead of separately per class. In the world of neural networks this is the standard. Both strategies can also output probabilities, just like a binary classifier. </p>"
+          "html": "<strong>Multinomial</strong> adapts the loss (softmax / cross-entropy) and fits once for all classes — the standard in neural networks."
         },
         {
           "type": "formula",
@@ -91,7 +91,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> In the binary case you had one coefficient per feature plus one intercept. For 3 classes with OvR you have <strong>3 whole binary classifiers</strong>: so one coefficient per feature <em>per class</em>, and one intercept per class. On the wine dataset (13 features), <code>coef_</code> is therefore a 3×13 array. The multinomial version learns <strong>exactly as many</strong> parameters (also 3×13) — the approach differs, but broadly the parameters have the same interpretations. </p>"
+          "html": "Binary: 1 coefficient per feature. With 3 classes and 13 features (wine): <code>coef_</code> is a 3&times;13 array — OvR gives three full classifiers, multinomial exactly as many parameters."
         },
         {
           "type": "code",

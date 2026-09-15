@@ -2,7 +2,7 @@
   "id": "vergelijking",
   "chapter": "ch4",
   "title": "LR vs. SVM & de SGDClassifier",
-  "intro": "Wanneer kies je logistic regression en wanneer een SVM? Plus de SGDClassifier, die laat zien dat deze modellen alleen in hun loss functie verschillen.",
+  "intro": null,
   "keyPoints": [
     "Grote data of kansen nodig → <strong>logistic regression</strong>; heldere marge op weinig data → <strong>SVM</strong>.",
     "Belangrijkste hyperparameters: <strong>C</strong> (beide), <strong>penalty</strong> (LR), <strong>gamma</strong> (RBF-SVM).",
@@ -16,7 +16,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Beide zijn lineaire classifiers, en beide kunnen met kernels werken — al is dat bij SVM's gebruikelijker, omdat de voorspellingen veel sneller zijn als het aantal support vectors klein is. Beide laten zich overhalen tot kansen, maar bij logistic regression is dat <em>natuurlijk</em> (het zit in de loss), bij SVM's vereist het extra werk. Beide uitbreiden naar multi-class kan via one-vs-rest óf door de loss direct aan te passen. </p> <p> Het scherpste verschil blijft: bij logistic regression (zoals bij de meeste methodes) beïnvloeden <strong>alle</strong> data-punten de fit; bij een SVM zijn alleen de <strong>support vectors</strong> van belang — de rest mag weg. En tot slot een kwestie van definitie: \"logistic regression\" verwijst niet naar een specifiek type regularisatie, maar \"SVM\" betekent bij conventie: lineaire classifier met hinge loss <em>plus</em> L2-regularisatie. </p>"
+          "html": "Beide zijn lineaire classifiers en kunnen met kernels. Scherpste verschil: bij logistic regression be&iuml;nvloeden <strong>alle</strong> punten de fit, bij een SVM alleen de <strong>support vectors</strong>. En bij conventie betekent &ldquo;SVM&rdquo;: hinge loss <em>plus</em> L2-regularisatie."
         },
         {
           "type": "table",
@@ -100,7 +100,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Tot slot een klasse die de rode draad van de cursus illustreert: <code>SGDClassifier</code> (SGD = <strong>stochastic gradient descent</strong>). Hij kan veel grotere datasets aan dan de andere methodes. Om te schakelen tussen logistic regression en een lineaire SVM hoef je alleen de <code>loss</code>-hyperparameter te wijzigen — <em>het model is hetzelfde, alleen de loss verandert</em>. Precies wat we in hoofdstuk 2 zagen. </p> <p> Eén \"gotcha\": de regularisatie-hyperparameter heet hier <code>alpha</code> in plaats van <code>C</code> — en grotere <code>alpha</code> betekent méér regularisatie. Kortom: <code>alpha</code> is de inverse van <code>C</code>. </p>"
+          "html": "<code>SGDClassifier</code> kan grotere datasets aan en schakelt tussen LR en SVM via all&eacute;&eacute;n de <code>loss</code>-hyperparameter — het model is hetzelfde. Gotcha: regularisatie heet hier <code>alpha</code> (de inverse van <code>C</code>: hoger = m&eacute;&eacute;r regularisatie)."
         },
         {
           "type": "code",
@@ -121,7 +121,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Zoom uit: data science is het beantwoorden van vragen en nemen van beslissingen op basis van data, en combineert stukken als datacollectie, datapreparatie, databaseontwerp, visualisatie, communicatie, software engineering en machine learning. Binnen machine learning zijn er takken als supervised learning, unsupervised learning en reinforcement learning; wij zaten in supervised learning — een target voorspellen uit features met gelabelde data. Binnen supervised learning richtten we ons op <em>classificatie</em> (categorische targets), en daarbinnen op de twee populairste lineaire classifiers: logistic regression en SVM's. </p> <p> Vervolgstappen: tree-based methodes (random forests, boosting), niet-lineaire classifiers in diepte, of unsupervised learning. </p>"
+          "html": "Zoom uit: data science omvat alles van datacollectie tot communicatie; daarbinnen is ML een tak, supervised learning daarbinnen, classificatie daarbinnen — en daarbinnen LR en SVM's. Vervolg op deze site: tree-based methodes en calculus."
         }
       ]
     }

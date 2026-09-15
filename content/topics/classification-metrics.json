@@ -2,7 +2,7 @@
   "id": "classification-metrics",
   "chapter": "ch7",
   "title": "Metrics bij classificatie: confusion matrix, precision & recall",
-  "intro": "Hoe beoordeel je een classifier? De confusion matrix als fundament, accuracy en waarom die kan misleiden, precision en recall met concrete scenario's, de F1-score — en de binaire cross-entropy als trainingsdoel, alles met code die in de browser draait.",
+  "intro": "De confusion matrix als fundament, accuracy en waarom die kan misleiden, precision en recall, de F1-score &mdash; en de binaire cross-entropy als trainingsdoel.",
   "keyPoints": [
     "Alles start met de <strong>confusion matrix</strong>: TP, FP, FN en TN.",
     "<strong>Accuracy</strong> kan misleiden bij scheve klassen — 99% accuraat kan 'altijd de meerderheid' betekenen.",
@@ -17,7 +17,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Bij classificatie is het doel om met de featurevariabelen een <strong>beslissingsgrens</strong> te cre&euml;ren die de datapunten scheidt op basis van hun categorie. Alle standaardmetrics bouwen voort op &eacute;&eacute;n tabel: de <em>confusion matrix</em>, die de voorspellingen (positief/negatief) kruist met de werkelijkheid (positief/negatief). Elke voorspelling valt in precies &eacute;&eacute;n van de vier vakken. </p>"
+          "html": "Alle standaardmetrics bouwen voort op &eacute;&eacute;n tabel: de <strong>confusion matrix</strong>, die voorspellingen kruist met de werkelijkheid &mdash; elke voorspelling valt in precies &eacute;&eacute;n van vier vakken."
         },
         {
           "type": "table",
@@ -41,12 +41,12 @@
         },
         {
           "type": "text",
-          "html": "<p> De vier vakken heb je snel door: <strong>TP</strong> is een terecht alarm (positief voorspeld, echt positief), <strong>TN</strong> een terechte geruststelling, <strong>FP</strong> een <em>vals alarm</em> (positief voorspeld, maar eigenlijk negatief) en <strong>FN</strong> een <em>gemist geval</em> (negatief voorspeld, maar eigenlijk positief). Let op de asymmetrie: in vrijwel elke toepassing zijn vals alarm en gemist geval <em>niet</em> even erg. Bij een medische screening is een gemist geval (FN) ernstiger dan een extra onnodig onderzoek (FP); bij een spamfilter is een vals alarm (FP — een belangrijke mail in de spam) vervelender dan een spam die doorslipt (FN). </p>"
+          "html": "<strong>TP</strong> = terecht alarm, <strong>TN</strong> = terechte geruststelling, <strong>FP</strong> = vals alarm, <strong>FN</strong> = gemist geval. De asymmetrie: bij medische screening is een gemist geval ernstiger; bij een spamfilter een vals alarm."
         },
         {
           "type": "callout",
           "kind": "key",
-          "html": "<p> De confusion matrix zelf is al een diagnosticum: kijk welke hoek opvalt. Veel FP's? Je model is te gretig (of je threshold ligt te laag). Veel FN's? Je model is te voorzichtig — en bij logistische regressie kun je de <em>threshold</em> verhogen of verlagen om de balans te verschuiven. </p>"
+          "html": "De matrix is al een diagnosticum: veel FP's = te gretig (threshold te laag); veel FN's = te voorzichtig &mdash; de threshold verschuift de balans."
         }
       ]
     },
@@ -55,7 +55,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> De simpelste metric is <strong>accuracy</strong>: het aandeel voorspellingen dat klopt, alles bij elkaar genomen. </p>"
+          "html": null
         },
         {
           "type": "formula",
@@ -65,7 +65,7 @@
         },
         {
           "type": "text",
-          "html": "<p> Het gevaar zit in <strong>scheve klassenverdelingen</strong>. Stel dat 99% van de mails geen spam is: een model dat domweg <em>altijd</em> \"geen spam\" voorspelt scoort 99% accuracy — en is volkomen nutteloos. Accuracy weegt alle vier de vakken mee en houdt geen rekening met welke fout nu pijn doet. Precies daarom bestaan precision en recall. </p>"
+          "html": "Het gevaar: <strong>scheve klassenverdelingen</strong>. Bij 99% geen-spam scoort &ldquo;altijd geen spam&rdquo; &oacute;&oacute;k 99% accuracy &mdash; en is volkomen nutteloos. Vandaar precision en recall."
         },
         {
           "type": "callout",
@@ -79,7 +79,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> <strong>Precision</strong> kijkt naar alles wat je <em>positief noemde</em> en vraagt: hoeveel daarvan was écht positief? <strong>Recall</strong> kijkt naar alles wat <em>echt positief</em> is en vraagt: hoeveel daarvan heb ik gevonden? Twee kanten van dezelfde medaille — de één straft vals alarm (FP), de ander gemiste gevallen (FN). </p>"
+          "html": "<strong>Precision</strong>: van alles wat je <em>positief noemde</em>, hoeveel was echt positief? <strong>Recall</strong>: van alles wat <em>echt positief</em> is, hoeveel gevonden?"
         },
         {
           "type": "formula",
@@ -125,7 +125,7 @@
         },
         {
           "type": "text",
-          "html": "<p> Precision en recall staan op gespannen voet met elkaar: maak je de threshold strenger, dan daalt het aantal FP's (precision omhoog) maar stijgt het aantal FN's (recall omlaag). Maak je hem soepeler, dan draait het om. Er is geen \"juiste\" balans — die hangt af van de kosten van beide foutsoorten in jouw toepassing. </p>"
+          "html": "Ze staan op gespannen voet: strengere threshold = minder FP's (precision omhoog) maar meer FN's (recall omlaag). De juiste balans hangt af van de kosten van beide foutsoorten."
         }
       ]
     },
@@ -134,7 +134,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Als je precision &eacute;n recall wilt samenvatten in &eacute;&eacute;n getal, dan kies je niet voor het gewone gemiddelde (dat een extreme precision van 1.0 met een nutteloze recall van 0.0 nog steeds op 0.5 laat uitkomen), maar voor het <strong>harmonisch gemiddelde</strong>: </p>"
+          "html": "Precision &eacute;n recall in &eacute;&eacute;n getal? Niet het gewone gemiddelde (extremen 1.0 en 0.0 geven nog 0.5), maar het <strong>harmonisch gemiddelde</strong>:"
         },
         {
           "type": "formula",
@@ -144,7 +144,7 @@
         },
         {
           "type": "text",
-          "html": "<p> Het harmonisch gemiddelde straft extremen: zit &eacute;&eacute;n van de twee laag, dan zakt de F1 mee naar beneden. Een hoge F1 is alleen haalbaar als precision &eacute;n recall <em>beide</em> hoog zijn — vandaar dat hij zo vaak als samenvattende metric dient. </p>"
+          "html": "Het harmonisch gemiddelde straft extremen: &eacute;&eacute;n lage waarde trekt de F1 mee omlaag. Hoog alleen als b&eacute;ide hoog zijn."
         }
       ]
     },
@@ -153,7 +153,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> De vier functies hieronder krijgen de <em>werkelijke klassen</em> en de <em>voorspelde klassen</em> (0/1, geen kansen — de threshold is al toegepast). Zoals in de confusion matrix: tel TP's, FP's, TN's en FN's met booleaanse masks. In scikit-learn bestaan <code>accuracy_score</code>, <code>precision_score</code>, <code>recall_score</code> en <code>f1_score</code> klaar voor gebruik — maar zien hoe ze zijn opgebouwd maakt ze concreet. </p>"
+          "html": "De vier functies krijgen werkelijke en voorspelde klassen (0/1, threshold al toegepast) en tellen TP/FP/TN/FN met booleaanse masks. scikit-learn heeft ze klaar staan &mdash; zien hoe ze zijn opgebouwd maakt ze concreet."
         },
         {
           "type": "code",
@@ -174,7 +174,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> De metrics hierboven beoordelen de <em>uiteindelijke beslissing</em> (na de threshold). Maar tijdens het trainen heeft logistische regressie een ander doel: de <strong>binaire cross-entropy loss (BCE)</strong>. Zijn er twee categorie&euml;n, dan gebruik je BCE; bij meer dan twee klassen het <em>categorische</em> cross-entropy. De waarden van \\( y \\) zijn de werkelijke klassen (1 of 0); de waarden van \\( \\hat{y} \\) zijn de voorspelde kansen (tussen 0 en 1): </p>"
+          "html": "De metrics hierboven beoordelen de beslissing <em>n&aacute;</em> de threshold; tijdens het trainen is het doel de <strong>binaire cross-entropy (BCE)</strong> &mdash; \\( y \\) de klassen (1/0), \\( \\hat{y} \\) de voorspelde kansen."
         },
         {
           "type": "formula",
@@ -184,7 +184,7 @@
         },
         {
           "type": "text",
-          "html": "<p> Waarom precies deze vorm? Kijk naar de twee gevallen. Is \\( y_i = 1 \\), dan blijft alleen \\( -\\log(\\hat{y}_i) \\) over: voorspel je een kans dicht bij 1, dan is de straf bijna nul; voorspel je 0.1, dan is de straf groot. Is \\( y_i = 0 \\), dan draait de term om en straft \\( -\\log(1 - \\hat{y}_i) \\) kansen richting 1. &Eacute;&eacute;n functie, twee richtingen — en glad, dus goed te minimaliseren met gradient descent. </p>"
+          "html": "Waarom deze vorm? Bij \\( y = 1 \\) straft \\( -\\log(\\hat{y}) \\) kansen richting 0; bij \\( y = 0 \\) straft \\( -\\log(1-\\hat{y}) \\) kansen richting 1. &Eacute;&eacute;n functie, twee richtingen, glad en minimaliseerbaar."
         },
         {
           "type": "code",
@@ -196,7 +196,7 @@
         {
           "type": "callout",
           "kind": "info",
-          "html": "<p> Vergelijk de twee uitkomsten in de run hierboven: kansen dicht bij de juiste labels geven een lage BCE, zelfverzekerde fouten geven een hoge. Dit is het leer signaal: tijdens de training verschuiven de coefficients precies zolang tot deze loss zo klein mogelijk is. Zie ook <a href=\"#/topic/loss-diagrams\">loss-diagrammen</a>, waar de logistic loss dezelfde rol speelt ten opzichte van de hinge loss van SVM's. </p>"
+          "html": "Kansen dicht bij de juiste labels = lage BCE; zelfverzekerde fouten = hoge. Dit is het leersignaal waarmee de co&euml;ffici&euml;nten verschuiven."
         }
       ]
     },
@@ -205,11 +205,11 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Hoe een classifier tot zijn beslissing komt, verloopt in vier stappen: <strong>(1)</strong> maak een lineaire score (de logit) \\( l = b_0 + b_1 x_1 + \\cdots + b_n x_n \\); <strong>(2)</strong> zet die met de sigmoid om in een kans \\( \\hat{y} = 1/(1 + e^{-l}) \\); <strong>(3)</strong> pas een threshold toe (meestal 0.5: kans &ge; 0.5 &rarr; positief); <strong>(4)</strong> minimaliseer de BCE tijdens de training. De threshold uit stap 3 is aanpasbaar — en verschuift precies de balans tussen precision en recall die je hierboven zag. </p>"
+          "html": "Van kans tot beslissing in vier stappen: <strong>(1)</strong> lineaire score \\( l \\), <strong>(2)</strong> sigmoid &rarr; kans, <strong>(3)</strong> threshold (meestal 0.5), <strong>(4)</strong> BCE minimaliseren tijdens de training. De threshold is aanpasbaar en verschuift de precision/recall-balans."
         },
         {
           "type": "text",
-          "html": "<p> Hieronder: logistische regressie met twee featurevariabelen (x1 horizontaal, x2 verticaal). De target heeft twee klassen: <span style=\"color:var(--green)\">klasse 1 (positief)</span> en <span style=\"color:var(--magenta)\">klasse 0 (negatief)</span>. De beslissingsgrens is \\( b_0 + b_1 x_1 + x_2 = 0 \\) — schuif met <strong>b0</strong> en <strong>b1</strong> en zie hoe de grens de ene foutsoort inruilt voor de andere.  De <strong>live metrics</strong> onder elke plot — accuracy, precision, recall en F1 — worden bij elke sliderbeweging op de 24 punten herberekend: zie hoe elke verschuiving van de grens de vier maten herverdeelt.</p>"
+          "html": "Hieronder: logistische regressie met twee features. Schuif met <strong>b0</strong> en <strong>b1</strong> en zie hoe de grens de ene foutsoort inruilt voor de andere &mdash; de live metrics (accuracy, precision, recall, F1) herberekenen bij elke beweging."
         },
         {
           "type": "plot",
@@ -606,7 +606,7 @@
         {
           "type": "callout",
           "kind": "key",
-          "html": "<p> Dataset B toont de kern van dit hoofdstuk: omdat de wolken overlappen is geen enkele grens perfect, en elke verschuiving van de lijn wisselt FP's voor FN's — precies de precision/recall-afweging in beeld. Voor niet-lineair gescheiden data (bijv. concentrische cirkels) helpt geen enkele rechte grens; de oplossing is <strong>features transformeren</strong> (bijvoorbeeld \\( x_1^2 \\) en \\( x_2^2 \\) toevoegen) of een kernel gebruiken — zie <a href=\"#/topic/kernel-svm\">Kernel SVM's</a>. </p>"
+          "html": "Dataset B toont de kern: overlappende wolken &rarr; geen grens perfect, elke verschuiving wisselt FP's voor FN's. Voor niet-lineair gescheiden data: features transformeren (bijv. \\( x_1^2, x_2^2 \\)) of een kernel."
         }
       ]
     }

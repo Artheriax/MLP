@@ -2,7 +2,7 @@
   "id": "regularisatie",
   "chapter": "ch3",
   "title": "Regularisatie: de hyperparameter C, L1 en L2",
-  "intro": "Regularisatie is je belangrijkste wapen tegen overfitting: je straft grote coëfficiënten, waardoor het model \"voorzichtiger\" wordt. In scikit-learn stuur je dit met één hyperparameter: C.",
+  "intro": null,
   "keyPoints": [
     "Regularisatie <strong>bestraft grote coëfficiënten</strong> → simpeler model dat beter generaliseert.",
     "<strong>C is de omgekeerde sterkte</strong>: klein C = sterke regularisatie, groot C = bijna geen.",
@@ -16,7 +16,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Regularisatie bestrijdt overfitting door de <strong>coëfficiënten klein te houden</strong>. In scikit-learn is <code>C</code> de <em>inverse</em> van de regularisatiesterkte: een <strong>grote C betekent weinig regularisatie</strong> en een <strong>kleine C betekent veel regularisatie</strong>. Test je het, dan zie je het effect direct: met een kleinere C worden de geleerde coëfficiënten kleiner. </p>"
+          "html": "Regularisatie bestrijdt overfitting door <strong>co&euml;ffici&euml;nten klein te houden</strong>. In scikit-learn is <code>C</code> de <em>inverse</em> sterkte: <strong>grote C = weinig</strong> regularisatie, <strong>kleine C = veel</strong>."
         },
         {
           "type": "formula",
@@ -37,7 +37,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Waarom daalt de <strong>training</strong> accuracy als je regulariseert? Regularisatie is een extra term bij de originele loss, die grote coëfficiënten straft. Zonder regularisatie maximaliseer je in feite de trainingprestatie; mét regularisatie optimaliseer je een compromis, en hoe zwaarder de straf (kleinere C), hoe verder je afdrijft van dat optimum. Training accuracy gaat dus vanzelf omlaag. </p> <p> En de <strong>test</strong> accuracy? Die verbetert juist vaak. Het intuïtieve beeld: stel dat je een feature helemaal niet zou gebruiken — dat is hetzelfde als zijn coëfficiënt op nul zetten. Regulariseren is een <em>compromis</em> tussen een feature helemaal weglaten (coef = 0) en volledig gebruiken (de niet-geregelulariseerde waarde). Als een feature te zwaar gebruiken overfitting veroorzaakte, zorgt regularisatie ervoor dat je minder hard \"fit\" en dus minder overfit. </p>"
+          "html": "Regularisatie is een extra strafterm bij de loss: je optimaliseert een compromis in plaats van de maximale trainprestatie, dus de training accuracy daalt. De test accuracy verbetert juist vaak &mdash; minder hard fitten = minder overfit."
         },
         {
           "type": "code",
@@ -58,7 +58,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Voor lineaire regressie ken je de namen <strong>ridge</strong> (L2) en <strong>lasso</strong> (L1) — buiten lineaire regressie heten de algemene concepten L2- en L1-regularisatie, en alles wat je daarover weet geldt óók voor logistic regression. Beiden verminderen overfitting, maar L1 heeft een extra superkracht: <strong>feature selection</strong>. L1 zet veel coëfficiënten exact op nul, waardoor die features genegeerd worden; L2 verkleint ze alleen maar. </p>"
+          "html": "L2 (ridge) verkleint co&euml;ffici&euml;nten; L1 (lasso) zet ze <strong>exact op nul</strong> &mdash; gratis <strong>feature selection</strong>. Alles wat je over ridge/lasso weet geldt ook voor logistic regression."
         },
         {
           "type": "code",

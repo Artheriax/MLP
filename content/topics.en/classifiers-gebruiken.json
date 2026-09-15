@@ -2,7 +2,7 @@
   "id": "classifiers-gebruiken",
   "chapter": "ch1",
   "title": "Using LogisticRegression, LinearSVC & SVC",
-  "intro": "The three classifiers from the course share exactly the same fit/predict/score syntax. The difference is under the hood: which loss is optimised and whether the decision boundary is linear. Here you see all three at work.",
+  "intro": "Three classifiers, one syntax: the difference between LogisticRegression, LinearSVC and SVC is under the hood — in the loss and the (non-)linear boundary.",
   "keyPoints": [
     "<code>LogisticRegression</code>, <code>LinearSVC</code> and <code>SVC</code> share the same fit/predict interface — switching costs one line.",
     "<code>predict_proba()</code> gives probabilities (confidence); <code>predict()</code> gives the final class.",
@@ -16,7 +16,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> You import <code>LogisticRegression</code> from <code>sklearn.linear_model</code> — logistic regression is in fact a <strong>linear classifier</strong> (why that is so follows in chapter 2). Instantiating, fitting and scoring work exactly like with KNN. On the wine dataset (3 wine types, 13 chemical features) the training accuracy lands around 97%. </p> <p> Besides <em>hard</em> predictions (class 0, 1 or 2) the model can also produce <strong>confidence scores</strong> with <code>predict_proba</code>: one probability per class for each example, always summing to exactly 1.0. In the course, the model gives the first wine example over 99% probability for class 0 and almost 0% for the other two. Remember the e-notation: <code>9.9e-01</code> means \\( 9{,}9 \\times 10^{-1} = 0{,}99 \\), i.e. 99%. How these probabilities are computed is unravelled in chapter 3. </p>"
+          "html": "<code>LogisticRegression</code> is a <strong>linear classifier</strong>; on the wine dataset it reaches ~97% training accuracy. Besides hard classes, <code>predict_proba</code> gives <strong>probabilities</strong> per class (summing to 1.0); <code>9.9e-01</code> means 99%."
         },
         {
           "type": "code",
@@ -37,7 +37,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> The basic SVM in scikit-learn is called <code>LinearSVC</code> (linear support vector <em>classifier</em>) and works exactly like <code>LogisticRegression</code>: instantiate, fit, score. In addition there is <code>SVC</code>, which by default fits a <strong>non-linear</strong> SVM via the RBF kernel. With default hyperparameters the accuracy of <code>SVC</code> is nothing special — but with the right settings it reaches 100% <em>training</em> accuracy. Of course that might simply be overfitting: exactly the risk you take with more complex models. </p>"
+          "html": "<code>LinearSVC</code> is the linear SVM and works exactly the same. <code>SVC</code> by default fits a <strong>non-linear</strong> RBF kernel: with the right settings 100% training accuracy — which may simply be overfitting."
         },
         {
           "type": "code",
@@ -82,7 +82,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> So far we kept using the <strong>default hyperparameters</strong>. A hyperparameter is a choice made before fitting that usually determines the <em>complexity</em> of the model — such as <code>C</code> and <code>gamma</code>. There is a fundamental trade-off: <strong>underfitting</strong> (the model is too simple, misses the patterns, low train <em>and</em> test score) versus <strong>overfitting</strong> (the model is too complex, learns the quirks of <em>your</em> training set, high train score but lower test score). </p> <p> In the rest of the course you will see what these hyperparameters do <em>mathematically</em> — and how to set them deliberately instead of guessing. </p>"
+          "html": "Hyperparameters (like <code>C</code> and <code>gamma</code>) are chosen <em>before</em> fitting and steer <em>complexity</em>. <strong>Underfitting</strong> = too simple, low everywhere; <strong>overfitting</strong> = too complex, perfect on train, worse on test."
         },
         {
           "type": "callout",

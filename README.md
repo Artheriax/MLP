@@ -36,6 +36,15 @@ best-fit lijn. Interactieve plots hebben **live metrics** (MSE, R²,
 accuracy, precision/recall/F1 …) die realtime meebewegen met de
 sliders en groen oplichten bij de best haalbare fit.
 
+**Korte uitleg, geen lappen tekst (v2.1)**: alle 31 onderwerpen zijn
+ingesnoerd tot de kern — **korte uitleg (1–2 zinnen per blok, mediaan
+30 woorden), formules, tabellen, interactieve plots en runnable code**.
+De intro van elk onderwerp is één zin; callouts bevatten alleen nog het
+essentiële (vuistregels, valkuilen, definities); FAQ-antwoorden zijn
+maximaal een paar zinnen. De totale proza-omvang is met ~58% verminderd
+(tijdens het inkorten is NL én EN gelijktijdig bijgewerkt, met alle
+kernpunten, formules en voorbeelden intact).
+
 **Leesbaarheid voorop (v2-redesign)**: de leestekst staat op **17 px
 met ruime regelafstand** in een **smalle kolom (~66 tekens)** — het
 comfortabelste leesmaat voor studiestof. Elk onderwerp opent met een

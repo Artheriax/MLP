@@ -2,7 +2,7 @@
   "id": "gini-entropy",
   "chapter": "ch5",
   "title": "Gini-index & entropie: onzuiverheid meten",
-  "intro": "In het onderwerp Decision trees zag je ze kort voorbijkomen als de maatstaf achter elke split: Gini en entropy. Dit onderwerp haalt de maten los uit de boom en bekijkt ze van dichtbij — wat de getallen echt betekenen (een kans, een aantal bits), hoe je ze met de hand uitrekent, hoe de boom ze gebruikt in de informatiewinst, en waarom de keuze tussen beide er in de praktijk vrijwel nooit toe doet.",
+  "intro": "De maatstaf achter elke split, van dichtbij bekeken: wat Gini en entropy echt betekenen (een kans, een aantal bits), hoe je ze uitrekent en waarom de keuze er vrijwel nooit toe doet.",
   "keyPoints": [
     "Onzuiverheid zet “hoe gemengd is deze node” in <strong>één getal</strong>: 0 = alle samples dezelfde klasse, maximaal = perfecte uniforme mix. Gini en entropy zijn dé twee standaardmaten.",
     "<strong>Gini</strong> = 1 − Σ p<sub>k</sub>² — letterlijk de kans dat twee willekeurige samples uit de node een <em>verschillende</em> klasse hebben; plafond 1 − 1/K.",
@@ -17,11 +17,11 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Een boom bouwt zich split voor split, en op elke kruising staat dezelfde vraag: <em>welke (feature, drempel)-combinatie legt de data het schoonst uit elkaar?</em> “Schoon” betekent: links vooral de ene klasse, rechts vooral de andere. Maar “vooral” is geen getal — en een algoritme kan alleen getallen vergelijken. Daarom heeft elke split-strategie één <strong>onzuiverheidsmaat</strong> (impurity measure) nodig: een functie die elke groep samples één score geeft, met 0 voor “perfect puur” en hoger voor “verder gemengd”. De split met de schoonste <em>gewogen</em> combinatie van kinderen wint. </p>"
+          "html": "Elke split-strategie heeft &eacute;&eacute;n <strong>onzuiverheidsmaat</strong> nodig: een functie die elke groep &eacute;&eacute;n score geeft &mdash; 0 voor perfect puur, hoger voor verder gemengd."
         },
         {
           "type": "text",
-          "html": "<p> Elke bruikbare maat deelt drie eigenschappen. Ze is <strong>nul als de node puur is</strong>: alle samples dezelfde klasse, meer twist bestaat er niet. Ze is <strong>maximaal bij een uniforme mix</strong>: elke klasse even vaak — de grootst mogelijke onzekerheid over wat een willekeurige sample zal blijken te zijn. En ze is <strong>symmetrisch in de klassen</strong>: een node met 80% ✓ is exact even onzuiver als een node met 20% ✓ — alleen de mengverhouding telt, niet welke klasse toevallig de meerderheid vormt. Binnen dat kader zijn veel maten mogelijk; twee ervan domineren de praktijk volledig. </p>"
+          "html": "Elke bruikbare maat deelt drie eigenschappen: <strong>nul bij pure node</strong>, <strong>maximaal bij uniforme mix</strong> en <strong>symmetrisch in de klassen</strong> (80% &#10003; is even onzuiver als 20% &#10003;)."
         },
         {
           "type": "table",
@@ -56,7 +56,7 @@
         {
           "type": "callout",
           "kind": "key",
-          "html": "<p> De twee maten die je overal tegenkomt: de <strong>Gini-index</strong> — de default in scikit-learn, afkomstig uit het CART-algoritme — en <strong>entropy</strong>, uit Shannon's informatietheorie, gebruikt door de klassieke ID3/C4.5-bomen. Dit onderwerp behandelt ze naast elkaar: eerst elk op zijn eigen merites leren kennen, dan zien hoe sterk ze op elkaar lijken, en tot slot waarom de keuze ertussen zelden iets verandert. De bomen zelf — splits, remmen, code — staan in <em>Decision trees</em>. </p>"
+          "html": "De twee maten die de praktijk domineren: <strong>Gini-index</strong> (default in scikit-learn, uit CART) en <strong>entropy</strong> (uit Shannon's informatietheorie, gebruikt door ID3/C4.5)."
         }
       ]
     },
@@ -65,7 +65,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> De Gini-index (in bomen-context meestal <em>Gini-impurity</em> genoemd) is de meest letterlijke maat. Trek <strong>twee keer een willekeurige sample uit de node</strong>, met terugleggen. De kans dat die twee samples een <em>verschillende</em> klasse hebben, is precies de Gini van die node. Een pure node levert altijd twee dezelfde: kans 0. Een 50/50-mix laat de trekkingen de helft van de keren botsen: 0.5. Meer hoef je er niet van te onthouden — de formule volgt rechtstreeks uit dit spel. </p>"
+          "html": "Gini is de meest letterlijke maat: trek <strong>twee keer een willekeurige sample uit de node</strong> (met terugleggen) &mdash; de kans dat ze een <em>verschillende</em> klasse hebben is precies de Gini van die node. Pure node: 0; 50/50-mix: 0,5."
         },
         {
           "type": "formula",
@@ -75,16 +75,16 @@
         },
         {
           "type": "text",
-          "html": "<p> Uitgewerkt voor een node met drie klassen — een sentiment-classificatie met 50% <em>kopen</em>, 30% <em>houden</em> en 20% <em>verkopen</em>: \\( G = 1 - (0{,}5^2 + 0{,}3^2 + 0{,}2^2) = 1 - 0{,}38 = 0{,}62 \\). Controle via het trekkenspel: \\( 1 - (0{,}5 \\cdot 0{,}5 + 0{,}3 \\cdot 0{,}3 + 0{,}2 \\cdot 0{,}2) \\) — letterlijk dezelfde som, want “beide trekkingen klasse k” heeft kans \\( p_k^2 \\). Hoe meer klassen, hoe hoger het plafond: een uniforme mix over K klassen zit op het maximum \\( 1 - \\tfrac{1}{K} \\) — voor twee klassen 0.5, voor drie 0.667. </p>"
+          "html": "Drie klassen (50% kopen, 30% houden, 20% verkopen): \\( G = 1 - (0{,}5^2 + 0{,}3^2 + 0{,}2^2) = 0{,}62 \\). Plafond bij uniforme mix over K klassen: \\( 1 - \\tfrac{1}{K} \\) (2 klassen: 0,5; 3: 0.667)."
         },
         {
           "type": "text",
-          "html": "<p> Rekenkundig is Gini de goedkope van de twee: alleen kwadraten, geen logaritmes. Op één node voelt dat als niets, maar een boom op echte data evalueert <em>elke</em> feature tegen <em>elke</em> mogelijke drempel — duizenden kandidaat-splits, elk met impurity-berekeningen in de ouder én beide kinderen. Daar telde de log() van entropy wél mee. Om die efficiëntie — en omdat de splitkeuze er vrijwel niet door verandert — is Gini de default in CART en scikit-learn. </p>"
+          "html": "Rekenkundig is Gini de goedkope van de twee: alleen kwadraten, geen logaritmes &mdash; en een boom evalueert duizenden kandidaat-splits. Daarom is Gini de default in CART en scikit-learn."
         },
         {
           "type": "callout",
           "kind": "info",
-          "html": "<p> Naamsverwarring vooraf opgevangen: de <em>Gini-index</em> uit de economie — inkomensongelijkheid, 0 = perfect gelijk — is verre familie (zelfde kwadraten-idee), maar een andere formule op een andere schaal. In machine learning-context betekent “Gini” vrijwel altijd de impurity-versie. En onthoud: de maat zegt niets over <em>welke</em> klasse wint — 80% ✓ en 80% ✗ scoren identiek (0.32). Zuiverheid gaat over mengeling, niet over richting. </p>"
+          "html": "Naamsverwarring: de <em>Gini-index</em> uit de economie (inkomensongelijkheid) is verre familie. In ML-context betekent &ldquo;Gini&rdquo; vrijwel altijd de impurity-versie &mdash; en de maat zegt niets over <em>welke</em> klasse wint."
         }
       ]
     },
@@ -93,7 +93,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Entropy komt uit Shannon's informatietheorie (1948) en meet onzekerheid in <strong>bits</strong>. Gedachte-experiment: iemand trekt een sample uit de node, en jij mag uitsluitend ja/nee-vragen stellen om zijn klasse te raden. Het minimale <em>gemiddelde</em> aantal vragen dat de slimst mogelijke strategie nodig heeft — dát is de entropy van de node. Een pure node: nul vragen, de klasse staat vast. Een 50/50-mix: precies één vraag die de helft wegstreept, dus 1 bit. Elke vraag die de mogelijkheden exact halveert levert één bit op — vandaar de logaritme met grondtal 2. </p>"
+          "html": "Entropy meet onzekerheid in <strong>bits</strong>: het minimale gemiddelde aantal ja/nee-vragen dat de slimst mogelijke strategie nodig heeft om een getrokken sample te classificeren. Pure node: 0 vragen; 50/50-mix: precies 1 vraag (1 bit)."
         },
         {
           "type": "formula",
@@ -103,16 +103,16 @@
         },
         {
           "type": "text",
-          "html": "<p> Dezelfde sentiment-node (50/30/20): \\( H = -(0{,}5 \\log_2 0{,}5 + 0{,}3 \\log_2 0{,}3 + 0{,}2 \\log_2 0{,}2) = 0{,}5 + 0{,}521 + 0{,}464 = 1{,}485 \\) bits. Het vraagspel ingevuld: de optimale strategie is eerst “kopen?” (splitst exact 50/50) en alleen bij “nee” nog “houden?”. Verwacht aantal vragen: \\( 0{,}5 \\cdot 1 + 0{,}5 \\cdot 2 = 1{,}5 \\) — en de entropy 1.485 is de scherpe ondergrens die geen enkele strategie kan breken. Dát is de precieze betekenis van “onzekerheid in bits”. </p>"
+          "html": "Zelfde sentiment-node: \\( H = -(0{,}5 \\log_2 0{,}5 + 0{,}3 \\log_2 0{,}3 + 0{,}2 \\log_2 0{,}2) = 1{,}485 \\) bits. Het vraagspel haalt gemiddeld 1,5 vragen &mdash; entropy 1.485 is de scherpe ondergrens."
         },
         {
           "type": "text",
-          "html": "<p> Let op de schaal: H = 1.485 tegenover G = 0.62 voor dezelfde node. Geen probleem — de boom vergelijkt kandidaat-splits altijd binnen <em>dezelfde</em> maat, dus schaal en eenheid vallen weg; alleen de <em>volgorde</em> die de maat aan splits geeft, is belangrijk. Wél een reëel verschil: het plafond. Gini loopt op tot \\( 1 - 1/K < 1 \\), hoeveel klassen je ook hebt, terwijl entropy doorberekent tot \\( \\log_2 K \\) en onbeperkt groeit met het aantal klassen — twaalf gelijke klassen: 3.585 bits. </p>"
+          "html": "De schalen verschillen (H = 1.485 vs G = 0.62), maar de boom vergelijkt splits altijd binnen d&eacute;zelfde maat &mdash; alleen de <em>volgorde</em> telt. W&eacute;l reëel: Gini's plafond is \\( 1 - 1/K < 1 \\), entropy groeit onbeperkt met \\( \\log_2 K \\)."
         },
         {
           "type": "callout",
           "kind": "tip",
-          "html": "<p> Drie rekenregels die je onderweg tegenkomt. Ten eerste: \\( -\\log_2 p \\) is positief voor \\( p < 1 \\), dus het minteken vóór de som maakt elke term \\( -p_k \\log_2 p_k \\) positief. Ten tweede: elke halvering van p kost één extra bit — \\( \\log_2 \\tfrac{1}{4} = -2 \\) en \\( \\log_2 \\tfrac{1}{8} = -3 \\). Ten derde: grondtal 2 geeft bits; de natuurlijke logaritme geeft <em>nats</em> — dezelfde curve, alleen een andere eenheid (1 bit ≈ 0.693 nats). </p>"
+          "html": "Drie rekenregels: \\( -\\log_2 p \\) is positief voor p &lt; 1; elke halvering van p kost &eacute;&eacute;n extra bit; grondtal 2 geeft bits, de natuurlijke logaritme <em>nats</em> (1 bit &asymp; 0.693 nats)."
         }
       ]
     },
@@ -121,7 +121,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Plot je beide maten tegen de mengverhouding, dan vallen de curves bijna op elkaar: de entropy-curve heeft exact de klokvorm van de Gini-parabool, alleen ruwweg dubbel zo hoog. Dat is structureel, geen toeval: voor <em>elke</em> klasseverdeling geldt \\( G \\le H/2 \\), met gelijkheid precies bij de uniforme twee-klassen-mix (p = 0.5). Voor scheve verdelingen en voor drie of meer klassen zakt Gini verder onder de helft — maar de <em>volgorde</em> waarin beide maten kandidaat-splits rangschikken, blijft vrijwel altijd dezelfde. </p>"
+          "html": "Plot beide maten tegen de mengverhouding en de curves vallen bijna op elkaar: de entropy-curve heeft exact de klokvorm van de Gini-parabool, ruwweg dubbel zo hoog. Structureel: \\( G \\le H/2 \\) voor <em>elke</em> verdeling, met gelijkheid bij p = 0,5."
         },
         {
           "type": "table",
@@ -154,7 +154,7 @@
         },
         {
           "type": "text",
-          "html": "<p> Op p = 0.5 vallen Gini en H/2 exact samen (beide 0.5); daarbuiten loopt het verschil op tot hooguit zo'n 0.05 — en omdat de boom enkel volgordes vergelijkt, is dat verschil zonder betekenis. In de plot hieronder staat de relatie in zijn geheel: elke stip is één klasseverdeling, de entropy horizontaal en de Gini verticaal. </p>"
+          "html": "Op p = 0.5 vallen Gini en H/2 exact samen (beide 0.5); daarbuiten is het verschil hooguit ~0,05 &mdash; en omdat de boom enkel volgordes vergelijkt, is dat zonder betekenis."
         },
         {
           "type": "plot",
@@ -269,12 +269,12 @@
         },
         {
           "type": "text",
-          "html": "<p> De magenta-stippen vormen samen een dun boogje dat de referentielijn nét onderschrijdt en hem precies raakt bij de 50/50-mix — bovenaan, op (1.0, 0.5). Speel met de tellers: bij (5, 3, 2), het sentiment-voorbeeld, zit jouw stip op (1.485, 0.62). Zet één teller op nul en de stip valt <em>exact</em> terug in het binaire boogje — een afwezige klasse maakt een drie-klassen-node feitelijk binair. Maak je de tellers gelijk (4/4/4), dan schuift hij naar het uniforme maximum (1.585, 0.667): verder van de lijn dan ooit, en nog altijd eronder. </p>"
+          "html": "In de plot: elke stip is &eacute;&eacute;n klasseverdeling. Bij (5, 3, 2) zit je op (1.485, 0.62); gelijke tellers (4/4/4) schuiven naar het uniforme maximum (1.585, 0.667) &mdash; verder van de lijn dan ooit, en nog altijd eronder."
         },
         {
           "type": "callout",
           "kind": "info",
-          "html": "<p> Waarom überhaupt twee maten, als één genoeg zou zijn? Historie. Entropy (Shannon, 1948) was er eerst en kwam via ID3 (1986) en C4.5 de bomenwereld binnen; Gini kwam in 1984 mee met Breiman's CART als rekenkundig sneller alternatief. Beide families staan in leerboeken en tutorials, dus je moet ze allebei kunnen lezen. Kiezen hoef je vrijwel nooit — wat het volgende onderdeel beargumenteert. </p>"
+          "html": "Waarom twee maten? Historie: entropy (Shannon, 1948) kwam via ID3/C4.5 eerst; Gini kwam in 1984 mee met Breiman's CART als rekenkundig sneller alternatief. Beide moet je kunnen lezen; kiezen hoef je vrijwel nooit."
         }
       ]
     },
@@ -283,7 +283,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Nu het getal dat de boom daadwerkelijk maximaliseert. De ouder-node heeft een vaste impurity; een kandidaat-split verdeelt diens samples over (meestal twee) kinderen. De <strong>informatiewinst</strong> (information gain) is de daling van de <em>gewogen</em> gemiddelde impurity — en omdat de ouder binnen één split-vergelijking vastligt, is “hoogste winst” exact hetzelfde als “laagste gewogen kind-impurity”. Twee formuleringen, één keuze. </p>"
+          "html": "De <strong>informatiewinst</strong> is de daling van de <em>gewogen</em> gemiddelde impurity &mdash; en omdat de ouder binnen &eacute;&eacute;n split-vergelijking vastligt, is &ldquo;hoogste winst&rdquo; hetzelfde als &ldquo;laagste gewogen kind-impurity&rdquo;."
         },
         {
           "type": "formula",
@@ -293,16 +293,16 @@
         },
         {
           "type": "text",
-          "html": "<p> Concreet: een node met 20 samples — 12 ✓ en 8 ✗ (p = 0.6) — en een kandidaat-split die links 2 ✓ / 6 ✗ (p = 0.25) en rechts 10 ✓ / 2 ✗ (p = 0.833) achterlaat. Met Gini: de ouder \\( 2 \\cdot 0{,}6 \\cdot 0{,}4 = 0{,}480 \\); kinderen \\( G_L = 0{,}375 \\) en \\( G_R = 0{,}278 \\), gewogen \\( \\tfrac{8}{20} \\cdot 0{,}375 + \\tfrac{12}{20} \\cdot 0{,}278 = 0{,}317 \\); winst \\( 0{,}480 - 0{,}317 = 0{,}163 \\). Met entropy: ouder \\( H(0{,}6) = 0{,}971 \\); kinderen 0.811 en 0.650, gewogen \\( 0{,}715 \\); winst \\( 0{,}256 \\) bits. De boom herhaalt dit voor elke (feature, drempel), houdt de hoogste winst over, en duikt daarna recursief verder in elk kind. </p>"
+          "html": "Node met 12 &#10003; / 8 &#10007; (p = 0.6), split naar links 2&#10003;/6&#10007; (p = 0.25) en rechts 10&#10003;/2&#10007; (p = 0.833). Gini: ouder 0.480, gewogen kinderen 0.317, winst 0.163. Entropy: 0.971 &rarr; 0.715, winst 0.256 bits."
         },
         {
           "type": "text",
-          "html": "<p> Het wegen met \\( n_j/n \\) is geen sierdeuntje maar de kern van de maat. Vergelijk op dezelfde ouder twee splits: A maakt 19 van de 20 samples puur maar laat één klein vuil blad over; B zuivert beide helften flink, maar geen van beide volledig. Ongewogen leek A “bijna perfect” — gewogen kan B gewoon winnen, want het ene vuile mini-blad telt maar voor 1/20 mee. Eén sample rehabiliteren weegt niet op tegen negentien samples half zuiveren: hoe klein een kind ook is, zijn impurity weegt mee naar rato van zijn omvang. </p>"
+          "html": "Het wegen met \\( n_j/n \\) is de kern van de maat: &eacute;&eacute;n klein vuil blad van 1/20 weegt niet op tegen negentien samples half zuiveren &mdash; hoe klein een kind ook is, zijn impurity weegt mee naar rato van zijn omvang."
         },
         {
           "type": "callout",
           "kind": "warning",
-          "html": "<p> De klassieke val: een feature met véél unieke waarden — een klant-ID, een tijdstip op de milliseconde — biedt zóveel drempels dat er altijd één tussen zit die de data in reeds pure mini-groepjes hakt. Schijnbaar hoge informatiewinst, in werkelijkheid pure memorisatie: de boom leert het ID, niet het patroon. C4.5 pareert dit met de <em>gain ratio</em> — winst gedeeld door de split-entropie van de groepsgroottes zelf. In scikit-learn speelt het nauwelijks: categorische features moet je eerst tot dummy-variabelen omzetten, en dan zijn alle vragen binair. Zie de overfit-remmen in <em>Decision trees</em> en het kader in <em>Bias-variance tradeoff</em>. </p>"
+          "html": "Klassieke val: een feature met v&eacute;&eacute;l unieke waarden (klant-ID, tijdstip) biedt z&oacute;veel drempels dat er altijd een &ldquo;perfecte&rdquo; split tussen zit &mdash; schijnbaar hoge winst, in werkelijkheid memorisatie. C4.5 pareert dit met de <em>gain ratio</em>."
         }
       ]
     },
@@ -311,7 +311,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> De vergelijking in één tabel — met de eerlijke kanttekening dat de onderste regel de belangrijkste is: </p>"
+          "html": "De vergelijking in &eacute;&eacute;n tabel &mdash; met de eerlijke kanttekening dat de onderste regel de belangrijkste is:"
         },
         {
           "type": "table",
@@ -356,7 +356,7 @@
         {
           "type": "callout",
           "kind": "key",
-          "html": "<p> Praktisch advies: <strong>laat de default (Gini) staan</strong> en besteed je tuning-budget aan <code>max_depth</code>, <code>min_samples_leaf</code> en <code>min_samples_split</code> — dít zijn de knoppen die de bias-variance-naald echt verzetten. Kies entropy als je informatiewinst in <strong>bits</strong> wilt rapporteren (een net informatietheoretisch verhaal) of wanneer je aansluit op ID3/C4.5-literatuur. Nieuwsgierig naar het verschil op jóuw data? Zet beide in een cross-validation — zie <em>Cross-validation</em> — en vergelijk: vrijwel altijd verschilt de score pas op de tweede decimal. </p>"
+          "html": "Praktisch advies: <strong>laat de default (Gini) staan</strong> en besteed je tuning-budget aan <code>max_depth</code>, <code>min_samples_leaf</code> en <code>min_samples_split</code>. Kies entropy alleen als je winst in bits wilt rapporteren."
         }
       ]
     },
@@ -365,7 +365,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Eerst de maten zelf bouwen — een handjevol NumPy — en het voorbeeld van hierboven narekenen. De functies nemen klasse-<em>tellingen</em> in (bijvoorbeeld (12, 8)) en normaliseren intern naar fracties: </p>"
+          "html": "De maten zelf bouwen &mdash; een handjevol NumPy &mdash; en het voorbeeld narekenen:"
         },
         {
           "type": "code",
@@ -376,7 +376,7 @@
         },
         {
           "type": "text",
-          "html": "<p> Exact de handmatige cijfers: Gini daalt van 0.480 naar 0.317 (winst 0.163) en entropy van 0.971 naar 0.715 (winst 0.256 bits). Beide maten prijzen deze split flink. De winsten onderling vergelijken kan niet — verschillende schaal — maar dat hoeft ook niet: de boom kiest per criterium altijd binnen zijn eigen schaal. </p>"
+          "html": "Exact de handmatige cijfers: Gini 0.480 &rarr; 0.317 (winst 0.163) en entropy 0.971 &rarr; 0.715 (winst 0.256 bits). De winsten onderling vergelijken kan niet &mdash; verschillende schaal &mdash; maar de boom kiest altijd binnen zijn eigen schaal."
         },
         {
           "type": "code",
@@ -387,12 +387,12 @@
         },
         {
           "type": "text",
-          "html": "<p> Typische output: de Gini-boom haalt 0.951 met 16 bladeren, de entropy-boom 0.958 met 14. “Vrijwel hetzelfde” betekent dus níet “letterlijk identiek”: de maten zijn verwant, niet gelijk, en micro-beslissingen vallen soms anders uit — hier kiest entropy toevallig een compactere boom die nét beter test. Maar één procentpunt op één enkele split van de data is ruis, geen signaal; trek hieruit geen conclusies. </p>"
+          "html": "Typische output: de Gini-boom haalt 0.951 met 16 bladeren, de entropy-boom 0.958 met 14. Verwant, niet gelijk &mdash; maar &eacute;&eacute;n punt op &eacute;&eacute;n split is ruis, geen signaal."
         },
         {
           "type": "callout",
           "kind": "tip",
-          "html": "<p> <code>criterion</code> is dus technisch gezien een hyperparameter — maar eentje met een verdacht klein effect. Vergeet hem gerust tijdens het afstemmen: als de CV-scores tussen Gini en entropy wisselen, kijk dan naar de spreiding tussen de folds zelf (zie <em>Cross-validation</em>), niet naar het criterium. De vorm van de boom die er wél toe doet — diepte, bladgrootte — staat centraal in <em>Bias-variance tradeoff</em>. </p>"
+          "html": "<code>criterion</code> is technisch een hyperparameter &mdash; maar eentje met een verdacht klein effect. De vorm van de boom die er w&eacute;l toe doet (diepte, bladgrootte) staat centraal in <em>Bias-variance tradeoff</em>."
         }
       ]
     }

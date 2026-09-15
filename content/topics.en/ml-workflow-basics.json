@@ -2,7 +2,7 @@
   "id": "ml-workflow-basics",
   "chapter": "ch0",
   "title": "The ML workflow from start to finish",
-  "intro": "From raw question to working model: the eight steps of an ML project, under- and overfitting shown interactively, and the fit–predict–score trio that sounds the same across all of scikit-learn.",
+  "intro": "The eight steps of an ML project, under- and overfitting shown interactively, and the fit&ndash;predict&ndash;score trio that is identical across scikit-learn.",
   "keyPoints": [
     "The eight steps: <em>question → data → split → prepare features → pick model → fit → evaluate → tune</em>.",
     "The scikit-learn trio: <code>fit()</code> trains, <code>predict()</code> predicts, <code>score()</code> evaluates.",
@@ -16,7 +16,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> An ML project is not a straight line but a <strong>loop</strong>: you evaluate, learn, and go back to an earlier step. The order below is the coat rack every project hangs on — from school assignment to production system. The pitfall column is at least as important as the steps themselves. </p>"
+          "html": "An ML project is a <strong>loop</strong>, not a straight line: evaluation almost always sends you back to an earlier step. The pitfall column matters as much as the steps."
         },
         {
           "type": "table",
@@ -70,7 +70,7 @@
         },
         {
           "type": "text",
-          "html": "<p> The evaluation in step 7 almost always sends you back: bad score? Then you choose different features (step 4), a different model (step 5) or collect better data (step 2). Experienced data scientists spend most of their time in steps 2 through 4 — not in picking exotic models. </p>"
+          "html": "Poor score? Pick different features, a different model or better data. Most time goes to data and features, not exotic models."
         }
       ]
     },
@@ -79,11 +79,11 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Two ways a model can fail: <strong>underfitting</strong> — the model is too simple and scores badly on train <em>and</em> test data — and <strong>overfitting</strong> — the model is too complex, memorises the noise in the training data and surprises you with a bad test score. In between lies the sweet spot: complex enough to capture the pattern, simple enough to generalise. </p>"
+          "html": "<strong>Underfitting</strong>: too simple, poor on train and test. <strong>Overfitting</strong>: too complex, memorizes the training data, poor test score. The sweet spot lies in between."
         },
         {
           "type": "text",
-          "html": "<p> The chart below plots both errors against model complexity. The training error always goes down (more complex = better able to imitate). The test error follows at first and then rises: that is where overfitting begins. Drag the sliders to see how a more sensitive model (higher “noise sensitivity”) or an earlier “bend” strengthens the U-shape. </p>"
+          "html": "In the plot: training error always drops, test error drops first and then rises — that is where overfitting starts. Play with the sliders."
         },
         {
           "type": "plot",
@@ -173,7 +173,7 @@
         {
           "type": "callout",
           "kind": "tip",
-          "html": "<p> In practice this is the diagnostic tool for step 7 of the workflow: <em>compare train and test score</em>. Small gap = healthy model; large gap = overfitting; both bad = underfitting. Regularisation (chapter 3) is the classic remedy against overfitting. </p>"
+          "html": "Diagnosis: small train/test gap = healthy; large gap = overfitting; both poor = underfitting."
         }
       ]
     },
@@ -182,7 +182,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> One of the strengths of scikit-learn: <strong>every model has the same three methods</strong>. <code>fit(X_train, y_train)</code> trains — the model learns its parameters. <code>predict(X)</code> applies the model to new samples. <code>score(X_test, y_test)</code> judges the quality on unseen data. Whether you choose KNN, LogisticRegression or an SVM: this trio never changes. </p>"
+          "html": "Every model has <strong>the same three methods</strong>: <code>fit(X_train, y_train)</code> trains, <code>predict(X)</code> predicts, <code>score(X_test, y_test)</code> evaluates — whether you pick KNN, LogisticRegression or an SVM."
         },
         {
           "type": "code",
@@ -193,7 +193,7 @@
         },
         {
           "type": "text",
-          "html": "<p> The coefficients that <code>fit</code> produces together form the prediction equation — exactly the <em>rules</em> the model learned by itself. What such an equation looks like, which loss function trains it and how you regularise it, is the subject of chapters 1 through 4 of this site. </p>"
+          "html": "What <code>fit</code> yields are the coefficients: the <em>rules</em> the model learned. How they are trained is covered in chapters 2&ndash;4."
         }
       ]
     },
@@ -207,7 +207,7 @@
         },
         {
           "type": "text",
-          "html": "<p> Further reading: chapter 1 dives straight into scikit-learn, chapter 2 opens the mathematics, chapters 3 and 4 cover logistic regression and SVMs, and chapter 5 the evaluation metrics. </p>"
+          "html": "Further reading: scikit-learn (ch1), math &amp; loss (ch2), logistic regression (ch3), SVMs (ch4), trees (ch5), calculus (ch6), evaluation (ch7)."
         }
       ]
     }

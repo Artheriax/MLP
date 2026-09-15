@@ -2,7 +2,7 @@
   "id": "gradient-descent",
   "chapter": "ch2",
   "title": "Gradient descent: hoe leert een model?",
-  "intro": "Minimaliseren van de loss klinkt mooi — maar hoe vindt het model het minimum? Gradient descent: de update-regel, de learning rate, en een complete simulatie die je in de browser kunt draaien.",
+  "intro": "Hoe vindt het model het minimum van de loss? Gradient descent: de update-regel, de learning rate, en een complete simulatie in de browser.",
   "keyPoints": [
     "De <strong>gradiënt</strong> wijst recht omhoog in het loss-landschap — dus stap je de andere kant op.",
     "Update-regel: <code>w ← w − η·∇L</code>, herhaald tot de loss nauwelijks nog daalt.",
@@ -16,7 +16,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> In het hoofdstuk <a href=\"#/topic/loss-functions\">Loss functies</a> zag je dat fitten eigenlijk optimaliseren is: zoek de parameters waar de loss het kleinst is. Maar hó&eacute; vind je die? Bij twee parameters zou je nog een raster kunnen proberen, maar bij honderden of duizenden coefficients (zoals bij logistic regression en SVM's) is volledig proberen ondoenbaar — de zoekruimte explodeert. </p> <p> Het standaardantwoord is <strong>gradient descent</strong>: dalen in de richting van de steilste helling. Maak je een landschap van de loss over alle mogelijke parameterwaarden (de <em>loss-landschap</em>), dan is het minimum een dal. Je staat ergens op een helling en je wilt naar beneden. Het enige dat je ter plekke kunt waarnemen: <em>de helling onder je voeten</em> — de <strong>gradi&euml;nt</strong>. Loop je de andere kant op, dan daal je. </p>"
+          "html": "Bij honderden of duizenden co&euml;ffici&euml;nten is alles proberen ondoenbaar. <strong>Gradient descent</strong>: daling in de richting van de steilste helling. Het enige dat je ter plekke weet is de helling onder je voeten — de <strong>gradi&euml;nt</strong>; loop de andere kant op, dan daal je het snelst."
         },
         {
           "type": "callout",
@@ -30,7 +30,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Elke training-stap (een <em>epoch</em>-stap) past &eacute;&eacute;n parameter tegelijk bij met dezelfde regel: </p>"
+          "html": null
         },
         {
           "type": "formula",
@@ -40,11 +40,11 @@
         },
         {
           "type": "text",
-          "html": "<p> Lees de regel als een wandelaar: <em>\"ik sta op positie \\( w \\), de helling hier is \\( \\partial L/\\partial w \\), en ik doe een stapje naar beneden van grootte \\( \\eta \\cdot \\text{helling} \\)\"</em>. Staat de helling steil, dan is de stap groot (ver van het minimum). Nader je de bodem, dan vlakt de helling af en worden de stapjes vanzelf kleiner — netjes uitrollend naar het minimum, zonder dat je het vooraf hoeft te weten. </p> <p> Bij een model met meerdere parameters (bijv. \\( b_0, b_1, \\ldots, b_n \\)) gebeurt dit voor <em>elke parameter tegelijk</em>: elke coefficient krijgt z'n eigen update op basis van z'n eigen afgeleide. Zo schuift de hele beslisgrens of regressielijn in elke stap een stukje in de richting die de loss het meest verlaagt. </p>"
+          "html": "Lees de regel als wandelaar: helling &times; learning rate = een stap omlaag. Dichtbij het minimum vlakt de helling af en worden de stapjes vanzelf kleiner; bij meerdere parameters krijgt elke co&euml;ffici&euml;nt zijn eigen update."
         },
         {
           "type": "text",
-          "html": "<p> Het plaatje hieronder maakt het concreet voor &eacute;&eacute;n parameter \\( w \\): een eenvoudige loss \\( L(w) = w^2 \\) met minimum in \\( w = 0 \\). De rechte lijn is de <strong>raaklijn</strong> op het punt \\( w = p \\) — de helling op dat punt. <strong>Schuif met p</strong> en zie dat de raaklijn ver van het minimum steil naar beneden wijst (grote stap omlaag) en dichtbij het minimum bijna plat wordt (kleine stapjes). Precies de dynamiek van de update-regel. </p>"
+          "html": "De plot: loss \\( L(w) = w^2 \\) met de <strong>raaklijn</strong> op \\( w = p \\). Schuif <strong>p</strong> en zie dat de raaklijn ver van het minimum steil wijst (grote stap) en dichtbij bijna plat ligt (kleine stapjes)."
         },
         {
           "type": "plot",
@@ -122,7 +122,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> De learning rate \\( \\eta \\) bepaalt hoe groot elke stap is — en daarmee of je training slaagt: </p>"
+          "html": null
         },
         {
           "type": "table",
@@ -151,12 +151,12 @@
         },
         {
           "type": "text",
-          "html": "<p> Waarom kan het misgaan? Bij een te grote \\( \\eta \\) overschiet je het dal: je springt van de ene helling naar de andere, steeds <em>hoger</em> in plaats van lager — de loss explodeert. Bij een te kleine \\( \\eta \\) kruip je vooruit en is de training praktisch onbruikbaar traag. Er is geen universele juiste waarde: de beste learning rate hangt af van de schaal van data en loss. Daarom begint iedereen in de praktijk met een waarde rond \\( 10^{-3} \\) tot \\( 10^{-2} \\) en kijkt dan naar de loss-curve. </p>"
+          "html": "Te grote \\( \\eta \\): je springt over het dal en de loss <strong>explodeert</strong>. Te kleine \\( \\eta \\): kruipend traag. Start in de praktijk rond 10<sup>&minus;3</sup>&ndash;10<sup>&minus;2</sup> en kijk naar de loss-curve."
         },
         {
           "type": "callout",
           "kind": "tip",
-          "html": "<p> Dit is precies waarom je tijdens het trainen de <strong>loss-curve in de gaten houdt</strong> (in scikit-learn via <code>verbose</code> of bij neural networks via een plot per epoch): daalt hij glad — prima; stuitert hij — verlaag \\( \\eta \\); daalt hij niet — verhoog \\( \\eta \\) of train langer. </p>"
+          "html": "Houd de loss-curve in de gaten: glad dalen = prima; stuitert = verlaag \\( \\eta \\); daalt niet = verhoog \\( \\eta \\) of train langer."
         }
       ]
     },
@@ -165,7 +165,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Hieronder de volledige simulatie op een klein regressieprobleem met de ideale data \\( y = 1 + 2x \\). De twee parameters \\( b \\) (snijpunt) en \\( w \\) (richtingsco&euml;ffici&euml;nt) starten op 0 en mogen 300 stappen zetten. Elke stap: bereken de afgeleiden van de MSE-loss, pas de update-regel toe, en zie hoe \\( (b, w) \\) naar \\( (1, 2) \\) wandelt. </p>"
+          "html": "De volledige simulatie op \\( y = 1 + 2x \\): parameters \\( b \\) en \\( w \\) starten op 0, krijgen 300 stappen — en zie \\( (b, w) \\) naar \\( (1, 2) \\) wandelen."
         },
         {
           "type": "code",
@@ -177,7 +177,7 @@
         {
           "type": "callout",
           "kind": "info",
-          "html": "<p> Merk op dat de loss eerst snel daalt en daarna steeds langzamer: de hellingen worden kleiner naarmate het model het minimum nadert, dus de stapjes krimpen vanzelf — precies wat je in de raaklijn-plot zag. Verander \\( \\eta \\) eens in 0.5 (te groot) of 0.0005 (te klein) en draai opnieuw om de beide mislukkingsmodi zelf te zien. </p>"
+          "html": "De loss daalt eerst snel, daarna steeds langzamer: de stapjes krimpen vanzelf. Probeer \\( \\eta \\) = 0.5 (te groot) of 0.0005 (te klein) en zie beide mislukkingsmodi."
         }
       ]
     },
@@ -186,16 +186,16 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> De code hierboven berekent de gradi&euml;nt over <em>alle</em> datapunten per stap — dat heet <strong>batch gradient descent</strong>. Bij grote datasets is dat per stap duur, want elke punt moet langs de afgeleide. Twee varianten maken het sneller: </p> <ul> <li><strong>Stochastic gradient descent (SGD)</strong> — elke stap gebruikt maar &eacute;&eacute;n willekeurig punt. Goedkoop, maar de staprichting ruist: je wandelt zigzag naar beneden in plaats van recht.</li> <li><strong>Mini-batch gradient descent</strong> — het midden: elke stap gebruikt een klein pakket punten (bijv. 32 of 64). Veel stabieler dan SGD en veel sneller dan batch; dit is de standaard in de praktijk en bij neural networks.</li> </ul>"
+          "html": "Batch GD gebruikt <em>alle</em> punten per stap; <strong>SGD</strong> &eacute;&eacute;n willekeurig punt (goedkoop, zigzag); <strong>mini-batch</strong> kleine pakketten van 32/64 — de standaard in de praktijk en bij neural networks."
         },
         {
           "type": "text",
-          "html": "<p> Herkenbaar? De <strong>SGDClassifier</strong> uit het hoofdstuk <a href=\"#/topic/vergelijking\">LR vs. SVM</a> heet precies zo omdat hij deze methode gebruikt: hij leert per mini-batch en wisselt door de keuze van <code>loss</code> tussen logistic loss en hinge loss. Ook de learning rate zit daar verwerkt in de <code>alpha</code>-hyperparameter (met een omgekeerde rol: hogere <code>alpha</code> = kleinere effectieve leerstap + meer regularisatie). </p>"
+          "html": "De <strong>SGDClassifier</strong> heet zo omdat hij mini-batches gebruikt; met <code>loss</code> wissel je tussen logistic en hinge loss, en <code>alpha</code> is de inverse van <code>C</code>."
         },
         {
           "type": "callout",
           "kind": "key",
-          "html": "<p> In scikit-learn merk je hier weinig van — <code>fit()</code> regelt alles. Maar zodra je neural networks of gradient boosting tegenkomt, keren dezelfde begrippen terug: learning rate, epochs, mini-batches. De update-regel uit dit hoofdstuk is letterlijk de motor onder vrijwel elk modern ML-model. </p>"
+          "html": "Deze update-regel is de motor onder vrijwel elk modern ML-model — learning rate, epochs en mini-batches keren overal terug."
         }
       ]
     }

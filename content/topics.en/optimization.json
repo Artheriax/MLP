@@ -2,7 +2,7 @@
   "id": "optimization",
   "chapter": "ch6",
   "title": "Optimisation: where the derivative is zero",
-  "intro": "A company maximises profit, an engineer minimises material use — and a machine learning model <strong>minimises its loss</strong>. All three do the same thing: a function whose value depends on choices you make, and the question “which choice gives the best value?”. Differential calculus supplies the tool: on a smooth function a maximum or minimum can only sit where the <strong>slope vanishes</strong> — \\( f'(x) = 0 \\) — or on the boundary of the allowed region. This topic builds the complete method: finding critical points, classifying them with the first and second derivative, checking the boundaries, and — when the equation cannot be solved — letting gradient descent search. Exactly the path every ML model walks.",
+  "intro": "A company maximizes profit, a model <strong>minimizes its loss</strong>. On a smooth function an extremum can only sit where the slope vanishes: \\( f'(x) = 0 \\). This topic: critical points, first and second derivative tests, checking the edges — and gradient descent when algebra stalls.",
   "keyPoints": [
     "Extrema of a smooth function on a closed interval can only sit at <strong>critical points</strong> (\\( f'(c) = 0 \\) or \\( f' \\) does not exist) or on the <strong>boundaries</strong> of the domain — nowhere else.",
     "<strong>First-derivative test</strong>: if \\( f' \\) switches from + to − at a critical point it is a local maximum; from − to + a local minimum; no sign change, no extremum (like \\( x^3 \\) at 0).",
@@ -17,16 +17,16 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Optimisation problems are recognisable by their shape, and the shape is always the same: there is an <strong>objective function</strong> (profit, volume, error, loss) depending on choice variables (price, dimension, model weights), and a <strong>domain</strong> of allowed choices (budget, available cardboard, reachable parameter values). Question: which choice optimises the objective? The calculus reflex is old but load-bearing: <em>on a smooth function a peak or valley cannot be tilted</em>. If the slope at your highest point still points downhill, you were not at the top — keep walking. At an interior extremum the tangent must therefore be horizontal: \\( f'(c) = 0 \\). </p>"
+          "html": "Every optimization problem has the same shape: an <strong>objective function</strong> (profit, volume, loss), choice variables and a <strong>domain</strong> of allowed choices. The calculus reflex: <em>on a smooth function a peak or valley cannot be tilted</em> — hence \\( f'(c) = 0 \\)."
         },
         {
           "type": "text",
-          "html": "<p> One distinction that recurs on every exam and in all practice: <strong>local versus global</strong>. A local maximum is only higher than its immediate surroundings — climb a hill in the Alps and you locally tower over everything, even though Everest is taller. A global maximum is the highest point of the entire domain. For <strong>convex</strong> functions (bowl-shaped everywhere, \\( f'' \\geq 0 \\)) the two coincide: one valley, no surprises — the squared loss of linear regression has exactly that shape, which is why that loss is so beloved. For non-convex functions (neural networks) both kinds coexist and a naive search strategy can get stuck on a local hill. </p>"
+          "html": "<strong>Local versus global</strong>: a local maximum only beats its immediate surroundings; a global one is the highest point of the entire domain. For <strong>convex</strong> functions (\\( f'' \\ge 0 \\), like squared loss) they coincide — for non-convex ones (neural networks) they do not."
         },
         {
           "type": "callout",
           "kind": "info",
-          "html": "<p> Terminology for the rest of this topic: <strong>extremum</strong> is the collective name for maximum and minimum; a <strong>critical point</strong> is any interior candidate (\\( f' = 0 \\) or non-differentiable); an <strong>inflection point</strong> is where the curvature changes sign. And remember that “maximising \\( f \\)” is the same as “minimising \\( -f \\)” — ML almost always speaks of minimising a loss, but every technique here works directly by flipping a sign. </p>"
+          "html": "Terminology: <strong>extremum</strong> = umbrella term; <strong>critical point</strong> = interior candidate (\\( f' = 0 \\) or non-differentiable); <strong>inflection point</strong> = curvature sign change. And: max of \\( f \\) = min of \\( -f \\)."
         }
       ]
     },
@@ -35,7 +35,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Collecting the candidates is mechanical: differentiate, set to zero, solve. Take the parade example \\( f(x) = x^3 - 3x \\): \\( f'(x) = 3x^2 - 3 \\), so \\( 3x^2 - 3 = 0 \\) gives \\( x = \\pm 1 \\). There are no other candidates — and together with the domain boundaries (if bounded) that is the complete list where an extremum can live. In the plot below you walk the curve with the <code>xc</code> slider and see both functions at once: the cyan curve is \\( f \\), the yellow curve is \\( f' \\). The status chip translates the slope into words — and at \\( x = \\pm 1 \\), exactly where the yellow curve crosses the x-axis, it flips from “increasing” to “decreasing” (or vice versa). </p>"
+          "html": "Collecting candidates is mechanical: differentiate, set to zero, solve. For \\( f(x) = x^3 - 3x \\): \\( f'(x) = 3x^2 - 3 = 0 \\) gives \\( x = \\pm 1 \\). In the plot the yellow curve is \\( f' \\) — critical points sit exactly where it crosses the x-axis."
         },
         {
           "type": "plot",
@@ -112,7 +112,7 @@
         },
         {
           "type": "text",
-          "html": "<p> Reading off what the critical points mean: at \\( x = -1 \\) sits the hilltop (\\( f(-1) = 2 \\), local maximum) and at \\( x = 1 \\) the valley floor (\\( f(1) = -2 \\), local minimum). But note the third characteristic spot: at \\( x = 0 \\) the curve is smooth yet horizontally gliding — <em>no</em> extremum, because the curve simply keeps descending through it. A critical point is a <em>candidate</em>, not yet a verdict; classification is the next step. That distinction matters: not every zero of \\( f' \\) is a peak or valley. </p>"
+          "html": "Reading off: \\( x = -1 \\) is the top (\\( f(-1) = 2 \\), local max), \\( x = 1 \\) the bottom (\\( f(1) = -2 \\), local min). But at \\( x = 0 \\) the curve is horizontal-without-extremum: a critical point is a <em>candidate</em>, not a verdict."
         }
       ]
     },
@@ -121,7 +121,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> The sign of \\( f' \\) is the complete motion description of \\( f \\). Positive slope means rising (moving right, the values go up), negative means falling, zero means parallel to the x-axis. To <em>classify</em> a critical point you therefore look not at the point itself but at what happens <strong>around</strong> it — exactly what the first-derivative test formalises: compare the sign of \\( f' \\) just left and just right of the critical point. The four possible outcomes are in the table; the fourth (no switch) is the one exams and interviews set as a trap. </p>"
+          "html": "The sign of \\( f' \\) is the complete motion description: positive = rising, negative = falling, zero = flat. Classification looks at what happens <strong>around</strong> the point — the first-derivative test."
         },
         {
           "type": "table",
@@ -160,12 +160,12 @@
         },
         {
           "type": "text",
-          "html": "<p> In practice you do this with a sign chart: list the zeros of \\( f' \\), pick one probe point in each intermediate interval, and record the sign of \\( f' \\) there. The chart then reads like a weather report for the curve: rising and falling stretches alternating at the critical points. For the cubic in the plot: the correct chart is rising on \\( (-\\infty, -1) \\), falling on \\( (-1, 1) \\), rising on \\( (1, \\infty) \\): first the hilltop, then the valley — and \\( x = 0 \\) sits in the middle of the falling stretch, which is why it is <em>not</em> an extremum. (Check it with the slider: at \\( x = -2 \\) the chip reads \\( f' = +9 \\), so the curve really is rising there.) </p>"
+          "html": "Execution with a sign chart: zeros of \\( f' \\) in a row, one test point per interval, note the sign. For the cubic: rising on \\( (-\\infty, -1) \\), falling on \\( (-1, 1) \\), rising on \\( (1, \\infty) \\) — hill first, then valley."
         },
         {
           "type": "callout",
           "kind": "key",
-          "html": "<p> For a <strong>global</strong> maximum or minimum on a closed interval \\( [a, b] \\) you check three categories: the critical points <em>inside</em> the interval, plus the two endpoints — evaluate \\( f \\) at all candidates and the largest/smallest number wins. This candidate list is the complete, proven method: smooth functions can have an extremum on \\( [a, b] \\) nowhere else. Classic trap: forgetting the boundaries — precisely there, in word problems, the real answer often lives (as with the box below, where \\( x = 15 \\) on the boundary yields zero volume). </p>"
+          "html": "For a <strong>global</strong> extremum on \\( [a, b] \\): evaluate \\( f \\) at the interior critical points <em>plus</em> both endpoints — the largest/smallest wins. Classic trap: forgetting the edges."
         }
       ]
     },
@@ -174,7 +174,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> The second derivative adds a second reading layer. Where \\( f'' > 0 \\) the function is <strong>convex</strong> (bowl-shaped — the tangents lie <em>below</em> the curve, like \\( x^2 \\)); where \\( f'' < 0 \\) it is <strong>concave</strong> (dome-shaped — the tangents lie <em>above</em>, like \\( -x^2 \\)); where the sign flips sits an <strong>inflection point</strong>. For the cubic \\( x^3 - 3x \\), \\( f''(x) = 6x \\): concave left of zero, convex right, inflection at the origin — watch the f″ metric in the plot above move and switch sign exactly at \\( x = 0 \\). </p>"
+          "html": "Where \\( f'' > 0 \\) the function is <strong>convex</strong> (bowl-shaped), where \\( f'' < 0 \\) <strong>concave</strong> (hill-shaped), where the sign flips sits an <strong>inflection point</strong>. For \\( x^3 - 3x \\): \\( f''(x) = 6x \\) — inflection at the origin."
         },
         {
           "type": "table",
@@ -203,12 +203,12 @@
         },
         {
           "type": "text",
-          "html": "<p> Why the second test is often faster: it only asks for \\( f'' \\) <em>at the critical point itself</em> — no probe points left and right, no sign chart. The intuition is physical: a critical point means “momentarily at rest” (slope zero), and the second derivative is the acceleration. Positive acceleration at the resting point: you are at the bottom and it goes up — minimum. Negative acceleration: you are at the top and it sinks away — maximum. The limitation is real: at \\( f''(c) = 0 \\) it says nothing (check \\( x^4 \\): \\( f''(0) = 0 \\) and yet a minimum), and then the first test is the only way out. </p>"
+          "html": "The second test is often faster: it only needs \\( f'' \\) <em>at the critical point</em>. Intuition: standstill (\\( f' = 0 \\)) plus positive acceleration = minimum; negative = maximum. Limitation: at \\( f''(c) = 0 \\) it says nothing (see \\( x^4 \\))."
         },
         {
           "type": "callout",
           "kind": "tip",
-          "html": "<p> For ML, concavity is not a side note but the heart of the learning process. A <strong>convex loss</strong> (linear regression with squared loss, logistic regression with log-loss) has one valley: any descent strategy eventually finds the global minimum — slowly perhaps, but surely. A <strong>non-convex loss</strong> (neural networks) has multiple valleys and plateaus: gradient descent can strand in a local minimum, and the choice of initialisation suddenly matters. And the learning rate is a concavity issue: in a narrow, steep valley (large \\( f'' \\)) big steps bounce you between the walls — see <em>Gradient descent</em> for the simulation. </p>"
+          "html": "For ML, concavity is the heart of learning: a <strong>convex</strong> loss has one valley (any descent strategy finds it), a <strong>non-convex</strong> one has several valleys and plateaus — and the learning rate is a concavity matter."
         }
       ]
     },
@@ -217,7 +217,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Now the entire repertoire in one AP-style word problem. <em>From a square sheet of cardboard 30 by 30 cm you cut an \\( x \\times x \\) square from each corner and fold up the sides into an open box. Which \\( x \\) gives the largest volume?</em> Translate into formulas first: the base becomes \\( (30-2x) \\times (30-2x) \\), the height becomes \\( x \\), so the volume is the product of all three. The domain is forced by physics: \\( x > 0 \\) (otherwise no height) and \\( x < 15 \\) (otherwise no base) — so \\( x \\in (0, 15) \\). </p>"
+          "html": "AP-style word problem: square cardboard 30&times;30 cm, cut an \\( x \\times x \\) square from each corner, fold up the sides. Base \\( (30-2x)^2 \\), height \\( x \\), so \\( V(x) = x(30-2x)^2 \\) on the domain \\( x \\in (0, 15) \\)."
         },
         {
           "type": "formula",
@@ -227,7 +227,7 @@
         },
         {
           "type": "text",
-          "html": "<p> Differentiate with the <strong>product rule</strong> (since it is \\( x \\) times a square): \\( V'(x) = (30-2x)^2 + x \\cdot 2(30-2x) \\cdot (-2) \\). Factor out \\( (30-2x) \\) and it falls into place: \\( V'(x) = (30-2x)\\left[(30-2x) - 4x\\right] = (30-2x)(30-6x) \\). Zeros: \\( x = 15 \\) (boundary of the domain, volume zero) and \\( x = 5 \\) — the only interior candidate. Second test: \\( V''(x) = 24x - 240 \\), so \\( V''(5) = -120 < 0 \\): concave at the top. <strong>Maximum</strong> at \\( x = 5 \\), with volume \\( V(5) = 5 \\cdot 20^2 = 2000 \\) cm³. </p>"
+          "html": "Differentiate with the product rule: \\( V'(x) = (30-2x)(30-6x) \\). Zeros: \\( x = 15 \\) (edge, zero volume) and \\( x = 5 \\). Second test: \\( V''(5) = -120 < 0 \\) — <strong>maximum</strong> at \\( x = 5 \\), volume \\( V(5) = 2000 \\) cm&sup3;."
         },
         {
           "type": "plot",
@@ -296,12 +296,12 @@
         },
         {
           "type": "text",
-          "html": "<p> The plot reads back the whole analysis. Left of 5, \\( V' > 0 \\): cutting larger yields (still) more volume — the curve rises. At \\( x = 5 \\) itself the slope is exactly zero: the yellow dot sits on the top of the cyan curve, at height 2000. To the right \\( V' < 0 \\): every extra centimetre of cutting costs volume, and as \\( x \\to 15 \\) a bottomless strip of zero remains. The sharp observation that turned the word problem into a calculus problem: the two physical boundaries are both terrible (volume 0), so the optimum must sit inside — and inside, it can only be where \\( V' = 0 \\). </p>"
+          "html": "In the plot: left of 5 \\( V' > 0 \\) (more volume), at 5 the slope is zero, right of it negative. Both physical edges are terrible (volume 0) — so the optimum must lie inside."
         },
         {
           "type": "callout",
           "kind": "key",
-          "html": "<p> This pattern — <strong>bad boundaries, smooth interior, hence a critical point</strong> — is why optimisation problems almost always take this shape. Whether it is a box, a fence of fixed length or a loss landscape: bound your domain honestly, accept that the edges are usually disastrous, and the only remaining question is “where does the derivative vanish?”. On the AP exam this format returns almost every year, dressed in different props. </p>"
+          "html": "This pattern — <strong>edges terrible, interior smooth, hence critical point</strong> — is why optimization problems almost always take this shape. Whether a box or a loss landscape."
         }
       ]
     },
@@ -310,7 +310,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Until now we solved \\( f'(x) = 0 \\) <em>analytically</em> — factor out, take roots, done. But try that on \\( f(x) = e^{-x} + x^2 \\) or, worse, on the loss of a neural network with a million weights: no closed form, no symmetry to the rescue. Then you flip the approach: you do not need to <em>know</em> where the slope becomes zero, you only need to <em>follow</em> it. Standing on a slope that points downhill (\\( f' < 0 \\)), walk right; does it point uphill (\\( f' > 0 \\)), walk left. Both cases in one line: a step in the direction <em>against</em> the slope. </p>"
+          "html": "Try solving \\( f'(x) = 0 \\) for a neural network's loss with a million weights: no closed form. So flip the approach: you do not need to <em>know</em> where the slope vanishes, only <em>follow</em> it — one step against the slope."
         },
         {
           "type": "formula",
@@ -320,7 +320,7 @@
         },
         {
           "type": "text",
-          "html": "<p> A small, complete example: \\( f(x) = x^2 - 4x + 5 \\), so \\( f'(x) = 2x - 4 \\), and analytically you see immediately that the minimum sits at \\( x = 2 \\). Start gradient descent at \\( x_0 = 5 \\) with \\( \\eta = 0{,}1 \\): each step becomes \\( x \\leftarrow x - 0{,}1(2x-4) = 0{,}8x + 0{,}4 \\). The distance to 2 shrinks by a factor 0.8 per step — measurable, predictable, and after 35 steps you sit at 2.001; after a few hundred steps the distance to the exact minimum is numerically zero. No derivative-zero solved, and still the minimum found: that is the embrace that makes training models with millions of parameters possible at all. </p>"
+          "html": "Small example: \\( f(x) = x^2 - 4x + 5 \\), so \\( f'(x) = 2x - 4 \\), minimum at \\( x = 2 \\). Start \\( x_0 = 5 \\) with \\( \\eta = 0.1 \\): every step \\( x \\leftarrow 0.8x + 0.4 \\) — the distance to 2 shrinks by a factor 0.8 per step."
         },
         {
           "type": "code",
@@ -331,7 +331,7 @@
         },
         {
           "type": "text",
-          "html": "<p> Typical output: 4.4000, 2.7864, 2.2577, 2.0844, 2.0277, 2.0091, 2.0030 — and after 35 steps 2.0012. Each step does exactly what the theory promises: shrink the distance to 2 by a factor 0.8 (check it yourself: 3.0, 2.4, 1.92, ...). And encouragingly: a larger \\( \\eta \\) goes faster — until it flips: at \\( \\eta > 1 \\) the factor turns negative-ish and the sequence jumps all over the place. That instability is not a Python joke but the <em>divergence</em> from <em>Gradient descent</em>, in miniature. </p>"
+          "html": "Typical output: 4.4000, 2.7864, 2.2577, 2.0844, 2.0277, 2.0091 — after 35 steps 2.0012. At \\( \\eta > 1 \\) the sequence jumps everywhere: the divergence from <em>Gradient descent</em>, in miniature."
         },
         {
           "type": "code",
@@ -342,12 +342,12 @@
         },
         {
           "type": "text",
-          "html": "<p> Typical output: <code>x = 5.0000</code>, <code>V = 2000.0</code> — the numerical search engine and the manual calculus give the same answer to four decimal places. That is how it works in practice too: analysis delivers insight and exact answers where possible; <code>scipy.optimize</code> (or gradient descent, or your DL framework's solver) delivers answers where the algebra stalls. Both angles belong to the same craft. </p>"
+          "html": "Typical output: <code>x = 5.0000</code>, <code>V = 2000.0</code> — the numerical search engine and manual calculus agree. Analysis gives insight; <code>scipy.optimize</code> gives answers where algebra stalls."
         },
         {
           "type": "callout",
           "kind": "key",
-          "html": "<p> Zoom out and you see the entire ML workflow reflected in this topic. The <strong>loss</strong> is the objective function (how badly the model predicts on the training data); the <strong>weights</strong> are the knobs; the <strong>gradient</strong> is the derivative in many dimensions; and <em>training</em> = repeatedly applying \\( x \\leftarrow x - \\eta \\nabla f(x) \\) until the loss will not fall further. What you practised here on one variable — critical points, convexity, learning-rate-versus-stability — scales directly to a million dimensions. <em>Gradient descent</em> treats the full version. </p>"
+          "html": "The whole ML workflow in one breath: <strong>loss</strong> = objective, <strong>weights</strong> = knobs, <strong>gradient</strong> = derivative in many dimensions, and <em>training</em> = repeated \\( x \\leftarrow x - \\eta \\nabla f(x) \\)."
         }
       ]
     }

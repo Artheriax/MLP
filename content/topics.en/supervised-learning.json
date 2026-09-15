@@ -2,7 +2,7 @@
   "id": "supervised-learning",
   "chapter": "ch1",
   "title": "Supervised learning & the standard workflow",
-  "intro": "What supervised learning actually is and which fixed steps you always follow in scikit-learn — loss functions, regularisation and kernels build on this pattern.",
+  "intro": "Supervised learning = learning from input-output pairs (X, y), plus the fixed fit&rarr;predict&rarr;score steps you always follow in scikit-learn.",
   "keyPoints": [
     "Supervised learning = learning from <strong>labelled examples</strong> (X with y).",
     "<strong>Regression</strong> predicts a number, <strong>classification</strong> a category.",
@@ -16,7 +16,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> In <strong>supervised learning</strong> you learn a mapping between <strong>inputs and outputs</strong>, based on examples. By convention the inputs are called <code>X</code> (features) and the outputs <code>y</code> (targets). In the newsgroups dataset from the course, the features are derived from the words occurring in each article (about 130,000 features) and <code>y</code> is the topic of the article — exactly the thing we want to predict. With ~11,000 training examples you learn a function that classifies new articles. </p> <p> There are two flavours: <strong>classification</strong> (the <code>y</code> values are categories, such as \"good/not-good\" or \"spam/not spam\") and <strong>regression</strong> (the <code>y</code> values are continuous numbers, such as a price or a temperature). This course is about <em>classification</em> — and within classification, about the two most popular <strong>linear classifiers</strong>: logistic regression and support vector machines. </p>"
+          "html": "Supervised learning learns a mapping from inputs <code>X</code> (features) to outputs <code>y</code> (targets) from examples. <strong>Classification</strong> predicts categories, <strong>regression</strong> continuous numbers. This course: classification with the two most popular linear classifiers — logistic regression and SVMs."
         },
         {
           "type": "callout",
@@ -30,7 +30,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> In scikit-learn, <em>every</em> model has the same syntax, whether you use KNN, logistic regression or an SVM. There are four fixed steps: <strong>import</strong> the class, <strong>instantiate</strong> (this is where you set hyperparameters, such as the number of neighbours for KNN), <strong>fit</strong> with <code>fit(X, y)</code>, and afterwards <strong>predict</strong> with <code>predict</code> or <strong>evaluate</strong> with <code>score</code>. A hyperparameter is a choice you make <em>before</em> fitting and it controls the complexity of the model. </p>"
+          "html": "Four fixed steps for every model: <strong>import</strong>, <strong>instantiate</strong> (set hyperparameters), <strong>fit</strong> with <code>fit(X, y)</code>, and <strong>predict/evaluate</strong> with <code>predict</code> or <code>score</code>. A hyperparameter is a choice made <em>before</em> fitting that steers complexity."
         },
         {
           "type": "code",
@@ -51,7 +51,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> The training score above is almost 100% — but that says little. What we really want to know is whether the model <strong>generalises</strong> to data it has never seen. The standard solution is a <strong>validation/test set</strong>: with <code>train_test_split</code> you keep 25% of the examples apart by default. Important: you <em>refit</em> the model on the training set only, because once the model has seen the test set during fitting, the test set has lost its purpose. </p> <p> In the course, KNN's score on the newsgroups data drops from ~100% (train) to ~66% (test). Whether that is \"good\" depends on the situation — but the training error was in any case a poor prediction of how the model classifies new data. </p>"
+          "html": "A ~100% training score says little. Hold out 25% with <code>train_test_split</code>, <em>refit</em> on the training set and evaluate on the test set: only then do you measure <strong>generalization</strong>. In the course KNN drops from ~100% (train) to ~66% (test) on newsgroups data."
         },
         {
           "type": "formula",

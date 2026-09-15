@@ -2,7 +2,7 @@
   "id": "multiclass",
   "chapter": "ch3",
   "title": "Multi-class: one-vs-rest & softmax",
-  "intro": "Meer dan twee klassen? scikit-learn regelt dat automatisch — maar er zit een keuze achter de schermen: losse binaire classifiers per klasse (one-vs-rest), of één gezamenlijk model met een softmax-loss. De gevolgen zijn klein maar begrijpelijk.",
+  "intro": "Meer dan twee klassen? scikit-learn regelt dat automatisch: losse binaire classifiers per klasse (one-vs-rest) of &eacute;&eacute;n gezamenlijk model met softmax.",
   "keyPoints": [
     "Multi-class = <strong>3+ klassen</strong>. Twee strategieën: one-vs-rest en multinomial (softmax).",
     "<strong>OvR</strong>: per klasse één binaire classifier ('deze klasse of niet'); hoogste score wint.",
@@ -16,7 +16,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Tot nu toe waren alle conceptuele verhalen <em>binair</em> (2 klassen), terwijl we al die tijd ook gewoon multi-class classificatie deden met de wijn-dataset (3 klassen). Hoe doen lineaire classifiers dat? Er zijn twee populaire strategieën. </p>"
+          "html": "Multi-class = 3 of meer klassen. Twee strategie&euml;n doen het werk."
         }
       ]
     },
@@ -25,7 +25,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> <strong>One-vs-rest</strong> traint voor élke klasse een eigen binaire classifier. De code <code>y == 0</code> geeft een array terug die <code>True</code> is waar <code>y</code> gelijk is aan 0 — de eerste classifier leert dus \"klasse 0 of niet-0\", de tweede \"1 of niet-1\", enzovoorts. Voorspellen doe je daarna door alle classifiers hun <strong>raw model output</strong> (in scikit-learn: <code>decision_function</code>) te laten berekenen: de klasse met de <em>grootste</em> raw output wint — die classifier is het meest overtuigd. In de cursus wint classifier 0, dus voorspel je klasse 0. </p>"
+          "html": "<strong>One-vs-rest</strong>: &eacute;&eacute;n binaire classifier per klasse (&ldquo;klasse 0 of niet-0?&rdquo;). Voorspellen: alle classifiers berekenen hun raw output &mdash; de <em>grootste</em> wint."
         },
         {
           "type": "code",
@@ -46,7 +46,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> De <strong>multinomial</strong>-aanpak past juist de <strong>loss functie</strong> aan zodat die direct het multi-class-probleem optimaliseert — termen die je tegenkomt: multinomial logistic regression, <strong>softmax</strong>, of cross-entropy loss. Je fit één keer voor alle klassen in plaats van apart per klasse. In de wereld van neural networks is dit de standaard. Beide strategieën kunnen ook kansen uitvoeren, net als een binaire classifier. </p>"
+          "html": "<strong>Multinomial</strong> past de loss aan (softmax / cross-entropy) en fiet &eacute;&eacute;n keer voor alle klassen &mdash; de standaard in neural networks."
         },
         {
           "type": "formula",
@@ -91,7 +91,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Binair had je één coëfficiënt per feature plus één intercept. Voor 3 klassen heb je bij OvR <strong>3 hele binaire classifiers</strong>: dus één coëfficiënt per feature <em>per klasse</em>, en één intercept per klasse. Bij de wijn-dataset (13 features) is <code>coef_</code> dus een 3×13-array. De multinomial-versie leert <strong>precies evenveel</strong> parameters (ook 3×13) — de aanpak verschilt, maar ruwweg hebben de parameters dezelfde interpretaties. </p>"
+          "html": "Binair: 1 co&euml;ffici&euml;nt per feature. Bij 3 klassen en 13 features (wijn): <code>coef_</code> is een 3&times;13-array &mdash; bij OvR drie hele classifiers, bij multinomial precies evenveel parameters."
         },
         {
           "type": "code",

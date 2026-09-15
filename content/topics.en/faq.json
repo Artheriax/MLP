@@ -2,7 +2,7 @@
   "id": "faq",
   "chapter": "ch8",
   "title": "Frequently asked questions (FAQ)",
-  "intro": "Sixteen short, clear answers to the most frequently asked questions — from the difference between classification and regression to picking the right metric. Every question points to the topic where the material is covered in depth with examples, so from this single page you can navigate the whole site.",
+  "intro": "Short, clear answers to the most frequently asked questions — each answer links to the topic where the material is covered in depth.",
   "keyPoints": [
     "Sixteen short answers, grouped by theme: <strong>basics → learning → choosing → judging</strong>.",
     "Each answer fits in a few sentences; the link below it points to the full topic.",
@@ -16,22 +16,22 @@
         {
           "type": "callout",
           "kind": "key",
-          "html": "<p><strong>What is the difference between classification and regression?</strong></p><p>Both are supervised learning, but they predict different things. <strong>Classification</strong> predicts a category: spam or not spam, cat or dog, admitted or rejected. <strong>Regression</strong> predicts a continuous number: the price of a car, tomorrow’s temperature, the number of visitors. In scikit-learn you see the difference directly: with classification, <code>.predict()</code> returns class labels; with regression it returns numbers. Note: despite its name, <em>logistic</em> regression is a classifier, because the sigmoid turns the prediction into a probability and therefore into a class. See the topic <em>Supervised learning &amp; the standard workflow</em>.</p>"
+          "html": "<p><strong>What is the difference between classification and regression?</strong></p><p>Classification predicts a category (spam or not), regression a continuous number (a price). In scikit-learn: <code>.predict()</code> returns labels versus numbers. Note: despite its name, <em>logistic</em> regression is a classifier. See <em>Supervised learning</em>.</p>"
         },
         {
           "type": "callout",
           "kind": "key",
-          "html": "<p><strong>Why is logistic regression called &quot;regression&quot; if it classifies?</strong></p><p>The name refers to what happens under the hood: the log-odds of the probability (the <em>logit</em>) is linearly &quot;regressed&quot; onto the features — in that statistical sense a regression is hiding in there. But the outcome is a probability clipped into a class label at a 0.5 threshold: in theory and in practice it is a <strong>classifier</strong>. Scikit-learn confirms it: <code>predict()</code> returns classes, not numbers. The full story is in <a href=\"#/topic/logistic-regression\">Logistic regression: why it isn't actually a regression</a>. </p>"
+          "html": "<p><strong>Why is it called logistic &quot;regression&quot; if it classifies?</strong></p><p>The name refers to the log-odds being linearly regressed on the features; the output is a probability clipped into a class at threshold 0.5. See <a href=\"#/topic/logistic-regression\">Logistic regression</a>.</p>"
         },
         {
           "type": "callout",
           "kind": "info",
-          "html": "<p><strong>What is the difference between supervised, unsupervised and reinforcement learning?</strong></p><p><strong>Supervised learning</strong> learns from examples <em>with</em> answers: you have features <em>and</em> labels (X and y), and the model learns the relationship between them. <strong>Unsupervised learning</strong> has no labels and looks for structure in the data itself, such as clusters (KMeans) or a more compact representation (PCA). <strong>Reinforcement learning</strong> does not learn from labelled examples but from rewards: an agent tries actions and is told whether they were good. Two questions pick the right family: do you have labels for your data? And does the feedback arrive per example, or only after a series of actions? See <em>The three types of machine learning</em>.</p>"
+          "html": "<p><strong>Supervised, unsupervised or reinforcement learning?</strong></p><p>Supervised learns from examples <em>with</em> answers (X and y); unsupervised finds structure without labels (KMeans, PCA); reinforcement learns from rewards. See <em>The three types of machine learning</em>.</p>"
         },
         {
           "type": "callout",
           "kind": "info",
-          "html": "<p><strong>What exactly are features, labels, X and y?</strong></p><p>Think of a table: every <strong>row</strong> is one sample (one car, one e-mail, one patient) and every <strong>column</strong> is a feature — a property of that example. The <strong>label</strong> (or target) is the column you want to predict. In scikit-learn you put the features into a 2D array <code>X</code> (shape: n_samples × n_features) and the target into a 1D array <code>y</code>. Models compute with numbers, so categorical columns such as colour must first be turned into numbers, for example with one-hot encoding. See <em>Data, features &amp; labels</em>.</p>"
+          "html": "<p><strong>What exactly are features, labels, X and y?</strong></p><p>Rows are samples, columns are features; the label (target) is the column you predict. X is the 2D feature matrix, y the 1D target vector. Encode categorical columns first (one-hot). See <em>Data, features &amp; labels</em>.</p>"
         }
       ]
     },
@@ -41,42 +41,42 @@
         {
           "type": "callout",
           "kind": "warning",
-          "html": "<p><strong>Why do I have to split train and test data?</strong></p><p>A model evaluated on the same data it was trained on may simply have <em>memorised</em> the answers — a high score then says nothing about new, unseen data. The test set plays the role of ‘new data’: you use it only once, at the end, to measure how well the model generalises. The classic mistake is <em>data leakage</em>: information from the test set leaks into training, for instance by fitting a scaler or encoder on <em>all</em> your data instead of only the training data. So split first, and fit transformations exclusively on the training data. See <em>Data, features &amp; labels</em> and <em>The ML workflow from start to finish</em>.</p>"
+          "html": "<p><strong>Why must I split train and test data?</strong></p><p>A model can memorize its training data; the test set plays &ldquo;new data&rdquo; and is used only once, at the end. Split first and fit transformers on the training data only (no leakage). See <em>Data, features &amp; labels</em>.</p>"
         },
         {
           "type": "callout",
           "kind": "info",
-          "html": "<p><strong>What is cross-validation and when do I need it?</strong></p><p>A single train/test split is a gamble: which samples end up in the test set depends on the random seed, and the score can easily shift by a few percent. <strong>Cross-validation</strong> (CV) repeats the split multiple times and averages: divide your data into k folds (usually k = 5 or 10), train k times on all-but-one fold, and report the mean. In scikit-learn that's <code>cross_val_score(model, X, y, cv=5)</code>. CV is essential as soon as you tune hyperparameters (use <code>GridSearchCV</code>) — the test set then stays pristine for the real final evaluation. Important: if your pipeline includes preprocessing (such as <code>StandardScaler</code>), always use a <code>Pipeline</code>, otherwise test info leaks into your train fold. See <a href=\"#/topic/cross-validation\">Cross-validation: judging your model reliably</a>.</p>"
+          "html": "<p><strong>What is cross-validation and when do I need it?</strong></p><p>One split is a gamble; CV repeats the split k times and averages: <code>cross_val_score(model, X, y, cv=5)</code>. Essential for hyperparameter tuning (<code>GridSearchCV</code>), with a <code>Pipeline</code> once preprocessing is involved. See <a href=\"#/topic/cross-validation\">Cross-validation</a>.</p>"
         },
         {
           "type": "callout",
           "kind": "tip",
-          "html": "<p><strong>How do I build logistic regression myself, without scikit-learn?</strong></p><p>Five lines do it: a sigmoid <code>1/(1+np.exp(-z))</code>, a bias column, weights to zero, and each epoch <code>y_hat = sigmoid(Xb @ w)</code>, <code>grad = Xb.T @ (y_hat - y) / n</code>, <code>w -= lr * grad</code>. The gradient is the matrix product <code>(1/n)·Xᵀ(ŷ−y)</code> — the factor <code>(ŷ−y)</code> is the prediction error. Add <code>predict_proba</code> and <code>predict</code> and you have a working classifier that on the breast cancer dataset scores within a percent of scikit-learn. Wrap a loop around it, train one classifier per class, and you have multi-class one-vs-rest. See <a href=\"#/topic/logistic-regression-function\">Building logistic regression yourself: from sigmoid to classifier</a> for the full treatment, including the gradient derivation and a comparison with scikit-learn.</p>"
+          "html": "<p><strong>How do I build logistic regression myself, without scikit-learn?</strong></p><p>Five lines: sigmoid, bias column, zero weights, and per epoch <code>y_hat = sigmoid(Xb @ w)</code>, <code>grad = Xb.T @ (y_hat - y) / n</code>, <code>w -= lr * grad</code>. Add <code>predict_proba</code> and <code>predict</code> — done. See <a href=\"#/topic/logistic-regression-function\">Building logistic regression</a>.</p>"
         },
         {
           "type": "callout",
           "kind": "warning",
-          "html": "<p><strong>What is overfitting and how do I recognise it?</strong></p><p><strong>Overfitting</strong> means the model has learned the training data too precisely — including the noise — and therefore generalises poorly to new data. You recognise it by a large gap: a high score on the training data, a much lower score on the test data. <strong>Underfitting</strong> is the opposite: the model is too simple and scores low everywhere. Remedies for overfitting are a simpler model, more or cleaner data, stronger regularisation (a smaller C) and fewer or better features. See <em>The ML workflow from start to finish</em> for the interactive under/overfitting diagram.</p>"
+          "html": "<p><strong>What is overfitting and how do I recognize it?</strong></p><p>Overfitting = learned the training data too precisely, noise included. Spot the gap: high train, low test score. Countermeasures: simpler model, more data, more regularization (smaller C). See <em>The ML workflow</em>.</p>"
         },
         {
           "type": "callout",
           "kind": "key",
-          "html": "<p><strong>How does a model actually ‘learn’?</strong></p><p>In two steps. First a <strong>loss function</strong> measures how wrong the model currently is, across all your training examples. Then an optimisation algorithm — usually <strong>gradient descent</strong> — nudges the weights (the coefficients) a small step in the direction in which the loss decreases fastest. This repeats many times, until the loss barely changes any more: the model is then (locally) optimal. The <em>learning rate</em> sets the step size: too large and you overshoot the minimum, too small and learning takes forever. See <em>Loss functions: why fitting is really optimising</em> and <em>Gradient descent: how does a model learn?</em>.</p>"
+          "html": "<p><strong>How does a model actually &lsquo;learn&rsquo;?</strong></p><p>Two steps: a <strong>loss function</strong> measures how wrong the model is; <strong>gradient descent</strong> nudges the weights one step downhill. Repeat until the loss barely moves; the learning rate sets the step size. See <em>Loss functions</em> and <em>Gradient descent</em>.</p>"
         },
         {
           "type": "callout",
           "kind": "key",
-          "html": "<p><strong>What does regularisation do and what does the hyperparameter C mean?</strong></p><p>Regularisation adds a <strong>penalty for large coefficients</strong> to the loss. This forces the model to stay simple, which fights overfitting: a model with extreme weights may fit the training data perfectly but generalises badly. <code>C</code> is the dial that controls the strength, though it works <em>backwards</em>: a <strong>large C</strong> means little penalty (a complex model), a <strong>small C</strong> means a strong penalty (a simple model). Turn C down too far and the model underfits instead. See <em>Regularisation: the hyperparameter C, L1 and L2</em>.</p>"
+          "html": "<p><strong>What does regularization do and what does C mean?</strong></p><p>Regularization adds a penalty for large coefficients (against overfitting). <code>C</code> is the inverse strength: large C = little penalty, small C = a lot. Too far down &rarr; underfitting. See <em>Regularization</em>.</p>"
         },
         {
           "type": "callout",
           "kind": "info",
-          "html": "<p><strong>What exactly are bias and variance — and how do they relate to overfitting?</strong></p><p><strong>Bias</strong> is the systematic error: your model does not grasp the pattern, full stop (underfitting — poor train and test). <strong>Variance</strong> is the fickleness: swap the training set and the fit jumps all over the place (overfitting — perfect train, poor test). The expected error is bias² + variance + noise, and complexity shifts the balance: a deeper tree or a higher C lowers bias and raises variance. See <em>Bias-variance tradeoff</em>.</p>"
+          "html": "<p><strong>What exactly are bias and variance?</strong></p><p>Bias = systematic error (underfitting: poor on train and test); variance = jitter (overfitting: perfect train, poor test). Expected error = bias&sup2; + variance + noise. See <em>Bias-variance tradeoff</em>.</p>"
         },
         {
           "type": "callout",
           "kind": "info",
-          "html": "<p><strong>How much maths do I actually need for machine learning?</strong></p><p>Less than you think to <em>start</em>, more than you think to <em>understand</em>. Being productive with scikit-learn takes almost no maths; understanding why a model learns, why the learning rate misbehaves and why regularisation helps rests on three pillars: <strong>derivatives</strong> (the gradient that gradient descent follows), <strong>optimisation</strong> (critical points, convexity) and a little <strong>probability</strong> (probabilities, expectations). The chapter <em>Calculus &amp; optimisation</em> covers the first two from scratch — and if you want a structured path, <em>AP Calculus AB</em> shows how that official curriculum maps onto exactly this material.</p>"
+          "html": "<p><strong>How much math do I need for machine learning?</strong></p><p>Starting takes almost none; understanding runs on three pillars: derivatives, optimization and a little probability. The <em>Calculus &amp; optimization</em> chapter covers the first two from scratch.</p>"
         }
       ]
     },
@@ -86,32 +86,32 @@
         {
           "type": "callout",
           "kind": "info",
-          "html": "<p><strong>Do I pick LogisticRegression or an SVM?</strong></p><p>Both are linear classifiers that use the same prediction equation — the difference lies in what they optimise. <strong>Logistic regression</strong> minimises the logistic loss and gives per-class probabilities with <code>.predict_proba()</code>; it is a fast, stable baseline. <strong>SVMs</strong> minimise the hinge loss and maximise the <em>margin</em> to the closest points, which can be robust; with kernels they can also learn non-linear boundaries. Scale your features in both cases, and in the end let the score on the test data decide. See <em>LR vs. SVM &amp; the SGDClassifier</em> for the full comparison.</p>"
+          "html": "<p><strong>LogisticRegression or an SVM?</strong></p><p>Both linear classifiers; the difference is the loss. LR naturally gives probabilities (<code>predict_proba</code>); SVMs maximize the margin and learn non-linear boundaries with kernels. Scale your features and let the test data decide. See <em>LR vs. SVM</em>.</p>"
         },
         {
           "type": "callout",
           "kind": "info",
-          "html": "<p><strong>What does a kernel do in an SVM?</strong></p><p>A kernel computes the <strong>similarity between two samples as if they lived in a higher dimension</strong>, without carrying out that transformation explicitly — this is called the kernel trick. That allows an SVM to learn a non-linear decision boundary in practice while all the mathematics stays linear. The <em>linear</em> kernel is the fast baseline; the <em>RBF</em> kernel makes flexible, curved boundaries via <code>gamma</code>. A good approach: start with the linear kernel and only switch to RBF when the data is clearly not linearly separable. See <em>Kernel SVMs: non-linear boundaries</em>.</p>"
+          "html": "<p><strong>What does a kernel do in an SVM?</strong></p><p>A kernel computes similarity as if the samples live in a higher dimension (the kernel trick) — non-linear boundaries with linear math. Start linear, switch to RBF only if the data is not separable. See <em>Kernel SVMs</em>.</p>"
         },
         {
           "type": "callout",
           "kind": "tip",
-          "html": "<p><strong>Why should I scale my features?</strong></p><p>Many models are <strong>sensitive to the scale</strong> of the features. KNN works with distances, SVMs with margins and gradient methods with step sizes: one feature with values in the thousands can completely dominate all the others. With <code>StandardScaler</code> you turn every column into mean 0 and spread 1, so all features carry equal weight. Important: fit the scaler on the <em>training data</em> and then use it to transform the test data. Tree models, on the other hand, are insensitive to scaling. See <em>Data, features &amp; labels</em>.</p>"
+          "html": "<p><strong>Why should I scale my features?</strong></p><p>KNN, SVMs and gradient methods are scale-sensitive: one feature in the thousands dominates everything. <code>StandardScaler</code> sets columns to mean 0, spread 1 — fit on the training data. Trees are insensitive. See <em>Data, features &amp; labels</em>.</p>"
         },
         {
           "type": "callout",
           "kind": "key",
-          "html": "<p><strong>When do I choose a decision tree over a linear model?</strong></p><p>Pick a tree when <strong>interpretability</strong> matters (you can read the rules aloud), when your data naturally <strong>jumps in thresholds</strong>, or when you cannot be bothered with scaling — trees are insensitive to it. Pick a linear model (LR, LinearSVC) when the pattern is globally smooth/linear and you want a stable, small model: a single tree is fickle (high variance), certainly without a <code>max_depth</code> brake. See <em>Decision trees</em> and <em>Bias-variance tradeoff</em>.</p>"
+          "html": "<p><strong>When do I choose a decision tree over a linear model?</strong></p><p>Tree when explainability matters or the data naturally jumps in thresholds (no scaling needed); linear model for a smooth, linear pattern. A single tree is jittery — see <em>Bias-variance tradeoff</em>.</p>"
         },
         {
           "type": "callout",
           "kind": "info",
-          "html": "<p><strong>Should I pick Gini or entropy for my decision tree?</strong></p><p>Hardly ever a real choice: Gini and entropy are strongly correlated (Gini ≤ H/2, equal at 50/50) and pick nearly the same splits. Gini is the cheap default (CART, no logarithms); entropy belongs to ID3/C4.5 and measures in bits. At the end the trees differ at most in shape (different leaf counts), not in score. See <em>Gini index &amp; entropy</em>.</p>"
+          "html": "<p><strong>Should I pick Gini or entropy for my decision tree?</strong></p><p>Almost never a real choice: strongly correlated (Gini &le; H/2) and the same splits. Gini is the cheap default (CART); entropy belongs to ID3/C4.5 and measures in bits. See <em>Gini index &amp; entropy</em>.</p>"
         },
         {
           "type": "callout",
           "kind": "info",
-          "html": "<p><strong>What is the difference between bagging and boosting?</strong></p><p>Both are ensemble methods, but they attack different problems. <strong>Bagging</strong> (bootstrap aggregating, of which the random forest is the best known) trains models <em>in parallel</em> on different bootstrap samples and averages the predictions — that mainly lowers <em>variance</em>: jittery, deep trees become stable together. <strong>Boosting</strong> (gradient boosting, XGBoost) trains models <em>one after another</em>, each new model learning mostly from its predecessors' mistakes — that mainly lowers <em>bias</em>: too-simple models are sharpened step by step. Rule of thumb: random forest is the friendly default that needs little tuning; bring in boosting when you need the last bit of performance and are willing to tune. See <em>Bagging &amp; random forests</em>.</p>"
+          "html": "<p><strong>What is the difference between bagging and boosting?</strong></p><p>Bagging (random forest): parallel on bootstrap sets, averages — mainly lowers <em>variance</em>. Boosting (gradient boosting, XGBoost): sequential, each model learns from its predecessor's errors — mainly lowers <em>bias</em>. Forest = friendly default; boosting for the last bit of performance. See <em>Bagging &amp; random forests</em>.</p>"
         }
       ]
     },
@@ -121,12 +121,12 @@
         {
           "type": "callout",
           "kind": "info",
-          "html": "<p><strong>What does predict_proba do and when do I need probabilities?</strong></p><p><code>.predict()</code> gives hard class labels; <code>.predict_proba()</code> gives, per sample, <strong>probabilities for every class</strong> (summing to 1). Probabilities are useful as soon as ‘which class?’ is not the whole story: how <em>confident</em> is the model? And if the costs of mistakes are asymmetric, you choose the <em>threshold</em> yourself — for example ‘treat only if the probability of disease is above 0.3’ — to tune precision and recall. Behind the scenes the sigmoid (or softmax for multiple classes) turns the raw model output into those probabilities. See <em>Probabilities &amp; the sigmoid function</em>.</p>"
+          "html": "<p><strong>What does predict_proba do and when do I need probabilities?</strong></p><p><code>.predict()</code> gives hard labels; <code>.predict_proba()</code> per-class probabilities (summing to 1). Useful with asymmetric error costs: pick your own threshold (e.g. &ldquo;treat above 0.3&rdquo;) to tune precision and recall. See <em>Probabilities &amp; the sigmoid</em>.</p>"
         },
         {
           "type": "callout",
           "kind": "key",
-          "html": "<p><strong>My accuracy is 95% — is my model good?</strong></p><p>Not necessarily. With <strong>class imbalance</strong> — say 95 healthy and 5 sick patients — a dumb model that always predicts ‘healthy’ also reaches 95% accuracy, while it never finds a single sick patient. Precision, recall and F1 give the honest picture in such a case. Run the example below yourself: all four metrics on a dataset where ‘always class 0’ scores 95% accuracy.</p>"
+          "html": "<p><strong>My accuracy is 95% — is my model good?</strong></p><p>Not necessarily: with 95 healthy and 5 sick patients, &ldquo;always healthy&rdquo; also scores 95% while finding zero sick ones. Precision, recall and F1 give the honest picture. Run the example below yourself.</p>"
         },
         {
           "type": "code",
@@ -137,17 +137,17 @@
         },
         {
           "type": "text",
-          "html": "<p> The output shows the trap: <strong>accuracy 0.95</strong>, yet precision, recall and F1 are all <strong>0.0</strong> — the model finds not a single positive class and is therefore completely useless for the question that matters. That is exactly why, with skewed classes, you always look beyond accuracy. See <em>Classification metrics: confusion matrix, precision &amp; recall</em> for the full theory. </p>"
+          "html": "In the output: accuracy 0.95, but precision, recall and F1 all 0.0 — the model finds no positive cases at all. See <em>Classification metrics</em>."
         },
         {
           "type": "callout",
           "kind": "info",
-          "html": "<p><strong>Which metric do I use for regression?</strong></p><p>The four standard metrics each tell you something different about the same predictions. <strong>MSE</strong> penalises large errors quadratically and is exactly the loss that linear regression optimises; <strong>RMSE</strong> is its square root and lives in the same unit as your target; <strong>MAE</strong> is the mean absolute error and is less sensitive to outliers; <strong>R²</strong> compares your model with a dumb baseline (always predicting the mean) and answers: how much better than that baseline are you? If your data has large outliers, MAE says more than RMSE. See <em>Regression metrics: MSE, RMSE, MAE &amp; R²</em> for formulas, interpretation and a worked example.</p>"
+          "html": "<p><strong>Which metric do I use for regression?</strong></p><p><strong>MSE</strong> punishes large errors quadratically; <strong>RMSE</strong> is in your target's unit; <strong>MAE</strong> is less outlier-sensitive; <strong>R&sup2;</strong> compares against the &ldquo;always predict the mean&rdquo; baseline. Big outliers? Look at MAE. See <em>Regression metrics</em>.</p>"
         },
         {
           "type": "callout",
           "kind": "warning",
-          "html": "<p><strong>Why does my regression tree predict the same price for 200 m² as for 114 m²?</strong></p><p>Because a regression leaf predicts a <strong>constant mean</strong> and trees <strong>cannot extrapolate</strong>: outside the training range the tree simply repeats its highest leaf. If you need trends beyond the seen range, you need a model with an actual slope (linear regression). See <em>Regression trees</em>.</p>"
+          "html": "<p><strong>Why does my regression tree predict the same price for 200 m&sup2; as for 114 m&sup2;?</strong></p><p>Because a leaf predicts a constant mean and trees cannot extrapolate: outside the training range the tree repeats its highest leaf. Trends beyond the range need linear regression. See <em>Regression trees</em>.</p>"
         }
       ]
     }

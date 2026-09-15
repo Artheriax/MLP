@@ -2,7 +2,7 @@
   "id": "decision-boundaries",
   "chapter": "ch1",
   "title": "Linear decision boundaries & vocabulary",
-  "intro": "What does it actually mean for a classifier to be \"linear\"? Everything revolves around the decision boundary: the surface separating the regions in which the model predicts one class or the other.",
+  "intro": "What makes a classifier &ldquo;linear&rdquo;? The decision boundary: the surface separating the regions with different predictions.",
   "keyPoints": [
     "The <strong>decision boundary</strong> is the border where the model switches class.",
     "Linearly separable data: a <strong>straight line</strong> (hyperplane) separates the classes perfectly.",
@@ -16,7 +16,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> A <strong>decision boundary</strong> tells you which class the model predicts for every value of <code>x</code>. In a 2D picture the classifier might, for instance, predict the blue class in the blue region (where feature 2 is small) and the red class in the red region (where feature 2 is large). The separating line between them is the decision boundary. </p> <p> Such a boundary is called <strong>linear</strong> when it is a straight line — in <em>any</em> orientation, including slanted. A <strong>non-linear</strong> boundary is any other shape; it can even lead to non-adjacent regions with the same prediction, such as a blue \"island\" in the middle of red territory. In their basic form, logistic regression and SVMs are both linear classifiers; non-linear variants follow in chapter 4. </p>"
+          "html": "The <strong>decision boundary</strong> separates the regions where the model predicts one class or the other. <strong>Linear</strong> = a straight line; any other shape is non-linear. Logistic regression and linear SVMs are linear classifiers in their basic form."
         },
         {
           "type": "formula",
@@ -26,7 +26,7 @@
         },
         {
           "type": "text",
-          "html": "<p> With 2 features the boundary is a line, with 3 features a plane, and with 5 features the space of possible x-values becomes 5-dimensional (hard to draw!) and the boundary is a <strong>hyperplane</strong>: a higher-dimensional \"plane\" that splits the space into two halves. The principle stays identical — only the dimension changes. </p>"
+          "html": "With 3 features the boundary is a plane, with more a <strong>hyperplane</strong> — the principle stays identical."
         }
       ]
     },
@@ -35,7 +35,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> A dataset is called <strong>linearly separable</strong> if a single straight boundary exists that separates the classes perfectly. For now we talk about <em>binary</em> (2-class) classification; multi-class follows in chapter 3. </p> <p> Separability is a property of the <em>data</em>, not of the model: some datasets simply cannot be split perfectly by any line. A simple sanity check: fit a linear classifier and see whether the training accuracy is 1.0 — apparently a separating boundary was found. </p>"
+          "html": "<strong>Linearly separable</strong> = a single straight boundary perfectly separates the classes. Separability is a property of the <em>data</em>, not the model."
         },
         {
           "type": "code",

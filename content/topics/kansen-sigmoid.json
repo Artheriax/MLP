@@ -2,7 +2,7 @@
   "id": "kansen-sigmoid",
   "chapter": "ch3",
   "title": "Kansen & de sigmoid-functie",
-  "intro": "Tot nu toe deed logistic regression harde voorspellingen: deze klasse, of die. Maar onder de motorkap zet een mechanisme de raw model output om in een echte kans — en dat verklaart meteen wanneer het model &quot;zeker van zichzelf&quot; is. Hier vind je de sigmoid-formule, wat <code>exp()</code> precies doet en waarom de S-curve overal opduikt: van logistic regression tot neurale netwerken.",
+  "intro": "Onder de motorkap zet de sigmoid de raw model output om in een echte kans &mdash; de sigmoid-formule, wat exp() doet en waarom de S-curve overal opduikt.",
   "keyPoints": [
     "De sigmoid <strong>σ(z) = 1 / (1 + e<sup>−z</sup>)</strong> perst elke score in [0,1].",
     "<code>predict_proba()</code> = sigmoid(<code>decision_function()</code>): kansen zijn raw scores door de S-curve.",
@@ -16,12 +16,12 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> In hoofdstuk 1 zagen we beslisgrens-plaatjes met ingekleurde gebieden: overal waar de fill kleur is, voorspel je die klasse. Maak je hetzelfde plaatje maar nu met de <strong>voorspelde kans</strong> van de rode klasse als kleur, dan ontstaat een glooiend landschap: op de beslisgrens is de kans precies <strong>0,5</strong>, verder van de grens wordt de kans steeds roder ( richting 1) of blauwer (richting 0). Zijn we >50% zeker dat het rood is → voorspel rood; anders blauw. De harde beslisgrens en het kansbeeld zijn dus twee kanten van dezelfde medaille. </p>"
+          "html": "Kleur het beslisgrens-plot met de voorspelde <strong>kans</strong> in plaats van de klasse: op de grens is de kans precies 0,5, verder weg nadert ze 1 of 0. Harde grens en kansbeeld zijn dezelfde medaille."
         },
         {
           "type": "callout",
           "kind": "info",
-          "html": "<p> In die kansfiguren was regularisatie vrijwel uitgezet (heel grote C). Zet je regularisatie aan, dan vallen de kansen dichter rond 0,5 — kleinere coëfficiënten betekenen <em>minder zelfverzekerde</em> voorspellingen. Zie het verband: overconfidence ↔ overfitting. </p>"
+          "html": "Met regularisatie aan (kleine C) vallen de kansen dichter rond 0,5: kleinere co&euml;ffici&euml;nten = minder zelfverzekerd. Zie het verband: overconfidence &harr; overfitting."
         }
       ]
     },
@@ -30,7 +30,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Hoe worden die kansen berekend? Uit de <strong>raw model output</strong> (de score \\( z = w \\cdot x + b \\) uit <a href=\"#/topic/logistic-regression\">de pipeline van logistic regression</a>), die z&eacute;lf elk re&euml;l getal kan zijn — terwijl kansen tussen 0 en 1 liggen. We hebben dus iets nodig dat de raw output &quot;samendrukt&quot; naar dat interval: de <strong>sigmoid-functie</strong>. Bekijk de curve hieronder en schuif mee: bij raw output nul is de kans 0,5 (precies op de grens); bij positieve raw output nadert de kans van de positieve klasse 1; bij negatieve output nadert zij 0 — oftewel: groot vertrouwen in de negatieve klasse. Omdat de raw output groeit naarmate je verder van de grens zit, ben je daar ook zelfverzekerder. </p>"
+          "html": "De sigmoid \\( \\sigma(z) = \\frac{1}{1+e^{-z}} \\) perst elke raw output in (0, 1): \\( z = 0 \\) &rarr; 0,5 (precies op de grens), positief &rarr; richting 1, negatief &rarr; richting 0. Hoe verder van de grens, hoe zelfverzekerder."
         },
         {
           "type": "formula",
@@ -127,7 +127,7 @@
         {
           "type": "callout",
           "kind": "key",
-          "html": "<p> Waarom zit de drempel op 0,5 en niet ergens anders? Omdat σ(z) &ge; 0,5 <em>precies</em> gelijk is aan z &ge; 0: de drempel zit verstopt in het teken van de raw output. Vandaar dat <code>predict()</code> bij logistic regression simpelweg kijkt of de score positief is. </p>"
+          "html": "Waarom drempel 0,5? Omdat \\( \\sigma(z) \\ge 0{,}5 \\) <em>precies</em> gelijk is aan \\( z \\ge 0 \\): de drempel zit verstopt in het teken van de raw output."
         }
       ]
     },
@@ -136,7 +136,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> In de noemer van de sigmoid staat \\( e^{-z} \\) — en die <code>exp()</code> is meer dan een los magisch symbool. Het grondtal <strong>e</strong> is het <em>getal van Euler</em> (&plusmn;2,71828&hellip;) en <code>exp(z)</code> betekent niets anders dan <strong>e vermenigvuldigd met zichzelf z keer</strong>: \\( \\exp(1) = e \\), \\( \\exp(2) = e \\cdot e \\), \\( \\exp(0) = 1 \\). Waarom juist dit grondtal? Omdat e de natuurlijke basis van <em>continue groei</em> is: waar de toename ergens evenredig is met de huidige hoeveelheid (renta op renta, populatiegroei, afkoelen van koffie, radioactief verval), groeit of krimpt het vanzelf met e per tijdseenheid. Vandaar dat exp overal in de wetenschap opduikt. </p><p> Drie eigenschappen dragen de sigmoid: <strong>(1)</strong> \\( e^0 = 1 \\) — vandaar dat \\( \\sigma(0) = \\frac{1}{1+1} = 0{,}5 \\); <strong>(2)</strong> \\( \\exp(-z) = 1/\\exp(z) \\) — negatieve machten zijn gewoon de omgekeerde waarde; <strong>(3)</strong> \\( \\exp \\) groeit sneller dan elke polynoom en krimpt richting nul zonder nul te worden. In de sigmoid werkt \\( e^{-z} \\) dus als een <strong>rem</strong>: elke extra eenheid z vermenigvuldigt die rem met 1/e (&plusmn;0,37). Grote z &rarr; rem &asymp; 0 &rarr; \\( \\sigma \\approx 1/(1+0) = 1 \\). Negatieve z &rarr; rem explodeert (bij \\( z = -5 \\) is de rem al \\( e^5 \\approx 148 \\)) &rarr; \\( \\sigma \\approx 0 \\). </p>"
+          "html": "<code>exp(z)</code> betekent e vermenigvuldigd met zichzelf z keer (e &asymp; 2,71828, het grondtal van continue groei). In de sigmoid is \\( e^{-z} \\) een <strong>rem</strong>: grote z &rarr; rem &asymp; 0 &rarr; \\( \\sigma \\approx 1 \\); negatieve z &rarr; rem explodeert (bij z = &minus;5 al \\( e^5 \\approx 148 \\)) &rarr; \\( \\sigma \\approx 0 \\)."
         },
         {
           "type": "table",
@@ -185,7 +185,7 @@
         },
         {
           "type": "text",
-          "html": "<p> Lees de tabel als een ritje langs de beslisgrens: links (negatieve score) is de rem groot en de kans klein; op de grens is de rem precies 1 en de kans 0,5; rechts klapt de rem dicht en nadert de kans 1. En let op de symmetrie: bij \\( z = 2 \\) is de rem 0,1353 en bij \\( z = -2 \\) precies het omgekeerde (7,3891) — daarom geldt \\( \\sigma(-z) = 1 - \\sigma(z) \\). </p>"
+          "html": "De tabel als rit langs de grens: links is de rem groot (kans klein), op de grens is de rem precies 1 (kans 0,5), rechts klapt de rem dicht (kans &rarr; 1)."
         },
         {
           "type": "code",
@@ -197,7 +197,7 @@
         {
           "type": "callout",
           "kind": "tip",
-          "html": "<p> Waarom e en niet 10 of 2? e is de enige basis waarin de helling van \\( b^x \\) precies \\( b^x \\) zelf is. Daardoor is de afgeleide van de sigmoid opvallend netjes: \\( \\sigma'(z) = \\sigma(z)\\,(1 - \\sigma(z)) \\) — de afgeleide is uit de functiewaarde zelf te bouwen. D&eacute;&eacute;n reden waarom gradient descent op logistic regression wiskundig zo vloeiend verloopt. </p>"
+          "html": "Waarom e? Alleen met grondtal e is de helling van \\( b^x \\) precies \\( b^x \\) zelf &mdash; vandaar de nette afgeleide \\( \\sigma'(z) = \\sigma(z)(1-\\sigma(z)) \\)."
         }
       ]
     },
@@ -206,7 +206,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> De S-curve is niet uitgevonden voor machine learning — het is de universele vorm van <strong>alles wat traag start, versnelt en vervolgens verzadigt</strong>. Een kans die niet buiten [0, 1] kan, een populatie die niet oneindig kan groeien, een markt die niet iedereen tegelijk overneemt: telkens dezelfde sigmoid. Omgekeerd is dat ook de reden dat de functie z&oacute; geschikt is als vertaallaag van 'willekeurige score' naar 'kans'. </p>"
+          "html": "De S-curve is de universele vorm van alles wat traag start, versnelt en verzadigt &mdash; kansen, populatiegroei, marktpenetratie."
         },
         {
           "type": "table",
@@ -247,7 +247,7 @@
         },
         {
           "type": "text",
-          "html": "<p> Voor de ML-wereld is de belangrijkste verwantschap die met <strong>tanh</strong> en <strong>softmax</strong>. Tanh is letterlijk dezelfde S-curve, gerekt naar (−1, 1) — handig als een neuron 'negatief' moet kunnen signaleren. Softmax is de meerklassen-generalisatie: deeld elke klasse een aandeel van het totaal toe (alle kansen sommen tot 1). Je kunt de verwantschap zelf controleren met de code hieronder. </p>"
+          "html": "Verwanten: <strong>tanh</strong> is dezelfde curve gerekt naar (&minus;1, 1); <strong>softmax</strong> is de meerklassen-generalisatie (kansen die sommeren tot 1)."
         },
         {
           "type": "code",
@@ -259,7 +259,7 @@
         {
           "type": "callout",
           "kind": "info",
-          "html": "<p> In moderne netwerken zijn op hidden-lagen reLU-varianten vaak sneller en populairder geworden, maar in de <em>outputlaag</em> bij binaire classificatie is de sigmoid tot op vandaag standaard — precies om dezelfde reden als bij logistic regression: hij is de netste vertaling van een score naar een kans. </p>"
+          "html": "In moderne netwerken zijn ReLU-varianten populairder op hidden lagen, maar in de outputlaag bij binaire classificatie is de sigmoid nog altijd standaard."
         }
       ]
     },
@@ -268,7 +268,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> In scikit-learn is <code>decision_function</code> precies de raw model output, en <code>predict_proba</code> de sigmoid daarvan. Je kunt het zelf verifiëren: reken de sigmoid van de raw output met de hand en vergelijk met wat <code>predict_proba</code> geeft — identiek. Extra inzicht uit de cursus: met 2 features heb je 2 coëfficiënten, terwijl een lijnrichting maar één getal nodig heeft. De <strong>verhouding</strong> van de coëfficiënten geeft de richting van de grens, de <strong>grootte</strong> (magnitude) geeft je confidence-niveau. Regularisatie verandert dus niet alleen de zekerheid, maar vaak ook de oriëntatie van de grens. </p>"
+          "html": "Verifieer zelf: <code>predict_proba</code> = sigmoid(<code>decision_function</code>). En onthoud: de <em>verhouding</em> van de co&euml;ffici&euml;nten geeft de richting van de grens, de <em>grootte</em> het confidence-niveau."
         },
         {
           "type": "code",

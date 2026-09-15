@@ -2,7 +2,7 @@
   "id": "data-features",
   "chapter": "ch0",
   "title": "Data, features & labels",
-  "intro": "The language of ML data: rows are samples, columns are features, and the column you predict is the target. What X and y look like in scikit-learn, which kinds of features exist — and why splitting into train and test is non-negotiable.",
+  "intro": "Rows are samples, columns are features, and the target is the column you predict — plus why the train/test split is non-negotiable.",
   "keyPoints": [
     "Rows = <strong>samples</strong>, columns = <strong>features</strong>; the target column is <strong>y</strong>, the rest is <strong>X</strong>.",
     "Numeric features go straight into the model; categorical features need encoding first (e.g. one-hot).",
@@ -16,11 +16,11 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Almost every ML dataset starts as a <strong>table</strong>. Each <em>row</em> is one sample (also called: observation or instance) — one car, one person, one email. Each <em>column</em> is a variable describing that sample. Machine learning comes down to finding patterns between those columns. </p>"
+          "html": "Every dataset is a <strong>table</strong>: rows are samples (one car, one e-mail), columns are variables. ML = finding patterns between columns."
         },
         {
           "type": "text",
-          "html": "<p> As an example we take the car dataset that also returns in the <em>Evaluation &amp; metrics</em> chapter: five cars, each described by three characteristics, with the price as the thing we want to predict. The table is deliberately small: 5 rows, 4 columns. </p>"
+          "html": "Example: five cars, three features, price as target — kept small on purpose."
         },
         {
           "type": "table",
@@ -66,7 +66,7 @@
         {
           "type": "callout",
           "kind": "info",
-          "html": "<p> Jargon check: <em>feature</em> = input column (also: independent variable, explanatory variable). <em>Target</em> / <em>label</em> = the column you predict (dependent variable). In mathematical texts the target is also called <em>y</em> and the features <em>x</em>. </p>"
+          "html": "Jargon: <em>feature</em> = input column; <em>target/label</em> = the column you predict (mathematically: x and y)."
         }
       ]
     },
@@ -75,7 +75,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> scikit-learn always expects data in two parts: <strong>X</strong>, the feature matrix (capital letter, because it is two-dimensional), and <strong>y</strong>, the target vector (lower case, because it is one-dimensional). Each row of X corresponds exactly to one element of y — row 3 of X describes the same car as element 3 of y. </p>"
+          "html": "scikit-learn expects <strong>X</strong> (2D feature matrix, capital) and <strong>y</strong> (1D target vector, lowercase). Row i of X pairs with element i of y."
         },
         {
           "type": "formula",
@@ -85,7 +85,7 @@
         },
         {
           "type": "text",
-          "html": "<p> Below you see how to turn the car table into X and y with numpy — and how to read out the shapes and the first pair. This pattern (preparing data, checking shapes) is always your first step in scikit-learn. </p>"
+          "html": "This is how you turn the table into X and y with numpy — checking shapes is always your first step."
         },
         {
           "type": "code",
@@ -101,7 +101,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Features come in three flavours. <strong>Numerical</strong> features are numbers mathematics may operate on (age, mileage). <strong>Categorical</strong> features are labels: nominal (red/blue — no order) or ordinal (low/medium/high — with order). Models compute with numbers, so categorical features must be <em>encoded</em>: nominal via one-hot (one column per category), ordinal may become 0/1/2. </p>"
+          "html": "<strong>Numeric</strong> = numbers. <strong>Categorical</strong> = labels: nominal (red/blue, no order) or ordinal (low/mid/high). Categoricals must be <em>encoded</em>: one-hot for nominal, 0/1/2 is fine for ordinal."
         },
         {
           "type": "table",
@@ -131,7 +131,7 @@
         {
           "type": "callout",
           "kind": "warning",
-          "html": "<p> <strong>Garbage in, garbage out.</strong> A model is never better than its features: missing values, outliers and wrongly encoded categories lead directly to a bad model. Exploring and cleaning data is not a side note — it is often most of the work of the whole project. </p>"
+          "html": "<strong>Garbage in, garbage out:</strong> missing values, outliers and wrong encodings ruin any model. Exploring and cleaning data is often most of the work."
         }
       ]
     },
@@ -140,11 +140,11 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> The golden rule: <strong>never evaluate on the data you trained on.</strong> A model that memorises the training data scores perfectly there and fails in the real world. Just like an exam: you saw the answers of old exams while practising, not those of the real exam. That is why you split the data: a large part to train on (often 75–80%) and a smaller part to test honestly. </p>"
+          "html": "Golden rule: <strong>never evaluate on the data you train on</strong>. Hold out 75&ndash;80% for training and keep the rest as an honest test — you have not seen the real exam yet."
         },
         {
           "type": "text",
-          "html": "<p> Below the complete mini-flow: split, train a simple model, and print both scores. Note the difference — the train score is almost always higher, and it is the <em>test</em> score that counts. </p>"
+          "html": "The mini-flow: split, train, print both scores. The train score is almost always higher; the <em>test</em> score is what counts."
         },
         {
           "type": "code",
@@ -156,7 +156,7 @@
         {
           "type": "callout",
           "kind": "key",
-          "html": "<p> The train score is an <em>optimistic</em> diagnosis, the test score the <em>honest</em> one. Only the test score says something about how the model will do in the real world. The next topic shows how this protects against under- and overfitting. </p>"
+          "html": "Train score is an <em>optimistic</em> diagnosis, test score the <em>honest</em> one. Only the test score says something about new data."
         }
       ]
     }

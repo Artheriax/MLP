@@ -2,7 +2,7 @@
   "id": "loss-functions",
   "chapter": "ch2",
   "title": "Loss functies: waarom fitten eigenlijk optimaliseren is",
-  "intro": "Veel machine learning draait om één ding: een loss minimaliseren. Begrijp je dit perspectief, dan zie je verbanden tussen modellen, pak je nieuwe modellen sneller op en kun je ze afstemmen op jouw probleem.",
+  "intro": "Fitten = een loss minimaliseren. Begrijp je dit perspectief, dan zie je de rode draad tussen alle modellen.",
   "keyPoints": [
     "Een <strong>loss</strong> is een strafscore: hoe fout is déze ene voorspelling?",
     "<strong>Squared loss</strong> (kwadratische fout) is de standaard bij regressie.",
@@ -16,7 +16,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Een <strong>loss functie</strong> is een penalty-score die aangeeft hoe <em>slecht</em> het model het op de trainingsdata doet. Het fitten kun je zien als: net zo lang schuiven met de coëfficiënten (parameters) tot die strafscore zo klein mogelijk is. <strong>Least squares lineaire regressie</strong> (zoals <code>LinearRegression</code>) minimaliseert de som van de kwadraten van de fouten op de trainingsset, met fout gedefinieerd als het verschil tussen de echte en voorspelde target. </p> <p> Let op een subtiel maar belangrijk verschil: de <strong>loss</strong> wordt gebruikt om het model te <em>fitten</em>; de <strong>score</strong> wordt gebruikt om te zien hoe het gaat. Vaak vallen die samen, maar dat is niet gegarandeerd. </p>"
+          "html": "Een <strong>loss functie</strong> is een strafscore voor hoe <em>slecht</em> het model het op de trainingsdata doet; fitten = co&euml;ffici&euml;nten schuiven tot die score minimaal is. Let op het verschil: de <strong>loss</strong> is om mee te <em>fitten</em>, de <strong>score</strong> om mee te <em>beoordelen</em>."
         },
         {
           "type": "formula",
@@ -51,7 +51,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Voor classificatie is de kwadratische fout niet geschikt, want <code>y</code>-waarden zijn categorieën, geen getallen. De natuurlijkste kandidaat: <strong>tel je fouten</strong>. Dat is de <strong>0-1 loss</strong> — per voorbeeld is die 0 (voorspelling klopt) of 1 (voorspelling klopt niet), en de som over de trainingsset is precies het aantal gemaakte fouten. </p> <p> Conceptueel netjes, maar in de praktijk is deze loss <strong>heel lastig direct te minimaliseren</strong> — daarom gebruiken logistic regression en SVM's hem niet. Zij nemen een gladde (differentieerbare) benadering, die wél efficiënt geoptimaliseerd kan worden. </p>"
+          "html": "Voor classificatie tel je fouten: de <strong>0-1 loss</strong> is 0 (goed) of 1 (fout) per voorbeeld; de som is precies het aantal fouten. Conceptueel netjes, maar niet differentieerbaar en dus lastig direct te minimaliseren — LR en SVM's nemen een gladde benadering."
         },
         {
           "type": "formula",
@@ -66,7 +66,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Hoe ziet dat minimaliseren eruit? Met <code>scipy.optimize.minimize</code> kun je willekeurige functies optimaliseren. Minimeer \\( y = x^2 \\) vanaf een beginpunt, dan vinden de algoritmen een waarde <em>vlak bij</em> nul — typisch iets als \\( 10^{-8} \\). Dat is normaal bij numerieke optimalisatie: je krijgt zelden het exacte antwoord, maar iets dat er heel dicht bij zit. </p> <p> Zo kun je bijvoorbeeld de squared error van lineaire regressie minimaliseren, met als inputs de coëfficiënten. De code beantwoordt dan letterlijk de vraag: <em>\"welke waarden van de coëfficiënten maken mijn kwadratische fout zo klein mogelijk?\"</em> — dat is exact wat lineaire regressie doet. </p>"
+          "html": "Met <code>scipy.optimize.minimize</code> minimaliseer je willekeurige functies. Numerieke optimalisatie geeft zelden exacte nullen, maar waarden <em>vlak bij</em> het antwoord (bijv. 10<sup>&minus;8</sup>) — en dat is prima."
         },
         {
           "type": "code",

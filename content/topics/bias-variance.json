@@ -2,7 +2,7 @@
   "id": "bias-variance",
   "chapter": "ch5",
   "title": "Bias-variance tradeoff: het kader achter under- en overfitting",
-  "intro": "Under- en overfitting zijn geen twee losse kwalen maar twee uiteinden van één afweging: eenvoud (bias) tegen gevoeligheid (variantie). Dit onderwerp legt de wiskundige decompositie uit, laat je de U-curve zelf verslepen en meet bias en variantie daadwerkelijk in een simulatie.",
+  "intro": "Under- en overfitting zijn twee uiteinden van &eacute;&eacute;n afweging: eenvoud (bias) tegen gevoeligheid (variantie). De decompositie, de U-curve, en bias/variantie echt gemeten in een simulatie.",
   "keyPoints": [
     "De verwachte fout van een model valt uiteen in <strong>drie bronnen</strong>: bias² (systematisch mis), variantie (wispelturig per trainset) en irreducibele ruis σ².",
     "<strong>Underfitting = hoge bias</strong> (train én test slecht); <strong>overfitting = hoge variantie</strong> (train perfect, test slecht).",
@@ -16,7 +16,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Waarom maakt je model fouten? De bias-variance-decompositie ontleedt de verwachte fout in drie <em>onafhankelijke</em> bronnen. Neem een vast punt \\( x \\), een ware functie \\( f \\), en een model \\( \\hat{f} \\) dat getraind is op een willekeurige trainset (dus \\( \\hat{f} \\) is zelf een <em>random grootheid</em> — andere trainset, andere fit). Dan geldt: </p>"
+          "html": "De bias-variance-decompositie ontleedt de verwachte fout in drie <em>onafhankelijke</em> bronnen, voor een model \\( \\hat{f} \\) dat getraind is op een willekeurige trainset:"
         },
         {
           "type": "formula",
@@ -26,7 +26,7 @@
         },
         {
           "type": "text",
-          "html": "<p> <strong>Bias</strong> is de systematische fout: gemiddeld over alle mogelijke trainsets ligt de voorspelling ernaast — het model <em>begrijpt het patroon gewoon niet</em> (een rechte lijn door een sinus blijft overal mis). <strong>Variantie</strong> is de wispelturigheid: hoeveel de voorspelling wisselt als je alleen de trainset vervangt. Een model met veel vrijheidsgraden kan zich naar <em>elke</em> trainset toe buigen — handig om trainfout te verbergen, desastreus als de trainset ruis bevat. <strong>Irreducibele ruis</strong> \\( \\sigma^2 \\) ten slotte zit in de data zelf (meetfouten, verborgen factoren) en is met geen enkel model weg te werken — de vloer onder je fout. </p>"
+          "html": "<strong>Bias</strong> = systematische fout (het model snapt het patroon niet). <strong>Variantie</strong> = wispelturigheid (hoeveel de fit wisselt met de trainset). <strong>Irreducibele ruis</strong> \\( \\sigma^2 \\) = de vloer in de data zelf."
         },
         {
           "type": "table",
@@ -56,7 +56,7 @@
         {
           "type": "callout",
           "kind": "key",
-          "html": "<p> De klassieke analogie: een <strong>schutter op een schijf</strong>. Bias is waar de groep <em>gemiddeld</em> zit (ver naast het midden = hoge bias); variantie is hoe ver de schoten <em>uit elkaar</em> liggen (wijd verspreid = hoge variantie). Irreducibele ruis is de wind, waarmee elke schutter rekening moet houden. Een goede schutter schiet een strakke groep in het midden: lage bias én lage variantie. </p>"
+          "html": "Analogie: de <strong>schutter</strong>. Bias = waar de groep gemiddeld zit; variantie = hoe ver de schoten uit elkaar liggen; ruis = de wind."
         }
       ]
     },
@@ -65,7 +65,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> In het onderwerp <em>De ML-workflow</em> zag je under- en overfitting als train/test-grafieken. De decompositie geeft ze nu een precieze betekenis. Een model met <strong>hoge bias</strong> is te simpel voor het patroon: het scoort slecht op train <em>én</em> test, en de twee scores liggen dicht bij elkaar — toevoegen aan het model helpt (meer features, diepere boom, kleinere regularisatie). Een model met <strong>hoge variantie</strong> is te gevoelig: de train-score is (vrijwel) perfect, de test-score valt hard terug — de <em>kloof</em> tussen de twee is de diagnose. </p>"
+          "html": "<strong>Hoge bias</strong> = te simpel: slecht op train &eacute;n test, scores dicht bij elkaar. <strong>Hoge variantie</strong> = te gevoelig: train (vrijwel) perfect, test valt hard terug &mdash; de <em>kloof</em> is de diagnose."
         },
         {
           "type": "table",
@@ -100,7 +100,7 @@
         {
           "type": "callout",
           "kind": "info",
-          "html": "<p> Voorbeelden van de dialoog tussen bias en variantie op deze site: <code>C</code> bij logistic regression en SVM's (<em>Regularisatie</em>) verkleint coëfficiënten — bias omhoog, variantie omlaag; <code>max_depth</code> bij bomen (<em>Decision trees</em>) doet precies hetzelfde via de diepte van de trapfunctie (<em>Regression trees</em>); en de keuze van <em>k</em> bij k-fold cross-validation schuift de bias/variantie van de <em>schatting zelf</em>. </p>"
+          "html": "Voorbeelden op deze site: <code>C</code> bij LR/SVM, <code>max_depth</code> bij bomen, en de keuze van <em>k</em> bij cross-validation &mdash; allemaal bias-variance-knoppen."
         }
       ]
     },
@@ -109,7 +109,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Zet modelcomplexiteit op de horizontale as en de drie foutbronnen op de verticale. Bias² daalt: meer complexiteit betekent meer vermogen om het patroon te vatten. Variantie stijgt: meer vrijheidsgraden betekent meer ruimte om ruis mee te nemen. De som — plus de vaste ruisvloer — is een <strong>U-curve</strong> met een optimum in het dal. Sleep de slider en zoek het minimum: </p>"
+          "html": "Bias&sup2; daalt met complexiteit, variantie stijgt &mdash; de som plus de ruisvloer is een <strong>U-curve</strong> met een optimum in het dal. Sleep de slider en zoek het minimum:"
         },
         {
           "type": "plot",
@@ -200,12 +200,12 @@
         },
         {
           "type": "text",
-          "html": "<p> Twee kanttekeningen bij dit canonieke beeld. Ten eerste is de as <em>ordinaal</em>, geen natuurkundige eenheid: “complexiteit” is wat jouw model schaalt — boomdiepte, polynoomgraad, aantal parameters, 1/C. Ten tweede is het dal breder dan de curve suggereert: in de praktijk mag je aan de <em>linkerkant</em> van het optimum zitten, want een iets te simpel model is robuust, uitlegbaar en vaak generaliseert het <em>beter</em> dan het exacte optimum in jouw ene split. “Beter te simpel dan precies goed” is een gezonde werkattitude, niet luiheid. </p>"
+          "html": "Kanttekeningen: &ldquo;complexiteit&rdquo; is ordinaal (boomdiepte, polynoomgraad, 1/C), en het dal is breed &mdash; in de praktijk mag je links van het optimum zitten: een iets te simpel model is robuust en uitlegbaar."
         },
         {
           "type": "callout",
           "kind": "tip",
-          "html": "<p> De curve verklaart ook waarom <strong>meer data variantie verlaagt maar bias niet</strong>: met grotere trainsets middelt de wispelturigheid van de fit weg (de gele curve zakt), maar een verkeerd model blijft systematisch mis (de cyan curve verandert niet). Heeft je model hoge bias, dan help je niet met méér data — dan moet het model zelf anders. </p>"
+          "html": "Meer data verlaagt <strong>variantie</strong> maar niet <strong>bias</strong>: heeft je model hoge bias, dan help je niet met m&eacute;&eacute;r data &mdash; dan moet het model zelf anders."
         }
       ]
     },
@@ -214,7 +214,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Alles wat je in deze cursus aan hyperparameters en ontwerpkeuzes hebt gezien, is uiteindelijk een bias-variance-knop. Het overzicht: </p>"
+          "html": "Alles wat je aan hyperparameters en ontwerpkeuzes hebt gezien, is uiteindelijk een bias-variance-knop. Het overzicht:"
         },
         {
           "type": "table",
@@ -278,7 +278,7 @@
         {
           "type": "callout",
           "kind": "warning",
-          "html": "<p> De knoppen zijn <strong>niet onafhankelijk</strong>: méér data plus een groter model kan beter uitpakken dan beide apart; regularisatie werkt slecht op ongeschaalde features (zie <em>Regularisatie</em>); en een ensemble van ondergefitte bomen middelt alléén de variantie weg — de bias blijft. Behandel de tabel als kaart, niet als autofunctie: de eindbeslissing valt altijd op basis van <em>gemeten</em> validatiescores. </p>"
+          "html": "De knoppen zijn <strong>niet onafhankelijk</strong>: m&eacute;&eacute;r data plus een groter model kan beter uitpakken dan beide apart; een ensemble van ondergefitte bomen middelt all&eacute;&eacute;n variantie weg. De eindbeslissing valt op <em>gemeten</em> validatiescores."
         }
       ]
     },
@@ -287,7 +287,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> De decompositie klinkt abstract, maar je kunt haar <em>letterlijk</em> uitrekenen: genereer veel trainsets uit dezelfde ware functie, fit op elk een model, en bekijk per punt de spreiding van de voorspellingen. Hieronder: de waarheid is \\( \\sin(2\\pi x) \\) met ruis, en we voorspellen op \\( x = 0{,}25 \\) (de top) met polynomen van graad 1, 3 en 9 — 200 keer, telkens op een nieuw willekeurige trainset van 25 punten: </p>"
+          "html": "De decompositie is letterlijk uit te rekenen: veel trainsets uit dezelfde ware functie, per trainset een fit, per punt de spreiding van de voorspellingen. Hieronder \\( \\sin(2\\pi x) \\) met ruis, voorspeld op \\( x = 0{,}25 \\) met polynomen van graad 1, 3 en 9 &mdash; 200 keer:"
         },
         {
           "type": "code",
@@ -298,12 +298,12 @@
         },
         {
           "type": "text",
-          "html": "<p> Lees de tabel als de drie schutters. <strong>Graad 1</strong>: de rechte lijn haalt de top niet — forse bias, kleine variantie (elke lijn lijkt op elke andere). <strong>Graad 9</strong>: negen vrijheidsgraden — de fit zwiept mee met de ruis van elke trainset en de voorspellingen op \\( x = 0{,}25 \\) spatten alle kanten op: bias vrijwel nul, variantie groot. <strong>Graad 3</strong> vangt de bocht zonder de ruis te volgen: de kleinste som. Dat is de U-curve uit de interactieve plot, nu met echte getallen. </p>"
+          "html": "<strong>Graad 1</strong>: haalt de top niet &mdash; forse bias, kleine variantie. <strong>Graad 9</strong>: zwiept mee met de ruis &mdash; bias vrijwel nul, variantie groot. <strong>Graad 3</strong>: vangt de bocht zonder de ruis &mdash; de kleinste som."
         },
         {
           "type": "callout",
           "kind": "tip",
-          "html": "<p> Zet <code>x_eval</code> eens op 0.5 (waar de waarheid 0 is) of verhoog de ruis van 0.35 naar 0.7 en draai de cel opnieuw: hoge ruis vergroot vooral de variantie van de flexibele modellen, terwijl de bias van graad 1 onaangedaan blijft. Simulaties als deze zijn de goedkoopste manier om bias-variance <em>gevoel</em> te kweken — je ziet de wiskunde bewegen. </p>"
+          "html": "Zet <code>x_eval</code> op 0.5 of verhoog de ruis naar 0.7 en draai opnieuw: hoge ruis vergroot vooral de variantie van de flexibele modellen; de bias van graad 1 blijft onaangedaan."
         }
       ]
     },
@@ -312,7 +312,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> In het echt ken je de ware functie niet, dus kun je bias en variantie niet direct meten. Wat je wél hebt, is de proxy uit de diagnose-tabel: <strong>train- versus validatie-/test-score</strong>, en de robuustste manier om die te bepalen is cross-validation (zie <em>Cross-validation</em>). De code hieronder scant <code>max_depth</code> voor de borstkanker-dataset en laat de U-curve in de output verschijnen: </p>"
+          "html": "In het echt kun je bias en variantie niet direct meten &mdash; de proxy is <strong>train- versus validatie-/test-score</strong>, robuust bepaald met cross-validation. De code scant <code>max_depth</code> op de borstkanker-dataset:"
         },
         {
           "type": "code",
@@ -323,17 +323,17 @@
         },
         {
           "type": "text",
-          "html": "<p> Typisch beeld hier: de accuracy springt omhoog tussen diepte 1 en 2 (0.900 → 0.928) en zakt daarna licht terug richting 0.916 — diepere bomen kopen géén extra generalisatie, alleen meer vrijheidsgraden. Let op: dít is de <em>praktijk</em>-versie van de U-curve — minder glad dan het ideale plaatje, want elke score zelf heeft ruis (daarover zo meer). In productie kies je uit het plateau bij voorkeur het <em>simpelste</em> model: zelfde score, minder vrijheidsgraden, betere uitlegbaarheid. </p>"
+          "html": "Typisch beeld: accuracy springt omhoog tussen diepte 1 en 2 (0.900 &rarr; 0.928) en zakt daarna licht terug (0.916). Kies uit het plateau bij voorkeur het <em>simpelste</em> model."
         },
         {
           "type": "callout",
           "kind": "info",
-          "html": "<p> Gebruik deze termen niet door elkaar: de <strong>bias/variantie van je model</strong> (dit onderwerp) gaat over generaliseren naar nieuwe data; de <strong>bias/variantie van de CV-schatting</strong> (in <em>Cross-validation</em>) gaat over hoe nauwkeurig jouw <em>meting</em> van de generalisatie is. Beide heten trade-off, maar het zijn verschillende schuiven: de eerste stem je met hyperparameters, de tweede met de keuze van k. </p>"
+          "html": "Verwar de termen niet: de bias/variantie van je <em>model</em> (dit onderwerp) gaat over generaliseren; de bias/variantie van de <em>CV-schatting</em> (cross-validation) over hoe nauwkeurig je meting is."
         },
         {
           "type": "callout",
           "kind": "key",
-          "html": "<p> Het grote geheel in één adem: <strong>underfitting is bias, overfitting is variantie, en alles wat je tunet beweegt je langs de U-curve</strong>. Bomen zijn het aanschouwelijke voorbeeld — <code>max_depth</code> is de bias-variance-knob in het zuiverst — regularisatie, kernels en zelfs de keuze van k volgen hetzelfde spoor. Wie deze decompositie kent, kijkt nooit meer hetzelfde naar een train-testscheur. </p>"
+          "html": "<strong>Underfitting is bias, overfitting is variantie, en alles wat je tunet beweegt je langs de U-curve.</strong>"
         }
       ]
     }

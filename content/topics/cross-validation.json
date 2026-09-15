@@ -2,7 +2,7 @@
   "id": "cross-validation",
   "chapter": "ch7",
   "title": "Cross-validation: betrouwbaar je model beoordelen",
-  "intro": "Eén train/test-split is een gok: de score hangt af van welke samples toevallig in de testset belanden. Cross-validation verdeelt je data in k stukken (folds), traint k keer op alle-maar-één, en middelt de scores — een veel stabielere schatting van hoe goed je model generaliseert. In dit onderwerp: waarom CV, hoe het werkt in scikit-learn met cross_val_score, welke varianten er zijn (Stratified, Leave-One-Out, ShuffleSplit), hoe je k kiest, en hoe je met GridSearchCV hyperparameters tunet zonder de testset te belazeren.",
+  "intro": "E&eacute;n train/test-split is een gok. Cross-validation verdeelt je data in k folds, traint k keer op alle-maar-&eacute;&eacute;n en middelt &mdash; plus Stratified/LOO/ShuffleSplit, de keuze van k, GridSearchCV en Pipelines zonder data leakage.",
   "keyPoints": [
     "Eén train/test-split is een <strong>gok</strong>: de score hangt af van de willekeurige split.",
     "<strong>k-fold CV</strong>: k wisselende splits — het gemiddelde is een veel stabielere schatting.",
@@ -16,11 +16,11 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> In <a href=\"#/topic/ml-workflow-basics\">de ML-workflow</a> leerde je het dogma: <strong>split je data in een train- en een testset</strong>, fit het model op de traindata en beoordeel het één keer op de testset. Dat klopt — maar het heeft een zwakke plek. Welke samples precies in de testset belanden, hangt af van de <em>random seed</em> van <code>train_test_split</code>. Eén split is daarmee één steekproef uit een verdeling met heel wat ruis: verander de seed en je score kan makkelijk een paar procent schuiven. </p>"
+          "html": "Welke samples in de testset belanden hangt af van de <em>random seed</em>: verander de seed en je score schuift makkelijk een paar procent. E&eacute;n split is &eacute;&eacute;n steekproef met veel ruis."
         },
         {
           "type": "text",
-          "html": "<p> Voel die ruis direct: hieronder draaien we <em>exact hetzelfde model</em> (LogisticRegression op de iris-dataset) met tien verschillende seeds. Telkens wordt 25% van de data als testset opzij gezet — alleen de<em> indeling</em> verschilt. Kijk naar de spreiding in de uitvoer: dit is de onzekerheid die één enkele score verbergt. </p>"
+          "html": "Voel de ruis: exact hetzelfde model, tien verschillende seeds &mdash; alleen de <em>indeling</em> verschilt. Kijk naar de spreiding in de uitvoer."
         },
         {
           "type": "code",
@@ -41,7 +41,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> De standaardoplossing heet <strong>k-fold cross-validation</strong>. Het idee: verdeel je data in <strong>k ongeveer even grote stukken</strong> (de <em>folds</em>), en herhaal k keer hetzelfde ritueel: <strong>train op k&minus;1 folds en beoordeel op de overgebleven fold</strong>. Elke sample zit dus precies &eacute;&eacute;n keer in een testfold en k&minus;1 keer in een trainfold. De uiteindelijke CV-score is het <strong>gemiddelde van de k foldscores</strong>. </p>"
+          "html": "<strong>k-fold CV</strong>: verdeel in k folds, herhaal k keer &ldquo;train op k&minus;1, beoordeel op de overgebleven fold&rdquo;. Elke sample zit precies &eacute;&eacute;n keer in een testfold; de CV-score is het <strong>gemiddelde</strong>."
         },
         {
           "type": "formula",
@@ -51,7 +51,7 @@
         },
         {
           "type": "text",
-          "html": "<p> In scikit-learn is dit bijna een one-liner: <code>cross_val_score</code> doet alles voor je. Je geeft het model, de features en de target mee, plus <code>cv=k</code> voor het aantal folds. Terug krijg je een array met de k foldscores — en daarvan neem je het gemiddelde. Let op: <code>cross_val_score</code> <strong>past het model niet aan</strong> en <strong>levert geen getraind model op</strong>; het enige doel is een eerlijke schatting van de generalisatiescore. </p>"
+          "html": "In scikit-learn bijna een one-liner: <code>cross_val_score(model, X, y, cv=k)</code> geeft een array met k foldscores. Let op: het levert g&eacute;&eacute;n getraind model op &mdash; alleen een eerlijke schatting."
         },
         {
           "type": "code",
@@ -63,7 +63,7 @@
         {
           "type": "callout",
           "kind": "tip",
-          "html": "<p> Vergelijk de spreiding hierboven met die van de tien seeds uit de vorige sectie: de std over vijf folds is typisch kleiner dan de std over tien enkele splits, omdat elke fold-score al op 80% van de data is getraind. <strong>k = 5 of k = 10</strong> zijn de standaardkeuzes — groot genoeg voor een stabiel gemiddelde, klein genoeg om het niet onnodig duur te maken. </p>"
+          "html": "<strong>k = 5 of k = 10</strong> zijn de standaardkeuzes: de std over vijf folds is typisch kleiner dan die van tien enkele splits."
         }
       ]
     },
@@ -72,7 +72,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> De <code>cv=k</code>-shortcut in <code>cross_val_score</code> kiest automatisch de juiste strategie: bij <strong>classificatie</strong> is dat <code>StratifiedKFold</code> (elke fold behoudt de klassenverhouding van de hele dataset), bij <strong>regressie</strong> gewone <code>KFold</code>. Soms wil je echter meer controle — dan geef je een expliciete splitter-object mee aan <code>cv=</code>. Drie varianten die je moet kennen: </p>"
+          "html": "De <code>cv=k</code>-shortcut kiest automatisch <code>StratifiedKFold</code> (classificatie) of <code>KFold</code> (regressie); voor meer controle geef je een expliciete splitter mee. Drie varianten die je moet kennen:"
         },
         {
           "type": "table",
@@ -114,7 +114,7 @@
         {
           "type": "callout",
           "kind": "warning",
-          "html": "<p> Bij <strong>classificatie</strong> hanteer je altijd <code>StratifiedKFold</code> — ook al zijn je klassen redelijk gebalanceerd. Stel dat je 5% positieven hebt en je gebruikt gewone KFold zonder shuffle: dan kan een fold toevallig <em>helemaal geen</em> positieven bevatten, en de model-fit faalt of de fold-score is betekenisloos. Stratificatie voorkomt dat. </p>"
+          "html": "Bij classificatie altijd <code>StratifiedKFold</code>: zonder stratificatie kan een fold toevallig he&eacute;&eacute;l geen positieven bevatten &mdash; en de fold-score is betekenisloos."
         }
       ]
     },
@@ -123,7 +123,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Hoe kies je <strong>k</strong>? De keuze is een afweging tussen twee krachten die in tegenovergestelde richting werken. <strong>Bias</strong>: elke fold traint op \\( \\frac{k-1}{k} \\) van je data. Met een grotere k gebruiken de folds meer data, waardoor de model-fit in elke fold dichter bij de fit op de <em>hele</em> dataset komt — de CV-schatting is dan minder onzuiver (lager bias). In het extreme geval <em>k = n</em> (Leave-One-Out) traint elke fold op n&minus;1 samples: maximale traindata, minimale bias. </p> <p> <strong>Variantie</strong>: met grotere k overlappen de trainfolds steeds meer — bij LOOCV delen twee willekeurige folds n&minus;2 van de n samples. Die sterke correlatie tussen foldscores maakt het gemiddelde <em>meer</em> variabel, niet minder, ondanks dat je over meer getallen middelt. Tegelijk is elke individuele fold-score ook wat meer ruisgevoelig omdat de testfold maar uit &eacute;&eacute;n sample bestaat. Het netto-effect: met zeer grote k stijgt de variantie van de CV-schatting licht. </p>"
+          "html": "De keuze van k is zelf een bias/variantie-afweging: grotere k = meer traindata per fold (lagere bias), maar sterkere overlap tussen trainfolds (hogere variantie). LOOCV (k = n) is het extreme geval."
         },
         {
           "type": "formula",
@@ -133,7 +133,7 @@
         },
         {
           "type": "text",
-          "html": "<p> Het resultaat is een U-vorm die afvlakt: heel kleine k geeft hoge bias (weinig traindata per fold), heel grote k geeft hoge variantie (correlatie tussen folds). Daartussen zit een breed plat stuk — en daar vallen de standaardkeuzes <strong>k = 5</strong> en <strong>k = 10</strong> precies. Schuif met de ruisgevoeligheid in de plot hieronder en zie hoe de MSE bij k = 5 en k = 10 vrijwel gelijk blijven, terwijl extreme k-waardes slechter scoren. </p>"
+          "html": "Het resultaat is een U-vorm die afvlakt: k = 5 en k = 10 zitten precies in het brede platte stuk. Schuif met de ruisgevoeligheid en zie extreme k-waardes slechter scoren."
         },
         {
           "type": "plot",
@@ -240,11 +240,11 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Cross-validation is niet alleen voor het <em>rapporteren</em> van een eerlijke score — het is ook de motor achter <strong>hyperparameter tuning</strong>. Probeer je verschillende waarden van <code>C</code> (zie <a href=\"#/topic/regularisatie\">Regularisatie</a>) uit op &eacute;&eacute;n testset, dan kies je onvermijdelijk de C die toevallig het beste werkte op <em>die</em> testset — en dat is stiekem weer overfitting, nu op de testset in plaats van op de trainset. De oplossing: tune hyperparameters met CV op de <strong>traindata</strong>, en bewaar de testset braaf voor de finale beoordeling. </p>"
+          "html": "Hyperparameters tunen op &eacute;&eacute;n testset = stiekem overfitten op d&eacute;&eacute; testset. De oplossing: tunen met CV op de <strong>traindata</strong>, de testset bewaren voor de finale beoordeling."
         },
         {
           "type": "text",
-          "html": "<p> Scikit-learn automatiseert dit met <code>GridSearchCV</code>. Je geeft een <code>param_grid</code> mee (een dict met de hyperparameter-namen en de waarden om te proberen) en <code>cv=k</code>. Voor elke candidate-waarde voert scikit-learn k-fold CV uit op de traindata, middelt de scores, en houdt de beste combinatie bij. <code>.best_params_</code> geeft de winnaar; <code>.best_score_</code> de bijbehorende CV-score; en <code>.score(X_test, y_test)</code> beoordeelt het winnende model nog één keer op de testset — de échte generalisatiescore. </p>"
+          "html": "<code>GridSearchCV</code> automatiseert het: geef een <code>param_grid</code> en <code>cv=k</code>; scikit-learn CV't elke kandidaat, middelt en houdt de beste bij &mdash; <code>.best_params_</code>, <code>.best_score_</code>, en &eacute;&eacute;n finale <code>.score(X_test, y_test)</code>."
         },
         {
           "type": "code",
@@ -256,7 +256,7 @@
         {
           "type": "callout",
           "kind": "key",
-          "html": "<p> De testset is je <strong>finale exam</strong>: je raakt hem niet aan voor tuning. Tunen doe je met CV op de traindata; pas als je de beste hyperparameters hebt gekozen, mag het model één keer tegen de testdata aan. Pas dan weet je of je generalisatie echt heeft verbeterd, of dat je alleen de CV-scores hebt geoptimaliseerd. </p>"
+          "html": "De testset is je <strong>finale exam</strong>: tunen doe je met CV op de traindata; het model mag &eacute;&eacute;n keer tegen de testdata aan."
         }
       ]
     },
@@ -265,11 +265,11 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Er schuilt een subtiele maar hardnekkige valkuil in CV met preprocessing. <code>StandardScaler</code>, <code>PCA</code>, <code>SelectKBest</code> — allemaal zijn het transformaties die eerst <em>gefittet</em> moeten worden op data voordat ze kunnen transformeren. Fit je zo'n transformatie op <strong>de hele dataset</strong> en pas je dan CV toe, dan lekt informatie uit de test-fold in de train-fold: de scaler weet namelijk het gemiddelde en de standaardafwijking van de test-fold, en die zitten verstopt in de geschaalde features. Het gevolg: een te optimistische CV-score die in het echt niet haalbaar is. </p>"
+          "html": "Valkuil: een scaler of PCA fitten op de h&eacute;&eacute;le dataset v&oacute;&oacute;r CV lekt test-info in de train-fold (de scaler &ldquo;weet&rdquo; het gemiddelde van de test-fold) &mdash; te optimistische scores."
         },
         {
           "type": "text",
-          "html": "<p> De remedie is een <strong>Pipeline</strong>: een object dat de preprocessing-stap en het model koppelt tot één geheel. Geef je een Pipeline aan <code>cross_val_score</code> of <code>GridSearchCV</code>, dan voert scikit-learn in <em>elke fold apart</em> de scaler-fit uit op alleen de train-fold, en transformeert daarmee zowel de train- als de test-fold. Geen lekkage. <code>make_pipeline</code> is de snelste manier om er een te bouwen. </p>"
+          "html": "De remedie: een <strong>Pipeline</strong>. Geef die aan <code>cross_val_score</code> of <code>GridSearchCV</code>, en scikit-learn fit de preprocessing in &eacute;lke fold apart op alleen de train-fold. Geen lekkage."
         },
         {
           "type": "code",
@@ -288,12 +288,12 @@
         {
           "type": "callout",
           "kind": "warning",
-          "html": "<p> Het verschil tussen de twee runs hierboven is klein — op de borstkankerdataset is de preprocessing ongevaarlijk genoeg om weinig door te lekken. Bij agressievere transformaties (PCA, feature selection, imputatie) kan de lekkage dramatisch uitpakken: een model dat 100% CV-score lijkt te halen maar in productie dramatisch faalt. <strong>Gebruik dus altijd een Pipeline</strong> zodra er ook maar enige preprocessing in het spel is — ook bij <code>GridSearchCV</code>. Dan zit het altijd goed. </p>"
+          "html": "Gebruik dus &aacute;&eacute;ltijd een Pipeline zodra er preprocessing in het spel is &mdash; ook bij <code>GridSearchCV</code>. Bij agressievere transformaties (PCA, feature selection, imputatie) kan lekkage dramatisch uitpakken."
         },
         {
           "type": "callout",
           "kind": "tip",
-          "html": "<p> De hyperparameter-namen in je <code>param_grid</code> volgen de Pipeline-syntaxis: <code>'&lt;stapnaam&gt;__&lt;hyperparameter&gt;'</code>. Met <code>make_pipeline</code> is de stapnaam de kleine-letterversie van de klassenaam — vandaar <code>'logisticregression__C'</code> in de <code>GridSearchCV</code>-sectie hierboven. Bouw je de Pipeline met de expliciete <code>Pipeline([('mijn_model', LogisticRegression())])</code>-vorm, dan heet de parameter <code>'mijn_model__C'</code>. </p>"
+          "html": "Parameternamen volgen de Pipeline-syntaxis: <code>'&lt;stap&gt;__&lt;hyperparameter&gt;'</code> &mdash; vandaar <code>'logisticregression__C'</code>."
         }
       ]
     },
@@ -302,7 +302,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "<p> Cross-validation lijkt een simpel recept, maar de details bepalen of je eerlijke scores krijgt. De tabel hieronder bundelt de keuzes die je in de praktijk maakt — van het aantal folds tot de vraag of je een Pipeline nodig hebt. </p>"
+          "html": "De tabel bundelt de keuzes die je in de praktijk maakt &mdash; van het aantal folds tot de vraag of je een Pipeline nodig hebt."
         },
         {
           "type": "table",
@@ -336,11 +336,7 @@
         {
           "type": "callout",
           "kind": "tip",
-          "html": "<p> <strong>Checklist vóór je een CV-score rapporteert:</strong> </p> <ul> <li>Is de testset braaf bewaard en niet aangeraakt tijdens tuning?</li> <li>Staat alle preprocessing in een <code>Pipeline</code>, zodat per fold opnieuw wordt gefit?</li> <li>Gebruik je bij classificatie <code>StratifiedKFold</code> (default met <code>cv=k</code>)?</li> <li>Is <code>k</code> redelijk — 5 of 10, niet 2 en niet n?</li> <li>Rapporteer je zowel de gemiddelde score <em>als</em> de std over folds?</li> </ul>"
-        },
-        {
-          "type": "text",
-          "html": "<p> Verder lezen: de metriek die je CV-score oplevert, hangt af van je taak — bij regressie zijn dat <a href=\"#/topic/regression-metrics\">MSE, RMSE, MAE &amp; R²</a>, bij classificatie <a href=\"#/topic/classification-metrics\">accuracy, precision, recall &amp; F1</a>. Welke metric je aan <code>cross_val_score</code> en <code>GridSearchCV</code> meegeeft (via <code>scoring=</code>), bepaalt wat er gemiddeld wordt. </p>"
+          "html": "Checklist: testset bewaard? Preprocessing in een Pipeline? StratifiedKFold bij classificatie? k redelijk (5 of 10)? Zowel gemiddelde &aacute;ls std gerapporteerd?"
         }
       ]
     }
