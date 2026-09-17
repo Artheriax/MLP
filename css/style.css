@@ -5,13 +5,12 @@
      tekstmaat (~66 tekens) · ruime verticale ritmiek
    · donker (default, #161616 + pastel) en licht thema
    · zijbalk met genummerde hoofdstukken (zonder ruis)
-   · onderwerppagina: kernpunten-box + "op deze pagina"-overzicht
+   · onderwerppagina: kernpunten-box + genummerde secties
    ============================================================ */
 
 :root {
   --sidebar-w: 276px;
   --content-w: 760px;   /* leesmaat van de artikelkolom */
-  --toc-w: 200px;
   --topbar-h: 56px;
   --radius: 12px;
   --radius-sm: 8px;
@@ -786,91 +785,6 @@ body.sb-collapsed .sidebar { margin-left: calc(-1 * var(--sidebar-w)); }
   background: color-mix(in srgb, var(--kp) 22%, transparent);
   box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--kp) 60%, transparent);
 }
-
-/* "op deze pagina" — smal scherm: vak onder de intro */
-
-.toc {
-  margin: 22px 0 8px;
-}
-
-.toc-title {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 12.5px;
-  font-weight: 700;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-  color: var(--text-faint);
-  margin: 0 0 10px;
-}
-
-.toc-title .toc-rule { flex: 1; height: 1px; background: var(--border-muted); }
-
-.toc-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  gap: 2px;
-}
-
-.toc-link {
-  display: block;
-  padding: 4px 10px;
-  border-left: 2px solid transparent;
-  font-size: 13.5px;
-  line-height: 1.5;
-  color: var(--text-muted);
-  text-decoration: none !important;
-}
-
-.toc-link:hover { color: var(--text); text-decoration: none; }
-
-.toc-link .tn {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--text-faint);
-  margin-right: 7px;
-}
-
-.toc-link.active {
-  color: var(--text);
-  border-left-color: var(--accent);
-  background: var(--accent-soft);
-}
-
-/* "op deze pagina" — breed scherm: vaste balk rechts van de tekst */
-
-@media (min-width: 1360px) {
-  .view.has-toc { max-width: calc(var(--content-w) + 40px + var(--toc-w) + 64px); }
-
-  .toc-slot {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width: var(--toc-w);
-  }
-
-  .toc {
-    position: sticky;
-    top: calc(var(--topbar-h) + 24px);
-    margin: 0;
-    padding-top: 6px;
-    max-height: calc(100vh - var(--topbar-h) - 60px);
-    overflow-y: auto;
-    scrollbar-width: none;
-  }
-
-  .toc::-webkit-scrollbar { display: none; }
-
-  .toc-title { border-bottom: 1px solid var(--border-muted); padding-bottom: 10px; }
-
-  .toc-list { gap: 1px; }
-}
-
-.topic { position: relative; }
 
 .topic-body { display: grid; gap: 8px; grid-template-columns: minmax(0, 1fr); }
 

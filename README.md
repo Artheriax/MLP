@@ -48,9 +48,7 @@ kernpunten, formules en voorbeelden intact).
 **Leesbaarheid voorop (v2-redesign)**: de leestekst staat op **17 px
 met ruime regelafstand** in een **smalle kolom (~66 tekens)** — het
 comfortabelste leesmaat voor studiestof. Elk onderwerp opent met een
-**Kernpunten-box** (de 3–5 dingen die je moet onthouden) en een
-**"Op deze pagina"-overzicht** met scroll-spy dat meeloopt terwijl je
-leest (op brede schermen als vaste balk naast de tekst). Secties zijn
+**Kernpunten-box** (de 3–5 dingen die je moet onthouden). Secties zijn
 genummerd (01, 02 …), callouts hebben iconen, tabellen hebben luchtige
 cellen met zebra-strepen en formules staan in rustige kaarten.
 

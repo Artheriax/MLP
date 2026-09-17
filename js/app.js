@@ -38,19 +38,11 @@ window.MLP = window.MLP || {};
   }
 
   let currentRoute = null;
-  let tocSpy = null;
 
   async function route() {
     const r = parseHash();
     if (currentRoute && currentRoute.name === r.name && currentRoute.id === r.id) return;
     currentRoute = r;
-
-    /* opruimen van de vorige view (scroll-spy loskoppelen e.d.) */
-    if (tocSpy) {
-      tocSpy.disconnect();
-      tocSpy = null;
-    }
-    view().classList.remove("has-toc");
 
     window.scrollTo({ top: 0, behavior: "auto" });
 
@@ -613,60 +605,6 @@ window.MLP = window.MLP || {};
     return box;
   }
 
-  /* "op deze pagina" — TOC uit de sectietitels */
-  function buildToc(sections) {
-    if (!sections || sections.length < 3) return null;
-    const slot = el("div", "toc-slot");
-    const nav = el("nav", "toc");
-    nav.setAttribute("aria-label", t("toc_title"));
-    nav.appendChild(
-      el("div", "toc-title", escapeHtml(t("toc_title")) + '<span class="toc-rule"></span>')
-    );
-    const ul = el("ul", "toc-list");
-    sections.forEach((sec, i) => {
-      const li = el("li");
-      const a = el(
-        "a",
-        "toc-link",
-        '<span class="tn">' + String(i + 1).padStart(2, "0") + "</span>" + escapeHtml(sec.title || "")
-      );
-      a.href = "#sec-" + (i + 1);
-      a.dataset.target = "sec-" + (i + 1);
-      li.appendChild(a);
-      ul.appendChild(li);
-    });
-    nav.appendChild(ul);
-    slot.appendChild(nav);
-    return slot;
-  }
-
-  /* scroll-spy: markeert in de TOC waar de lezer is */
-  function initTocSpy() {
-    const links = $$(".toc-link");
-    const sections = $$(".topic-section");
-    if (!links.length || !sections.length) return;
-
-    const setActive = (id) => {
-      links.forEach((a) => a.classList.toggle("active", a.dataset.target === id));
-    };
-
-    if (!("IntersectionObserver" in window)) {
-      setActive(sections[0].id);
-      return;
-    }
-
-    tocSpy = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((en) => {
-          if (en.isIntersecting) setActive(en.target.id);
-        });
-      },
-      { rootMargin: "-80px 0px -66% 0px", threshold: 0 }
-    );
-    sections.forEach((s) => tocSpy.observe(s));
-    setActive(sections[0].id);
-  }
-
   async function renderTopic(id) {
     let topic;
     try {
@@ -736,13 +674,6 @@ window.MLP = window.MLP || {};
 
     main.appendChild(head);
 
-    /* inhoudsopgave ("op deze pagina") */
-    const toc = buildToc(topic.sections);
-    if (toc) {
-      main.appendChild(toc);
-      view().classList.add("has-toc");
-    }
-
     /* secties */
     const body = el("div", "topic-body");
     (topic.sections || []).forEach((sec, i) => {
@@ -790,7 +721,6 @@ window.MLP = window.MLP || {};
       }
     }
 
-    initTocSpy();
     app().focus({ preventScroll: true });
   }
 
